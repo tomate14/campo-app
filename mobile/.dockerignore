@@ -1,0 +1,10 @@
+node_modules/
+.expo/
+*.md
+.git
+.gitignore
+.env*
+android/
+ios/
+**/*.log
+dist/

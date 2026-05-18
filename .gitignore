@@ -1,0 +1,24 @@
+# Secrets — NUNCA commitear
+.env
+*.env.local
+
+# Build outputs
+backend/target/
+frontend/.next/
+frontend/node_modules/
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+
+# Logs
+**/*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml

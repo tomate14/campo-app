@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name":    "Campo App",
+    "slug":    "campo-app",
+    "version": "0.2.0",
+    "scheme":  "campo",
+    "orientation": "portrait",
+    "icon":    "./assets/images/icon.png",
+    "splash": {
+      "image":           "./assets/images/splash.png",
+      "resizeMode":      "contain",
+      "backgroundColor": "#F8FAFC"
+    },
+    "ios": {
+      "supportsTablet":        true,
+      "bundleIdentifier":      "com.campoapp.mobile",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Para mostrar la ubicación de los lotes en el mapa"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage":  "./assets/images/adaptive-icon.png",
+        "backgroundColor":  "#F8FAFC"
+      },
+      "package":            "com.campoapp.mobile",
+      "permissions":        ["ACCESS_FINE_LOCATION", "CAMERA"]
+    },
+    "web": {
+      "bundler": "metro",
+      "output":  "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
