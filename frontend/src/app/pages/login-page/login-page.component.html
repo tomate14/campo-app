@@ -1,0 +1,31 @@
+<div class="login-page">
+  <section class="login-panel card">
+    <div>
+      <p class="eyebrow">Campo App</p>
+      <h1>{{ mode === 'login' ? 'Ingresar' : 'Crear cuenta' }}</h1>
+      <p class="copy">Frontend migrado a Angular. La sesion sigue contra el backend actual.</p>
+    </div>
+
+    <div class="mode-switch">
+      <button class="btn-secondary" type="button" [class.active]="mode === 'login'" (click)="mode = 'login'">Login</button>
+      <button class="btn-secondary" type="button" [class.active]="mode === 'register'" (click)="mode = 'register'">Registro</button>
+    </div>
+
+    <form class="form" (ngSubmit)="submit()">
+      <label *ngIf="mode === 'register'">
+        <span>Nombre completo</span>
+        <input [(ngModel)]="name" name="name" />
+      </label>
+      <label>
+        <span>Email</span>
+        <input [(ngModel)]="email" name="email" type="email" required />
+      </label>
+      <label>
+        <span>Password</span>
+        <input [(ngModel)]="password" name="password" type="password" required />
+      </label>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <button class="btn-primary" type="submit" [disabled]="loading">{{ loading ? 'Procesando...' : mode === 'login' ? 'Entrar' : 'Crear cuenta' }}</button>
+    </form>
+  </section>
+</div>

@@ -22,6 +22,9 @@ FROM eclipse-temurin:17-jre-alpine AS runtime
 
 WORKDIR /app
 
+# Utilidad requerida por el healthcheck del compose
+RUN apk add --no-cache curl
+
 # Usuario no-root por seguridad
 RUN addgroup -S spring && adduser -S spring -G spring
 

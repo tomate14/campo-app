@@ -1,0 +1,10 @@
+.page { display: flex; flex-direction: column; gap: 18px; }
+.filter-box, .column { padding: 18px; }
+.page-columns { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.list-item { padding: 12px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.12); }
+.list-item:last-child { border-bottom: 0; }
+.list-item p { margin: 6px 0 0; color: var(--muted); }
+.empty-box { color: var(--muted); padding-top: 12px; }
+.section-head, .page-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+h2 { margin: 0; font-size: 32px; }
+.page-head p { margin: 6px 0 0; color: var(--muted); }

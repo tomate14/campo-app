@@ -1,0 +1,13 @@
+.page { display: flex; flex-direction: column; gap: 18px; }
+.page-head, .row, .actions { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.filter-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.filter-box, .metric-box, .cosecha-card, .empty-box { padding: 18px; }
+.badge { padding: 6px 10px; border-radius: 999px; background: rgba(77, 124, 15, 0.16); color: #d9f99d; }
+.metric-box { min-width: 260px; }
+.label { margin: 0; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+.value { margin: 6px 0 0; font-size: 24px; font-weight: 700; }
+.form { display: flex; flex-direction: column; gap: 14px; }
+.narrow { max-width: 560px; }
+.empty-box { color: var(--muted); text-align: center; }
+h2 { margin: 0; font-size: 32px; }
+.page-head p, .row p { margin: 6px 0 0; color: var(--muted); }

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { apiClient as api } from './client'
 import type {
   ApiResponse, Lote, LoteRequest,
   EventoSiembra, EventoSiembraRequest, TipoEvento,
@@ -6,17 +6,6 @@ import type {
   PropiedadSuelo, PropiedadSueloRequest,
   HistoricoCultivo, HistoricoCultivoRequest, RotacionRecomendacion,
 } from '../types/agricola'
-
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: { 'Content-Type': 'application/json' },
-})
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) config.headers.Authorization = `Bearer ${token}`
-  return config
-})
 
 // Lotes
 export const getLotes = (params?: { temporada?: string; cultivo?: string }) =>

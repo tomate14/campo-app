@@ -1,0 +1,37 @@
+<div class="shell">
+  <aside class="sidebar" [class.collapsed]="collapsed()">
+    <div class="brand-row">
+      <button class="icon-btn" type="button" (click)="toggleSidebar()" [title]="collapsed() ? 'Abrir panel' : 'Cerrar panel'">
+        {{ collapsed() ? '>' : '<' }}
+      </button>
+      <div class="brand-copy" *ngIf="!collapsed()">
+        <div class="eyebrow">CA</div>
+        <div class="title">Campo App</div>
+        <div class="subtitle">AgroERP Angular</div>
+      </div>
+    </div>
+
+    <nav class="nav-section">
+      <div class="section-title" *ngIf="!collapsed()">Agricultura</div>
+      <a routerLink="/agricola/lotes" routerLinkActive="active" class="nav-link">{{ collapsed() ? 'LT' : 'Lotes' }}</a>
+      <a routerLink="/agricola/siembra" routerLinkActive="active" class="nav-link">{{ collapsed() ? 'SI' : 'Siembra' }}</a>
+      <a routerLink="/agricola/cosecha" routerLinkActive="active" class="nav-link">{{ collapsed() ? 'CO' : 'Cosecha' }}</a>
+      <a routerLink="/clima" routerLinkActive="active" class="nav-link">{{ collapsed() ? 'CL' : 'Clima' }}</a>
+    </nav>
+
+    <button class="btn-secondary logout-btn" type="button" (click)="logout()">{{ collapsed() ? 'X' : 'Salir' }}</button>
+  </aside>
+
+  <main class="main-panel">
+    <header class="topbar card">
+      <div>
+        <p class="topbar-label">Panel operativo</p>
+        <h1>Campo App</h1>
+      </div>
+      <div class="user-chip">{{ currentUserName }}</div>
+    </header>
+    <section class="content-area">
+      <router-outlet />
+    </section>
+  </main>
+</div>

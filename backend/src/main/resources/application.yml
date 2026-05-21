@@ -21,7 +21,8 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
-    baseline-on-migrate: true
+    clean-disabled: false
+    clean-on-validation-error: true
 
 # JWT
 jwt:
@@ -44,6 +45,16 @@ oauth2:
     tenant: ${OAUTH2_AZURE_TENANT:}
     client-id: ${OAUTH2_AZURE_CLIENT_ID:}
     client-secret: ${OAUTH2_AZURE_CLIENT_SECRET:}
+
+# Clima - OpenWeatherMap
+clima:
+  openweathermap:
+    api-key: ${OWM_API_KEY:}
+    base-url: https://api.openweathermap.org/data/2.5
+  sync:
+    enabled: ${CLIMA_SYNC_ENABLED:true}
+    intervalo-ms: ${CLIMA_SYNC_INTERVALO_MS:1800000}
+  retencion-dias: 30
 
 # Springdoc
 springdoc:

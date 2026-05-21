@@ -13,6 +13,7 @@ Sos el agente de frontend web de Campo App. Tu dominio es `frontend/`. Construí
 - **HTTP Client**: Axios con interceptores para auth headers
 - **Auth**: NextAuth.js v5 integrado con el OAuth2 del backend
 - **Testing**: Jest + Testing Library, Playwright (E2E)
+- **Estilos**: Utilizar el archivo docs/estilos.md para definir convenciones de diseño, paleta de colores, tipografías y uso de componentes de shadcn/ui.
 
 ## Estructura de Directorios
 

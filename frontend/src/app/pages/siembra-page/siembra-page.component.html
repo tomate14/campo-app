@@ -1,0 +1,72 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h2>Siembra y Monitoreo</h2>
+      <p>Seguimiento fenologico y eventos de campo.</p>
+    </div>
+    <button class="btn-primary" type="button" (click)="showForm = true">+ Registrar evento</button>
+  </div>
+
+  <div class="card filter-box">
+    <label>
+      <span>Filtrar por lote</span>
+      <select [(ngModel)]="selectedLoteId" (ngModelChange)="loadEventos()" name="selectedLoteId">
+        <option value="">Seleccionar...</option>
+        <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }} - {{ lote.cultivo }}</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="card timeline-card" *ngFor="let evento of eventos">
+    <div class="timeline-head">
+      <strong>{{ evento.loteNombre }}</strong>
+      <span>{{ evento.fecha }}</span>
+    </div>
+    <div class="timeline-meta">
+      <span class="badge">{{ evento.tipoEvento }}</span>
+      <span *ngIf="evento.estadoFenologico">{{ evento.estadoFenologico }}</span>
+    </div>
+    <p *ngIf="evento.descripcion">{{ evento.descripcion }}</p>
+  </div>
+
+  <div class="card empty-box" *ngIf="!eventos.length">
+    <p>Sin eventos para el lote seleccionado.</p>
+  </div>
+
+  <div class="app-modal-backdrop" *ngIf="showForm">
+    <div class="app-modal-panel narrow">
+      <form class="form" (ngSubmit)="saveEvento()">
+        <h3>Registrar evento</h3>
+        <label>
+          <span>Lote</span>
+          <select [(ngModel)]="form.loteId" name="loteId" required>
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }}</option>
+          </select>
+        </label>
+        <label>
+          <span>Tipo</span>
+          <select [(ngModel)]="form.tipoEvento" name="tipoEvento">
+            <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
+          </select>
+        </label>
+        <label>
+          <span>Estado fenologico</span>
+          <input [(ngModel)]="form.estadoFenologico" name="estadoFenologico" />
+        </label>
+        <label>
+          <span>Fecha</span>
+          <input [(ngModel)]="form.fecha" name="fecha" type="date" required />
+        </label>
+        <label>
+          <span>Descripcion</span>
+          <textarea [(ngModel)]="form.descripcion" name="descripcion" rows="4"></textarea>
+        </label>
+        <div class="actions">
+          <button class="btn-secondary" type="button" (click)="showForm = false">Cancelar</button>
+          <button class="btn-primary" type="submit">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

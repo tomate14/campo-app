@@ -1,45 +1,51 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getCosechasByLote, createCosecha, updateCosecha, deleteCosecha, getRendimientoPromedio } from '../api/agricola'
-import type { RegistroCosechaRequest } from '../types/agricola'
-
-const COSECHAS_KEY = 'cosechas'
+import { inject } from '@angular/core'
+import { firstValueFrom } from 'rxjs'
+import { AgricolaService } from '../../app/core/services/agricola.service'
+import type { RegistroCosecha, RegistroCosechaRequest } from '../types/agricola'
+import { createMutationHook, createQueryHook, useInjected } from './angular-query'
 
 export function useCosechasByLote(loteId: string) {
-  return useQuery({
-    queryKey: [COSECHAS_KEY, loteId],
-    queryFn: () => getCosechasByLote(loteId),
-    enabled: !!loteId,
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createQueryHook(() => firstValueFrom(service.getCosechasByLote(loteId)), [] as RegistroCosecha[], !!loteId)
   })
 }
 
 export function useRendimientoPromedio(loteId: string) {
-  return useQuery({
-    queryKey: [COSECHAS_KEY, loteId, 'promedio'],
-    queryFn: () => getRendimientoPromedio(loteId),
-    enabled: !!loteId,
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createQueryHook(
+      () => firstValueFrom(service.getRendimientoPromedio(loteId)),
+      null as { loteId: string; rendimientoPromedioKgHa: number } | null,
+      !!loteId,
+    )
+  })
+}
+
+export function useCosecha(id: string) {
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createQueryHook(() => firstValueFrom(service.getCosecha(id)), null as RegistroCosecha | null, !!id)
   })
 }
 
 export function useCreateCosecha() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (data: RegistroCosechaRequest) => createCosecha(data),
-    onSuccess: (_, vars) => qc.invalidateQueries({ queryKey: [COSECHAS_KEY, vars.loteId] }),
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook((data: RegistroCosechaRequest) => firstValueFrom(service.createCosecha(data)))
   })
 }
 
 export function useUpdateCosecha() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: RegistroCosechaRequest }) => updateCosecha(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [COSECHAS_KEY] }),
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook(({ id, data }: { id: string; data: RegistroCosechaRequest }) => firstValueFrom(service.updateCosecha(id, data)))
   })
 }
 
 export function useDeleteCosecha() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (id: string) => deleteCosecha(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [COSECHAS_KEY] }),
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook((id: string) => firstValueFrom(service.deleteCosecha(id)))
   })
 }

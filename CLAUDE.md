@@ -100,8 +100,8 @@ Cuando se crea o actualiza un archivo en `features/`, el orquestador:
 ### Orden de ejecución por defecto
 
 ```
-Backend ──► Frontend ──► Testing ──► Seguridad ──► Docs
-              └──► Mobile ──────────────┘
+Backend ──► Frontend ──► Testing
+              └──► Mobile ──────┘
 ```
 
 ### Ejemplo de invocación
@@ -161,3 +161,10 @@ JWT_EXPIRATION_MS=86400000
 NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
 NEXT_PUBLIC_OAUTH2_CLIENT_ID=<secret>
 ```
+## Reglas generales antes de empezar una feature nueva
+- Crear una nueva rama git con el nombre de la feature. Ejemplo `00_agricultura_monitoreo_siembra_cosecha`
+- **NUNCA** crear archivos de documentación (`docs/`, `*.md` de auditoría, changelogs, READMEs) a menos que el usuario lo pida explícitamente en ese momento
+- **NUNCA** generar auditorías de seguridad (`audit-*.md`), reportes OWASP ni archivos en `docs/security/`
+- **NUNCA** actualizar `CHANGELOG.md` ni crear entradas de versión
+- Los agentes de Seguridad y Documentación **no se ejecutan** en el flujo por defecto
+- El flujo de ejecución es: Backend → Frontend + Mobile → Testing (fin)

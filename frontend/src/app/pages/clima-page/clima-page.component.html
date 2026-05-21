@@ -1,0 +1,55 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h2>Clima</h2>
+      <p>Actual, pronostico, alertas y recomendaciones por lote.</p>
+    </div>
+  </div>
+
+  <label class="card filter-box">
+    <span>Lote</span>
+    <select [(ngModel)]="selectedLoteId" (ngModelChange)="load()" name="selectedLoteId">
+      <option value="">Seleccionar...</option>
+      <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }} - {{ lote.cultivo }}</option>
+    </select>
+  </label>
+
+  <div class="stats-grid" *ngIf="actual">
+    <div class="metric-card"><p class="label">Temperatura</p><p class="value">{{ actual.temperatura ?? '-' }}°</p></div>
+    <div class="metric-card"><p class="label">Humedad</p><p class="value">{{ actual.humedadPct ?? '-' }}%</p></div>
+    <div class="metric-card"><p class="label">Viento</p><p class="value">{{ actual.velocidadViento ?? '-' }} km/h</p></div>
+    <div class="metric-card"><p class="label">Condicion</p><p class="value">{{ actual.descripcion ?? '-' }}</p></div>
+  </div>
+
+  <div class="page-columns">
+    <section class="card column">
+      <div class="section-head">
+        <h3>Pronostico</h3>
+        <button class="btn-secondary" type="button" [disabled]="!selectedLoteId" (click)="sync()">Sync</button>
+      </div>
+      <article class="list-item" *ngFor="let item of pronostico">
+        <strong>{{ item.fecha }}</strong>
+        <p>{{ item.descripcion }} - {{ item.tempMin }}° / {{ item.tempMax }}°</p>
+      </article>
+      <div class="empty-box" *ngIf="!pronostico.length">Sin pronostico.</div>
+    </section>
+
+    <section class="card column">
+      <h3>Alertas</h3>
+      <article class="list-item" *ngFor="let alerta of alertas">
+        <strong>{{ alerta.tipoAlerta }}</strong>
+        <p>{{ alerta.mensaje }}</p>
+      </article>
+      <div class="empty-box" *ngIf="!alertas.length">Sin alertas activas.</div>
+    </section>
+
+    <section class="card column">
+      <h3>Recomendaciones</h3>
+      <article class="list-item" *ngFor="let recomendacion of recomendaciones?.recomendaciones">
+        <strong>{{ recomendacion.categoria }}</strong>
+        <p>{{ recomendacion.mensaje }}</p>
+      </article>
+      <div class="empty-box" *ngIf="!recomendaciones?.recomendaciones?.length">Sin recomendaciones.</div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h2>Lotes</h2>
+      <p>Gestion de lotes agricolas en Angular.</p>
+    </div>
+    <button class="btn-primary" type="button" (click)="startCreate()">+ Nuevo lote</button>
+  </div>
+
+  <div class="card empty-box" *ngIf="loading()">
+    <p>Cargando lotes...</p>
+  </div>
+
+  <div class="card empty-box error-box" *ngIf="!loading() && errorMessage()">
+    <p>{{ errorMessage() }}</p>
+  </div>
+
+  <div class="cards-grid" *ngIf="!loading() && !errorMessage() && lotes().length > 0; else emptyState">
+    <article class="card lote-card" *ngFor="let lote of lotes()">
+      <div class="card-row">
+        <div>
+          <h3>{{ lote.nombre }}</h3>
+          <p>{{ lote.cultivo }} · {{ lote.temporada }}</p>
+        </div>
+        <span class="badge">{{ lote.area }} ha</span>
+      </div>
+      <div class="card-actions">
+        <button class="btn-secondary" type="button" (click)="openDetail(lote.id)">Detalle</button>
+        <button class="btn-secondary" type="button" (click)="startEdit(lote)">Editar</button>
+        <button class="btn-secondary danger" type="button" (click)="remove(lote.id)">Eliminar</button>
+      </div>
+    </article>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="card empty-box" *ngIf="!loading() && !errorMessage()">
+      <p>No hay lotes registrados.</p>
+    </div>
+  </ng-template>
+
+  <div class="app-modal-backdrop" *ngIf="showForm()">
+    <div class="app-modal-panel">
+      <app-lote-form [lote]="editingLote()" (cancel)="closeForm()" (save)="persist($event)" />
+    </div>
+  </div>
+</div>

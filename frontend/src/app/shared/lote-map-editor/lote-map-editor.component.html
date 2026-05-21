@@ -1,0 +1,48 @@
+<div class="card editor" [class.expanded]="expanded">
+  <div class="editor-head">
+    <div>
+      <h3>Delimitacion del lote</h3>
+      <p>Click para agregar vertices, doble click para cerrar y arrastre para ajustar.</p>
+    </div>
+    <div class="toolbar">
+      <button class="icon-btn" type="button" title="Mapa" [class.active]="baseMapMode === 'mapa'" (click)="baseMapMode = 'mapa'">M</button>
+      <button class="icon-btn" type="button" title="Satelite" [class.active]="baseMapMode === 'satelite'" (click)="baseMapMode = 'satelite'">S</button>
+      <button class="icon-btn" type="button" title="Pantalla completa" (click)="expanded = !expanded">{{ expanded ? '-' : '+' }}</button>
+      <button class="icon-btn" type="button" title="Deshacer" [disabled]="points.length === 0" (click)="undo()">U</button>
+      <button class="icon-btn" type="button" title="Seguir editando" [disabled]="!polygonClosed" (click)="polygonClosed = false">E</button>
+      <button class="icon-btn" type="button" title="Limpiar" (click)="clear()">X</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="metric-card"><p class="label">Puntos</p><p class="value">{{ points.length }}</p></div>
+    <div class="metric-card"><p class="label">Centroide lat</p><p class="value">{{ centroid.lat ?? '-' }}</p></div>
+    <div class="metric-card"><p class="label">Centroide lng</p><p class="value">{{ centroid.lng ?? '-' }}</p></div>
+    <div class="metric-card"><p class="label">Area estimada</p><p class="value">{{ areaHa ? areaHa + ' ha' : '-' }}</p></div>
+  </div>
+
+  <div class="map-frame">
+    <mgl-map
+      [mapStyle]="mapStyle"
+      [zoom]="zoom"
+      [center]="center"
+      [doubleClickZoom]="false"
+      [trackResize]="true"
+      (mapClick)="onMapClick($event)"
+      (mapDblClick)="onMapDoubleClick($event)"
+    >
+      <mgl-geojson-source id="polygon-source" [data]="polygonFeatureCollection"></mgl-geojson-source>
+      <mgl-layer id="polygon-fill" type="fill" source="polygon-source" [paint]="fillPaint"></mgl-layer>
+      <mgl-layer id="polygon-line" type="line" source="polygon-source" [paint]="linePaint"></mgl-layer>
+
+      <mgl-marker
+        *ngFor="let point of points; let index = index"
+        [lngLat]="[point.lng, point.lat]"
+        [draggable]="true"
+        (markerDragEnd)="onMarkerDragEnd(index, $event)"
+      >
+        <div class="vertex"></div>
+      </mgl-marker>
+    </mgl-map>
+  </div>
+</div>

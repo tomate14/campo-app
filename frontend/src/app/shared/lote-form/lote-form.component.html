@@ -1,0 +1,44 @@
+<form class="form-shell" (ngSubmit)="submit()">
+  <div>
+    <h2>{{ lote ? 'Editar lote' : 'Nuevo lote' }}</h2>
+    <p>Completa los datos del lote y delimita el poligono en el mapa.</p>
+  </div>
+
+  <div class="form-grid">
+    <section class="left-pane">
+      <div class="field-grid">
+        <label><span>Nombre</span><input [(ngModel)]="model.nombre" name="nombre" required /></label>
+        <label><span>Temporada</span><input [(ngModel)]="model.temporada" name="temporada" required /></label>
+        <label><span>Area (ha)</span><input [(ngModel)]="model.area" name="area" required type="number" step="0.01" /></label>
+        <label>
+          <span>Cultivo</span>
+          <select [(ngModel)]="model.cultivo" name="cultivo" required>
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let cultivo of cultivos" [value]="cultivo">{{ cultivo }}</option>
+          </select>
+        </label>
+        <label><span>Latitud</span><input [(ngModel)]="model.latitud" name="latitud" type="number" step="0.0000001" /></label>
+        <label><span>Longitud</span><input [(ngModel)]="model.longitud" name="longitud" type="number" step="0.0000001" /></label>
+      </div>
+
+      <label>
+        <span>GeoJSON del poligono</span>
+        <textarea [(ngModel)]="model.poligono" name="poligono" rows="7"></textarea>
+      </label>
+    </section>
+
+    <section class="right-pane">
+      <app-lote-map-editor
+        [value]="model.poligono"
+        [fallbackLat]="model.latitud"
+        [fallbackLng]="model.longitud"
+        (polygonChange)="onPolygonChange($event)"
+      />
+    </section>
+  </div>
+
+  <div class="actions">
+    <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
+    <button class="btn-primary" type="submit">{{ lote ? 'Guardar cambios' : 'Crear lote' }}</button>
+  </div>
+</form>

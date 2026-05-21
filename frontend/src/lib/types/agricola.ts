@@ -9,6 +9,7 @@ export interface Lote {
   latitud?: number
   longitud?: number
   temporada: string
+  poligono?: string
   createdAt: string
   updatedAt: string
 }
@@ -20,6 +21,7 @@ export interface LoteRequest {
   latitud?: number
   longitud?: number
   temporada: string
+  poligono?: string
 }
 
 export interface EventoSiembra {

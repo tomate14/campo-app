@@ -1,62 +1,47 @@
-'use client'
+import { inject } from '@angular/core'
+import { firstValueFrom } from 'rxjs'
+import { AgricolaService } from '../../app/core/services/agricola.service'
+import type { PropiedadSuelo, PropiedadSueloRequest } from '../types/agricola'
+import { createMutationHook, createQueryHook, useInjected } from './angular-query'
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  getSueloByLote, getUltimoAnalisis, getSuelo,
-  createSuelo, updateSuelo, deleteSuelo,
-} from '../api/agricola'
-import type { PropiedadSueloRequest } from '../types/agricola'
-
-export const useSueloByLote = (loteId: string) =>
-  useQuery({
-    queryKey: ['suelo', loteId],
-    queryFn: () => getSueloByLote(loteId),
-    enabled: !!loteId,
-  })
-
-export const useUltimoAnalisis = (loteId: string) =>
-  useQuery({
-    queryKey: ['suelo-ultimo', loteId],
-    queryFn: () => getUltimoAnalisis(loteId),
-    enabled: !!loteId,
-  })
-
-export const useSuelo = (id: string) =>
-  useQuery({
-    queryKey: ['suelo-item', id],
-    queryFn: () => getSuelo(id),
-    enabled: !!id,
-  })
-
-export const useCreateSuelo = (loteId: string) => {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (data: PropiedadSueloRequest) => createSuelo(data),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['suelo', loteId] })
-      qc.invalidateQueries({ queryKey: ['suelo-ultimo', loteId] })
-    },
+export function useSueloByLote(loteId: string) {
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createQueryHook(() => firstValueFrom(service.getSueloByLote(loteId)), [] as PropiedadSuelo[], !!loteId)
   })
 }
 
-export const useUpdateSuelo = (loteId: string) => {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: PropiedadSueloRequest }) => updateSuelo(id, data),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['suelo', loteId] })
-      qc.invalidateQueries({ queryKey: ['suelo-ultimo', loteId] })
-    },
+export function useUltimoAnalisis(loteId: string) {
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createQueryHook(() => firstValueFrom(service.getUltimoAnalisis(loteId)), null as PropiedadSuelo | null, !!loteId)
   })
 }
 
-export const useDeleteSuelo = (loteId: string) => {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (id: string) => deleteSuelo(id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['suelo', loteId] })
-      qc.invalidateQueries({ queryKey: ['suelo-ultimo', loteId] })
-    },
+export function useSuelo(id: string) {
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createQueryHook(() => firstValueFrom(service.getSuelo(id)), null as PropiedadSuelo | null, !!id)
+  })
+}
+
+export function useCreateSuelo() {
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook((data: PropiedadSueloRequest) => firstValueFrom(service.createSuelo(data)))
+  })
+}
+
+export function useUpdateSuelo() {
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook(({ id, data }: { id: string; data: PropiedadSueloRequest }) => firstValueFrom(service.updateSuelo(id, data)))
+  })
+}
+
+export function useDeleteSuelo() {
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook((id: string) => firstValueFrom(service.deleteSuelo(id)))
   })
 }

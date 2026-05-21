@@ -14,6 +14,7 @@ Sos el agente mobile de Campo App. Tu dominio es `mobile/`. Construís la app na
 - **HTTP**: Axios (mismo cliente que frontend, desde `shared/`)
 - **Testing**: Jest + React Native Testing Library + Maestro (E2E)
 - **Build**: EAS Build (Expo Application Services)
+- **Estilos**: Utilizar el archivo docs/estilos.md para definir convenciones de diseño, paleta de colores, tipografías y uso de componentes de shadcn/ui.
 
 ## Estructura de Directorios
 
@@ -139,3 +140,4 @@ cd mobile && eas submit
 - [ ] Imágenes optimizadas con `expo-image`
 - [ ] Accesibilidad: `accessibilityLabel` en elementos interactivos
 - [ ] Soporte para pantallas pequeñas (SE) y grandes (tablet si aplica)
+- [ ] Componentes React native pasan correctamente el build

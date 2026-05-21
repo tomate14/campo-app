@@ -1,44 +1,40 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getLotes, getLote, createLote, updateLote, deleteLote } from '../api/agricola'
-import type { LoteRequest } from '../types/agricola'
-
-const LOTES_KEY = 'lotes'
+import { inject } from '@angular/core'
+import { firstValueFrom } from 'rxjs'
+import { AgricolaService } from '../../app/core/services/agricola.service'
+import type { Lote, LoteRequest } from '../types/agricola'
+import { createMutationHook, createQueryHook, useInjected } from './angular-query'
 
 export function useLotes(params?: { temporada?: string; cultivo?: string }) {
-  return useQuery({
-    queryKey: [LOTES_KEY, params],
-    queryFn: () => getLotes(params),
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createQueryHook(() => firstValueFrom(service.getLotes(params)), [] as Lote[], true)
   })
 }
 
 export function useLote(id: string) {
-  return useQuery({
-    queryKey: [LOTES_KEY, id],
-    queryFn: () => getLote(id),
-    enabled: !!id,
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createQueryHook(() => firstValueFrom(service.getLote(id)), null as Lote | null, !!id)
   })
 }
 
 export function useCreateLote() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (data: LoteRequest) => createLote(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [LOTES_KEY] }),
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook((data: LoteRequest) => firstValueFrom(service.createLote(data)))
   })
 }
 
 export function useUpdateLote() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: LoteRequest }) => updateLote(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [LOTES_KEY] }),
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook(({ id, data }: { id: string; data: LoteRequest }) => firstValueFrom(service.updateLote(id, data)))
   })
 }
 
 export function useDeleteLote() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (id: string) => deleteLote(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [LOTES_KEY] }),
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook((id: string) => firstValueFrom(service.deleteLote(id)))
   })
 }

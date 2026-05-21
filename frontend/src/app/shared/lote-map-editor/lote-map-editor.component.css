@@ -1,0 +1,10 @@
+.editor { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.editor.expanded { position: fixed; inset: 24px; z-index: 1300; background: rgba(15, 23, 42, 0.98); overflow: auto; }
+.editor-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.editor-head h3 { margin: 0; font-size: 16px; }
+.editor-head p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+.map-frame { height: 390px; overflow: hidden; border-radius: 18px; border: 1px solid var(--card-border); }
+.editor.expanded .map-frame { height: calc(100vh - 240px); }
+.vertex { width: 14px; height: 14px; border-radius: 999px; border: 2px solid #22d3ee; background: #4d7c0f; box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.18); }
+@media (max-width: 720px) { .editor-head { flex-direction: column; } }

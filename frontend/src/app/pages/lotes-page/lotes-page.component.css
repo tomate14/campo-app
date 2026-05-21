@@ -1,0 +1,15 @@
+.page { display: flex; flex-direction: column; gap: 20px; }
+.page-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+h2 { margin: 0; font-size: 32px; }
+.page-head p { margin: 6px 0 0; color: var(--muted); }
+.cards-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.lote-card { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.card-row { display: flex; justify-content: space-between; gap: 16px; }
+h3 { margin: 0; font-size: 20px; }
+.card-row p { margin: 6px 0 0; color: var(--muted); }
+.badge { align-self: flex-start; padding: 8px 12px; border-radius: 999px; background: rgba(77, 124, 15, 0.14); color: #d9f99d; font-weight: 700; }
+.card-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.danger { border-color: rgba(220, 38, 38, 0.35); color: #fca5a5; }
+.empty-box { padding: 28px; text-align: center; color: var(--muted); }
+.error-box { border-color: rgba(220, 38, 38, 0.35); color: #fecaca; }
+@media (max-width: 720px) { .page-head { flex-direction: column; align-items: flex-start; } }

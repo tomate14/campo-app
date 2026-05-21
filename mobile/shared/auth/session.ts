@@ -1,0 +1,43 @@
+import * as SecureStore from 'expo-secure-store'
+import type { AuthResponse, AuthUser } from '../types/auth'
+
+const ACCESS_TOKEN_KEY = 'access_token'
+const REFRESH_TOKEN_KEY = 'refresh_token'
+const USER_KEY = 'auth_user'
+
+export async function readAccessToken() {
+  return SecureStore.getItemAsync(ACCESS_TOKEN_KEY)
+}
+
+export async function readRefreshToken() {
+  return SecureStore.getItemAsync(REFRESH_TOKEN_KEY)
+}
+
+export async function readCurrentUser(): Promise<AuthUser | null> {
+  const raw = await SecureStore.getItemAsync(USER_KEY)
+  if (!raw) {
+    return null
+  }
+
+  try {
+    return JSON.parse(raw) as AuthUser
+  } catch {
+    return null
+  }
+}
+
+export async function persistSession(session: AuthResponse) {
+  await Promise.all([
+    SecureStore.setItemAsync(ACCESS_TOKEN_KEY, session.accessToken),
+    SecureStore.setItemAsync(REFRESH_TOKEN_KEY, session.refreshToken),
+    SecureStore.setItemAsync(USER_KEY, JSON.stringify(session.user)),
+  ])
+}
+
+export async function clearSession() {
+  await Promise.all([
+    SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY),
+    SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY),
+    SecureStore.deleteItemAsync(USER_KEY),
+  ])
+}

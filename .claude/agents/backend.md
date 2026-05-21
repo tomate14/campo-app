@@ -37,6 +37,7 @@ com.campoapp/
 - Verbos HTTP correctos: GET (leer), POST (crear), PUT (reemplazar), PATCH (actualizar parcial), DELETE
 - Respuesta estándar con envelope `ApiResponse<T>` definida en `dto/common/ApiResponse.java`
 - Los services tienen que tener una interfaz y su implementación.
+- Nunca importar librerias con *. Siempre clase por clase
 
 ### Entidades JPA
 - Siempre usar `@GeneratedValue(strategy = GenerationType.IDENTITY)`
@@ -86,3 +87,4 @@ curl http://localhost:8080/api/v1/docs
 - [ ] Migración Flyway creada si se modificó el schema
 - [ ] Sin secrets hardcodeados — usar `@Value` o `@ConfigurationProperties`
 - [ ] Datos sensibles no logueados
+- [ ] mvn clean install compila bien sin errores

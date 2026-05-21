@@ -1,37 +1,40 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getEventosByLote, createEvento, updateEvento, deleteEvento } from '../api/agricola'
-import type { EventoSiembraRequest, TipoEvento } from '../types/agricola'
-
-const EVENTOS_KEY = 'eventos-siembra'
+import { inject } from '@angular/core'
+import { firstValueFrom } from 'rxjs'
+import { AgricolaService } from '../../app/core/services/agricola.service'
+import type { EventoSiembra, EventoSiembraRequest, TipoEvento } from '../types/agricola'
+import { createMutationHook, createQueryHook, useInjected } from './angular-query'
 
 export function useEventosByLote(loteId: string, tipo?: TipoEvento) {
-  return useQuery({
-    queryKey: [EVENTOS_KEY, loteId, tipo],
-    queryFn: () => getEventosByLote(loteId, tipo),
-    enabled: !!loteId,
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createQueryHook(() => firstValueFrom(service.getEventosByLote(loteId, tipo)), [] as EventoSiembra[], !!loteId)
+  })
+}
+
+export function useEvento(id: string) {
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createQueryHook(() => firstValueFrom(service.getEvento(id)), null as EventoSiembra | null, !!id)
   })
 }
 
 export function useCreateEvento() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (data: EventoSiembraRequest) => createEvento(data),
-    onSuccess: (_, vars) => qc.invalidateQueries({ queryKey: [EVENTOS_KEY, vars.loteId] }),
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook((data: EventoSiembraRequest) => firstValueFrom(service.createEvento(data)))
   })
 }
 
 export function useUpdateEvento() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: EventoSiembraRequest }) => updateEvento(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [EVENTOS_KEY] }),
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook(({ id, data }: { id: string; data: EventoSiembraRequest }) => firstValueFrom(service.updateEvento(id, data)))
   })
 }
 
 export function useDeleteEvento() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: (id: string) => deleteEvento(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [EVENTOS_KEY] }),
+  return useInjected(() => {
+    const service = inject(AgricolaService)
+    return createMutationHook((id: string) => firstValueFrom(service.deleteEvento(id)))
   })
 }

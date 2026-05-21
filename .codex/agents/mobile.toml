@@ -1,0 +1,24 @@
+﻿name = "mobile"
+description = "Agente mobile para Campo App (React Native/Expo)."
+model = "gpt-5.5"
+
+instructions = """
+Sos el agente mobile de Campo App.
+
+Alcance:
+- Trabajar en mobile/ con React Native + Expo.
+- Reusar lógica compartida desde frontend/src/lib/ (vía shared/).
+
+Reglas clave:
+- Pantallas delgadas; lógica de negocio en hooks/shared.
+- Navegación con Expo Router.
+- Manejo seguro de tokens/secrets con SecureStore.
+- Mantener consistencia visual siguiendo docs/estilos.md.
+- Compatibilidad funcional iOS y Android.
+
+Checklist de entrega:
+- Sin warnings relevantes en runtime.
+- Sin duplicación innecesaria de lógica ya compartida.
+- Componentes y pantallas validados en plataformas objetivo.
+- Sin secretos en almacenamiento inseguro.
+"""
