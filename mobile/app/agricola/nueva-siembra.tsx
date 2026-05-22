@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { View, Text, ScrollView, StyleSheet, useColorScheme, TouchableOpacity, TextInput, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Colors } from '@/constants/colors'
 import { useLotes } from '@/shared/hooks/useLotes'
 import { useCreateEvento } from '@/shared/hooks/useSiembra'
@@ -20,11 +20,12 @@ export default function NuevaSiembraScreen() {
   const scheme = useColorScheme() ?? 'light'
   const c = Colors[scheme]
   const router = useRouter()
+  const params = useLocalSearchParams<{ loteId?: string }>()
 
   const { data: lotes } = useLotes()
   const createEvento = useCreateEvento()
 
-  const [loteId, setLoteId]                         = useState('')
+  const [loteId, setLoteId]                         = useState(params.loteId ?? '')
   const [tipoEvento, setTipoEvento]                 = useState<TipoEvento>('SIEMBRA')
   const [estadoFenologico, setEstadoFenologico]     = useState('')
   const [descripcion, setDescripcion]               = useState('')

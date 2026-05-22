@@ -1,4 +1,4 @@
-<form class="form-shell" (ngSubmit)="submit()">
+﻿<form class="form-shell" (ngSubmit)="submit()">
   <div>
     <h2>{{ lote ? 'Editar lote' : 'Nuevo lote' }}</h2>
     <p>Completa los datos del lote y delimita el poligono en el mapa.</p>
@@ -19,6 +19,10 @@
         </label>
         <label><span>Latitud</span><input [(ngModel)]="model.latitud" name="latitud" type="number" step="0.0000001" /></label>
         <label><span>Longitud</span><input [(ngModel)]="model.longitud" name="longitud" type="number" step="0.0000001" /></label>
+        <label><span>pH minimo</span><input [(ngModel)]="model.phMinimo" name="phMinimo" type="number" step="0.01" /></label>
+        <label><span>pH maximo</span><input [(ngModel)]="model.phMaximo" name="phMaximo" type="number" step="0.01" /></label>
+        <label><span>Fecha de siembra</span><input [(ngModel)]="model.fechaSiembra" name="fechaSiembra" type="date" /></label>
+        <label><span>Cosecha estimada</span><input [(ngModel)]="model.fechaCosechaEstimada" name="fechaCosechaEstimada" type="date" /></label>
       </div>
 
       <label>

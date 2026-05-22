@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { API_BASE_URL } from './api.config';
 import type { ApiResponse } from '../models/agricola.models';
-import type { AlertaClima, DatoClima, Pronostico, RecomendacionClima } from '../models/clima.models';
+import type { AlertaClima, ClimaMonitoreo, DatoClima, Pronostico, RecomendacionClima } from '../models/clima.models';
 
 @Injectable({ providedIn: 'root' })
 export class ClimaService {
@@ -11,6 +11,10 @@ export class ClimaService {
 
   getActual(loteId: string) {
     return this.http.get<ApiResponse<DatoClima | null>>(`${API_BASE_URL}/clima/${loteId}/actual`).pipe(map((response) => response.data));
+  }
+
+  getMonitoreo(loteId: string, diasHistorico = 7) {
+    return this.http.get<ApiResponse<ClimaMonitoreo>>(`${API_BASE_URL}/clima/monitoreo`, { params: { loteId, diasHistorico } }).pipe(map((response) => response.data));
   }
 
   getPronostico(loteId: string) {

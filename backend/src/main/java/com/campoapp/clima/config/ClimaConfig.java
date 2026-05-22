@@ -11,10 +11,10 @@ public class ClimaConfig {
 
     private final ClimaProperties properties;
 
-    @Bean("owmRestClient")
-    public RestClient owmRestClient() {
+    @Bean("openMeteoRestClient")
+    public RestClient openMeteoRestClient() {
         return RestClient.builder()
-                .baseUrl(properties.getOpenweathermap().getBaseUrl())
+                .baseUrl(properties.getOpenMeteo().getBaseUrl())
                 .build();
     }
 }

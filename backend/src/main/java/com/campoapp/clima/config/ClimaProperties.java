@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 @Getter @Setter
 public class ClimaProperties {
 
-    private Openweathermap openweathermap = new Openweathermap();
+    private OpenMeteo openMeteo = new OpenMeteo();
     private Sync sync = new Sync();
     private int retencionDias = 30;
+    private int forecastDays = 7;
 
     @Getter @Setter
-    public static class Openweathermap {
-        private String apiKey = "";
-        private String baseUrl = "https://api.openweathermap.org/data/2.5";
+    public static class OpenMeteo {
+        private String baseUrl = "https://api.open-meteo.com/v1";
     }
 
     @Getter @Setter
@@ -26,11 +26,7 @@ public class ClimaProperties {
         private long intervaloMs = 1_800_000L;
     }
 
-    public boolean isApiKeyConfigured() {
-        return apiKey() != null && !apiKey().isBlank();
-    }
-
-    private String apiKey() {
-        return openweathermap.getApiKey();
+    public boolean isConfigured() {
+        return openMeteo.getBaseUrl() != null && !openMeteo.getBaseUrl().isBlank();
     }
 }

@@ -10,6 +10,10 @@ export interface Lote {
   longitud?: number
   temporada: string
   poligono?: string
+  phMinimo?: number
+  phMaximo?: number
+  fechaSiembra?: string
+  fechaCosechaEstimada?: string
   createdAt: string
   updatedAt: string
 }
@@ -22,6 +26,47 @@ export interface LoteRequest {
   longitud?: number
   temporada: string
   poligono?: string
+  phMinimo?: number
+  phMaximo?: number
+  fechaSiembra?: string
+  fechaCosechaEstimada?: string
+}
+
+export interface LoteFilters {
+  temporada?: string
+  cultivo?: string
+  areaMin?: number
+  areaMax?: number
+  phMin?: number
+  phMax?: number
+  tienePoligono?: boolean
+}
+
+export interface GeoJsonImportRequest {
+  geoJson: string
+}
+
+export interface LoteReporte {
+  loteId: string
+  loteNombre: string
+  cultivoActual: string
+  temporadaActual: string
+  area: number
+  cantidadEventos: number
+  cantidadCosechas: number
+  cantidadAnalisisSuelo: number
+  cantidadCultivosHistoricos: number
+  rendimientoPromedioKgHa: number
+  rendimientoHistoricoPromedioKgHa: number
+  ultimoCultivo?: string
+  ultimaTemporada?: string
+}
+
+export interface LoteCardDetail {
+  lote: Lote
+  reporte?: LoteReporte
+  ultimoSuelo?: PropiedadSuelo | null
+  ultimoHistorial?: HistoricoCultivo | null
 }
 
 export interface EventoSiembra {

@@ -21,4 +21,10 @@ public interface HistoricoCultivoRepository extends JpaRepository<HistoricoCulti
 
     @Query("SELECT DISTINCT h.cultivo FROM HistoricoCultivo h WHERE h.lote.id = :loteId AND h.deletedAt IS NULL ORDER BY h.cultivo")
     List<String> findCultivosDistintos(@Param("loteId") String loteId);
+
+    @Query("SELECT COUNT(h) FROM HistoricoCultivo h WHERE h.lote.id = :loteId AND h.deletedAt IS NULL")
+    long countByLoteId(@Param("loteId") String loteId);
+
+    @Query("SELECT AVG(h.rendimientoKgHa) FROM HistoricoCultivo h WHERE h.lote.id = :loteId AND h.deletedAt IS NULL AND h.rendimientoKgHa IS NOT NULL")
+    Double calcularRendimientoPromedio(@Param("loteId") String loteId);
 }

@@ -29,12 +29,16 @@ export interface Pronostico {
   fecha: string
   tempMax?: number
   tempMin?: number
+  apparentTempMax?: number
+  apparentTempMin?: number
   humedadPct?: number
+  uvIndexMax?: number
   probabilidadLluvia?: number
   precipitacionMm?: number
   descripcion?: string
   iconoCodigo?: string
   velocidadViento?: number
+  direccionVientoDominante?: number
   condicionCodigo?: number
 }
 
@@ -63,4 +67,16 @@ export interface RecomendacionClima {
   loteNombre: string
   recomendaciones: Recomendacion[]
   condicionGeneral: string
+}
+
+export interface ClimaMonitoreo {
+  loteId: string
+  actual: DatoClima | null
+  pronostico: Pronostico[]
+  historico: DatoClima[]
+  alertas: AlertaClima[]
+  recomendaciones: RecomendacionClima
+  proveedor: string
+  historicoDias: number
+  pronosticoDiasDisponibles: number
 }

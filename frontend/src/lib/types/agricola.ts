@@ -24,6 +24,36 @@ export interface LoteRequest {
   poligono?: string
 }
 
+export interface LoteFilters {
+  temporada?: string
+  cultivo?: string
+  areaMin?: number
+  areaMax?: number
+  phMin?: number
+  phMax?: number
+  tienePoligono?: boolean
+}
+
+export interface GeoJsonImportRequest {
+  geoJson: string
+}
+
+export interface LoteReporte {
+  loteId: string
+  loteNombre: string
+  cultivoActual: string
+  temporadaActual: string
+  area: number
+  cantidadEventos: number
+  cantidadCosechas: number
+  cantidadAnalisisSuelo: number
+  cantidadCultivosHistoricos: number
+  rendimientoPromedioKgHa: number
+  rendimientoHistoricoPromedioKgHa: number
+  ultimoCultivo?: string
+  ultimaTemporada?: string
+}
+
 export interface EventoSiembra {
   id: string
   loteId: string

@@ -8,6 +8,8 @@ import type {
   EventoSiembraRequest,
   HistoricoCultivo,
   HistoricoCultivoRequest,
+  LoteFilters,
+  LoteReporte,
   Lote,
   LoteRequest,
   PropiedadSuelo,
@@ -30,12 +32,23 @@ function unwrapApiResponse<T>(response: ApiResponse<T> | T): T {
   return response as T;
 }
 
+type HttpParamValue = string | number | boolean | readonly (string | number | boolean)[];
+
+function cleanParams(params?: Record<string, unknown>): Record<string, HttpParamValue> | undefined {
+  if (!params) {
+    return undefined;
+  }
+
+  const entries = Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '') as Array<[string, HttpParamValue]>;
+  return entries.length ? Object.fromEntries(entries) : undefined;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AgricolaService {
   private readonly http = inject(HttpClient);
 
-  getLotes(params?: { temporada?: string; cultivo?: string }) {
-    return this.http.get<ApiResponse<Lote[]> | Lote[]>(`${API_BASE_URL}/agricola/lotes`, { params: params as Record<string, string> }).pipe(map((response) => unwrapApiResponse(response)));
+  getLotes(params?: LoteFilters) {
+    return this.http.get<ApiResponse<Lote[]> | Lote[]>(`${API_BASE_URL}/agricola/lotes`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   getLote(id: string) {
@@ -48,6 +61,18 @@ export class AgricolaService {
 
   updateLote(id: string, data: LoteRequest) {
     return this.http.put<ApiResponse<Lote> | Lote>(`${API_BASE_URL}/agricola/lotes/${id}`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  exportGeoJson(params?: LoteFilters) {
+    return this.http.get<ApiResponse<string> | string>(`${API_BASE_URL}/agricola/lotes/export/geojson`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  importGeoJson(geoJson: string) {
+    return this.http.post<ApiResponse<Lote[]> | Lote[]>(`${API_BASE_URL}/agricola/lotes/import/geojson`, { geoJson }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getReporteLote(id: string) {
+    return this.http.get<ApiResponse<LoteReporte> | LoteReporte>(`${API_BASE_URL}/agricola/lotes/${id}/reporte`).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   deleteLote(id: string) {

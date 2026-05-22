@@ -1,0 +1,34 @@
+﻿<div class="map-preview-shell" [class.compact]="compact">
+  <mgl-map *ngIf="hasPolygon || lat !== undefined || lng !== undefined; else emptyState"
+    [mapStyle]="activeMapStyle"
+    [zoom]="zoom"
+    [center]="center"
+    [interactive]="false"
+    [dragPan]="false"
+    [scrollZoom]="false"
+    [doubleClickZoom]="false"
+    [touchZoomRotate]="false"
+    [keyboard]="false"
+    [attributionControl]="false">
+    <mgl-geojson-source [id]="sourceId" [data]="mapData"></mgl-geojson-source>
+    <mgl-layer [id]="glowLayerId" type="line" [source]="sourceId" [paint]="glowPaint"></mgl-layer>
+    <mgl-layer [id]="fillLayerId" type="fill" [source]="sourceId" [paint]="fillPaint"></mgl-layer>
+    <mgl-layer [id]="lineLayerId" type="line" [source]="sourceId" [paint]="linePaint"></mgl-layer>
+  </mgl-map>
+
+  <div class="zoom-ghost" *ngIf="hasPolygon || lat !== undefined || lng !== undefined">
+    <button type="button" (click)="zoomIn()">+</button>
+    <button type="button" (click)="zoomOut()">−</button>
+  </div>
+
+  <div class="map-mode-switch" *ngIf="hasPolygon || lat !== undefined || lng !== undefined">
+    <button type="button" [class.active]="mapMode === 'mapa'" (click)="setMapMode('mapa')">Mapa</button>
+    <button type="button" [class.active]="mapMode === 'satelite'" (click)="setMapMode('satelite')">Satelite</button>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="map-empty">
+      <span>Sin poligono</span>
+    </div>
+  </ng-template>
+</div>

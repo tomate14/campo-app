@@ -1,6 +1,8 @@
 package com.campoapp.agricultura.controller;
 
+import com.campoapp.agricultura.dto.GeoJsonImportRequest;
 import com.campoapp.agricultura.dto.LoteRequest;
+import com.campoapp.agricultura.dto.LoteReporteResponse;
 import com.campoapp.agricultura.dto.LoteResponse;
 import com.campoapp.agricultura.service.LoteService;
 import com.campoapp.common.dto.ApiResponse;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -28,17 +31,16 @@ public class LoteController {
     @Operation(summary = "Listar todos los lotes activos")
     public ResponseEntity<ApiResponse<List<LoteResponse>>> listar(
             @RequestParam(required = false) String temporada,
-            @RequestParam(required = false) String cultivo) {
+            @RequestParam(required = false) String cultivo,
+            @RequestParam(required = false) BigDecimal areaMin,
+            @RequestParam(required = false) BigDecimal areaMax,
+            @RequestParam(required = false) BigDecimal phMin,
+            @RequestParam(required = false) BigDecimal phMax,
+            @RequestParam(required = false) Boolean tienePoligono) {
 
-        List<LoteResponse> lotes;
-        if (temporada != null) {
-            lotes = loteService.listarPorTemporada(temporada);
-        } else if (cultivo != null) {
-            lotes = loteService.listarPorCultivo(cultivo);
-        } else {
-            lotes = loteService.listarTodos();
-        }
-        return ResponseEntity.ok(ApiResponse.ok(lotes));
+        return ResponseEntity.ok(ApiResponse.ok(
+                loteService.buscarConFiltros(temporada, cultivo, areaMin, areaMax, phMin, phMax, tienePoligono)
+        ));
     }
 
     @GetMapping("/{id}")
@@ -63,6 +65,37 @@ public class LoteController {
             @PathVariable String id,
             @Valid @RequestBody LoteRequest request) {
         return ResponseEntity.ok(ApiResponse.ok(loteService.actualizar(id, request)));
+    }
+
+    @GetMapping("/export/geojson")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    @Operation(summary = "Exportar lotes filtrados en formato GeoJSON")
+    public ResponseEntity<ApiResponse<String>> exportarGeoJson(
+            @RequestParam(required = false) String temporada,
+            @RequestParam(required = false) String cultivo,
+            @RequestParam(required = false) BigDecimal areaMin,
+            @RequestParam(required = false) BigDecimal areaMax,
+            @RequestParam(required = false) BigDecimal phMin,
+            @RequestParam(required = false) BigDecimal phMax,
+            @RequestParam(required = false) Boolean tienePoligono) {
+        return ResponseEntity.ok(ApiResponse.ok(
+                loteService.exportarGeoJson(temporada, cultivo, areaMin, areaMax, phMin, phMax, tienePoligono)
+        ));
+    }
+
+    @PostMapping("/import/geojson")
+    @PreAuthorize("hasAuthority('create:lotes')")
+    @Operation(summary = "Importar lotes desde un FeatureCollection GeoJSON")
+    public ResponseEntity<ApiResponse<List<LoteResponse>>> importarGeoJson(@Valid @RequestBody GeoJsonImportRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.ok(loteService.importarGeoJson(request.geoJson())));
+    }
+
+    @GetMapping("/{id}/reporte")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    @Operation(summary = "Obtener reporte resumido de un lote")
+    public ResponseEntity<ApiResponse<LoteReporteResponse>> reporte(@PathVariable String id) {
+        return ResponseEntity.ok(ApiResponse.ok(loteService.generarReporte(id)));
     }
 
     @DeleteMapping("/{id}")

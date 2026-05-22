@@ -9,11 +9,15 @@ public record PronosticoResponse(
         LocalDate fecha,
         BigDecimal tempMax,
         BigDecimal tempMin,
+        BigDecimal apparentTempMax,
+        BigDecimal apparentTempMin,
         Integer humedadPct,
+        BigDecimal uvIndexMax,
         BigDecimal probabilidadLluvia,
         BigDecimal precipitacionMm,
         String descripcion,
         String iconoCodigo,
         BigDecimal velocidadViento,
+        Integer direccionVientoDominante,
         Integer condicionCodigo
 ) {}

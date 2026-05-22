@@ -14,12 +14,28 @@
     <button class="btn-secondary" type="button" [class.active]="activeTab === 'mapa'" (click)="activeTab = 'mapa'">Mapa</button>
   </div>
 
-  <div class="stats-grid" *ngIf="activeTab === 'info'">
-    <div class="metric-card"><p class="label">Cultivo</p><p class="value">{{ lote.cultivo }}</p></div>
-    <div class="metric-card"><p class="label">Temporada</p><p class="value">{{ lote.temporada }}</p></div>
-    <div class="metric-card"><p class="label">Area</p><p class="value">{{ lote.area }} ha</p></div>
-    <div class="metric-card"><p class="label">Latitud</p><p class="value">{{ lote.latitud ?? '-' }}</p></div>
-    <div class="metric-card"><p class="label">Longitud</p><p class="value">{{ lote.longitud ?? '-' }}</p></div>
+  <div *ngIf="activeTab === 'info'" class="stack">
+    <div class="stats-grid">
+      <div class="metric-card"><p class="label">Cultivo</p><p class="value">{{ lote.cultivo }}</p></div>
+      <div class="metric-card"><p class="label">Temporada</p><p class="value">{{ lote.temporada }}</p></div>
+      <div class="metric-card"><p class="label">Area</p><p class="value">{{ lote.area }} ha</p></div>
+      <div class="metric-card"><p class="label">Latitud</p><p class="value">{{ lote.latitud ?? '-' }}</p></div>
+      <div class="metric-card"><p class="label">Longitud</p><p class="value">{{ lote.longitud ?? '-' }}</p></div>
+    </div>
+
+    <div class="report-grid" *ngIf="reporte">
+      <div class="metric-card"><p class="label">Eventos</p><p class="value">{{ reporte.cantidadEventos }}</p></div>
+      <div class="metric-card"><p class="label">Cosechas</p><p class="value">{{ reporte.cantidadCosechas }}</p></div>
+      <div class="metric-card"><p class="label">Analisis de suelo</p><p class="value">{{ reporte.cantidadAnalisisSuelo }}</p></div>
+      <div class="metric-card"><p class="label">Cultivos historicos</p><p class="value">{{ reporte.cantidadCultivosHistoricos }}</p></div>
+      <div class="metric-card"><p class="label">Rendimiento promedio</p><p class="value">{{ reporte.rendimientoPromedioKgHa }} kg/ha</p></div>
+      <div class="metric-card"><p class="label">Promedio historico</p><p class="value">{{ reporte.rendimientoHistoricoPromedioKgHa }} kg/ha</p></div>
+    </div>
+
+    <div class="card recommendation-card" *ngIf="reporte?.ultimoCultivo || reporte?.ultimaTemporada">
+      <strong>Ultimo ciclo registrado</strong>
+      <p>{{ reporte?.ultimoCultivo ?? 'Sin cultivo' }} - {{ reporte?.ultimaTemporada ?? 'Sin temporada' }}</p>
+    </div>
   </div>
 
   <div *ngIf="activeTab === 'suelo'" class="stack">

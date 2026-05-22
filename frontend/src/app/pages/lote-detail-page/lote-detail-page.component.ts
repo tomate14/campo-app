@@ -3,7 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgxMapLibreGLModule } from '@maplibre/ngx-maplibre-gl';
-import type { HistoricoCultivo, HistoricoCultivoRequest, Lote, PropiedadSuelo, PropiedadSueloRequest, RotacionRecomendacion } from '../../core/models/agricola.models';
+import type { HistoricoCultivo, HistoricoCultivoRequest, Lote, LoteReporte, PropiedadSuelo, PropiedadSueloRequest, RotacionRecomendacion } from '../../core/models/agricola.models';
 import { AgricolaService } from '../../core/services/agricola.service';
 import { parsePolygon } from '../../shared/lote-geometry';
 
@@ -23,6 +23,7 @@ export class LoteDetailPageComponent implements OnInit {
   protected suelo: PropiedadSuelo[] = [];
   protected historial: HistoricoCultivo[] = [];
   protected rotacion?: RotacionRecomendacion;
+  protected reporte?: LoteReporte;
   protected activeTab: 'info' | 'suelo' | 'historial' | 'mapa' = 'info';
   protected showSueloForm = false;
   protected showHistorialForm = false;
@@ -55,6 +56,7 @@ export class LoteDetailPageComponent implements OnInit {
     this.agricolaService.getSueloByLote(id).subscribe((suelo) => this.suelo = suelo);
     this.agricolaService.getHistorialByLote(id).subscribe((historial) => this.historial = historial);
     this.agricolaService.getRotacion(id).subscribe((rotacion) => this.rotacion = rotacion);
+    this.agricolaService.getReporteLote(id).subscribe((reporte) => this.reporte = reporte);
   }
 
   saveSuelo() {

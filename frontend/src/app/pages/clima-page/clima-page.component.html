@@ -1,55 +1,130 @@
-<div class="page">
+﻿<div class="page">
   <div class="page-head">
     <div>
       <h2>Clima</h2>
-      <p>Actual, pronostico, alertas y recomendaciones por lote.</p>
+      <p>Monitoreo consolidado, historico y recomendaciones por lote.</p>
     </div>
+    <button class="btn-secondary" type="button" [disabled]="!selectedLoteId" (click)="sync()">Sincronizar</button>
   </div>
 
-  <label class="card filter-box">
-    <span>Lote</span>
-    <select [(ngModel)]="selectedLoteId" (ngModelChange)="load()" name="selectedLoteId">
-      <option value="">Seleccionar...</option>
-      <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }} - {{ lote.cultivo }}</option>
-    </select>
-  </label>
+  <div class="filters-grid">
+    <label class="card filter-box">
+      <span>Lote</span>
+      <select [(ngModel)]="selectedLoteId" (ngModelChange)="load()" name="selectedLoteId">
+        <option value="">Seleccionar...</option>
+        <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }} - {{ lote.cultivo }}</option>
+      </select>
+    </label>
 
-  <div class="stats-grid" *ngIf="actual">
-    <div class="metric-card"><p class="label">Temperatura</p><p class="value">{{ actual.temperatura ?? '-' }}�</p></div>
-    <div class="metric-card"><p class="label">Humedad</p><p class="value">{{ actual.humedadPct ?? '-' }}%</p></div>
-    <div class="metric-card"><p class="label">Viento</p><p class="value">{{ actual.velocidadViento ?? '-' }} km/h</p></div>
-    <div class="metric-card"><p class="label">Condicion</p><p class="value">{{ actual.descripcion ?? '-' }}</p></div>
+    <label class="card filter-box">
+      <span>Historico</span>
+      <select [(ngModel)]="historicoDias" (ngModelChange)="load()" name="historicoDias">
+        <option [ngValue]="7">7 dias</option>
+        <option [ngValue]="15">15 dias</option>
+        <option [ngValue]="30">30 dias</option>
+      </select>
+    </label>
   </div>
 
-  <div class="page-columns">
-    <section class="card column">
-      <div class="section-head">
-        <h3>Pronostico</h3>
-        <button class="btn-secondary" type="button" [disabled]="!selectedLoteId" (click)="sync()">Sync</button>
+  <div class="card empty-box" *ngIf="loading">Cargando monitoreo...</div>
+
+  <ng-container *ngIf="!loading && monitoring as m">
+    <section class="weather-hero card" *ngIf="m.actual as actual">
+      <div class="weather-hero-main">
+        <div class="weather-hero-date">
+          <span class="weekday">{{ heroDateLabel }}</span>
+          <span class="location">{{ actual.loteNombre }}</span>
+        </div>
+
+        <div class="weather-hero-temp">
+          <span class="weather-icon">{{ heroIcon }}</span>
+          <div class="temp-group">
+            <span class="temp-current">{{ actual.temperatura ?? '-' }}°</span>
+            <span class="temp-range">/{{ todayForecast?.tempMin ?? '-' }}°</span>
+          </div>
+        </div>
+
+        <div class="weather-hero-precip">
+          <span class="droplet">💧</span>
+          <span>{{ precipLabel }}</span>
+        </div>
       </div>
-      <article class="list-item" *ngFor="let item of pronostico">
-        <strong>{{ item.fecha }}</strong>
-        <p>{{ item.descripcion }} - {{ item.tempMin }}� / {{ item.tempMax }}�</p>
-      </article>
-      <div class="empty-box" *ngIf="!pronostico.length">Sin pronostico.</div>
+
+      <p class="weather-hero-desc">{{ heroDescription }}</p>
+
+      <div class="weather-hero-meta">
+        <div class="meta-item">
+          <span class="meta-label">Sensacion termica</span>
+          <strong>{{ actual.sensacionTermica ?? todayForecast?.apparentTempMax ?? '-' }}°</strong>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Indice UV max.</span>
+          <strong>{{ uvLabel }}</strong>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Min / Max</span>
+          <strong>{{ todayForecast?.tempMin ?? '-' }}° / {{ todayForecast?.tempMax ?? '-' }}°</strong>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Viento</span>
+          <strong>{{ windLabel }}</strong>
+        </div>
+      </div>
     </section>
 
-    <section class="card column">
-      <h3>Alertas</h3>
-      <article class="list-item" *ngFor="let alerta of alertas">
-        <strong>{{ alerta.tipoAlerta }}</strong>
-        <p>{{ alerta.mensaje }}</p>
-      </article>
-      <div class="empty-box" *ngIf="!alertas.length">Sin alertas activas.</div>
-    </section>
+    <div class="page-columns">
+      <section class="card column wide-column">
+        <div class="section-head">
+          <h3>Historico</h3>
+          <span class="helper">Proveedor: {{ m.proveedor }}</span>
+        </div>
+        <div class="chart-shell" *ngIf="historicoPolyline; else noHistorico">
+          <svg viewBox="0 0 100 40" preserveAspectRatio="none" class="chart-svg">
+            <polyline [attr.points]="historicoPolyline" class="chart-line"></polyline>
+          </svg>
+        </div>
+        <div class="history-grid" *ngIf="m.historico.length; else noHistorico">
+          <article class="history-item" *ngFor="let item of m.historico">
+            <strong>{{ formatHistoricoFecha(item) }}</strong>
+            <p>{{ item.temperatura ?? item.tempMax ?? '-' }}° · {{ item.humedadPct ?? '-' }}%</p>
+          </article>
+        </div>
+        <ng-template #noHistorico>
+          <div class="empty-box">Sin historico disponible.</div>
+        </ng-template>
+      </section>
 
-    <section class="card column">
-      <h3>Recomendaciones</h3>
-      <article class="list-item" *ngFor="let recomendacion of recomendaciones?.recomendaciones">
-        <strong>{{ recomendacion.categoria }}</strong>
-        <p>{{ recomendacion.mensaje }}</p>
-      </article>
-      <div class="empty-box" *ngIf="!recomendaciones?.recomendaciones?.length">Sin recomendaciones.</div>
-    </section>
-  </div>
+      <section class="card column">
+        <div class="section-head">
+          <h3>Pronostico</h3>
+          <span class="helper">{{ m.pronosticoDiasDisponibles }} dias disponibles</span>
+        </div>
+        <article class="list-item" *ngFor="let item of m.pronostico">
+          <strong>{{ formatFecha(item.fecha) }}</strong>
+          <p>{{ item.descripcion }} - {{ item.tempMin }}° / {{ item.tempMax }}°</p>
+          <small class="forecast-extra">UV {{ item.uvIndexMax ?? '-' }} · Lluvia {{ item.probabilidadLluvia ?? '-' }}%</small>
+        </article>
+        <div class="empty-box" *ngIf="!m.pronostico.length">Sin pronostico.</div>
+      </section>
+
+      <section class="card column">
+        <h3>Alertas</h3>
+        <article class="list-item" *ngFor="let alerta of m.alertas">
+          <strong>{{ alerta.tipoAlerta }}</strong>
+          <p>{{ alerta.mensaje }}</p>
+        </article>
+        <div class="empty-box" *ngIf="!m.alertas.length">Sin alertas activas.</div>
+      </section>
+
+      <section class="card column wide-column">
+        <h3>Recomendaciones</h3>
+        <div class="status-banner" *ngIf="m.recomendaciones.condicionGeneral">{{ m.recomendaciones.condicionGeneral }}</div>
+        <article class="list-item" *ngFor="let recomendacion of m.recomendaciones.recomendaciones">
+          <strong>{{ recomendacion.categoria }}</strong>
+          <p>{{ recomendacion.mensaje }}</p>
+        </article>
+        <div class="empty-box" *ngIf="!m.recomendaciones.recomendaciones.length">Sin recomendaciones.</div>
+      </section>
+    </div>
+  </ng-container>
 </div>

@@ -2,6 +2,7 @@ package com.campoapp.agricultura.dto;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public record LoteRequest(
         @NotBlank(message = "El nombre del lote es requerido")
@@ -23,5 +24,10 @@ public record LoteRequest(
         @Size(max = 20)
         String temporada,
 
-        String poligono
+        String poligono,
+
+        BigDecimal phMinimo,
+        BigDecimal phMaximo,
+        LocalDate fechaSiembra,
+        LocalDate fechaCosechaEstimada
 ) {}

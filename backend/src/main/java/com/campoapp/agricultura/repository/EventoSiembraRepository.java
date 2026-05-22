@@ -23,4 +23,7 @@ public interface EventoSiembraRepository extends JpaRepository<EventoSiembra, St
 
     @Query("SELECT e FROM EventoSiembra e WHERE e.fecha BETWEEN :desde AND :hasta AND e.deletedAt IS NULL ORDER BY e.fecha DESC")
     List<EventoSiembra> findByFechaBetween(@Param("desde") LocalDate desde, @Param("hasta") LocalDate hasta);
+
+    @Query("SELECT COUNT(e) FROM EventoSiembra e WHERE e.lote.id = :loteId AND e.deletedAt IS NULL")
+    long countByLoteId(@Param("loteId") String loteId);
 }

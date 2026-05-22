@@ -1,6 +1,6 @@
 import { apiClient as api } from './client'
 import type {
-  ApiResponse, Lote, LoteRequest,
+  ApiResponse, GeoJsonImportRequest, Lote, LoteFilters, LoteReporte, LoteRequest,
   EventoSiembra, EventoSiembraRequest, TipoEvento,
   RegistroCosecha, RegistroCosechaRequest,
   PropiedadSuelo, PropiedadSueloRequest,
@@ -8,7 +8,7 @@ import type {
 } from '../types/agricola'
 
 // Lotes
-export const getLotes = (params?: { temporada?: string; cultivo?: string }) =>
+export const getLotes = (params?: LoteFilters) =>
   api.get<ApiResponse<Lote[]>>('/agricola/lotes', { params }).then(r => r.data.data)
 
 export const getLote = (id: string) =>
@@ -19,6 +19,15 @@ export const createLote = (data: LoteRequest) =>
 
 export const updateLote = (id: string, data: LoteRequest) =>
   api.put<ApiResponse<Lote>>(`/agricola/lotes/${id}`, data).then(r => r.data.data)
+
+export const exportLotesGeoJson = (params?: LoteFilters) =>
+  api.get<ApiResponse<string>>('/agricola/lotes/export/geojson', { params }).then(r => r.data.data)
+
+export const importLotesGeoJson = (data: GeoJsonImportRequest) =>
+  api.post<ApiResponse<Lote[]>>('/agricola/lotes/import/geojson', data).then(r => r.data.data)
+
+export const getReporteLote = (id: string) =>
+  api.get<ApiResponse<LoteReporte>>(`/agricola/lotes/${id}/reporte`).then(r => r.data.data)
 
 export const deleteLote = (id: string) =>
   api.delete(`/agricola/lotes/${id}`)

@@ -93,20 +93,17 @@ class ClimaServiceTest {
     // ── sincronizarLote ──────────────────────────────────────────────────
 
     @Test
-    void sincronizarLote_sinApiKey_deberiaLanzarBusinessException() {
-        ClimaProperties.Openweathermap owm = mock(ClimaProperties.Openweathermap.class);
-        when(owm.getApiKey()).thenReturn("");
-        when(properties.getOpenweathermap()).thenReturn(owm);
-        when(properties.isApiKeyConfigured()).thenReturn(false);
+    void sincronizarLote_sinProveedorConfigurado_deberiaLanzarBusinessException() {
+        when(properties.isConfigured()).thenReturn(false);
 
         assertThatThrownBy(() -> climaService.sincronizarLote("lote-001"))
                 .isInstanceOf(BusinessException.class)
-                .hasMessageContaining("API key");
+                .hasMessageContaining("Open-Meteo");
     }
 
     @Test
     void sincronizarLote_conLoteInexistente_deberiaLanzarResourceNotFoundException() {
-        when(properties.isApiKeyConfigured()).thenReturn(true);
+        when(properties.isConfigured()).thenReturn(true);
         when(loteRepository.findActiveById("no-existe")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> climaService.sincronizarLote("no-existe"))
@@ -117,7 +114,7 @@ class ClimaServiceTest {
     void sincronizarLote_sinCoordenadas_deberiaLanzarBusinessException() {
         lote.setLatitud(null);
         lote.setLongitud(null);
-        when(properties.isApiKeyConfigured()).thenReturn(true);
+        when(properties.isConfigured()).thenReturn(true);
         when(loteRepository.findActiveById("lote-001")).thenReturn(Optional.of(lote));
 
         assertThatThrownBy(() -> climaService.sincronizarLote("lote-001"))
@@ -183,8 +180,8 @@ class ClimaServiceTest {
     // ── sincronizarTodosLotes ─────────────────────────────────────────────
 
     @Test
-    void sincronizarTodosLotes_sinApiKey_deberiaOmitirSinExcepcion() {
-        when(properties.isApiKeyConfigured()).thenReturn(false);
+    void sincronizarTodosLotes_sinProveedorConfigurado_deberiaOmitirSinExcepcion() {
+        when(properties.isConfigured()).thenReturn(false);
 
         assertThatNoException().isThrownBy(() -> climaService.sincronizarTodosLotes());
         verify(loteRepository, never()).findAllActive();
@@ -196,7 +193,7 @@ class ClimaServiceTest {
         loteSinCoords.setNombre("Sin coords");
         setId(loteSinCoords, "lote-sin-coords");
 
-        when(properties.isApiKeyConfigured()).thenReturn(true);
+        when(properties.isConfigured()).thenReturn(true);
         when(loteRepository.findAllActive()).thenReturn(List.of(loteSinCoords));
 
         // No debe hacer ninguna llamada HTTP (el lote sin coords se filtra)

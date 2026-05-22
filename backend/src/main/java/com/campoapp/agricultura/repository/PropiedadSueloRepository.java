@@ -18,4 +18,7 @@ public interface PropiedadSueloRepository extends JpaRepository<PropiedadSuelo, 
 
     @Query("SELECT p FROM PropiedadSuelo p WHERE p.lote.id = :loteId AND p.deletedAt IS NULL ORDER BY p.fecha DESC LIMIT 1")
     Optional<PropiedadSuelo> findUltimoAnalisis(@Param("loteId") String loteId);
+
+    @Query("SELECT COUNT(p) FROM PropiedadSuelo p WHERE p.lote.id = :loteId AND p.deletedAt IS NULL")
+    long countByLoteId(@Param("loteId") String loteId);
 }

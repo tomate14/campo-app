@@ -1,6 +1,7 @@
 package com.campoapp.clima.controller;
 
 import com.campoapp.clima.dto.AlertaClimaResponse;
+import com.campoapp.clima.dto.ClimaMonitoreoResponse;
 import com.campoapp.clima.dto.DatoClimaResponse;
 import com.campoapp.clima.dto.PronosticoResponse;
 import com.campoapp.clima.dto.RecomendacionResponse;
@@ -23,6 +24,30 @@ public class ClimaController {
     private final ClimaService climaService;
     private final AlertaClimaService alertaService;
     private final RecomendacionService recomendacionService;
+
+    @GetMapping("/monitoreo")
+    @PreAuthorize("hasAuthority('read:clima')")
+    public ResponseEntity<ApiResponse<ClimaMonitoreoResponse>> obtenerMonitoreo(
+            @RequestParam String loteId,
+            @RequestParam(defaultValue = "7") int diasHistorico) {
+        DatoClimaResponse actual = climaService.obtenerActual(loteId).orElse(null);
+        List<PronosticoResponse> pronostico = climaService.obtenerPronostico(loteId);
+        List<DatoClimaResponse> historico = climaService.obtenerHistorico(loteId, diasHistorico);
+        List<AlertaClimaResponse> alertas = alertaService.listarActivas(loteId);
+        RecomendacionResponse recomendaciones = recomendacionService.obtenerRecomendaciones(loteId);
+
+        return ResponseEntity.ok(ApiResponse.ok(new ClimaMonitoreoResponse(
+                loteId,
+                actual,
+                pronostico,
+                historico,
+                alertas,
+                recomendaciones,
+                "Open-Meteo",
+                diasHistorico,
+                pronostico.size()
+        )));
+    }
 
     @GetMapping("/{loteId}/actual")
     @PreAuthorize("hasAuthority('read:clima')")

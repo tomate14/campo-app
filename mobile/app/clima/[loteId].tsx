@@ -7,7 +7,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Colors } from '../../constants/colors'
 import {
-  useClimaActual, usePronostico, useAlertasClima,
+  useClimaActual, usePronostico, useHistoricoClima, useAlertasClima,
   useRecomendaciones, useMarcarAlertaLeida, useSincronizarClima,
 } from '../../shared/hooks/useClima'
 import type { SeveridadAlerta, TipoAlerta } from '../../../frontend/src/lib/types/clima'
@@ -50,6 +50,7 @@ export default function ClimaLoteScreen() {
 
   const { data: actual, isLoading, refetch } = useClimaActual(loteId)
   const { data: pronostico = [] } = usePronostico(loteId)
+  const { data: historico = [] } = useHistoricoClima(loteId, 7)
   const { data: alertas = [] } = useAlertasClima(loteId)
   const { data: recomendaciones } = useRecomendaciones(loteId)
   const marcarLeida = useMarcarAlertaLeida(loteId)
@@ -102,6 +103,11 @@ export default function ClimaLoteScreen() {
       width: 90, backgroundColor: c.card, borderRadius: 12,
       borderWidth: 1, borderColor: c.cardBorder,
       padding: 10, alignItems: 'center',
+    },
+    historyCard: {
+      width: 120, backgroundColor: c.card, borderRadius: 12,
+      borderWidth: 1, borderColor: c.cardBorder,
+      padding: 10,
     },
     forecastDate: { fontSize: 11, color: c.muted, textAlign: 'center' },
     forecastTempMax: { fontSize: 15, fontWeight: '700', color: c.foreground },
@@ -237,6 +243,24 @@ export default function ClimaLoteScreen() {
                     {p.probabilidadLluvia != null && p.probabilidadLluvia > 0 && (
                       <Text style={s.forecastPop}>{Math.round(p.probabilidadLluvia)}%</Text>
                     )}
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          )}
+
+          {historico.length > 0 && (
+            <View style={s.section}>
+              <Text style={s.sectionTitle}>Historico reciente</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.forecastScroll}>
+                {historico.map(h => (
+                  <View key={h.id} style={s.historyCard}>
+                    <Text style={s.forecastDate}>
+                      {new Date(h.timestampUtc + 'Z').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })}
+                    </Text>
+                    <Text style={s.forecastTempMax}>{h.temperatura != null ? `${h.temperatura}°` : '—'}</Text>
+                    <Text style={s.forecastTempMin}>{h.humedadPct != null ? `${h.humedadPct}% hum.` : '—'}</Text>
+                    <Text style={s.forecastPop}>{h.descripcion ?? 'Sin descripcion'}</Text>
                   </View>
                 ))}
               </ScrollView>

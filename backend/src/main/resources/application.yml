@@ -46,15 +46,15 @@ oauth2:
     client-id: ${OAUTH2_AZURE_CLIENT_ID:}
     client-secret: ${OAUTH2_AZURE_CLIENT_SECRET:}
 
-# Clima - OpenWeatherMap
+# Clima - Open-Meteo
 clima:
-  openweathermap:
-    api-key: ${OWM_API_KEY:}
-    base-url: https://api.openweathermap.org/data/2.5
+  open-meteo:
+    base-url: https://api.open-meteo.com/v1
   sync:
     enabled: ${CLIMA_SYNC_ENABLED:true}
     intervalo-ms: ${CLIMA_SYNC_INTERVALO_MS:1800000}
   retencion-dias: 30
+  forecast-days: 7
 
 # Springdoc
 springdoc:

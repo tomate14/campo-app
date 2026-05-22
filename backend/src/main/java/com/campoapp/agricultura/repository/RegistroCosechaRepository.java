@@ -21,4 +21,7 @@ public interface RegistroCosechaRepository extends JpaRepository<RegistroCosecha
 
     @Query("SELECT AVG(r.rendimientoKgHa) FROM RegistroCosecha r WHERE r.lote.id = :loteId AND r.deletedAt IS NULL")
     Double calcularRendimientoPromedio(@Param("loteId") String loteId);
+
+    @Query("SELECT COUNT(r) FROM RegistroCosecha r WHERE r.lote.id = :loteId AND r.deletedAt IS NULL")
+    long countByLoteId(@Param("loteId") String loteId);
 }

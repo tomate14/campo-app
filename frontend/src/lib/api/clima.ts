@@ -1,6 +1,9 @@
 import { apiClient as api } from './client'
 import type { ApiResponse } from '../types/agricola'
-import type { DatoClima, Pronostico, AlertaClima, RecomendacionClima } from '../types/clima'
+import type { ClimaMonitoreo, DatoClima, Pronostico, AlertaClima, RecomendacionClima } from '../types/clima'
+
+export const getClimaMonitoreo = (loteId: string, diasHistorico = 7) =>
+  api.get<ApiResponse<ClimaMonitoreo>>('/clima/monitoreo', { params: { loteId, diasHistorico } }).then(r => r.data.data)
 
 export const getClimaActual = (loteId: string) =>
   api.get<ApiResponse<DatoClima | null>>(`/clima/${loteId}/actual`).then(r => r.data.data)

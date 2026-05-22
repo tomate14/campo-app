@@ -68,10 +68,12 @@ export class LoteMapEditorComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if ('value' in changes && this.value !== undefined) {
       this.points = parsePolygon(this.value);
-      this.polygonClosed = this.points.length >= 3;
-      this.syncDerived();
+      // El poligono solo debe cerrarse por accion explicita del usuario
+      // (doble click), no por el rebote del valor serializado desde el form.
+      this.polygonClosed = false;
+      this.syncDerived(true);
     } else if ('fallbackLat' in changes || 'fallbackLng' in changes) {
-      this.syncView();
+      this.syncView(true);
     }
   }
 
@@ -83,21 +85,21 @@ export class LoteMapEditorComponent implements OnChanges {
     const lng = Number(event.lngLat.lng.toFixed(7));
     const lat = Number(event.lngLat.lat.toFixed(7));
     this.points = sanitizePoints([...this.points, { lat, lng }]);
-    this.syncDerived();
+    this.syncDerived(false);
   }
 
   onMapDoubleClick(event: any) {
     event.preventDefault?.();
     if (this.points.length >= 3) {
       this.polygonClosed = true;
-      this.syncDerived();
+      this.syncDerived(false);
     }
   }
 
   onMarkerDragEnd(index: number, marker: Marker) {
     const lngLat = marker.getLngLat();
     this.points = sanitizePoints(this.points.map((point, pointIndex) => pointIndex === index ? { lat: Number(lngLat.lat.toFixed(7)), lng: Number(lngLat.lng.toFixed(7)) } : point));
-    this.syncDerived();
+    this.syncDerived(false);
   }
 
   undo() {
@@ -105,26 +107,33 @@ export class LoteMapEditorComponent implements OnChanges {
     if (this.points.length < 3) {
       this.polygonClosed = false;
     }
-    this.syncDerived();
+    this.syncDerived(false);
   }
 
   clear() {
     this.points = [];
     this.polygonClosed = false;
-    this.syncDerived();
+    this.syncDerived(true);
     this.polygonChange.emit({ polygon: undefined, centroid: {}, areaHa: undefined });
   }
 
-  private syncDerived() {
+  private syncDerived(updateView: boolean) {
     this.centroid = computeCentroid(this.points);
     this.areaHa = computeAreaHectares(this.points);
-    this.syncView();
+    this.syncView(updateView);
     this.polygonChange.emit({ polygon: buildPolygon(this.points), centroid: this.centroid, areaHa: this.areaHa });
   }
 
-  private syncView() {
+  private syncView(forceUpdate: boolean) {
+    if (!forceUpdate) {
+      return;
+    }
+
     if (this.points.length > 0) {
-      this.center = [this.points[this.points.length - 1].lng, this.points[this.points.length - 1].lat];
+      const target = this.centroid.lat !== undefined && this.centroid.lng !== undefined
+        ? [this.centroid.lng, this.centroid.lat] as [number, number]
+        : [this.points[this.points.length - 1].lng, this.points[this.points.length - 1].lat] as [number, number];
+      this.center = target;
       this.zoom = [14];
       return;
     }

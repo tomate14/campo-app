@@ -5,8 +5,7 @@ import com.campoapp.agricultura.repository.LoteRepository;
 import com.campoapp.clima.config.ClimaProperties;
 import com.campoapp.clima.dto.DatoClimaResponse;
 import com.campoapp.clima.dto.PronosticoResponse;
-import com.campoapp.clima.dto.owm.OWMCurrentResponse;
-import com.campoapp.clima.dto.owm.OWMForecastResponse;
+import com.campoapp.clima.dto.openmeteo.OpenMeteoForecastResponse;
 import com.campoapp.clima.entity.DatoClima;
 import com.campoapp.clima.entity.Pronostico;
 import com.campoapp.clima.repository.DatoClimaRepository;
@@ -24,9 +23,11 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
 import java.math.BigDecimal;
-import java.time.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -34,20 +35,46 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ClimaServiceImpl implements ClimaService {
 
+    private static final String CURRENT_VARS = String.join(",",
+            "temperature_2m",
+            "relative_humidity_2m",
+            "apparent_temperature",
+            "pressure_msl",
+            "wind_speed_10m",
+            "wind_direction_10m",
+            "precipitation",
+            "cloud_cover",
+            "weather_code",
+            "is_day"
+    );
+
+    private static final String DAILY_VARS = String.join(",",
+            "weather_code",
+            "temperature_2m_max",
+            "temperature_2m_min",
+            "apparent_temperature_max",
+            "apparent_temperature_min",
+            "uv_index_max",
+            "precipitation_probability_max",
+            "precipitation_sum",
+            "wind_speed_10m_max",
+            "wind_direction_10m_dominant"
+    );
+
     private final DatoClimaRepository datoClimaRepository;
     private final PronosticoRepository pronosticoRepository;
     private final LoteRepository loteRepository;
     private final AlertaClimaService alertaClimaService;
     private final ClimaProperties properties;
 
-    @Qualifier("owmRestClient")
+    @Qualifier("openMeteoRestClient")
     private final RestClient restClient;
 
     @Override
     @Transactional
     public DatoClimaResponse sincronizarLote(String loteId) {
-        if (!properties.isApiKeyConfigured()) {
-            throw new BusinessException("API key de OpenWeatherMap no configurada (OWM_API_KEY)");
+        if (!properties.isConfigured()) {
+            throw new BusinessException("Proveedor Open-Meteo no configurado");
         }
         Lote lote = loteRepository.findActiveById(loteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lote no encontrado: " + loteId));
@@ -60,8 +87,8 @@ public class ClimaServiceImpl implements ClimaService {
     @Override
     @Transactional
     public void sincronizarTodosLotes() {
-        if (!properties.isApiKeyConfigured()) {
-            log.warn("Sincronización de clima omitida: OWM_API_KEY no configurada");
+        if (!properties.isConfigured()) {
+            log.warn("Sincronizacion de clima omitida: Open-Meteo no configurado");
             return;
         }
         List<Lote> lotes = loteRepository.findAllActive().stream()
@@ -95,41 +122,28 @@ public class ClimaServiceImpl implements ClimaService {
                 .stream().map(this::toResponse).toList();
     }
 
-    // ── core sync ────────────────────────────────────────────────────────
-
     private DatoClimaResponse doSincronizar(Lote lote) {
-        String apiKey = properties.getOpenweathermap().getApiKey();
-        double lat = lote.getLatitud().doubleValue();
-        double lon = lote.getLongitud().doubleValue();
-
-        OWMCurrentResponse current = restClient.get()
-                .uri(u -> u.path("/weather")
-                        .queryParam("lat", lat)
-                        .queryParam("lon", lon)
-                        .queryParam("appid", apiKey)
-                        .queryParam("units", "metric")
-                        .queryParam("lang", "es")
+        OpenMeteoForecastResponse response = restClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/forecast")
+                        .queryParam("latitude", lote.getLatitud())
+                        .queryParam("longitude", lote.getLongitud())
+                        .queryParam("current", CURRENT_VARS)
+                        .queryParam("daily", DAILY_VARS)
+                        .queryParam("forecast_days", properties.getForecastDays())
+                        .queryParam("timezone", "auto")
+                        .queryParam("wind_speed_unit", "ms")
                         .build())
                 .retrieve()
-                .body(OWMCurrentResponse.class);
+                .body(OpenMeteoForecastResponse.class);
 
-        DatoClima dato = mapToDatoClima(current, lote);
-        dato = datoClimaRepository.save(dato);
+        if (response == null || response.current() == null || response.daily() == null) {
+            throw new BusinessException("Open-Meteo no devolvio datos validos para el lote");
+        }
 
-        OWMForecastResponse forecast = restClient.get()
-                .uri(u -> u.path("/forecast")
-                        .queryParam("lat", lat)
-                        .queryParam("lon", lon)
-                        .queryParam("cnt", 40)
-                        .queryParam("appid", apiKey)
-                        .queryParam("units", "metric")
-                        .queryParam("lang", "es")
-                        .build())
-                .retrieve()
-                .body(OWMForecastResponse.class);
+        DatoClima dato = datoClimaRepository.save(mapToDatoClima(response, lote));
 
         pronosticoRepository.deleteByLoteId(lote.getId());
-        List<Pronostico> pronosticos = agregarDiario(forecast, lote);
+        List<Pronostico> pronosticos = mapToPronosticos(response.daily(), lote);
         pronosticoRepository.saveAll(pronosticos);
 
         alertaClimaService.generarAlertas(lote, dato, pronosticos);
@@ -137,91 +151,62 @@ public class ClimaServiceImpl implements ClimaService {
         LocalDateTime corte = LocalDateTime.now().minusDays(properties.getRetencionDias());
         datoClimaRepository.purgarAntiguos(lote.getId(), corte);
 
-        log.debug("Clima sincronizado para lote {} ({})", lote.getNombre(), lote.getId());
+        log.debug("Clima sincronizado para lote {} ({}) con Open-Meteo", lote.getNombre(), lote.getId());
         return toResponse(dato);
     }
 
-    private DatoClima mapToDatoClima(OWMCurrentResponse r, Lote lote) {
-        OWMCurrentResponse.MainData m = r.main();
-        OWMCurrentResponse.WindData w = r.wind();
-        OWMCurrentResponse.WeatherItem wi = r.weather().isEmpty() ? null : r.weather().get(0);
-
-        Double rainMm = null;
-        if (r.rain() != null) {
-            rainMm = r.rain().oneHour() != null ? r.rain().oneHour() : r.rain().threeHour();
-        }
+    private DatoClima mapToDatoClima(OpenMeteoForecastResponse response, Lote lote) {
+        OpenMeteoForecastResponse.Current current = response.current();
+        int utcOffset = response.utc_offset_seconds() != null ? response.utc_offset_seconds() : 0;
+        int weatherCode = current.weather_code() != null ? current.weather_code() : -1;
+        WeatherDescriptor descriptor = weatherDescriptor(weatherCode, current.is_day() == null || current.is_day() == 1);
 
         return DatoClima.builder()
                 .lote(lote)
-                .timestampUtc(LocalDateTime.ofEpochSecond(r.dt(), 0, ZoneOffset.UTC))
-                .temperatura(bd(m.temp()))
-                .sensacionTermica(bd(m.feelsLike()))
-                .tempMin(bd(m.tempMin()))
-                .tempMax(bd(m.tempMax()))
-                .humedadPct(m.humidity())
-                .presionHpa(m.pressure())
-                .velocidadViento(bd(w.speed()))
-                .direccionViento(w.deg())
-                .descripcion(wi != null ? wi.description() : null)
-                .iconoCodigo(wi != null ? wi.icon() : null)
-                .condicionCodigo(wi != null ? wi.id() : null)
-                .precipitacionesMm(rainMm != null ? bd(rainMm) : null)
-                .nubosidadPct(r.clouds() != null ? r.clouds().all() : null)
-                .nombreLocalidad(r.name())
+                .timestampUtc(LocalDateTime.parse(current.time()).minusSeconds(utcOffset))
+                .temperatura(current.temperature_2m())
+                .sensacionTermica(current.apparent_temperature())
+                .humedadPct(current.relative_humidity_2m())
+                .presionHpa(current.pressure_msl())
+                .velocidadViento(current.wind_speed_10m())
+                .direccionViento(current.wind_direction_10m())
+                .descripcion(descriptor.description())
+                .iconoCodigo(descriptor.iconCode())
+                .precipitacionesMm(current.precipitation())
+                .nubosidadPct(current.cloud_cover())
+                .condicionCodigo(current.weather_code())
+                .nombreLocalidad(lote.getNombre())
                 .build();
     }
 
-    private List<Pronostico> agregarDiario(OWMForecastResponse r, Lote lote) {
-        // Agrupa items 3-horarios por día local (America/Argentina/Buenos_Aires)
-        ZoneId zona = ZoneId.of("America/Argentina/Buenos_Aires");
-
-        Map<LocalDate, List<OWMForecastResponse.ForecastItem>> porDia = r.list().stream()
-                .collect(Collectors.groupingBy(item ->
-                        Instant.ofEpochSecond(item.dt()).atZone(zona).toLocalDate()));
-
-        return porDia.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(e -> buildPronostico(e.getKey(), e.getValue(), lote))
+    private List<Pronostico> mapToPronosticos(OpenMeteoForecastResponse.Daily daily, Lote lote) {
+        int size = daily.time() != null ? daily.time().size() : 0;
+        return IntStream.range(0, size)
+                .mapToObj(index -> buildPronostico(index, daily, lote))
                 .toList();
     }
 
-    private Pronostico buildPronostico(LocalDate fecha,
-                                       List<OWMForecastResponse.ForecastItem> items,
-                                       Lote lote) {
-        double tempMax = items.stream().mapToDouble(i -> i.main().tempMax()).max().orElse(0);
-        double tempMin = items.stream().mapToDouble(i -> i.main().tempMin()).min().orElse(0);
-        double humPromedio = items.stream().mapToDouble(i -> i.main().humidity()).average().orElse(0);
-        double popMax = items.stream().mapToDouble(OWMForecastResponse.ForecastItem::pop).max().orElse(0);
-        double precipTotal = items.stream()
-                .mapToDouble(i -> i.rain() != null && i.rain().threeHour() != null ? i.rain().threeHour() : 0)
-                .sum();
-        double vientoPromedio = items.stream().mapToDouble(i -> i.wind().speed()).average().orElse(0);
-
-        // Usar el item del mediodía para descripción e icono
-        ZoneId zona = ZoneId.of("America/Argentina/Buenos_Aires");
-        OWMForecastResponse.ForecastItem itemMediodia = items.stream()
-                .min(Comparator.comparingLong(i ->
-                        Math.abs(Instant.ofEpochSecond(i.dt()).atZone(zona).getHour() - 12)))
-                .orElse(items.get(0));
-
-        OWMForecastResponse.WeatherItem wi = itemMediodia.weather().isEmpty() ? null : itemMediodia.weather().get(0);
+    private Pronostico buildPronostico(int index, OpenMeteoForecastResponse.Daily daily, Lote lote) {
+        int weatherCode = value(daily.weather_code(), index, -1);
+        WeatherDescriptor descriptor = weatherDescriptor(weatherCode, true);
 
         return Pronostico.builder()
                 .lote(lote)
-                .fecha(fecha)
-                .tempMax(bd(tempMax))
-                .tempMin(bd(tempMin))
-                .humedadPct((int) humPromedio)
-                .probabilidadLluvia(bd(popMax * 100))
-                .precipitacionMm(bd(precipTotal))
-                .descripcion(wi != null ? wi.description() : null)
-                .iconoCodigo(wi != null ? wi.icon() : null)
-                .condicionCodigo(wi != null ? wi.id() : null)
-                .velocidadViento(bd(vientoPromedio))
+                .fecha(LocalDate.parse(daily.time().get(index)))
+                .tempMax(value(daily.temperature_2m_max(), index))
+                .tempMin(value(daily.temperature_2m_min(), index))
+                .apparentTempMax(value(daily.apparent_temperature_max(), index))
+                .apparentTempMin(value(daily.apparent_temperature_min(), index))
+                .uvIndexMax(value(daily.uv_index_max(), index))
+                .probabilidadLluvia(value(daily.precipitation_probability_max(), index))
+                .precipitacionMm(value(daily.precipitation_sum(), index))
+                .descripcion(descriptor.description())
+                .iconoCodigo(descriptor.iconCode())
+                .velocidadViento(value(daily.wind_speed_10m_max(), index))
+                .direccionVientoDominante(value(daily.wind_direction_10m_dominant(), index, null))
+                .condicionCodigo(weatherCode >= 0 ? weatherCode : null)
                 .build();
     }
-
-    // ── mappers ──────────────────────────────────────────────────────────
 
     private DatoClimaResponse toResponse(DatoClima d) {
         return new DatoClimaResponse(
@@ -237,14 +222,34 @@ public class ClimaServiceImpl implements ClimaService {
     private PronosticoResponse toPronosticoResponse(Pronostico p) {
         return new PronosticoResponse(
                 p.getId(), p.getLote().getId(), p.getFecha(),
-                p.getTempMax(), p.getTempMin(), p.getHumedadPct(),
-                p.getProbabilidadLluvia(), p.getPrecipitacionMm(),
-                p.getDescripcion(), p.getIconoCodigo(),
-                p.getVelocidadViento(), p.getCondicionCodigo()
+                p.getTempMax(), p.getTempMin(), p.getApparentTempMax(), p.getApparentTempMin(),
+                p.getHumedadPct(), p.getUvIndexMax(), p.getProbabilidadLluvia(), p.getPrecipitacionMm(),
+                p.getDescripcion(), p.getIconoCodigo(), p.getVelocidadViento(),
+                p.getDireccionVientoDominante(), p.getCondicionCodigo()
         );
     }
 
-    private static BigDecimal bd(double value) {
-        return BigDecimal.valueOf(Math.round(value * 100.0) / 100.0);
+    private static BigDecimal value(List<BigDecimal> values, int index) {
+        return values != null && index < values.size() ? values.get(index) : null;
     }
+
+    private static Integer value(List<Integer> values, int index, Integer fallback) {
+        return values != null && index < values.size() ? values.get(index) : fallback;
+    }
+
+    private static WeatherDescriptor weatherDescriptor(int code, boolean dayTime) {
+        return switch (code) {
+            case 0 -> new WeatherDescriptor(dayTime ? "Soleado" : "Despejado", dayTime ? "clear-day" : "clear-night");
+            case 1, 2 -> new WeatherDescriptor("Intervalos de nubes y sol", dayTime ? "partly-cloudy-day" : "partly-cloudy-night");
+            case 3 -> new WeatherDescriptor("Mayormente nublado", "cloudy");
+            case 45, 48 -> new WeatherDescriptor("Niebla", "fog");
+            case 51, 53, 55, 56, 57 -> new WeatherDescriptor("Lloviznas", "drizzle");
+            case 61, 63, 65, 66, 67, 80, 81, 82 -> new WeatherDescriptor("Lluvias", "rain");
+            case 71, 73, 75, 77, 85, 86 -> new WeatherDescriptor("Nevadas", "snow");
+            case 95, 96, 99 -> new WeatherDescriptor("Tormentas", "storm");
+            default -> new WeatherDescriptor("Condiciones variables", "cloudy");
+        };
+    }
+
+    private record WeatherDescriptor(String description, String iconCode) {}
 }

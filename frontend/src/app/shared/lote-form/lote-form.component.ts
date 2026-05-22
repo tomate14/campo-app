@@ -30,6 +30,10 @@ export class LoteFormComponent implements OnChanges {
             latitud: this.lote.latitud,
             longitud: this.lote.longitud,
             poligono: this.lote.poligono,
+            phMinimo: this.lote.phMinimo,
+            phMaximo: this.lote.phMaximo,
+            fechaSiembra: this.lote.fechaSiembra,
+            fechaCosechaEstimada: this.lote.fechaCosechaEstimada,
           }
         : this.createEmptyModel();
     }
@@ -56,7 +60,17 @@ export class LoteFormComponent implements OnChanges {
   }
 
   private createEmptyModel(): LoteRequest {
-    return { nombre: '', area: 0, cultivo: '', temporada: '', poligono: undefined };
+    return {
+      nombre: '',
+      area: 0,
+      cultivo: '',
+      temporada: '',
+      poligono: undefined,
+      phMinimo: undefined,
+      phMaximo: undefined,
+      fechaSiembra: undefined,
+      fechaCosechaEstimada: undefined,
+    };
   }
 }
 

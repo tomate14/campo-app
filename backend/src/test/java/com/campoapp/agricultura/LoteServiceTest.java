@@ -74,7 +74,8 @@ class LoteServiceTest {
     @Test
     void shouldCreateLote_whenValidRequestProvided() {
         LoteRequest request = new LoteRequest("Lote Sur", new BigDecimal("80.00"), "MAIZ",
-                new BigDecimal("-34.5"), new BigDecimal("-58.3"), "2024/2025", null);
+                new BigDecimal("-34.5"), new BigDecimal("-58.3"), "2024/2025", null,
+                null, null, null, null);
 
         when(loteRepository.save(any(Lote.class))).thenReturn(loteEjemplo);
 
