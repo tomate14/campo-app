@@ -12,9 +12,9 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
-import { Colors } from '@/constants/colors'
-import { login, register } from '@/shared/auth/api'
-import { persistSession } from '@/shared/auth/session'
+import { Colors } from '../../constants/colors'
+import { login, register } from '../../shared/auth/api'
+import { persistSession } from '../../shared/auth/session'
 
 type Mode = 'login' | 'register'
 

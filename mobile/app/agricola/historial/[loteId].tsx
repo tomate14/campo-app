@@ -8,7 +8,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Colors } from '../../../constants/colors'
 import { useHistorialByLote, useRotacion, useCreateHistorico, useDeleteHistorico } from '../../../shared/hooks/useHistorial'
 import { HistorialFormModal } from '../../../components/agricola/HistorialFormModal'
-import type { HistoricoCultivoRequest } from '../../../../frontend/src/lib/types/agricola'
+import type { HistoricoCultivoRequest } from '../../../shared/types/agricola'
 
 export default function HistorialScreen() {
   const { loteId, loteNombre } = useLocalSearchParams<{ loteId: string; loteNombre?: string }>()

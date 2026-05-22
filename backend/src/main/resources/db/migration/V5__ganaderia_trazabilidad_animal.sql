@@ -1,0 +1,61 @@
+CREATE TABLE animales (
+    id                VARCHAR(36)     NOT NULL DEFAULT (UUID()),
+    caravana          VARCHAR(80)     NOT NULL,
+    raza              VARCHAR(120)    NOT NULL,
+    sexo              VARCHAR(20)     NULL,
+    fecha_nacimiento  DATE            NULL,
+    fecha_compra      DATE            NULL,
+    peso_actual_kg    DECIMAL(10,2)   NULL,
+    rfid_codigo       VARCHAR(120)    NULL,
+    qr_codigo         VARCHAR(255)    NULL,
+    estado            VARCHAR(30)     NOT NULL DEFAULT 'ACTIVO',
+    ubicacion_actual  VARCHAR(150)    NULL,
+    madre_id          VARCHAR(36)     NULL,
+    padre_id          VARCHAR(36)     NULL,
+    observaciones     TEXT            NULL,
+    created_at        DATETIME(6)     DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at        DATETIME(6)     DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    deleted_at        DATETIME(6)     NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT uk_animales_caravana UNIQUE (caravana),
+    CONSTRAINT uk_animales_rfid UNIQUE (rfid_codigo),
+    CONSTRAINT fk_animales_madre FOREIGN KEY (madre_id) REFERENCES animales(id),
+    CONSTRAINT fk_animales_padre FOREIGN KEY (padre_id) REFERENCES animales(id),
+    INDEX idx_animales_raza_estado (raza, estado),
+    INDEX idx_animales_ubicacion (ubicacion_actual)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE movimientos_animal (
+    id                 VARCHAR(36)    NOT NULL DEFAULT (UUID()),
+    animal_id          VARCHAR(36)    NOT NULL,
+    fecha              DATETIME(6)    NOT NULL,
+    tipo_movimiento    VARCHAR(30)    NOT NULL,
+    ubicacion_origen   VARCHAR(150)   NULL,
+    ubicacion_destino  VARCHAR(150)   NULL,
+    motivo             VARCHAR(180)   NULL,
+    responsable        VARCHAR(120)   NULL,
+    observaciones      TEXT           NULL,
+    created_at         DATETIME(6)    DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at         DATETIME(6)    DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    deleted_at         DATETIME(6)    NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_movimientos_animal FOREIGN KEY (animal_id) REFERENCES animales(id),
+    INDEX idx_movimientos_animal_fecha (animal_id, fecha),
+    INDEX idx_movimientos_tipo (tipo_movimiento)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE historial_medico_animal (
+    id                 VARCHAR(36)    NOT NULL DEFAULT (UUID()),
+    animal_id          VARCHAR(36)    NOT NULL,
+    fecha              DATE           NOT NULL,
+    diagnostico        VARCHAR(180)   NOT NULL,
+    tratamiento        VARCHAR(180)   NULL,
+    veterinario        VARCHAR(120)   NULL,
+    observaciones      TEXT           NULL,
+    created_at         DATETIME(6)    DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at         DATETIME(6)    DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    deleted_at         DATETIME(6)    NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_historial_medico_animal FOREIGN KEY (animal_id) REFERENCES animales(id),
+    INDEX idx_historial_medico_fecha (animal_id, fecha)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

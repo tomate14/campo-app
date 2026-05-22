@@ -4,7 +4,7 @@ import {
   ScrollView, StyleSheet, KeyboardAvoidingView, Platform,
 } from 'react-native'
 import type { ColorScheme } from '../../constants/colors'
-import type { HistoricoCultivoRequest } from '../../../frontend/src/lib/types/agricola'
+import type { HistoricoCultivoRequest } from '../../shared/types/agricola'
 
 interface Props {
   visible: boolean

@@ -36,4 +36,5 @@ COPY . .
 EXPOSE 8081 19000 19006
 
 # Inicia el servidor en modo LAN para que los dispositivos en la red se conecten
-CMD ["npx", "expo", "start", "--lan", "--port", "8081"]
+# y recompone node_modules si el volumen montado quedo desactualizado.
+CMD ["sh", "-c", "if [ ! -d node_modules/react-dom ] || [ ! -d node_modules/react-native-web ]; then npm install --legacy-peer-deps; fi && npx expo start --lan --port 8081"]

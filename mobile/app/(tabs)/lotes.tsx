@@ -1,9 +1,9 @@
 import { View, Text, FlatList, StyleSheet, useColorScheme, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
-import { Colors } from '@/constants/colors'
-import { useLotes } from '@/shared/hooks/useLotes'
-import type { Lote } from '@/shared/types/agricola'
+import { Colors } from '../../constants/colors'
+import { useLotes } from '../../shared/hooks/useLotes'
+import type { Lote } from '../../shared/types/agricola'
 
 export default function LotesScreen() {
   const scheme = useColorScheme() ?? 'light'

@@ -8,6 +8,7 @@ import { SiembraPageComponent } from './pages/siembra-page/siembra-page.componen
 import { CosechaPageComponent } from './pages/cosecha-page/cosecha-page.component';
 import { ClimaPageComponent } from './pages/clima-page/clima-page.component';
 import { AnalyticsPageComponent } from './pages/analytics-page/analytics-page.component';
+import { GanaderiaTrazabilidadPageComponent } from './pages/ganaderia-trazabilidad-page/ganaderia-trazabilidad-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -22,6 +23,7 @@ export const routes: Routes = [
       { path: 'agricola/siembra', component: SiembraPageComponent },
       { path: 'agricola/cosecha', component: CosechaPageComponent },
       { path: 'agricola/analytics', component: AnalyticsPageComponent },
+      { path: 'ganaderia/trazabilidad', component: GanaderiaTrazabilidadPageComponent },
       { path: 'clima', component: ClimaPageComponent },
     ],
   },

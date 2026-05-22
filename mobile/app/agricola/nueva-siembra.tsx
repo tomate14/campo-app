@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { View, Text, ScrollView, StyleSheet, useColorScheme, TouchableOpacity, TextInput, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { Colors } from '@/constants/colors'
-import { useLotes } from '@/shared/hooks/useLotes'
-import { useCreateEvento } from '@/shared/hooks/useSiembra'
-import type { TipoEvento } from '@/shared/types/agricola'
+import { Colors } from '../../constants/colors'
+import { useLotes } from '../../shared/hooks/useLotes'
+import { useCreateEvento } from '../../shared/hooks/useSiembra'
+import type { TipoEvento } from '../../shared/types/agricola'
 
 const TIPOS: { value: TipoEvento; label: string }[] = [
   { value: 'SIEMBRA',              label: 'Siembra' },

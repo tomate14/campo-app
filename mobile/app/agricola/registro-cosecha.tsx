@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, useColorScheme } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { Colors } from '@/constants/colors'
-import { useLotes } from '@/shared/hooks/useLotes'
-import { useCreateCosecha } from '@/shared/hooks/useCosecha'
-import type { CalidadGrano } from '@/shared/types/agricola'
+import { Colors } from '../../constants/colors'
+import { useLotes } from '../../shared/hooks/useLotes'
+import { useCreateCosecha } from '../../shared/hooks/useCosecha'
+import type { CalidadGrano } from '../../shared/types/agricola'
 
 const CALIDADES: CalidadGrano[] = ['PREMIUM', 'ESTANDAR', 'DESCUENTO']
 

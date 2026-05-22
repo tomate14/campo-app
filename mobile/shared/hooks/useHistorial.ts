@@ -2,8 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   getHistorialByLote, getRotacion, getHistorico,
   createHistorico, updateHistorico, deleteHistorico,
-} from '../../../frontend/src/lib/api/agricola'
-import type { HistoricoCultivoRequest } from '../../../frontend/src/lib/types/agricola'
+} from '../api/agricola'
+import type { HistoricoCultivoRequest } from '../types/agricola'
 
 export const useHistorialByLote = (loteId: string) =>
   useQuery({

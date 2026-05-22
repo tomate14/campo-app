@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getLotes, getLote, createLote, updateLote, deleteLote } from '../../../frontend/src/lib/api/agricola'
-import type { LoteRequest } from '../../../frontend/src/lib/types/agricola'
+import { getLotes, getLote, createLote, updateLote, deleteLote } from '../api/agricola'
+import type { LoteRequest } from '../types/agricola'
 
 const LOTES_KEY = 'lotes'
 

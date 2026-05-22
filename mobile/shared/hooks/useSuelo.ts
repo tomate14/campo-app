@@ -2,8 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   getSueloByLote, getUltimoAnalisis, getSuelo,
   createSuelo, updateSuelo, deleteSuelo,
-} from '../../../frontend/src/lib/api/agricola'
-import type { PropiedadSueloRequest } from '../../../frontend/src/lib/types/agricola'
+} from '../api/agricola'
+import type { PropiedadSueloRequest } from '../types/agricola'
 
 export const useSueloByLote = (loteId: string) =>
   useQuery({

@@ -10,7 +10,7 @@ import {
   useClimaActual, usePronostico, useHistoricoClima, useAlertasClima,
   useRecomendaciones, useMarcarAlertaLeida, useSincronizarClima,
 } from '../../shared/hooks/useClima'
-import type { SeveridadAlerta, TipoAlerta } from '../../../frontend/src/lib/types/clima'
+import type { SeveridadAlerta, TipoAlerta } from '../../shared/types/clima'
 
 const OWM_ICON = (code: string) => `https://openweathermap.org/img/wn/${code}@2x.png`
 

@@ -1,12 +1,12 @@
 import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View, useColorScheme } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { Colors } from '@/constants/colors'
-import { useLote } from '@/shared/hooks/useLotes'
-import { useEventosByLote } from '@/shared/hooks/useSiembra'
-import { useCosechasByLote, useRendimientoPromedio } from '@/shared/hooks/useCosecha'
-import { useUltimoAnalisis } from '@/shared/hooks/useSuelo'
-import { useRotacion } from '@/shared/hooks/useHistorial'
+import { Colors } from '../../constants/colors'
+import { useLote } from '../../shared/hooks/useLotes'
+import { useEventosByLote } from '../../shared/hooks/useSiembra'
+import { useCosechasByLote, useRendimientoPromedio } from '../../shared/hooks/useCosecha'
+import { useUltimoAnalisis } from '../../shared/hooks/useSuelo'
+import { useRotacion } from '../../shared/hooks/useHistorial'
 
 export default function LoteDetailScreen() {
   const scheme = useColorScheme() ?? 'light'
@@ -87,7 +87,7 @@ export default function LoteDetailScreen() {
         </TouchableOpacity>
         <View>
           <Text style={styles.title}>{lote.nombre}</Text>
-          <Text style={styles.subtitle}>{lote.cultivo} · {lote.temporada}</Text>
+          <Text style={styles.subtitle}>{lote.cultivo} ï¿½ {lote.temporada}</Text>
         </View>
       </View>
 
