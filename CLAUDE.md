@@ -1,4 +1,4 @@
-# Campo App - Orquestador Principal
+﻿# Campo App - Orquestador Principal
 
 ## Descripcion del Proyecto
 Campo App es una aplicacion full-stack con API REST en Java/Spring Boot, frontend web en Angular, app mobile en React Native/Expo, y cobertura de testing, seguridad y documentacion.
@@ -10,7 +10,7 @@ Campo App es una aplicacion full-stack con API REST en Java/Spring Boot, fronten
 | Backend | Java 17+, Spring Boot 3.x, Spring Security (OAuth2), JPA/Hibernate, MySQL 8 |
 | Frontend Web | Angular 21, TypeScript, HttpClient, signals, MapLibre |
 | Mobile | React Native, Expo Router, React Query |
-| Testing | JUnit 5, Mockito (backend) � Jest / TypeScript checks |
+| Testing | JUnit 5, Mockito (backend) · Jest / TypeScript checks |
 | Documentacion | OpenAPI 3 / Springdoc, Markdown |
 | Seguridad | Spring Security OAuth2, OWASP Top 10, analisis de dependencias |
 
@@ -35,17 +35,20 @@ campo-app/
 
 ## Flujo de Nuevas Features
 1. Leer la feature objetivo en `features/`.
-2. Identificar alcance real y dependencias.
-3. Implementar backend primero cuando define contratos.
-4. Implementar frontend web y mobile sobre esos contratos.
-5. Validar con testing tecnico disponible.
-6. Si queda trabajo pendiente fuera del alcance cerrado, crear una nueva feature numerada `max + 1`.
+2. Crear un branch nuevo desde `master` con el nombre exacto del archivo o feature que se va a desarrollar.
+3. Implementar todos los cambios de esa feature dentro de ese branch.
+4. Identificar alcance real y dependencias.
+5. Implementar backend primero cuando define contratos.
+6. Implementar frontend web y mobile sobre esos contratos.
+7. Validar con testing tecnico disponible.
+8. Si queda trabajo pendiente fuera del alcance cerrado, crear una nueva feature numerada `max + 1`.
 
 ## Convenciones Globales
 - Idioma del codigo: ingles.
 - Comentarios y documentacion interna: espanol.
 - No actualizar changelogs ni auditorias salvo pedido explicito del usuario.
 - Los pendientes detectados deben materializarse como features nuevas, no solo mencionarse en respuestas.
+- Cuando el usuario pida desarrollar una feature, siempre crear primero un branch nuevo desde `master` con el nombre exacto de la feature y trabajar ahi.
 
 ## Estado Actual del Frontend
 - El frontend web vigente es Angular.

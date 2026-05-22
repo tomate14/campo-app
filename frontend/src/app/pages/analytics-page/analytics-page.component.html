@@ -1,0 +1,213 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h2>Rendimiento y Analytics</h2>
+      <p>KPIs agricolas, comparativas, outliers y proyecciones de produccion.</p>
+    </div>
+    <button class="btn-secondary" type="button" (click)="exportPdf()">Exportar PDF</button>
+  </div>
+
+  <div class="card filters-card">
+    <div class="filters-grid">
+      <label>
+        <span>Lote</span>
+        <select [ngModel]="filters().loteId" (ngModelChange)="updateFilter('loteId', $event)" name="loteId">
+          <option value="">Todos</option>
+          <option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option>
+        </select>
+      </label>
+      <label>
+        <span>Cultivo</span>
+        <input [ngModel]="filters().cultivo" (ngModelChange)="updateFilter('cultivo', $event)" />
+      </label>
+      <label>
+        <span>Temporada</span>
+        <input [ngModel]="filters().temporada" (ngModelChange)="updateFilter('temporada', $event)" />
+      </label>
+      <label>
+        <span>Desde</span>
+        <input type="date" [ngModel]="filters().desde" (ngModelChange)="updateFilter('desde', $event)" />
+      </label>
+      <label>
+        <span>Hasta</span>
+        <input type="date" [ngModel]="filters().hasta" (ngModelChange)="updateFilter('hasta', $event)" />
+      </label>
+      <label>
+        <span>Granularidad</span>
+        <select [ngModel]="filters().granularidad" (ngModelChange)="updateFilter('granularidad', $event)" name="granularidad">
+          <option value="SEMANAL">Semanal</option>
+          <option value="MENSUAL">Mensual</option>
+          <option value="ANUAL">Anual</option>
+        </select>
+      </label>
+    </div>
+    <div class="card-actions">
+      <button class="btn-primary" type="button" (click)="load()">Actualizar analytics</button>
+    </div>
+  </div>
+
+  <div class="card empty-box" *ngIf="loading()">Cargando analytics...</div>
+
+  <ng-container *ngIf="!loading() && analytics() as data">
+    <div class="kpis-grid">
+      <article class="metric-card"><p class="label">Rendimiento promedio</p><p class="value">{{ data.kpis.rendimientoPromedioKgHa }} kg/ha</p></article>
+      <article class="metric-card"><p class="label">Toneladas totales</p><p class="value">{{ data.kpis.toneladasTotales }} t</p></article>
+      <article class="metric-card"><p class="label">Total cosechas</p><p class="value">{{ data.kpis.totalCosechas }}</p></article>
+      <article class="metric-card"><p class="label">Lotes analizados</p><p class="value">{{ data.kpis.totalLotes }}</p></article>
+      <article class="metric-card"><p class="label">Premium</p><p class="value">{{ data.kpis.tasaPremiumPct }}%</p></article>
+      <article class="metric-card"><p class="label">Desvio estandar</p><p class="value">{{ data.kpis.desviacionEstandarKgHa }} kg/ha</p></article>
+    </div>
+
+    <div class="analytics-layout">
+      <section class="card analytics-panel">
+        <div class="section-head">
+          <h3>Series temporales</h3>
+          <span class="helper">{{ data.filtros.granularidad }}</span>
+        </div>
+        <div class="bar-chart" *ngIf="data.series.length; else noSeries">
+          <div class="bar-column" *ngFor="let item of data.series">
+            <div class="bar-value">{{ item.rendimientoPromedioKgHa }}</div>
+            <div class="bar" [style.height]="seriesHeight(item.rendimientoPromedioKgHa)"></div>
+            <div class="bar-label">{{ item.periodo }}</div>
+          </div>
+        </div>
+        <ng-template #noSeries>
+          <div class="empty-box">Sin series temporales.</div>
+        </ng-template>
+      </section>
+
+      <section class="card analytics-panel">
+        <div class="section-head">
+          <h3>Prediccion</h3>
+          <span class="helper">{{ data.prediccion.metodo }}</span>
+        </div>
+        <div class="prediction-shell">
+          <p class="prediction-value">{{ data.prediccion.rendimientoEstimadoKgHa }} kg/ha</p>
+          <p class="prediction-meta">Proximo periodo: {{ data.prediccion.proximoPeriodo }}</p>
+          <p class="prediction-meta">Confianza: {{ data.prediccion.confianza }}</p>
+        </div>
+        <div class="climate-summary">
+          <strong>Correlacion climatica</strong>
+          <p>Temperatura prom.: {{ data.clima.temperaturaPromedio }}</p>
+          <p>Precipitacion prom.: {{ data.clima.precipitacionPromedioMm }} mm</p>
+          <p>Humedad prom.: {{ data.clima.humedadPromedioPct }}%</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="analytics-layout">
+      <section class="card analytics-panel">
+        <div class="section-head">
+          <h3>Comparativa por cultivo</h3>
+        </div>
+        <app-uplot-chart
+          [labels]="cultivoChart().labels"
+          [values]="cultivoChart().values"
+          [averageValue]="cultivoChart().average"
+          [height]="280"
+          color="#9FE870"
+          seriesLabel="Rendimiento por cultivo"
+          averageLabel="Promedio general"
+          tooltipIcon="🌿"
+          tooltipReferenceLabel="Cultivo"
+          valueSuffix="kg/ha"
+          xAxisTitle="Cultivos"
+          yAxisTitle="Rendimiento kg/ha"
+          type="bar"
+        />
+        <div class="chart-summary-grid" *ngIf="data.cultivos.length">
+          <article class="chart-summary-item" *ngFor="let item of data.cultivos">
+            <strong>{{ item.cultivo }}</strong>
+            <p>{{ item.rendimientoPromedioKgHa }} kg/ha · {{ item.toneladasTotales }} t</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card analytics-panel">
+        <div class="section-head">
+          <h3>Comparativa por temporada</h3>
+        </div>
+        <app-uplot-chart
+          [labels]="temporadaChart().labels"
+          [values]="temporadaChart().values"
+          [averageValue]="temporadaChart().average"
+          [height]="280"
+          color="#4FD1C5"
+          seriesLabel="Rendimiento por temporada"
+          averageLabel="Promedio general"
+          tooltipIcon="📅"
+          tooltipReferenceLabel="Temporada"
+          valueSuffix="kg/ha"
+          xAxisTitle="Temporadas"
+          yAxisTitle="Rendimiento kg/ha"
+          type="bar"
+        />
+        <div class="chart-summary-grid" *ngIf="data.temporadas.length">
+          <article class="chart-summary-item" *ngFor="let item of data.temporadas">
+            <strong>{{ item.temporada }}</strong>
+            <p>{{ item.rendimientoPromedioKgHa }} kg/ha · {{ item.toneladasTotales }} t</p>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <div class="analytics-layout">
+      <section class="card analytics-panel wide">
+        <div class="section-head">
+          <h3>Ranking por lote</h3>
+        </div>
+        <app-uplot-chart
+          [labels]="loteRankingChart().labels"
+          [values]="loteRankingChart().values"
+          [averageValue]="loteRankingChart().average"
+          [height]="320"
+          color="#60A5FA"
+          seriesLabel="Rendimiento por lote"
+          averageLabel="Promedio ranking"
+          tooltipIcon="📍"
+          tooltipReferenceLabel="Lote"
+          valueSuffix="kg/ha"
+          xAxisTitle="Lotes"
+          yAxisTitle="Rendimiento kg/ha"
+          type="bar"
+        />
+        <div class="chart-summary-grid chart-summary-grid--wide" *ngIf="data.lotes.length">
+          <article class="chart-summary-item" *ngFor="let item of data.lotes | slice:0:10">
+            <strong>{{ item.loteNombre }}</strong>
+            <p>{{ item.cultivo }} · {{ item.rendimientoPromedioKgHa }} kg/ha · {{ item.calidadDominante }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card analytics-panel">
+        <div class="section-head">
+          <h3>Outliers</h3>
+        </div>
+        <app-uplot-chart
+          [labels]="outliersChart().labels"
+          [values]="outliersChart().values"
+          [averageValue]="outliersChart().average"
+          [height]="320"
+          color="#FB7185"
+          seriesLabel="Desvio sobre media"
+          averageLabel="Linea base"
+          tooltipIcon="⚠"
+          tooltipReferenceLabel="Lote"
+          valueSuffix="kg/ha"
+          xAxisTitle="Lotes"
+          yAxisTitle="Desvio kg/ha"
+          type="bar"
+        />
+        <div class="chart-summary-grid" *ngIf="data.outliers.length; else noOutliers">
+          <article class="chart-summary-item" *ngFor="let item of data.outliers">
+            <strong>{{ item.loteNombre }}</strong>
+            <p>{{ item.tipo }} · {{ item.desviacionSobreMediaKgHa }} kg/ha</p>
+          </article>
+        </div>
+        <ng-template #noOutliers>
+          <div class="empty-box">Sin outliers detectados.</div>
+        </ng-template>
+      </section>
+    </div>
+  </ng-container>
+</div>

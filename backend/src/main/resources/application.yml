@@ -27,7 +27,7 @@ spring:
 # JWT
 jwt:
   secret: ${JWT_SECRET:campoapp-super-secret-key-256bits-development-only-change-in-prod}
-  access-token-expiration-ms: ${JWT_ACCESS_EXPIRATION_MS:900000}      # 15 minutos
+  access-token-expiration-ms: ${JWT_ACCESS_EXPIRATION_MS:43200000}    # 12 horas
   refresh-token-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000} # 7 días
 
 # Rate limiting

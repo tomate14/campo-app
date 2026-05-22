@@ -24,6 +24,7 @@
     "maplibre-gl": "^5.24.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "uplot": "^1.6.32",
     "zone.js": "^0.15.1"
   },
   "devDependencies": {

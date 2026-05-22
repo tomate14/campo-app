@@ -1,61 +1,67 @@
 {
-  "hash": "91e940a0",
-  "configHash": "09ed46c2",
-  "lockfileHash": "44adf78a",
-  "browserHash": "4a5d9420",
+  "hash": "1c4d2341",
+  "configHash": "3436a6e8",
+  "lockfileHash": "a171af6b",
+  "browserHash": "4ebf3938",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "ba3d009d",
+      "fileHash": "92f36c63",
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
-      "fileHash": "7fbf915d",
+      "fileHash": "c73c0204",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "de706c19",
+      "fileHash": "e5daffed",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "20be5789",
+      "fileHash": "4d51dabd",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "adc01613",
+      "fileHash": "d755e406",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "f324ea96",
+      "fileHash": "88a57366",
       "needsInterop": false
     },
     "@maplibre/ngx-maplibre-gl": {
       "src": "../../../../../../node_modules/@maplibre/ngx-maplibre-gl/fesm2022/maplibre-ngx-maplibre-gl.mjs",
       "file": "@maplibre_ngx-maplibre-gl.js",
-      "fileHash": "5ade9dbf",
+      "fileHash": "ab0fdf6b",
       "needsInterop": false
     },
     "rxjs/operators": {
       "src": "../../../../../../node_modules/rxjs/dist/esm5/operators/index.js",
       "file": "rxjs_operators.js",
-      "fileHash": "96e59b8f",
+      "fileHash": "b9bc615a",
+      "needsInterop": false
+    },
+    "uplot": {
+      "src": "../../../../../../node_modules/uplot/dist/uPlot.esm.js",
+      "file": "uplot.js",
+      "fileHash": "b18e9247",
       "needsInterop": false
     },
     "zone.js": {
       "src": "../../../../../../node_modules/zone.js/fesm2015/zone.js",
       "file": "zone__js.js",
-      "fileHash": "9660a452",
+      "fileHash": "0b7a6054",
       "needsInterop": true
     }
   },
