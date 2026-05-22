@@ -47,7 +47,7 @@ public class DatoClima extends AuditableEntity {
     @Column(length = 100)
     private String descripcion;
 
-    @Column(name = "icono_codigo", length = 10)
+    @Column(name = "icono_codigo", length = 40)
     private String iconoCodigo;
 
     @Column(name = "precipitaciones_mm", precision = 6, scale = 2)

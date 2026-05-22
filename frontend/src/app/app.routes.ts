@@ -7,6 +7,7 @@ import { LoteDetailPageComponent } from './pages/lote-detail-page/lote-detail-pa
 import { SiembraPageComponent } from './pages/siembra-page/siembra-page.component';
 import { CosechaPageComponent } from './pages/cosecha-page/cosecha-page.component';
 import { ClimaPageComponent } from './pages/clima-page/clima-page.component';
+import { AnalyticsPageComponent } from './pages/analytics-page/analytics-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -20,6 +21,7 @@ export const routes: Routes = [
       { path: 'agricola/lotes/:id', component: LoteDetailPageComponent },
       { path: 'agricola/siembra', component: SiembraPageComponent },
       { path: 'agricola/cosecha', component: CosechaPageComponent },
+      { path: 'agricola/analytics', component: AnalyticsPageComponent },
       { path: 'clima', component: ClimaPageComponent },
     ],
   },

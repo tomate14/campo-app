@@ -4,6 +4,8 @@ import { map } from 'rxjs/operators';
 import { API_BASE_URL } from './api.config';
 import type {
   ApiResponse,
+  AgriculturaAnalytics,
+  AnalyticsFiltros,
   EventoSiembra,
   EventoSiembraRequest,
   HistoricoCultivo,
@@ -73,6 +75,17 @@ export class AgricolaService {
 
   getReporteLote(id: string) {
     return this.http.get<ApiResponse<LoteReporte> | LoteReporte>(`${API_BASE_URL}/agricola/lotes/${id}/reporte`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getAnalytics(params: AnalyticsFiltros) {
+    return this.http.get<ApiResponse<AgriculturaAnalytics> | AgriculturaAnalytics>(`${API_BASE_URL}/agricola/analytics`, { params: cleanParams(params as unknown as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  exportAnalyticsPdf(params: AnalyticsFiltros) {
+    return this.http.get(`${API_BASE_URL}/agricola/analytics/reporte.pdf`, {
+      params: cleanParams(params as unknown as Record<string, unknown>),
+      responseType: 'blob',
+    });
   }
 
   deleteLote(id: string) {
