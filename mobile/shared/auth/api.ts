@@ -4,4 +4,4 @@ export {
   refreshAccessToken,
   getCurrentUser,
   logout,
-} from '../../../frontend/src/lib/api/auth'
+} from '../api/auth'

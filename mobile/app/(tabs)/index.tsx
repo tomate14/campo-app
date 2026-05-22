@@ -1,8 +1,8 @@
 import { View, Text, ScrollView, StyleSheet, useColorScheme, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
-import { Colors } from '@/constants/colors'
-import { useLotes } from '@/shared/hooks/useLotes'
+import { Colors } from '../../constants/colors'
+import { useLotes } from '../../shared/hooks/useLotes'
 
 export default function HomeScreen() {
   const scheme = useColorScheme() ?? 'light'

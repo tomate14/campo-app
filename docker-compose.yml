@@ -106,6 +106,11 @@ services:
       - "${MOBILE_PORT:-8081}:8081"
       - "${EXPO_PORT_DEVTOOLS:-19000}:19000"
       - "${EXPO_PORT_WEB:-19006}:19006"
+    command: >
+      sh -c "if [ ! -d node_modules/react-dom ] || [ ! -d node_modules/react-native-web ]; then
+      npm install --legacy-peer-deps;
+      fi &&
+      npx expo start --web --host localhost --port 19006"
     volumes:
       - ./mobile:/app
       - mobile_node_modules:/app/node_modules

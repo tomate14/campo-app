@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getCosechasByLote, createCosecha, updateCosecha, deleteCosecha, getRendimientoPromedio } from '../../../frontend/src/lib/api/agricola'
-import type { RegistroCosechaRequest } from '../../../frontend/src/lib/types/agricola'
+import { getCosechasByLote, createCosecha, updateCosecha, deleteCosecha, getRendimientoPromedio } from '../api/agricola'
+import type { RegistroCosechaRequest } from '../types/agricola'
 
 const COSECHAS_KEY = 'cosechas'
 

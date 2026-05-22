@@ -8,7 +8,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Colors } from '../../../constants/colors'
 import { useSueloByLote, useCreateSuelo, useDeleteSuelo } from '../../../shared/hooks/useSuelo'
 import { SueloFormModal } from '../../../components/agricola/SueloFormModal'
-import type { PropiedadSueloRequest } from '../../../../frontend/src/lib/types/agricola'
+import type { PropiedadSueloRequest } from '../../../shared/types/agricola'
 
 export default function SueloScreen() {
   const { loteId, loteNombre } = useLocalSearchParams<{ loteId: string; loteNombre?: string }>()

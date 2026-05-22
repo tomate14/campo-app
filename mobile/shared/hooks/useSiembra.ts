@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getEventosByLote, createEvento, updateEvento, deleteEvento } from '../../../frontend/src/lib/api/agricola'
-import type { EventoSiembraRequest, TipoEvento } from '../../../frontend/src/lib/types/agricola'
+import { getEventosByLote, createEvento, updateEvento, deleteEvento } from '../api/agricola'
+import type { EventoSiembraRequest, TipoEvento } from '../types/agricola'
 
 const EVENTOS_KEY = 'eventos-siembra'
 

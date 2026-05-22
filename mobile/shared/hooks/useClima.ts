@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   getClimaActual, getPronostico, getHistoricoClima,
   getAlertasClima, marcarAlertaLeida, getRecomendaciones, sincronizarClima,
-} from '../../../frontend/src/lib/api/clima'
+} from '../api/clima'
 
 export const useClimaActual = (loteId: string) =>
   useQuery({

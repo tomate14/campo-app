@@ -1,20 +1,55 @@
 import * as SecureStore from 'expo-secure-store'
+import { Platform } from 'react-native'
 import type { AuthResponse, AuthUser } from '../types/auth'
 
 const ACCESS_TOKEN_KEY = 'access_token'
 const REFRESH_TOKEN_KEY = 'refresh_token'
 const USER_KEY = 'auth_user'
 
+async function getItem(key: string) {
+  if (Platform.OS === 'web') {
+    if (typeof window === 'undefined') {
+      return null
+    }
+
+    return window.localStorage.getItem(key)
+  }
+
+  return SecureStore.getItemAsync(key)
+}
+
+async function setItem(key: string, value: string) {
+  if (Platform.OS === 'web') {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(key, value)
+    }
+    return
+  }
+
+  await SecureStore.setItemAsync(key, value)
+}
+
+async function removeItem(key: string) {
+  if (Platform.OS === 'web') {
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(key)
+    }
+    return
+  }
+
+  await SecureStore.deleteItemAsync(key)
+}
+
 export async function readAccessToken() {
-  return SecureStore.getItemAsync(ACCESS_TOKEN_KEY)
+  return getItem(ACCESS_TOKEN_KEY)
 }
 
 export async function readRefreshToken() {
-  return SecureStore.getItemAsync(REFRESH_TOKEN_KEY)
+  return getItem(REFRESH_TOKEN_KEY)
 }
 
 export async function readCurrentUser(): Promise<AuthUser | null> {
-  const raw = await SecureStore.getItemAsync(USER_KEY)
+  const raw = await getItem(USER_KEY)
   if (!raw) {
     return null
   }
@@ -28,16 +63,16 @@ export async function readCurrentUser(): Promise<AuthUser | null> {
 
 export async function persistSession(session: AuthResponse) {
   await Promise.all([
-    SecureStore.setItemAsync(ACCESS_TOKEN_KEY, session.accessToken),
-    SecureStore.setItemAsync(REFRESH_TOKEN_KEY, session.refreshToken),
-    SecureStore.setItemAsync(USER_KEY, JSON.stringify(session.user)),
+    setItem(ACCESS_TOKEN_KEY, session.accessToken),
+    setItem(REFRESH_TOKEN_KEY, session.refreshToken),
+    setItem(USER_KEY, JSON.stringify(session.user)),
   ])
 }
 
 export async function clearSession() {
   await Promise.all([
-    SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY),
-    SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY),
-    SecureStore.deleteItemAsync(USER_KEY),
+    removeItem(ACCESS_TOKEN_KEY),
+    removeItem(REFRESH_TOKEN_KEY),
+    removeItem(USER_KEY),
   ])
 }

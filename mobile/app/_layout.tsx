@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, Platform, View, useColorScheme } from 'react-native'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useRouter, useSegments } from 'expo-router'
-import { Colors } from '@/constants/colors'
-import { readAccessToken } from '@/shared/auth/session'
-import { configureApiClient } from '../../frontend/src/lib/api/client'
+import { Colors } from '../constants/colors'
+import { readAccessToken } from '../shared/auth/session'
+import { configureApiClient } from '../shared/api/client'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 2, staleTime: 1000 * 60 * 5 } },
