@@ -1,0 +1,377 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h2>Sanidad y Vacunacion</h2>
+      <p>Calendario sanitario, aplicaciones, tratamientos, diagnosticos y auditoria del rodeo.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-secondary" type="button" (click)="exportReporte()">Exportar auditoria</button>
+      <button class="btn-secondary" type="button" (click)="openVacunaModal()">Nueva vacuna</button>
+      <button class="btn-primary" type="button" (click)="openAplicacionModal()">Registrar aplicacion</button>
+    </div>
+  </div>
+
+  <div class="stats-grid" *ngIf="dashboard() as summary">
+    <article class="metric-card"><p class="label">Catalogo</p><p class="value">{{ summary.vacunasCatalogadas }}</p></article>
+    <article class="metric-card"><p class="label">Aplicaciones del mes</p><p class="value">{{ summary.aplicacionesMesActual }}</p></article>
+    <article class="metric-card"><p class="label">Diagnosticos abiertos</p><p class="value">{{ summary.diagnosticosAbiertos }}</p></article>
+    <article class="metric-card"><p class="label">Tratamientos activos</p><p class="value">{{ summary.tratamientosActivos }}</p></article>
+    <article class="metric-card metric-card--accent"><p class="label">Costo sanitario mes</p><p class="value">${{ summary.costoSanitarioMes | number:'1.0-2' }}</p></article>
+    <article class="metric-card metric-card--warning"><p class="label">Alertas vencidas</p><p class="value">{{ alertasCriticas() }}</p></article>
+  </div>
+
+  <div class="card filters-card">
+    <div class="filters-grid">
+      <label>
+        <span>Animal</span>
+        <select [ngModel]="filters().animalId" (ngModelChange)="updateFilter('animalId', $event)">
+          <option value="">Todos</option>
+          <option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option>
+        </select>
+      </label>
+      <label>
+        <span>Diagnostico</span>
+        <select [ngModel]="filters().estadoDiagnostico" (ngModelChange)="updateFilter('estadoDiagnostico', $event)">
+          <option value="">Todos</option>
+          <option value="ABIERTO">Abierto</option>
+          <option value="CONTROLADO">Controlado</option>
+          <option value="CERRADO">Cerrado</option>
+        </select>
+      </label>
+      <label>
+        <span>Vacunas</span>
+        <select [ngModel]="filters().obligatoria" (ngModelChange)="updateFilter('obligatoria', $event)">
+          <option value="">Todas</option>
+          <option value="true">Obligatorias</option>
+          <option value="false">Complementarias</option>
+        </select>
+      </label>
+    </div>
+    <div class="card-actions">
+      <button class="btn-primary" type="button" (click)="refreshTables()">Aplicar filtros</button>
+      <button class="btn-secondary" type="button" (click)="openTratamientoModal()">Nuevo tratamiento</button>
+      <button class="btn-secondary" type="button" (click)="openDiagnosticoModal()">Nuevo diagnostico</button>
+    </div>
+  </div>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="card empty-box" *ngIf="loading()">Cargando sanidad...</div>
+
+  <div class="layout" *ngIf="!loading()">
+    <section class="card left-panel">
+      <div class="premium-alert-shell">
+        <div class="premium-alert-card" *ngIf="dashboard()?.alertasVacunas?.length; else noAlertas">
+          <div class="premium-alert__icon" aria-hidden="true">✦</div>
+          <div class="premium-alert__copy">
+            <p class="premium-alert__eyebrow">Estado sanitario</p>
+            <h3>Alertas de vacunación</h3>
+            <p class="premium-alert__subtitle">
+              {{ dashboard()?.alertasVacunas?.length }} alerta(s) activas para seguimiento inmediato.
+            </p>
+          </div>
+          <div class="premium-alert__stack premium-alert__stack--cards">
+            <article class="alert-vaccine-card" *ngFor="let alerta of dashboard()?.alertasVacunas">
+              <div class="alert-vaccine-card__media">
+                <div class="alert-vaccine-card__media-frame">
+                  <span class="alert-vaccine-card__media-icon" aria-hidden="true">+</span>
+                </div>
+              </div>
+              <div class="alert-vaccine-card__content">
+                <div class="alert-vaccine-card__top">
+                  <div class="alert-vaccine-card__title-block">
+                    <h4>{{ alerta.vacunaNombre }}</h4>
+                    <p>{{ alerta.animalCaravana }} � refuerzo sanitario</p>
+                  </div>
+                  <span class="catalog-badge" [class.catalog-badge--secondary]="alerta.estado !== 'VENCIDA'" [class.state-chip--danger]="alerta.estado === 'VENCIDA'">
+                    {{ alerta.estado }}
+                  </span>
+                </div>
+                <div class="catalog-metrics alert-vaccine-metrics">
+                  <div class="catalog-metric">
+                    <div class="catalog-metric__label"><span class="catalog-metric__icon">#</span><span>Animal</span></div>
+                    <div class="catalog-metric__value">{{ alerta.animalCaravana }}</div>
+                  </div>
+                  <div class="catalog-metric">
+                    <div class="catalog-metric__label"><span class="catalog-metric__icon">F</span><span>Pr�xima dosis</span></div>
+                    <div class="catalog-metric__value">{{ alerta.proximaDosisFecha }}</div>
+                  </div>
+                  <div class="catalog-metric">
+                    <div class="catalog-metric__label"><span class="catalog-metric__icon">D</span><span>D�as restantes</span></div>
+                    <div class="catalog-metric__value">{{ alerta.diasRestantes }}</div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+      <ng-template #noAlertas>
+        <div class="premium-alert-card premium-alert-card--empty">
+          <div class="premium-alert__icon" aria-hidden="true">✓</div>
+          <div class="premium-alert__copy">
+            <p class="premium-alert__eyebrow">Estado sanitario</p>
+            <h3>Alertas de vacunación</h3>
+            <p class="premium-alert__subtitle">No hay alertas de vacunación inmediatas.</p>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="catalog-head">
+        <div class="catalog-head__icon" aria-hidden="true">✚</div>
+        <div>
+          <h3>Catálogo de vacunas</h3>
+          <p>Gestión y referencia de vacunas disponibles.</p>
+        </div>
+      </div>
+      <div class="catalog-grid catalog-grid--premium">
+        <article class="catalog-card catalog-card--premium" *ngFor="let vacuna of vacunas()">
+          <div class="catalog-card__media">
+            <div class="catalog-card__media-frame">
+              <span class="catalog-card__media-icon" aria-hidden="true">💉</span>
+            </div>
+          </div>
+          <div class="catalog-card__content">
+            <div class="catalog-card__top">
+              <div class="catalog-card__title-block">
+                <h4>{{ vacuna.nombre }}</h4>
+                <p>{{ vacuna.codigo }} · {{ vacuna.laboratorio || 'Sin laboratorio' }}</p>
+              </div>
+              <span class="catalog-badge" [class.catalog-badge--secondary]="!vacuna.obligatoria">
+                {{ vacuna.obligatoria ? 'Obligatoria' : 'Complementaria' }}
+              </span>
+            </div>
+
+            <div class="catalog-metrics">
+              <div class="catalog-metric">
+                <div class="catalog-metric__label"><span class="catalog-metric__icon">◌</span><span>Dosis</span></div>
+                <div class="catalog-metric__value">{{ vacuna.dosisRecomendada || 'Sin dato' }}</div>
+              </div>
+              <div class="catalog-metric">
+                <div class="catalog-metric__label"><span class="catalog-metric__icon">◴</span><span>Frecuencia</span></div>
+                <div class="catalog-metric__value">{{ vacuna.frecuenciaDias || 'Sin dato' }} <small *ngIf="vacuna.frecuenciaDias">días</small></div>
+              </div>
+              <div class="catalog-metric">
+                <div class="catalog-metric__label"><span class="catalog-metric__icon">▣</span><span>Stock</span></div>
+                <div class="catalog-metric__value">{{ vacuna.stockDisponible ?? 'Sin dato' }}</div>
+              </div>
+              <div class="catalog-metric">
+                <div class="catalog-metric__label"><span class="catalog-metric__icon">$</span><span>Costo ref.</span></div>
+                <div class="catalog-metric__value">${{ vacuna.costoReferencia ?? '0' }}</div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <article class="catalog-info-card">
+        <div class="catalog-info-card__icon" aria-hidden="true">i</div>
+        <div>
+          <strong>Referencia de costos</strong>
+          <p>Los costos son de referencia y pueden variar según el proveedor.</p>
+        </div>
+      </article>
+    </section>
+    <section class="card right-panel right-panel--premium">
+      <div class="catalog-head catalog-head--applications">
+        <div class="catalog-head__icon" aria-hidden="true">+</div>
+        <div>
+          <h3>Aplicaciones registradas</h3>
+          <p>Seguimiento sanitario de dosis aplicadas, refuerzos y responsables operativos.</p>
+        </div>
+      </div>
+
+      <div class="applications-grid applications-grid--premium">
+        <article class="application-card application-card--premium" *ngFor="let aplicacion of aplicaciones()">
+          <div class="application-card__media">
+            <div class="application-card__media-frame">
+              <span class="application-card__media-icon" aria-hidden="true">+</span>
+            </div>
+          </div>
+
+          <div class="application-card__content">
+            <div class="application-card__top">
+              <div class="application-card__title-block">
+                <h4>{{ aplicacion.vacunaNombre }}</h4>
+                <p>{{ aplicacion.animalCaravana }} � {{ aplicacion.operario || 'Sin operario asignado' }}</p>
+              </div>
+
+              <div class="application-card__top-meta">
+                <span class="catalog-badge" [class.catalog-badge--secondary]="!aplicacion.vacunaObligatoria">
+                  {{ aplicacion.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }}
+                </span>
+                <strong class="application-card__cost">${{ aplicacion.costoAplicado ?? 0 }}</strong>
+              </div>
+            </div>
+
+            <div class="catalog-metrics application-metrics">
+              <div class="catalog-metric">
+                <div class="catalog-metric__label"><span class="catalog-metric__icon">#</span><span>Animal</span></div>
+                <div class="catalog-metric__value">{{ aplicacion.animalCaravana }}</div>
+              </div>
+              <div class="catalog-metric">
+                <div class="catalog-metric__label"><span class="catalog-metric__icon">F</span><span>Aplicada</span></div>
+                <div class="catalog-metric__value">{{ aplicacion.fechaAplicacion }}</div>
+              </div>
+              <div class="catalog-metric">
+                <div class="catalog-metric__label"><span class="catalog-metric__icon">R</span><span>Refuerzo</span></div>
+                <div class="catalog-metric__value">{{ aplicacion.proximaDosisFecha || 'Sin fecha' }}</div>
+              </div>
+              <div class="catalog-metric">
+                <div class="catalog-metric__label"><span class="catalog-metric__icon">L</span><span>Lote</span></div>
+                <div class="catalog-metric__value">{{ aplicacion.loteMarca || 'Sin lote' }}</div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <div class="empty-box premium-empty-box" *ngIf="!aplicaciones().length">Sin aplicaciones con este filtro.</div>
+      </div>
+
+      <div class="support-grid support-grid--premium">
+        <article class="support-card support-card--premium">
+          <div class="support-card__head">
+            <div class="support-card__title">
+              <div class="catalog-head__icon support-card__icon" aria-hidden="true">T</div>
+              <div>
+                <h4>Tratamientos</h4>
+                <p>Medicaci�n activa, responsables y seguimiento cl�nico.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="support-stack">
+            <article class="support-item support-item--premium" *ngFor="let tratamiento of tratamientos()">
+              <div class="support-item__top">
+                <div>
+                  <strong>{{ tratamiento.medicamento }}</strong>
+                  <p>{{ tratamiento.animalCaravana }} � {{ tratamiento.fechaInicio }}{{ tratamiento.fechaFin ? (' -> ' + tratamiento.fechaFin) : '' }}</p>
+                </div>
+                <span class="state-chip state-chip--soft">{{ tratamiento.responsable || 'Sin responsable' }}</span>
+              </div>
+              <div class="support-item__meta">
+                <span>Motivo: {{ tratamiento.motivo || 'Sin motivo' }}</span>
+                <span>Dosis: {{ tratamiento.dosis || 'Sin dosis' }}</span>
+                <span>Costo: ${{ tratamiento.costo ?? 0 }}</span>
+              </div>
+            </article>
+            <div class="empty-box premium-empty-box" *ngIf="!tratamientos().length">Sin tratamientos registrados.</div>
+          </div>
+        </article>
+
+        <article class="support-card support-card--premium">
+          <div class="support-card__head">
+            <div class="support-card__title">
+              <div class="catalog-head__icon support-card__icon" aria-hidden="true">D</div>
+              <div>
+                <h4>Diagnosticos</h4>
+                <p>Estado sanitario, severidad y criterio veterinario.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="support-stack">
+            <article class="support-item support-item--premium" *ngFor="let diagnostico of diagnosticos()">
+              <div class="support-item__top">
+                <div>
+                  <strong>{{ diagnostico.enfermedad }}</strong>
+                  <p>{{ diagnostico.animalCaravana }} � {{ diagnostico.fechaDiagnostico }}</p>
+                </div>
+                <span class="state-chip" [class.state-chip--danger]="diagnostico.estado === 'ABIERTO' && diagnostico.severidad === 'CRITICA'">
+                  {{ diagnostico.estado }}
+                </span>
+              </div>
+              <div class="support-item__meta">
+                <span>Severidad: {{ diagnostico.severidad }}</span>
+                <span>Veterinario: {{ diagnostico.veterinario || 'Sin veterinario' }}</span>
+                <span>Tratamiento: {{ diagnostico.tratamientoIndicado || 'Sin indicar' }}</span>
+              </div>
+            </article>
+            <div class="empty-box premium-empty-box" *ngIf="!diagnosticos().length">Sin diagnosticos registrados.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="app-modal-backdrop" *ngIf="vacunaModalOpen() || aplicacionModalOpen() || tratamientoModalOpen() || diagnosticoModalOpen()" (click)="closeModals()">
+    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">
+      <ng-container *ngIf="vacunaModalOpen()">
+        <div class="modal-head"><h3>Registrar vacuna</h3></div>
+        <div class="form-grid">
+          <label><span>Codigo</span><input [ngModel]="vacunaForm().codigo" (ngModelChange)="vacunaForm.update(f => ({ ...f, codigo: $event }))" /></label>
+          <label><span>Nombre</span><input [ngModel]="vacunaForm().nombre" (ngModelChange)="vacunaForm.update(f => ({ ...f, nombre: $event }))" /></label>
+          <label><span>Laboratorio</span><input [ngModel]="vacunaForm().laboratorio" (ngModelChange)="vacunaForm.update(f => ({ ...f, laboratorio: $event }))" /></label>
+          <label><span>Dosis</span><input [ngModel]="vacunaForm().dosisRecomendada" (ngModelChange)="vacunaForm.update(f => ({ ...f, dosisRecomendada: $event }))" /></label>
+          <label><span>Frecuencia dias</span><input type="number" [ngModel]="vacunaForm().frecuenciaDias" (ngModelChange)="vacunaForm.update(f => ({ ...f, frecuenciaDias: $event }))" /></label>
+          <label><span>Costo referencia</span><input type="number" [ngModel]="vacunaForm().costoReferencia" (ngModelChange)="vacunaForm.update(f => ({ ...f, costoReferencia: $event }))" /></label>
+          <label><span>Stock</span><input type="number" [ngModel]="vacunaForm().stockDisponible" (ngModelChange)="vacunaForm.update(f => ({ ...f, stockDisponible: $event }))" /></label>
+          <label><span>Via aplicacion</span><input [ngModel]="vacunaForm().viaAplicacion" (ngModelChange)="vacunaForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>
+          <label><span>Obligatoria</span><select [ngModel]="vacunaForm().obligatoria" (ngModelChange)="vacunaForm.update(f => ({ ...f, obligatoria: $event }))"><option [ngValue]="true">Si</option><option [ngValue]="false">No</option></select></label>
+        </div>
+        <label class="textarea-field"><span>Descripcion</span><textarea [ngModel]="vacunaForm().descripcion" (ngModelChange)="vacunaForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+        <div class="modal-actions">
+          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitVacuna()">Guardar</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="aplicacionModalOpen()">
+        <div class="modal-head"><h3>Registrar aplicacion</h3></div>
+        <div class="form-grid">
+          <label><span>Animal</span><select [ngModel]="aplicacionForm().animalId" (ngModelChange)="aplicacionForm.update(f => ({ ...f, animalId: $event }))"><option value="">Seleccionar</option><option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option></select></label>
+          <label><span>Vacuna</span><select [ngModel]="aplicacionForm().vacunaId" (ngModelChange)="aplicacionForm.update(f => ({ ...f, vacunaId: $event }))"><option value="">Seleccionar</option><option *ngFor="let vacuna of vacunas()" [value]="vacuna.id">{{ vacuna.nombre }}</option></select></label>
+          <label><span>Fecha aplicacion</span><input type="date" [ngModel]="aplicacionForm().fechaAplicacion" (ngModelChange)="aplicacionForm.update(f => ({ ...f, fechaAplicacion: $event }))" /></label>
+          <label><span>Proxima dosis</span><input type="date" [ngModel]="aplicacionForm().proximaDosisFecha" (ngModelChange)="aplicacionForm.update(f => ({ ...f, proximaDosisFecha: $event }))" /></label>
+          <label><span>Operario</span><input [ngModel]="aplicacionForm().operario" (ngModelChange)="aplicacionForm.update(f => ({ ...f, operario: $event }))" /></label>
+          <label><span>Lote/marca</span><input [ngModel]="aplicacionForm().loteMarca" (ngModelChange)="aplicacionForm.update(f => ({ ...f, loteMarca: $event }))" /></label>
+          <label><span>Costo aplicado</span><input type="number" [ngModel]="aplicacionForm().costoAplicado" (ngModelChange)="aplicacionForm.update(f => ({ ...f, costoAplicado: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="aplicacionForm().observaciones" (ngModelChange)="aplicacionForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions">
+          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAplicacion()">Guardar</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="tratamientoModalOpen()">
+        <div class="modal-head"><h3>Registrar tratamiento</h3></div>
+        <div class="form-grid">
+          <label><span>Animal</span><select [ngModel]="tratamientoForm().animalId" (ngModelChange)="tratamientoForm.update(f => ({ ...f, animalId: $event }))"><option value="">Seleccionar</option><option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option></select></label>
+          <label><span>Medicamento</span><input [ngModel]="tratamientoForm().medicamento" (ngModelChange)="tratamientoForm.update(f => ({ ...f, medicamento: $event }))" /></label>
+          <label><span>Fecha inicio</span><input type="date" [ngModel]="tratamientoForm().fechaInicio" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaInicio: $event }))" /></label>
+          <label><span>Fecha fin</span><input type="date" [ngModel]="tratamientoForm().fechaFin" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaFin: $event }))" /></label>
+          <label><span>Dosis</span><input [ngModel]="tratamientoForm().dosis" (ngModelChange)="tratamientoForm.update(f => ({ ...f, dosis: $event }))" /></label>
+          <label><span>Via aplicacion</span><input [ngModel]="tratamientoForm().viaAplicacion" (ngModelChange)="tratamientoForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>
+          <label><span>Responsable</span><input [ngModel]="tratamientoForm().responsable" (ngModelChange)="tratamientoForm.update(f => ({ ...f, responsable: $event }))" /></label>
+          <label><span>Costo</span><input type="number" [ngModel]="tratamientoForm().costo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, costo: $event }))" /></label>
+          <label><span>Motivo</span><input [ngModel]="tratamientoForm().motivo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, motivo: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="tratamientoForm().observaciones" (ngModelChange)="tratamientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions">
+          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitTratamiento()">Guardar</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="diagnosticoModalOpen()">
+        <div class="modal-head"><h3>Registrar diagnostico</h3></div>
+        <div class="form-grid">
+          <label><span>Animal</span><select [ngModel]="diagnosticoForm().animalId" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, animalId: $event }))"><option value="">Seleccionar</option><option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option></select></label>
+          <label><span>Enfermedad</span><input [ngModel]="diagnosticoForm().enfermedad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, enfermedad: $event }))" /></label>
+          <label><span>Fecha diagnostico</span><input type="date" [ngModel]="diagnosticoForm().fechaDiagnostico" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
+          <label><span>Severidad</span><select [ngModel]="diagnosticoForm().severidad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, severidad: $event }))"><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
+          <label><span>Estado</span><select [ngModel]="diagnosticoForm().estado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, estado: $event }))"><option value="ABIERTO">Abierto</option><option value="CONTROLADO">Controlado</option><option value="CERRADO">Cerrado</option></select></label>
+          <label><span>Veterinario</span><input [ngModel]="diagnosticoForm().veterinario" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, veterinario: $event }))" /></label>
+          <label><span>Tratamiento indicado</span><input [ngModel]="diagnosticoForm().tratamientoIndicado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, tratamientoIndicado: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="diagnosticoForm().observaciones" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions">
+          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDiagnostico()">Guardar</button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+
+

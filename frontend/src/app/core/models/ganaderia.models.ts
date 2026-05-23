@@ -86,3 +86,141 @@ export interface AnimalDetalle {
   movimientos: MovimientoAnimal[]
   historialMedico: HistorialMedicoAnimal[]
 }
+
+export interface VacunaCatalogo {
+  id: string
+  codigo: string
+  nombre: string
+  descripcion?: string
+  obligatoria: boolean
+  especie: string
+  frecuenciaDias?: number
+  edadMinDias?: number
+  edadMaxDias?: number
+  dosisRecomendada?: string
+  viaAplicacion?: string
+  laboratorio?: string
+  costoReferencia?: number
+  stockDisponible?: number
+  activo: boolean
+  updatedAt: string
+}
+
+export interface VacunaCatalogoRequest {
+  codigo: string
+  nombre: string
+  descripcion?: string
+  obligatoria?: boolean
+  especie?: string
+  frecuenciaDias?: number
+  edadMinDias?: number
+  edadMaxDias?: number
+  dosisRecomendada?: string
+  viaAplicacion?: string
+  laboratorio?: string
+  costoReferencia?: number
+  stockDisponible?: number
+  activo?: boolean
+}
+
+export interface AplicacionVacuna {
+  id: string
+  animalId: string
+  animalCaravana: string
+  vacunaId: string
+  vacunaNombre: string
+  vacunaObligatoria: boolean
+  fechaAplicacion: string
+  proximaDosisFecha?: string
+  operario?: string
+  loteMarca?: string
+  costoAplicado?: number
+  observaciones?: string
+  createdAt: string
+}
+
+export interface AplicacionVacunaRequest {
+  animalId: string
+  vacunaId: string
+  fechaAplicacion: string
+  proximaDosisFecha?: string
+  operario?: string
+  loteMarca?: string
+  costoAplicado?: number
+  observaciones?: string
+}
+
+export interface TratamientoMedicamento {
+  id: string
+  animalId: string
+  animalCaravana: string
+  fechaInicio: string
+  fechaFin?: string
+  medicamento: string
+  dosis?: string
+  viaAplicacion?: string
+  responsable?: string
+  motivo?: string
+  costo?: number
+  observaciones?: string
+  createdAt: string
+}
+
+export interface TratamientoMedicamentoRequest {
+  animalId: string
+  fechaInicio: string
+  fechaFin?: string
+  medicamento: string
+  dosis?: string
+  viaAplicacion?: string
+  responsable?: string
+  motivo?: string
+  costo?: number
+  observaciones?: string
+}
+
+export interface DiagnosticoSanitario {
+  id: string
+  animalId: string
+  animalCaravana: string
+  fechaDiagnostico: string
+  enfermedad: string
+  severidad: string
+  estado: string
+  veterinario?: string
+  tratamientoIndicado?: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface DiagnosticoSanitarioRequest {
+  animalId: string
+  fechaDiagnostico: string
+  enfermedad: string
+  severidad?: string
+  estado?: string
+  veterinario?: string
+  tratamientoIndicado?: string
+  observaciones?: string
+}
+
+export interface AlertaVacuna {
+  aplicacionId: string
+  animalId: string
+  animalCaravana: string
+  vacunaNombre: string
+  proximaDosisFecha: string
+  diasRestantes: number
+  estado: string
+}
+
+export interface SanidadDashboard {
+  vacunasCatalogadas: number
+  aplicacionesMesActual: number
+  diagnosticosAbiertos: number
+  tratamientosActivos: number
+  costoSanitarioMes: number
+  alertasVacunas: AlertaVacuna[]
+  diagnosticosRecientes: DiagnosticoSanitario[]
+  tratamientosRecientes: TratamientoMedicamento[]
+}
