@@ -4,13 +4,22 @@ import { map } from 'rxjs/operators';
 import { API_BASE_URL } from './api.config';
 import type { ApiResponse } from './api.types';
 import type {
+  AplicacionVacuna,
+  AplicacionVacunaRequest,
   Animal,
   AnimalDetalle,
   AnimalRequest,
+  DiagnosticoSanitario,
+  DiagnosticoSanitarioRequest,
   HistorialMedicoAnimal,
   HistorialMedicoAnimalRequest,
   MovimientoAnimal,
   MovimientoAnimalRequest,
+  SanidadDashboard,
+  TratamientoMedicamento,
+  TratamientoMedicamentoRequest,
+  VacunaCatalogo,
+  VacunaCatalogoRequest,
 } from '../models/ganaderia.models';
 
 type HttpParamValue = string | number | boolean | readonly (string | number | boolean)[];
@@ -71,6 +80,58 @@ export class GanaderiaService {
   exportSenasa(estado?: string) {
     return this.http.get(`${API_BASE_URL}/ganaderia/trazabilidad/export/senasa`, {
       params: cleanParams({ estado }),
+      responseType: 'text',
+    });
+  }
+
+  getSanidadDashboard(referencia?: string) {
+    return this.http.get<ApiResponse<SanidadDashboard> | SanidadDashboard>(`${API_BASE_URL}/ganaderia/sanidad/dashboard`, { params: cleanParams({ referencia }) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getVacunas(obligatoria?: boolean) {
+    return this.http.get<ApiResponse<VacunaCatalogo[]> | VacunaCatalogo[]>(`${API_BASE_URL}/ganaderia/sanidad/vacunas`, { params: cleanParams({ obligatoria }) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createVacuna(data: VacunaCatalogoRequest) {
+    return this.http.post<ApiResponse<VacunaCatalogo> | VacunaCatalogo>(`${API_BASE_URL}/ganaderia/sanidad/vacunas`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getAplicaciones(params?: { animalId?: string; vacunaId?: string; desde?: string; hasta?: string }) {
+    return this.http.get<ApiResponse<AplicacionVacuna[]> | AplicacionVacuna[]>(`${API_BASE_URL}/ganaderia/sanidad/aplicaciones`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createAplicacion(data: AplicacionVacunaRequest) {
+    return this.http.post<ApiResponse<AplicacionVacuna> | AplicacionVacuna>(`${API_BASE_URL}/ganaderia/sanidad/aplicaciones`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getTratamientos(params?: { animalId?: string; desde?: string; hasta?: string }) {
+    return this.http.get<ApiResponse<TratamientoMedicamento[]> | TratamientoMedicamento[]>(`${API_BASE_URL}/ganaderia/sanidad/tratamientos`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createTratamiento(data: TratamientoMedicamentoRequest) {
+    return this.http.post<ApiResponse<TratamientoMedicamento> | TratamientoMedicamento>(`${API_BASE_URL}/ganaderia/sanidad/tratamientos`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getDiagnosticos(params?: { animalId?: string; estado?: string }) {
+    return this.http.get<ApiResponse<DiagnosticoSanitario[]> | DiagnosticoSanitario[]>(`${API_BASE_URL}/ganaderia/sanidad/diagnosticos`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createDiagnostico(data: DiagnosticoSanitarioRequest) {
+    return this.http.post<ApiResponse<DiagnosticoSanitario> | DiagnosticoSanitario>(`${API_BASE_URL}/ganaderia/sanidad/diagnosticos`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  exportReporteSanitario(desde?: string, hasta?: string) {
+    return this.http.get(`${API_BASE_URL}/ganaderia/sanidad/reportes/auditoria`, {
+      params: cleanParams({ desde, hasta }),
       responseType: 'text',
     });
   }

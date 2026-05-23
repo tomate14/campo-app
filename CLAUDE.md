@@ -55,3 +55,5 @@ campo-app/
 - Los componentes Angular deben quedar separados por carpeta con archivos `.ts`, `.html` y `.css`.
 - El runtime web no debe depender de hooks React.
 - Mobile puede seguir usando React Query y hooks propios.
+- Todas las cards nuevas del sistema deben seguir el lenguaje visual premium dark SaaS ya definido en la pantalla de ganaderia/sanidad.
+- Evitar cards genericas o basicas: usar jerarquia visual clara, glassmorphism suave, bordes amplios, espaciado limpio, contraste alto y acabado enterprise consistente con Campo App.

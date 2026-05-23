@@ -20,6 +20,7 @@
       <a routerLink="/clima" routerLinkActive="active" class="nav-link">{{ collapsed() ? 'CL' : 'Clima' }}</a>
       <div class="section-title" *ngIf="!collapsed()">Ganadería</div>
       <a routerLink="/ganaderia/trazabilidad" routerLinkActive="active" class="nav-link">{{ collapsed() ? 'TR' : 'Trazabilidad' }}</a>
+      <a routerLink="/ganaderia/sanidad" routerLinkActive="active" class="nav-link">{{ collapsed() ? 'SA' : 'Sanidad' }}</a>
     </nav>
 
     <button class="btn-secondary logout-btn" type="button" (click)="logout()">{{ collapsed() ? 'X' : 'Salir' }}</button>

@@ -9,6 +9,7 @@ import { CosechaPageComponent } from './pages/cosecha-page/cosecha-page.componen
 import { ClimaPageComponent } from './pages/clima-page/clima-page.component';
 import { AnalyticsPageComponent } from './pages/analytics-page/analytics-page.component';
 import { GanaderiaTrazabilidadPageComponent } from './pages/ganaderia-trazabilidad-page/ganaderia-trazabilidad-page.component';
+import { GanaderiaSanidadPageComponent } from './pages/ganaderia-sanidad-page/ganaderia-sanidad-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -24,6 +25,7 @@ export const routes: Routes = [
       { path: 'agricola/cosecha', component: CosechaPageComponent },
       { path: 'agricola/analytics', component: AnalyticsPageComponent },
       { path: 'ganaderia/trazabilidad', component: GanaderiaTrazabilidadPageComponent },
+      { path: 'ganaderia/sanidad', component: GanaderiaSanidadPageComponent },
       { path: 'clima', component: ClimaPageComponent },
     ],
   },
