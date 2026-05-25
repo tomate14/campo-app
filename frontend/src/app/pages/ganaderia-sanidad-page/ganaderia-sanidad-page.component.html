@@ -57,238 +57,195 @@
   <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
   <div class="card empty-box" *ngIf="loading()">Cargando sanidad...</div>
 
-  <div class="layout" *ngIf="!loading()">
-    <section class="card left-panel">
-      <div class="premium-alert-shell">
-        <div class="premium-alert-card" *ngIf="dashboard()?.alertasVacunas?.length; else noAlertas">
-          <div class="premium-alert__icon" aria-hidden="true">✦</div>
-          <div class="premium-alert__copy">
-            <p class="premium-alert__eyebrow">Estado sanitario</p>
-            <h3>Alertas de vacunación</h3>
-            <p class="premium-alert__subtitle">
-              {{ dashboard()?.alertasVacunas?.length }} alerta(s) activas para seguimiento inmediato.
-            </p>
+  <div class="sanidad-stack" *ngIf="!loading()">
+    <section class="card top-panel vaccination-alert-panel">
+      <div class="sanitary-tabs-bar catalog-tabs-bar">
+        <div class="catalog-head catalog-head--inline">
+          <div class="catalog-head__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg>
           </div>
-          <div class="premium-alert__stack premium-alert__stack--cards">
-            <article class="alert-vaccine-card" *ngFor="let alerta of dashboard()?.alertasVacunas">
-              <div class="alert-vaccine-card__media">
-                <div class="alert-vaccine-card__media-frame">
-                  <span class="alert-vaccine-card__media-icon" aria-hidden="true">+</span>
-                </div>
-              </div>
-              <div class="alert-vaccine-card__content">
-                <div class="alert-vaccine-card__top">
-                  <div class="alert-vaccine-card__title-block">
-                    <h4>{{ alerta.vacunaNombre }}</h4>
-                    <p>{{ alerta.animalCaravana }} � refuerzo sanitario</p>
-                  </div>
-                  <span class="catalog-badge" [class.catalog-badge--secondary]="alerta.estado !== 'VENCIDA'" [class.state-chip--danger]="alerta.estado === 'VENCIDA'">
-                    {{ alerta.estado }}
-                  </span>
-                </div>
-                <div class="catalog-metrics alert-vaccine-metrics">
-                  <div class="catalog-metric">
-                    <div class="catalog-metric__label"><span class="catalog-metric__icon">#</span><span>Animal</span></div>
-                    <div class="catalog-metric__value">{{ alerta.animalCaravana }}</div>
-                  </div>
-                  <div class="catalog-metric">
-                    <div class="catalog-metric__label"><span class="catalog-metric__icon">F</span><span>Pr�xima dosis</span></div>
-                    <div class="catalog-metric__value">{{ alerta.proximaDosisFecha }}</div>
-                  </div>
-                  <div class="catalog-metric">
-                    <div class="catalog-metric__label"><span class="catalog-metric__icon">D</span><span>D�as restantes</span></div>
-                    <div class="catalog-metric__value">{{ alerta.diasRestantes }}</div>
-                  </div>
-                </div>
-              </div>
-            </article>
+          <div>
+            <h3>Alertas de vacunación</h3>
+            <p>Vacunas próximas a inyectarse o vencidas para seguimiento operativo.</p>
           </div>
         </div>
+        <button class="section-toggle" type="button" (click)="toggleAlertas()" [attr.aria-expanded]="!alertasCollapsed()" aria-label="Colapsar alertas de vacunación">
+          <span>{{ alertasVacunacion().length }} alertas</span>
+          <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="alertasCollapsed()"><path d="m6 9 6 6 6-6" /></svg>
+        </button>
       </div>
+
+      <ng-container *ngIf="!alertasCollapsed(); else alertasCollapsedState">
+        <div class="sanitary-card-grid" *ngIf="alertasVacunacion().length; else noAlertas">
+          <article class="sanitary-record-card alert-record-card" *ngFor="let alerta of alertasVisibles()">
+            <div class="sanitary-record-card__top">
+              <div>
+                <h4>{{ alerta.vacunaNombre }}</h4>
+                <p>Animal {{ alerta.animalCaravana }}</p>
+              </div>
+              <span class="catalog-badge" [class.catalog-badge--secondary]="alerta.estado !== 'VENCIDA'" [class.state-chip--danger]="alerta.estado === 'VENCIDA'">{{ alerta.estado }}</span>
+            </div>
+            <div class="sanitary-record-card__metrics">
+              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2" /></svg><span>Animal</span><strong>{{ alerta.animalCaravana }}</strong></div>
+              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Próxima dosis</span><strong>{{ alerta.proximaDosisFecha }}</strong></div>
+              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg><span>Días restantes</span><strong>{{ alerta.diasRestantes }} días</strong></div>
+              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg><span>Estado</span><strong>{{ alerta.estado }}</strong></div>
+            </div>
+            <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>
+          </article>
+        </div>
+      </ng-container>
+
       <ng-template #noAlertas>
-        <div class="premium-alert-card premium-alert-card--empty">
-          <div class="premium-alert__icon" aria-hidden="true">✓</div>
-          <div class="premium-alert__copy">
-            <p class="premium-alert__eyebrow">Estado sanitario</p>
-            <h3>Alertas de vacunación</h3>
-            <p class="premium-alert__subtitle">No hay alertas de vacunación inmediatas.</p>
+        <div class="empty-box premium-empty-box empty-box--section">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+          <div>
+            <strong>Sin próximas vacunas</strong>
+            <p>No hay próximas vacunas a inyectarse.</p>
           </div>
         </div>
       </ng-template>
 
-      <div class="catalog-head">
-        <div class="catalog-head__icon" aria-hidden="true">✚</div>
-        <div>
-          <h3>Catálogo de vacunas</h3>
-          <p>Gestión y referencia de vacunas disponibles.</p>
+      <ng-template #alertasCollapsedState>
+        <div class="section-collapsed-summary">Alertas ocultas. {{ alertasVacunacion().length }} registros disponibles.</div>
+      </ng-template>
+    </section>
+
+    <section class="card top-panel catalog-panel sanitary-tabs-panel">
+      <div class="sanitary-tabs-bar catalog-tabs-bar">
+        <div class="catalog-head catalog-head--inline">
+          <div class="catalog-head__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>
+          </div>
+          <div>
+            <h3>Catálogo de vacunación</h3>
+            <p>Gestión y referencia de vacunas disponibles.</p>
+          </div>
+        </div>
+        <div class="sanitary-tabs-meta">
+          <span *ngIf="!catalogCollapsed()">{{ catalogRangeLabel() }}</span>
+          <button type="button" (click)="previousCatalogPage()" [disabled]="catalogPage() === 1" aria-label="Anterior catálogo"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+          <button type="button" *ngFor="let page of catalogPageNumbers()" [class.active]="page === catalogPage()" (click)="setCatalogPage(page)">{{ page }}</button>
+          <button type="button" (click)="nextCatalogPage()" [disabled]="catalogPage() === catalogTotalPages()" aria-label="Siguiente catálogo"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+          <button class="section-toggle section-toggle--compact" type="button" (click)="toggleCatalogo()" [attr.aria-expanded]="!catalogCollapsed()" aria-label="Colapsar catálogo de vacunación">
+            <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="catalogCollapsed()"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
         </div>
       </div>
-      <div class="catalog-grid catalog-grid--premium">
-        <article class="catalog-card catalog-card--premium" *ngFor="let vacuna of vacunas()">
-          <div class="catalog-card__media">
-            <div class="catalog-card__media-frame">
-              <span class="catalog-card__media-icon" aria-hidden="true">💉</span>
-            </div>
-          </div>
-          <div class="catalog-card__content">
-            <div class="catalog-card__top">
-              <div class="catalog-card__title-block">
+
+      <ng-container *ngIf="!catalogCollapsed(); else catalogCollapsedState">
+        <div class="sanitary-card-grid">
+          <article class="sanitary-record-card catalog-record-card" *ngFor="let vacuna of paginatedVacunas()">
+            <div class="sanitary-record-card__top">
+              <div>
                 <h4>{{ vacuna.nombre }}</h4>
                 <p>{{ vacuna.codigo }} · {{ vacuna.laboratorio || 'Sin laboratorio' }}</p>
               </div>
-              <span class="catalog-badge" [class.catalog-badge--secondary]="!vacuna.obligatoria">
-                {{ vacuna.obligatoria ? 'Obligatoria' : 'Complementaria' }}
-              </span>
+              <span class="catalog-badge" [class.catalog-badge--secondary]="!vacuna.obligatoria">{{ vacuna.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span>
             </div>
+            <div class="sanitary-record-card__metrics">
+              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg><span>Dosis</span><strong>{{ vacuna.dosisRecomendada || 'Sin dato' }}</strong></div>
+              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg><span>Frecuencia</span><strong>{{ vacuna.frecuenciaDias ? (vacuna.frecuenciaDias + ' días') : 'Sin dato' }}</strong></div>
+              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4z" /><path d="M8 7V4h8v3" /></svg><span>Stock</span><strong>{{ vacuna.stockDisponible ?? 'Sin dato' }}</strong></div>
+              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" /></svg><span>Costo ref.</span><strong>${{ vacuna.costoReferencia ?? 0 }}</strong></div>
+            </div>
+            <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>
+          </article>
+          <div class="empty-box premium-empty-box" *ngIf="!vacunas().length">Sin vacunas disponibles.</div>
+        </div>
 
-            <div class="catalog-metrics">
-              <div class="catalog-metric">
-                <div class="catalog-metric__label"><span class="catalog-metric__icon">◌</span><span>Dosis</span></div>
-                <div class="catalog-metric__value">{{ vacuna.dosisRecomendada || 'Sin dato' }}</div>
-              </div>
-              <div class="catalog-metric">
-                <div class="catalog-metric__label"><span class="catalog-metric__icon">◴</span><span>Frecuencia</span></div>
-                <div class="catalog-metric__value">{{ vacuna.frecuenciaDias || 'Sin dato' }} <small *ngIf="vacuna.frecuenciaDias">días</small></div>
-              </div>
-              <div class="catalog-metric">
-                <div class="catalog-metric__label"><span class="catalog-metric__icon">▣</span><span>Stock</span></div>
-                <div class="catalog-metric__value">{{ vacuna.stockDisponible ?? 'Sin dato' }}</div>
-              </div>
-              <div class="catalog-metric">
-                <div class="catalog-metric__label"><span class="catalog-metric__icon">$</span><span>Costo ref.</span></div>
-                <div class="catalog-metric__value">${{ vacuna.costoReferencia ?? '0' }}</div>
-              </div>
-            </div>
+        <article class="catalog-info-card catalog-info-card--compact">
+          <div class="catalog-info-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 7h.01" /></svg>
+          </div>
+          <div>
+            <strong>Referencia de costos</strong>
+            <p>Los costos son de referencia y pueden variar según el proveedor.</p>
           </div>
         </article>
-      </div>
+      </ng-container>
 
-      <article class="catalog-info-card">
-        <div class="catalog-info-card__icon" aria-hidden="true">i</div>
-        <div>
-          <strong>Referencia de costos</strong>
-          <p>Los costos son de referencia y pueden variar según el proveedor.</p>
-        </div>
-      </article>
+      <ng-template #catalogCollapsedState>
+        <div class="section-collapsed-summary">Catálogo oculto. {{ vacunas().length }} vacunas disponibles.</div>
+      </ng-template>
     </section>
-    <section class="card right-panel right-panel--premium">
-      <div class="catalog-head catalog-head--applications">
-        <div class="catalog-head__icon" aria-hidden="true">+</div>
-        <div>
-          <h3>Aplicaciones registradas</h3>
-          <p>Seguimiento sanitario de dosis aplicadas, refuerzos y responsables operativos.</p>
+
+    <section class="card right-panel right-panel--premium sanitary-tabs-panel">
+      <div class="sanitary-tabs-bar">
+        <div class="sanitary-tabs">
+          <button type="button" [class.active]="activeTab() === 'APLICACIONES'" (click)="setActiveTab('APLICACIONES')">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg>
+            <span>Vacunaciones registradas</span>
+          </button>
+          <button type="button" [class.active]="activeTab() === 'TRATAMIENTOS'" (click)="setActiveTab('TRATAMIENTOS')">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>
+            <span>Tratamientos</span>
+          </button>
+          <button type="button" [class.active]="activeTab() === 'DIAGNOSTICOS'" (click)="setActiveTab('DIAGNOSTICOS')">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v7" /><path d="M8 8c0 2 1.8 4 4 4s4-2 4-4" /><path d="M7 14c0 3 2 6 5 6s5-3 5-6" /><path d="M6 4v3a2 2 0 0 0 4 0V4M14 4v3a2 2 0 0 0 4 0V4" /></svg>
+            <span>Diagnósticos</span>
+          </button>
+        </div>
+        <div class="sanitary-tabs-meta">
+          <span *ngIf="!registrosCollapsed()">{{ tabRangeLabel() }}</span>
+          <button type="button" (click)="previousTabPage()" [disabled]="tabPage() === 1" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg></button>
+          <button type="button" *ngFor="let page of tabPageNumbers()" [class.active]="page === tabPage()" (click)="setTabPage(page)">{{ page }}</button>
+          <button type="button" (click)="nextTabPage()" [disabled]="tabPage() === tabTotalPages()" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg></button>
+          <button class="section-toggle section-toggle--compact" type="button" (click)="toggleRegistros()" [attr.aria-expanded]="!registrosCollapsed()" aria-label="Colapsar registros sanitarios">
+            <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="registrosCollapsed()"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
         </div>
       </div>
 
-      <div class="applications-grid applications-grid--premium">
-        <article class="application-card application-card--premium" *ngFor="let aplicacion of aplicaciones()">
-          <div class="application-card__media">
-            <div class="application-card__media-frame">
-              <span class="application-card__media-icon" aria-hidden="true">+</span>
-            </div>
+      <ng-container *ngIf="!registrosCollapsed(); else registrosCollapsedState">
+      <div class="sanitary-card-grid" *ngIf="activeTab() === 'APLICACIONES'">
+        <article class="sanitary-record-card" *ngFor="let aplicacion of paginatedAplicaciones()">
+          <div class="sanitary-record-card__top"><div><h4>{{ aplicacion.vacunaNombre }}</h4><p>Aplicada por: {{ aplicacion.operario || 'Sin operario' }}</p></div><span class="catalog-badge" [class.catalog-badge--secondary]="!aplicacion.vacunaObligatoria">{{ aplicacion.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }}</span></div>
+          <div class="sanitary-record-card__metrics">
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Fecha aplicación</span><strong>{{ aplicacion.fechaAplicacion }}</strong></div>
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg><span>Dosis aplicada</span><strong>{{ aplicacion.observaciones || 'Según vacuna' }}</strong></div>
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M4 7v10M7 7v10M10 7v10M14 7v10M17 7v10M20 7v10" /></svg><span>Lote / Serie</span><strong>{{ aplicacion.loteMarca || 'Sin lote' }}</strong></div>
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg><span>Vencimiento</span><strong>{{ aplicacion.proximaDosisFecha || 'Sin fecha' }}</strong></div>
           </div>
-
-          <div class="application-card__content">
-            <div class="application-card__top">
-              <div class="application-card__title-block">
-                <h4>{{ aplicacion.vacunaNombre }}</h4>
-                <p>{{ aplicacion.animalCaravana }} � {{ aplicacion.operario || 'Sin operario asignado' }}</p>
-              </div>
-
-              <div class="application-card__top-meta">
-                <span class="catalog-badge" [class.catalog-badge--secondary]="!aplicacion.vacunaObligatoria">
-                  {{ aplicacion.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }}
-                </span>
-                <strong class="application-card__cost">${{ aplicacion.costoAplicado ?? 0 }}</strong>
-              </div>
-            </div>
-
-            <div class="catalog-metrics application-metrics">
-              <div class="catalog-metric">
-                <div class="catalog-metric__label"><span class="catalog-metric__icon">#</span><span>Animal</span></div>
-                <div class="catalog-metric__value">{{ aplicacion.animalCaravana }}</div>
-              </div>
-              <div class="catalog-metric">
-                <div class="catalog-metric__label"><span class="catalog-metric__icon">F</span><span>Aplicada</span></div>
-                <div class="catalog-metric__value">{{ aplicacion.fechaAplicacion }}</div>
-              </div>
-              <div class="catalog-metric">
-                <div class="catalog-metric__label"><span class="catalog-metric__icon">R</span><span>Refuerzo</span></div>
-                <div class="catalog-metric__value">{{ aplicacion.proximaDosisFecha || 'Sin fecha' }}</div>
-              </div>
-              <div class="catalog-metric">
-                <div class="catalog-metric__label"><span class="catalog-metric__icon">L</span><span>Lote</span></div>
-                <div class="catalog-metric__value">{{ aplicacion.loteMarca || 'Sin lote' }}</div>
-              </div>
-            </div>
-          </div>
+          <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>
         </article>
         <div class="empty-box premium-empty-box" *ngIf="!aplicaciones().length">Sin aplicaciones con este filtro.</div>
       </div>
 
-      <div class="support-grid support-grid--premium">
-        <article class="support-card support-card--premium">
-          <div class="support-card__head">
-            <div class="support-card__title">
-              <div class="catalog-head__icon support-card__icon" aria-hidden="true">T</div>
-              <div>
-                <h4>Tratamientos</h4>
-                <p>Medicaci�n activa, responsables y seguimiento cl�nico.</p>
-              </div>
-            </div>
+      <div class="sanitary-card-grid" *ngIf="activeTab() === 'TRATAMIENTOS'">
+        <article class="sanitary-record-card" *ngFor="let tratamiento of paginatedTratamientos()">
+          <div class="sanitary-record-card__top"><div><h4>{{ tratamiento.medicamento }}</h4><p>Animal: {{ tratamiento.animalCaravana }}</p></div><span class="catalog-badge catalog-badge--secondary">{{ tratamiento.responsable || 'Sin responsable' }}</span></div>
+          <div class="sanitary-record-card__metrics">
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Fecha inicio</span><strong>{{ tratamiento.fechaInicio }}</strong></div>
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg><span>Dosis</span><strong>{{ tratamiento.dosis || 'Sin dosis' }}</strong></div>
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /></svg><span>Motivo</span><strong>{{ tratamiento.motivo || 'Sin motivo' }}</strong></div>
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5v14" /></svg><span>Costo</span><strong>${{ tratamiento.costo ?? 0 }}</strong></div>
           </div>
-
-          <div class="support-stack">
-            <article class="support-item support-item--premium" *ngFor="let tratamiento of tratamientos()">
-              <div class="support-item__top">
-                <div>
-                  <strong>{{ tratamiento.medicamento }}</strong>
-                  <p>{{ tratamiento.animalCaravana }} � {{ tratamiento.fechaInicio }}{{ tratamiento.fechaFin ? (' -> ' + tratamiento.fechaFin) : '' }}</p>
-                </div>
-                <span class="state-chip state-chip--soft">{{ tratamiento.responsable || 'Sin responsable' }}</span>
-              </div>
-              <div class="support-item__meta">
-                <span>Motivo: {{ tratamiento.motivo || 'Sin motivo' }}</span>
-                <span>Dosis: {{ tratamiento.dosis || 'Sin dosis' }}</span>
-                <span>Costo: ${{ tratamiento.costo ?? 0 }}</span>
-              </div>
-            </article>
-            <div class="empty-box premium-empty-box" *ngIf="!tratamientos().length">Sin tratamientos registrados.</div>
-          </div>
+          <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>
         </article>
-
-        <article class="support-card support-card--premium">
-          <div class="support-card__head">
-            <div class="support-card__title">
-              <div class="catalog-head__icon support-card__icon" aria-hidden="true">D</div>
-              <div>
-                <h4>Diagnosticos</h4>
-                <p>Estado sanitario, severidad y criterio veterinario.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="support-stack">
-            <article class="support-item support-item--premium" *ngFor="let diagnostico of diagnosticos()">
-              <div class="support-item__top">
-                <div>
-                  <strong>{{ diagnostico.enfermedad }}</strong>
-                  <p>{{ diagnostico.animalCaravana }} � {{ diagnostico.fechaDiagnostico }}</p>
-                </div>
-                <span class="state-chip" [class.state-chip--danger]="diagnostico.estado === 'ABIERTO' && diagnostico.severidad === 'CRITICA'">
-                  {{ diagnostico.estado }}
-                </span>
-              </div>
-              <div class="support-item__meta">
-                <span>Severidad: {{ diagnostico.severidad }}</span>
-                <span>Veterinario: {{ diagnostico.veterinario || 'Sin veterinario' }}</span>
-                <span>Tratamiento: {{ diagnostico.tratamientoIndicado || 'Sin indicar' }}</span>
-              </div>
-            </article>
-            <div class="empty-box premium-empty-box" *ngIf="!diagnosticos().length">Sin diagnosticos registrados.</div>
-          </div>
-        </article>
+        <div class="empty-box premium-empty-box" *ngIf="!tratamientos().length">Sin tratamientos registrados.</div>
       </div>
+
+      <div class="sanitary-card-grid" *ngIf="activeTab() === 'DIAGNOSTICOS'">
+        <article class="sanitary-record-card" *ngFor="let diagnostico of paginatedDiagnosticos()">
+          <div class="sanitary-record-card__top"><div><h4>{{ diagnostico.enfermedad }}</h4><p>{{ diagnostico.animalCaravana }} · {{ diagnostico.veterinario || 'Sin veterinario' }}</p></div><span class="catalog-badge" [class.state-chip--danger]="diagnostico.estado === 'ABIERTO' && diagnostico.severidad === 'CRITICA'">{{ diagnostico.estado }}</span></div>
+          <div class="sanitary-record-card__metrics">
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Fecha diagnóstico</span><strong>{{ diagnostico.fechaDiagnostico }}</strong></div>
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 3 3.5 18h17L12 3Z" /><path d="M12 9v4m0 3h.01" /></svg><span>Severidad</span><strong>{{ diagnostico.severidad }}</strong></div>
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg><span>Tratamiento</span><strong>{{ diagnostico.tratamientoIndicado || 'Sin indicar' }}</strong></div>
+            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2" /></svg><span>Animal</span><strong>{{ diagnostico.animalCaravana }}</strong></div>
+          </div>
+          <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>
+        </article>
+        <div class="empty-box premium-empty-box" *ngIf="!diagnosticos().length">Sin diagnósticos registrados.</div>
+      </div>
+
+      <div class="sanitary-tabs-footer"><div class="sanitary-footer-date"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Última actualización: 21/05/2026 19:45</span></div></div>
+      </ng-container>
+
+      <ng-template #registrosCollapsedState>
+        <div class="section-collapsed-summary">Registros ocultos. {{ activeTotal() }} elementos en la pestaña actual.</div>
+      </ng-template>
     </section>
   </div>
 

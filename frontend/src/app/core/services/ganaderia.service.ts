@@ -13,8 +13,22 @@ import type {
   DiagnosticoSanitarioRequest,
   HistorialMedicoAnimal,
   HistorialMedicoAnimalRequest,
+  ControlPrenez,
+  ControlPrenezRequest,
+  GenealogiaAnimal,
+  IndiceGenetico,
+  IndiceGeneticoRequest,
+  Inseminacion,
+  InseminacionRequest,
+  Monta,
+  MontaRequest,
   MovimientoAnimal,
   MovimientoAnimalRequest,
+  Parto,
+  PartoRequest,
+  RecomendacionCruzamiento,
+  ReproduccionDashboard,
+  ReproduccionResumen,
   SanidadDashboard,
   TratamientoMedicamento,
   TratamientoMedicamentoRequest,
@@ -134,5 +148,50 @@ export class GanaderiaService {
       params: cleanParams({ desde, hasta }),
       responseType: 'text',
     });
+  }
+
+  getReproduccionResumen(params?: { desde?: string; hasta?: string }) {
+    return this.http.get<ApiResponse<ReproduccionResumen> | ReproduccionResumen>(`${API_BASE_URL}/ganaderia/reproduccion`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getReproduccionDashboard(referencia?: string) {
+    return this.http.get<ApiResponse<ReproduccionDashboard> | ReproduccionDashboard>(`${API_BASE_URL}/ganaderia/reproduccion/dashboard`, { params: cleanParams({ referencia }) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createMonta(data: MontaRequest) {
+    return this.http.post<ApiResponse<Monta> | Monta>(`${API_BASE_URL}/ganaderia/reproduccion/montas`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createInseminacion(data: InseminacionRequest) {
+    return this.http.post<ApiResponse<Inseminacion> | Inseminacion>(`${API_BASE_URL}/ganaderia/reproduccion/inseminaciones`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createControlPrenez(data: ControlPrenezRequest) {
+    return this.http.post<ApiResponse<ControlPrenez> | ControlPrenez>(`${API_BASE_URL}/ganaderia/reproduccion/prenez`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createParto(data: PartoRequest) {
+    return this.http.post<ApiResponse<Parto> | Parto>(`${API_BASE_URL}/ganaderia/reproduccion/partos`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createIndiceGenetico(data: IndiceGeneticoRequest) {
+    return this.http.post<ApiResponse<IndiceGenetico> | IndiceGenetico>(`${API_BASE_URL}/ganaderia/reproduccion/indices`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getGenealogia(animalId: string) {
+    return this.http.get<ApiResponse<GenealogiaAnimal> | GenealogiaAnimal>(`${API_BASE_URL}/ganaderia/reproduccion/genealogia/${animalId}`)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getRecomendacionesCruzamiento() {
+    return this.http.get<ApiResponse<RecomendacionCruzamiento[]> | RecomendacionCruzamiento[]>(`${API_BASE_URL}/ganaderia/reproduccion/recomendaciones`)
+      .pipe(map((response) => unwrapApiResponse(response)));
   }
 }

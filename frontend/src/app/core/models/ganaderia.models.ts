@@ -224,3 +224,171 @@ export interface SanidadDashboard {
   diagnosticosRecientes: DiagnosticoSanitario[]
   tratamientosRecientes: TratamientoMedicamento[]
 }
+
+export interface Monta {
+  id: string
+  vacaId: string
+  vacaCaravana: string
+  toroId: string
+  toroCaravana: string
+  fecha: string
+  resultado: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface MontaRequest {
+  vacaId: string
+  toroId: string
+  fecha: string
+  resultado?: string
+  observaciones?: string
+}
+
+export interface Inseminacion {
+  id: string
+  vacaId: string
+  vacaCaravana: string
+  fecha: string
+  geneticaUsada: string
+  tecnico?: string
+  costo?: number
+  resultado: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface InseminacionRequest {
+  vacaId: string
+  fecha: string
+  geneticaUsada: string
+  tecnico?: string
+  costo?: number
+  resultado?: string
+  observaciones?: string
+}
+
+export interface ControlPrenez {
+  id: string
+  vacaId: string
+  vacaCaravana: string
+  fechaDiagnostico: string
+  estado: string
+  fechaEstimadaParto?: string
+  nivelRiesgoParto?: string
+  veterinario?: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface ControlPrenezRequest {
+  vacaId: string
+  fechaDiagnostico: string
+  estado: string
+  fechaEstimadaParto?: string
+  nivelRiesgoParto?: string
+  veterinario?: string
+  observaciones?: string
+}
+
+export interface Parto {
+  id: string
+  madreId: string
+  madreCaravana: string
+  terneroId?: string
+  terneroCaravana?: string
+  fecha: string
+  complicaciones?: string
+  viabilidadTernero: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface PartoRequest {
+  madreId: string
+  terneroId?: string
+  fecha: string
+  complicaciones?: string
+  viabilidadTernero?: string
+  observaciones?: string
+}
+
+export interface IndiceGenetico {
+  id: string
+  animalId: string
+  animalCaravana: string
+  fechaEvaluacion: string
+  epd?: number
+  dep?: number
+  indiceProductivo?: number
+  fuente?: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface IndiceGeneticoRequest {
+  animalId: string
+  fechaEvaluacion: string
+  epd?: number
+  dep?: number
+  indiceProductivo?: number
+  fuente?: string
+  observaciones?: string
+}
+
+export interface NodoGenealogia {
+  id: string
+  caravana: string
+  raza: string
+  sexo?: string
+  relacion: string
+  generacion: number
+  hijos?: NodoGenealogia[]
+}
+
+export interface GenealogiaAnimal {
+  animal: NodoGenealogia
+  ancestros: NodoGenealogia[]
+  descendencia: NodoGenealogia[]
+}
+
+export interface AlertaReproductiva {
+  tipo: string
+  animalId: string
+  animalCaravana: string
+  fecha: string
+  prioridad: string
+  nivelRiesgoParto?: string
+  mensaje: string
+}
+
+export interface RecomendacionCruzamiento {
+  vacaId: string
+  vacaCaravana: string
+  toroId: string
+  toroCaravana: string
+  score: number
+  motivo: string
+  recomendado: boolean
+}
+
+export interface ReproduccionDashboard {
+  montasRegistradas: number
+  inseminacionesRegistradas: number
+  prenezActivas: number
+  partosRegistrados: number
+  tasaPrenez: number
+  tasaPartoViable: number
+  serviciosPorPrenez: number
+  alertas: AlertaReproductiva[]
+  recomendaciones: RecomendacionCruzamiento[]
+}
+
+export interface ReproduccionResumen {
+  dashboard: ReproduccionDashboard
+  montas: Monta[]
+  inseminaciones: Inseminacion[]
+  controlesPrenez: ControlPrenez[]
+  partos: Parto[]
+  indices: IndiceGenetico[]
+}

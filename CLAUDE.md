@@ -57,3 +57,4 @@ campo-app/
 - Mobile puede seguir usando React Query y hooks propios.
 - Todas las cards nuevas del sistema deben seguir el lenguaje visual premium dark SaaS ya definido en la pantalla de ganaderia/sanidad.
 - Evitar cards genericas o basicas: usar jerarquia visual clara, glassmorphism suave, bordes amplios, espaciado limpio, contraste alto y acabado enterprise consistente con Campo App.
+- No usar siglas, letras o abreviaturas como iconos visuales. Todo icono nuevo debe ser un SVG o un icono real; si no hay un icono claro para representar la accion o entidad, preguntar antes de resolverlo con texto.

@@ -1,0 +1,495 @@
+﻿<div class="page">
+  <div class="page-head">
+    <div>
+      <h2>Reproduccion y Genealogia</h2>
+      <p>Programa reproductivo, preñez, partos, pedigree e índices genéticos del rodeo.</p>
+    </div>
+    <button class="btn-secondary" type="button" (click)="loadAll()">Actualizar</button>
+  </div>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="card empty-box" *ngIf="loading()">Cargando reproduccion...</div>
+
+  <ng-container *ngIf="!loading() && resumen() as data">
+    <section class="stats-grid">
+      <article class="metric-card"><p class="label">Montas</p><p class="value">{{ data.dashboard.montasRegistradas }}</p></article>
+      <article class="metric-card"><p class="label">IA</p><p class="value">{{ data.dashboard.inseminacionesRegistradas }}</p></article>
+      <article class="metric-card"><p class="label">Preñez activa</p><p class="value">{{ data.dashboard.prenezActivas }}</p></article>
+      <article class="metric-card"><p class="label">Partos</p><p class="value">{{ data.dashboard.partosRegistrados }}</p></article>
+      <article class="metric-card metric-card--accent"><p class="label">Tasa preñez</p><p class="value">{{ data.dashboard.tasaPrenez }}%</p></article>
+      <article class="metric-card metric-card--warning"><p class="label">Servicios/preñez</p><p class="value">{{ data.dashboard.serviciosPorPrenez }}</p></article>
+    </section>
+
+    <section class="birth-alerts">
+      <div class="birth-alerts__header">
+        <div class="birth-alerts__title">
+          <div class="birth-alerts__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <rect x="4" y="5" width="16" height="15" rx="3" />
+              <path d="M8 3v4m8-4v4M4 10h16" />
+              <path d="M8 15h3l2-3 3 5 2-3" />
+            </svg>
+          </div>
+          <div>
+            <h3>Alertas de proximos partos</h3>
+            <p>Monitorea las vacas proximas a parir y anticipate.</p>
+          </div>
+        </div>
+        <div class="birth-alerts__metrics">
+          <div class="birth-alerts__metric-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />
+              <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />
+            </svg>
+          </div>
+          <article class="birth-metric birth-metric--green">
+            <span>Proximos 30 dias</span>
+            <strong>{{ alertasParto().length }}</strong>
+          </article>
+          <article class="birth-metric birth-metric--orange">
+            <span>En riesgo</span>
+            <strong>{{ alertasEnRiesgo() }}</strong>
+          </article>
+        </div>
+      </div>
+
+      <div class="birth-alerts__grid" *ngIf="paginatedAlertas().length; else noAlerts">
+        <article class="birth-card" *ngFor="let alerta of paginatedAlertas()" [ngClass]="riesgoClass(alerta)">
+          <span class="risk-badge" [ngClass]="riesgoClass(alerta)">{{ riesgoLabel(alerta) }} prioridad</span>
+          <div class="birth-card__content">
+            <div class="birth-card__top">
+              <div class="birth-card__avatar" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />
+                  <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />
+                </svg>
+              </div>
+              <div>
+                <h4>VACA {{ alerta.animalCaravana }}</h4>
+                <p>RP {{ alerta.animalCaravana }} · HBA sin registrar</p>
+                <p class="birth-card__lot">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5 9 4l6 2.5 5-2.5v13.5L15 20l-6-2.5L4 20V6.5Z" /><path d="M9 4v13.5M15 6.5V20" /></svg>
+                  <span>Lote: {{ alertaLote(alerta) }}</span>
+                </p>
+              </div>
+            </div>
+            <div class="birth-card__metrics">
+              <div class="birth-data">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg>
+                <div><span>Fecha estimada</span><strong>{{ alerta.fecha }}</strong></div>
+              </div>
+              <div class="birth-data">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg>
+                <div><span>Dias restantes</span><strong>{{ diasRestantes(alerta) }} dias</strong></div>
+              </div>
+              <div class="birth-data">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3.5 18h17L12 3Z" /><path d="M12 9v4m0 3h.01" /></svg>
+                <div><span>Nivel de riesgo</span></div>
+                <strong class="inline-risk" [ngClass]="riesgoClass(alerta)">{{ riesgoLabel(alerta) }}</strong>
+              </div>
+              <div class="birth-data">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 19V7l4-3 4 3v12" /><path d="M6 19h12M10 11h4" /></svg>
+                <div><span>Parto</span></div>
+                <strong>{{ alertaPartoNumber(alerta) }}°</strong>
+              </div>
+            </div>
+            <button class="birth-card__action" type="button" (click)="viewAlertaDetalle(alerta)">
+              <span>Ver detalle</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <ng-template #noAlerts><div class="empty-box premium-empty">Sin alertas reproductivas inmediatas.</div></ng-template>
+
+      <div class="birth-pagination" *ngIf="alertasParto().length > alertPageSize">
+        <button type="button" (click)="previousAlertPage()" [disabled]="alertPage() === 1">Anterior</button>
+        <span>Pagina {{ alertPage() }} de {{ alertTotalPages() }}</span>
+        <button type="button" *ngFor="let page of alertPageNumbers()" [class.active]="page === alertPage()" (click)="setAlertPage(page)">{{ page }}</button>
+        <button type="button" (click)="nextAlertPage()" [disabled]="alertPage() === alertTotalPages()">Siguiente</button>
+      </div>
+
+      <div class="birth-alerts__footer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 10v6m0-9h.01" /></svg>
+        <span>Las fechas son estimadas en base a los registros del sistema y pueden variar.</span>
+        <strong>Ultima actualizacion: {{ today }}</strong>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="card panel">
+        <div class="tabs">
+          <button type="button" [class.active]="mode() === 'MONTA'" (click)="setMode('MONTA')">Monta</button>
+          <button type="button" [class.active]="mode() === 'IA'" (click)="setMode('IA')">IA</button>
+          <button type="button" [class.active]="mode() === 'PRENEZ'" (click)="setMode('PRENEZ')">Preñez</button>
+          <button type="button" [class.active]="mode() === 'PARTO'" (click)="setMode('PARTO')">Parto</button>
+          <button type="button" [class.active]="mode() === 'INDICE'" (click)="setMode('INDICE')">Indice</button>
+        </div>
+
+        <div class="form-grid" *ngIf="mode() === 'MONTA'">
+          <label><span>Vaca</span><select [ngModel]="montaForm().vacaId" (ngModelChange)="montaForm.update(f => ({ ...f, vacaId: $event }))"><option *ngFor="let animal of hembras()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <label><span>Toro</span><select [ngModel]="montaForm().toroId" (ngModelChange)="montaForm.update(f => ({ ...f, toroId: $event }))"><option *ngFor="let animal of machos()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="montaForm().fecha" (ngModelChange)="montaForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Resultado</span><select [ngModel]="montaForm().resultado" (ngModelChange)="montaForm.update(f => ({ ...f, resultado: $event }))"><option value="PENDIENTE">Pendiente</option><option value="PRENADA">Preñada</option><option value="FALLIDA">Fallida</option></select></label>
+        </div>
+
+        <div class="form-grid" *ngIf="mode() === 'IA'">
+          <label><span>Vaca</span><select [ngModel]="inseminacionForm().vacaId" (ngModelChange)="inseminacionForm.update(f => ({ ...f, vacaId: $event }))"><option *ngFor="let animal of hembras()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="inseminacionForm().fecha" (ngModelChange)="inseminacionForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Genetica usada</span><input [ngModel]="inseminacionForm().geneticaUsada" (ngModelChange)="inseminacionForm.update(f => ({ ...f, geneticaUsada: $event }))" /></label>
+          <label><span>Tecnico</span><input [ngModel]="inseminacionForm().tecnico" (ngModelChange)="inseminacionForm.update(f => ({ ...f, tecnico: $event }))" /></label>
+          <label><span>Costo</span><input type="number" [ngModel]="inseminacionForm().costo" (ngModelChange)="inseminacionForm.update(f => ({ ...f, costo: $event }))" /></label>
+        </div>
+
+        <div class="form-grid" *ngIf="mode() === 'PRENEZ'">
+          <label><span>Vaca</span><select [ngModel]="prenezForm().vacaId" (ngModelChange)="prenezForm.update(f => ({ ...f, vacaId: $event }))"><option *ngFor="let animal of hembras()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <label><span>Diagnostico</span><input type="date" [ngModel]="prenezForm().fechaDiagnostico" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
+          <label><span>Estado</span><select [ngModel]="prenezForm().estado" (ngModelChange)="prenezForm.update(f => ({ ...f, estado: $event }))"><option value="PRENADA">Preñada</option><option value="VACIA">Vacía</option><option value="CONTROL">Control</option></select></label>
+          <label><span>Parto estimado</span><input type="date" [ngModel]="prenezForm().fechaEstimadaParto" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaEstimadaParto: $event }))" /></label>
+          <label><span>Nivel de riesgo del parto</span><select [ngModel]="prenezForm().nivelRiesgoParto" (ngModelChange)="prenezForm.update(f => ({ ...f, nivelRiesgoParto: $event }))"><option value="BAJO">Bajo</option><option value="MEDIO">Medio</option><option value="ALTO">Alto</option></select></label>
+          <label><span>Veterinario</span><input [ngModel]="prenezForm().veterinario" (ngModelChange)="prenezForm.update(f => ({ ...f, veterinario: $event }))" /></label>
+        </div>
+
+        <div class="form-grid" *ngIf="mode() === 'PARTO'">
+          <label><span>Madre</span><select [ngModel]="partoForm().madreId" (ngModelChange)="partoForm.update(f => ({ ...f, madreId: $event }))"><option *ngFor="let animal of hembras()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <label><span>Ternero</span><select [ngModel]="partoForm().terneroId" (ngModelChange)="partoForm.update(f => ({ ...f, terneroId: $event }))"><option value="">Sin asociar</option><option *ngFor="let animal of animales()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="partoForm().fecha" (ngModelChange)="partoForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Viabilidad</span><select [ngModel]="partoForm().viabilidadTernero" (ngModelChange)="partoForm.update(f => ({ ...f, viabilidadTernero: $event }))"><option value="VIABLE">Viable</option><option value="NO_VIABLE">No viable</option><option value="OBSERVACION">Observacion</option></select></label>
+        </div>
+
+        <div class="form-grid" *ngIf="mode() === 'INDICE'">
+          <label><span>Animal</span><select [ngModel]="indiceForm().animalId" (ngModelChange)="indiceForm.update(f => ({ ...f, animalId: $event }))"><option *ngFor="let animal of animales()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="indiceForm().fechaEvaluacion" (ngModelChange)="indiceForm.update(f => ({ ...f, fechaEvaluacion: $event }))" /></label>
+          <label><span>EPD</span><input type="number" [ngModel]="indiceForm().epd" (ngModelChange)="indiceForm.update(f => ({ ...f, epd: $event }))" /></label>
+          <label><span>DEP</span><input type="number" [ngModel]="indiceForm().dep" (ngModelChange)="indiceForm.update(f => ({ ...f, dep: $event }))" /></label>
+          <label><span>Indice productivo</span><input type="number" [ngModel]="indiceForm().indiceProductivo" (ngModelChange)="indiceForm.update(f => ({ ...f, indiceProductivo: $event }))" /></label>
+        </div>
+
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="mode() === 'MONTA' ? montaForm().observaciones : mode() === 'IA' ? inseminacionForm().observaciones : mode() === 'PRENEZ' ? prenezForm().observaciones : mode() === 'PARTO' ? partoForm().observaciones : indiceForm().observaciones" (ngModelChange)="mode() === 'MONTA' ? montaForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'IA' ? inseminacionForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'PRENEZ' ? prenezForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'PARTO' ? partoForm.update(f => ({ ...f, observaciones: $event })) : indiceForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitCurrent()">Guardar evento</button>
+      </section>
+
+      <section class="card panel">
+        <div class="genealogy-card">
+          <div class="genealogy-head">
+            <div class="genealogy-title">
+              <div class="band-icon band-icon--tree" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M12 3v4m0 0H7.5A2.5 2.5 0 0 0 5 9.5V12m7-5h4.5A2.5 2.5 0 0 1 19 9.5V12M5 12v2.2m14-2.2v2.2M12 7v7.2" />
+                  <circle cx="5" cy="17" r="2.4" />
+                  <circle cx="12" cy="17" r="2.4" />
+                  <circle cx="19" cy="17" r="2.4" />
+                </svg>
+              </div>
+              <div>
+                <h3>Genealogia</h3>
+                <p>Arbol genealogico ascendente · 3 generaciones</p>
+              </div>
+            </div>
+            <div class="genealogy-selected" *ngIf="genealogia() as tree">
+              <div class="animal-icon" [class.icon-male]="selectedAnimalIsMale()" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" *ngIf="selectedAnimalIsMale(); else selectedFemaleIcon">
+                  <circle cx="10" cy="14" r="5" />
+                  <path d="M14 10l6-6m0 0h-5m5 0v5" />
+                </svg>
+                <ng-template #selectedFemaleIcon>
+                  <svg viewBox="0 0 24 24" role="img">
+                    <circle cx="12" cy="9" r="5" />
+                    <path d="M12 14v7m-4-3.5h8" />
+                  </svg>
+                </ng-template>
+              </div>
+              <div><span>Animal</span><strong>{{ tree.animal.caravana }}</strong></div>
+              <div><span>Raza</span><strong>{{ tree.animal.raza }}</strong></div>
+            </div>
+          </div>
+          <div class="form-grid one genealogy-selector">
+            <label><span>Animal</span><select [ngModel]="selectedGenealogiaId()" (ngModelChange)="selectedGenealogiaId.set($event); loadGenealogia()"><option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option></select></label>
+          </div>
+          <div class="genealogy-tree" *ngIf="genealogia() as tree">
+            <div class="genealogy-row genealogy-row--root">
+              <article class="pedigree-node pedigree-node--main"><div class="pedigree-icon" [class.icon-male]="selectedAnimalIsMale()" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img" *ngIf="selectedAnimalIsMale(); else rootFemaleIcon">
+                    <circle cx="10" cy="14" r="5" />
+                    <path d="M14 10l6-6m0 0h-5m5 0v5" />
+                  </svg>
+                  <ng-template #rootFemaleIcon>
+                    <svg viewBox="0 0 24 24" role="img">
+                      <circle cx="12" cy="9" r="5" />
+                      <path d="M12 14v7m-4-3.5h8" />
+                    </svg>
+                  </ng-template>
+                </div><div><strong>{{ tree.animal.caravana }}</strong><span>{{ tree.animal.raza }}</span></div></article>
+            </div>
+            <div class="genealogy-connector"></div>
+            <div class="genealogy-row">
+              <p class="generation-label">1 Generacion <span>Padres</span></p>
+              <div class="generation-grid">
+                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(1)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon1">
+                      <circle cx="10" cy="14" r="5" />
+                      <path d="M14 10l6-6m0 0h-5m5 0v5" />
+                    </svg>
+                    <ng-template #femaleNodeIcon1>
+                      <svg viewBox="0 0 24 24" role="img">
+                        <circle cx="12" cy="9" r="5" />
+                        <path d="M12 14v7m-4-3.5h8" />
+                      </svg>
+                    </ng-template>
+                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>
+              </div>
+            </div>
+            <div class="genealogy-row">
+              <p class="generation-label">2 Generacion <span>Abuelos</span></p>
+              <div class="generation-grid">
+                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(2)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon2">
+                      <circle cx="10" cy="14" r="5" />
+                      <path d="M14 10l6-6m0 0h-5m5 0v5" />
+                    </svg>
+                    <ng-template #femaleNodeIcon2>
+                      <svg viewBox="0 0 24 24" role="img">
+                        <circle cx="12" cy="9" r="5" />
+                        <path d="M12 14v7m-4-3.5h8" />
+                      </svg>
+                    </ng-template>
+                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>
+              </div>
+            </div>
+            <div class="genealogy-row">
+              <p class="generation-label">3 Generacion <span>Bisabuelos</span></p>
+              <div class="generation-grid">
+                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(3)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon3">
+                      <circle cx="10" cy="14" r="5" />
+                      <path d="M14 10l6-6m0 0h-5m5 0v5" />
+                    </svg>
+                    <ng-template #femaleNodeIcon3>
+                      <svg viewBox="0 0 24 24" role="img">
+                        <circle cx="12" cy="9" r="5" />
+                        <path d="M12 14v7m-4-3.5h8" />
+                      </svg>
+                    </ng-template>
+                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>
+              </div>
+            </div>
+            <div class="genealogy-foot"><span>Info basada en animales registrados en el sistema.</span><span>Ultima actualizacion: {{ today }}</span></div>
+          </div>
+          <div class="empty-box premium-empty" *ngIf="!genealogia()">Selecciona un animal para visualizar genealogia.</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="cross-panel">
+      <div class="birth-alerts__header">
+        <div class="birth-alerts__title">
+          <div class="birth-alerts__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M6 7c0-2 1.5-3.5 3.5-3.5S13 5 13 7s-1.5 3.5-3.5 3.5S6 9 6 7Z" />
+              <path d="M11 11.5c1.5-1 3.5-1 5 0 2 1.3 2.7 4 1.4 6L16 20l-2.2-1.2" />
+              <path d="M4 20c.4-3.8 2.5-6.2 5.5-6.2s5.1 2.4 5.5 6.2" />
+            </svg>
+          </div>
+          <div>
+            <h3>Recomendaciones de cruzamiento</h3>
+            <p>Compatibilidad heuristica por genealogia directa e indices disponibles.</p>
+          </div>
+        </div>
+        <div class="birth-alerts__metrics cross-panel__metrics">
+          <div class="birth-alerts__metric-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M5 19c1.6-5.2 4.8-8 9.5-8H20" />
+              <path d="M16 7h4v4" />
+              <path d="M4 12h4m-2-2v4" />
+            </svg>
+          </div>
+          <article class="birth-metric birth-metric--green">
+            <span>Recomendadas</span>
+            <strong>{{ recomendaciones().length }}</strong>
+          </article>
+          <article class="birth-metric birth-metric--orange">
+            <span>Score maximo</span>
+            <strong>{{ recomendaciones()[0]?.score || 0 }}</strong>
+          </article>
+        </div>
+      </div>
+
+      <div class="cross-grid" *ngIf="paginatedRecomendaciones().length; else noRecommendations">
+        <article class="cross-card" *ngFor="let item of paginatedRecomendaciones()" [ngClass]="recommendationClass(item)">
+          <span class="risk-badge" [ngClass]="recommendationClass(item)">{{ recommendationQuality(item) }} compatibilidad</span>
+          <div class="cross-card__pair">
+            <div class="cross-animal">
+              <div class="cross-animal__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img"><circle cx="12" cy="9" r="5" /><path d="M12 14v7m-4-3.5h8" /></svg>
+              </div>
+              <div><span>Vaca</span><strong>{{ item.vacaCaravana }}</strong></div>
+            </div>
+            <div class="cross-link" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img"><path d="M7 12h10m-4-4 4 4-4 4" /></svg>
+            </div>
+            <div class="cross-animal">
+              <div class="cross-animal__icon cross-animal__icon--male" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img"><circle cx="10" cy="14" r="5" /><path d="M14 10l6-6m0 0h-5m5 0v5" /></svg>
+              </div>
+              <div><span>Toro</span><strong>{{ item.toroCaravana }}</strong></div>
+            </div>
+          </div>
+          <div class="cross-card__metrics">
+            <div class="birth-data">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg>
+              <div><span>Score genetico</span></div>
+              <strong>{{ item.score }}</strong>
+            </div>
+            <div class="birth-data">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /><path d="m9 12 2 2 4-5" /></svg>
+              <div><span>Parentesco directo</span></div>
+              <strong>Validado</strong>
+            </div>
+            <div class="birth-data">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18c0-4 2.7-7 6-7s6 3 6 7" /><path d="M9 8a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z" /></svg>
+              <div><span>Modelo</span></div>
+              <strong>Heuristico</strong>
+            </div>
+          </div>
+          <p class="cross-card__note">{{ item.motivo }}</p>
+          <button class="birth-card__action" type="button" (click)="viewRecommendation(item)">
+            <span>Ver genealogia</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+          </button>
+        </article>
+      </div>
+
+      <ng-template #noRecommendations><div class="empty-box premium-empty">Sin recomendaciones disponibles.</div></ng-template>
+
+      <div class="birth-pagination" *ngIf="recomendaciones().length > recommendationPageSize">
+        <button type="button" (click)="previousRecommendationPage()" [disabled]="recommendationPage() === 1">Anterior</button>
+        <span>Pagina {{ recommendationPage() }} de {{ recommendationTotalPages() }}</span>
+        <button type="button" *ngFor="let page of recommendationPageNumbers()" [class.active]="page === recommendationPage()" (click)="setRecommendationPage(page)">{{ page }}</button>
+        <button type="button" (click)="nextRecommendationPage()" [disabled]="recommendationPage() === recommendationTotalPages()">Siguiente</button>
+      </div>
+    </section>
+  </ng-container>
+
+  <div class="detail-overlay" *ngIf="selectedAlert() as alerta" (click)="closeAlertaDetalle()">
+    <section class="cow-detail-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <header class="cow-detail-modal__header">
+        <div class="cow-detail-modal__eyebrow">
+          <span class="birth-alerts__icon detail-title-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M5 5h14v14H5z" />
+              <path d="m8 12 2.5 2.5L16 9" />
+            </svg>
+          </span>
+          <strong>Detalle de la vaca</strong>
+        </div>
+        <button class="detail-close" type="button" aria-label="Cerrar detalle" (click)="closeAlertaDetalle()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
+      </header>
+
+      <div class="cow-detail-modal__body" *ngIf="selectedAlertAnimal() as animal">
+        <aside class="cow-profile-card">
+          <div class="cow-profile-card__avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />
+              <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />
+            </svg>
+          </div>
+          <h3>VACA {{ animal.caravana }}</h3>
+          <div class="cow-profile-card__badges">
+            <span>RP {{ animal.caravana }}</span>
+            <span>HBA pendiente</span>
+          </div>
+          <dl class="cow-profile-list">
+            <div><dt>Raza</dt><dd>{{ animal.raza || 'Sin dato' }}</dd></div>
+            <div><dt>Fecha de nacimiento</dt><dd>{{ animal.fechaNacimiento || 'Sin dato' }}</dd></div>
+            <div><dt>Categoria</dt><dd>{{ animal.sexo || 'Sin dato' }}</dd></div>
+            <div><dt>Estado reproductivo</dt><dd><span class="inline-risk risk-low">{{ selectedAlertControl()?.estado || 'Prenada' }}</span></dd></div>
+            <div><dt>Registro</dt><dd>{{ animal.estado || 'Sin dato' }}</dd></div>
+          </dl>
+        </aside>
+
+        <section class="cow-detail-main">
+          <div class="cow-summary-grid">
+            <article class="cow-summary-card cow-summary-card--large">
+              <span class="summary-label">Proximo parto</span>
+              <strong>{{ alerta.fecha }}</strong>
+              <small>Fecha estimada</small>
+              <div class="summary-split">
+                <div><span>Dias restantes</span><b>{{ diasRestantes(alerta) }} dias</b></div>
+                <div><span>Nivel de riesgo</span><b class="inline-risk" [ngClass]="riesgoClass(alerta)">{{ selectedAlertRiskLabel() }}</b></div>
+                <div><span>Numero de parto</span><b>{{ selectedAlertPartoNumber() }}°</b></div>
+              </div>
+            </article>
+            <article class="cow-summary-card">
+              <div><span>Ultimo servicio</span><strong>{{ lastServiceLabel(alerta.animalId) }}</strong></div>
+              <div><span>Gestacion</span><strong>{{ selectedAlertControl()?.fechaDiagnostico ? 'En seguimiento' : 'Sin dato' }}</strong></div>
+              <div><span>Peso estimado</span><strong>{{ animal.pesoActualKg || 'Sin dato' }}<ng-container *ngIf="animal.pesoActualKg"> kg</ng-container></strong></div>
+              <div><span>Ubicacion</span><strong>{{ animal.ubicacionActual || 'Sin potrero' }}</strong></div>
+            </article>
+          </div>
+
+          <div class="detail-tabs">
+            <span class="active">Informacion general</span>
+            <span>Ficha tecnica</span>
+            <span>Reproduccion</span>
+            <span>Eventos</span>
+          </div>
+
+          <div class="detail-content-grid">
+            <article class="detail-info-card">
+              <h4>Informacion general</h4>
+              <dl>
+                <div><dt>Raza</dt><dd>{{ animal.raza || 'Sin dato' }}</dd></div>
+                <div><dt>Fecha de nacimiento</dt><dd>{{ animal.fechaNacimiento || 'Sin dato' }}</dd></div>
+                <div><dt>Edad</dt><dd>{{ technicalAge(animal) }}</dd></div>
+                <div><dt>Madre</dt><dd>{{ animal.madreCaravana || 'Sin dato' }}</dd></div>
+                <div><dt>Padre</dt><dd>{{ animal.padreCaravana || 'Sin dato' }}</dd></div>
+                <div><dt>Ubicacion actual</dt><dd>{{ animal.ubicacionActual || 'Sin dato' }}</dd></div>
+                <div><dt>Observaciones</dt><dd>{{ animal.observaciones || 'Sin observaciones' }}</dd></div>
+              </dl>
+            </article>
+
+            <article class="detail-info-card">
+              <h4>Resumen reproductivo</h4>
+              <dl>
+                <div><dt>Estado reproductivo</dt><dd>{{ selectedAlertControl()?.estado || 'Sin dato' }}</dd></div>
+                <div><dt>Ultimo servicio</dt><dd>{{ lastServiceLabel(alerta.animalId) }}</dd></div>
+                <div><dt>Diagnostico de prenez</dt><dd>{{ selectedAlertControl()?.fechaDiagnostico || 'Sin dato' }}</dd></div>
+                <div><dt>Metodo diagnostico</dt><dd>Pendiente de modelo</dd></div>
+                <div><dt>Fecha estimada de parto</dt><dd>{{ alerta.fecha }}</dd></div>
+                <div><dt>Numero de parto</dt><dd>{{ selectedAlertPartoNumber() }}°</dd></div>
+              </dl>
+            </article>
+          </div>
+
+          <article class="events-card">
+            <div class="events-card__head">
+              <h4>Seguimiento de eventos</h4>
+              <span>{{ selectedAlertEvents().length }} eventos</span>
+            </div>
+            <div class="events-table">
+              <div class="events-table__row events-table__row--head">
+                <span>Fecha</span><span>Tipo</span><span>Estado</span><span>Responsable</span><span>Detalle</span>
+              </div>
+              <div class="events-table__row" *ngFor="let event of selectedAlertEvents()">
+                <span>{{ event.fecha }}</span><strong>{{ event.tipo }}</strong><span>{{ event.estado }}</span><span>{{ event.responsable }}</span><span>{{ event.detalle }}</span>
+              </div>
+              <div class="events-table__empty" *ngIf="!selectedAlertEvents().length">Sin eventos asociados a esta vaca.</div>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <footer class="cow-detail-modal__footer">
+        <span>Ultima actualizacion: {{ today }}</span>
+        <button class="btn-secondary" type="button" (click)="closeAlertaDetalle()">Cerrar</button>
+      </footer>
+    </section>
+  </div>
+</div>
+
+
+
+
