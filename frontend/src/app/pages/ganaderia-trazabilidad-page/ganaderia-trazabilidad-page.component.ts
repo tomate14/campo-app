@@ -24,13 +24,20 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
   protected readonly selected = signal<AnimalDetalle | null>(null);
   protected readonly loading = signal(false);
   protected readonly saving = signal(false);
-  protected readonly filters = signal({ caravana: '', raza: '', ubicacion: '', estado: '' });
+  protected readonly filters = signal({ search: '', caravana: '', raza: '', ubicacion: '', estado: '' });
   protected readonly animalModalOpen = signal(false);
   protected readonly movimientoModalOpen = signal(false);
   protected readonly medicoModalOpen = signal(false);
   protected readonly errorMessage = signal('');
+  protected readonly page = signal(1);
+  protected readonly pageSize = signal(25);
+  protected readonly panelTab = signal<'RESUMEN' | 'MOVIMIENTOS' | 'MEDICO' | 'VACUNAS' | 'MAS'>('RESUMEN');
   protected readonly madreSearch = signal('');
   protected readonly padreSearch = signal('');
+  protected readonly sexoOptions = [
+    { value: 'Femenino', label: 'Femenino' },
+    { value: 'Masculino', label: 'Masculino' },
+  ];
 
   protected readonly animalForm = signal<AnimalRequest>({
     caravana: '',
@@ -70,16 +77,47 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
 
   protected readonly resumen = computed(() => {
     const items = this.animales();
+    const movimientos = this.selected()?.movimientos.length ?? 0;
     return {
       total: items.length,
       activos: items.filter((animal) => animal.estado === 'ACTIVO').length,
       conRfid: items.filter((animal) => !!animal.rfidCodigo).length,
       ubicaciones: new Set(items.map((animal) => animal.ubicacionActual).filter(Boolean)).size,
+      enMovimiento: movimientos,
+      riesgoSanitario: items.filter((animal) => this.riesgoAnimal(animal) !== 'Bajo').length,
     };
   });
 
-  protected readonly madresFiltradas = computed(() => this.filterParentOptions(this.madreSearch()));
-  protected readonly padresFiltrados = computed(() => this.filterParentOptions(this.padreSearch()));
+  protected readonly madresFiltradas = computed(() => this.filterParentOptions('madre', this.madreSearch()));
+  protected readonly padresFiltrados = computed(() => this.filterParentOptions('padre', this.padreSearch()));
+  protected readonly razas = computed(() =>
+    Array.from(new Set(this.animales().map((animal) => animal.raza).filter(Boolean))).sort(),
+  );
+  protected readonly ubicaciones = computed(() =>
+    Array.from(new Set(this.animales().map((animal) => animal.ubicacionActual).filter(Boolean) as string[])).sort(),
+  );
+  protected readonly filteredAnimales = computed(() => {
+    const query = this.filters().search.trim().toLowerCase();
+    return this.animales().filter((animal) => {
+      if (!query) return true;
+      return [animal.caravana, animal.raza, animal.sexo, animal.estado, animal.ubicacionActual, animal.rfidCodigo]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(query));
+    });
+  });
+  protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.filteredAnimales().length / this.pageSize())));
+  protected readonly pageNumbers = computed(() => Array.from({ length: Math.min(this.totalPages(), 5) }, (_, index) => index + 1));
+  protected readonly paginatedAnimales = computed(() => {
+    const start = (this.page() - 1) * this.pageSize();
+    return this.filteredAnimales().slice(start, start + this.pageSize());
+  });
+  protected readonly rangeLabel = computed(() => {
+    const total = this.filteredAnimales().length;
+    if (!total) return 'Mostrando 0 de 0 animales';
+    const start = (this.page() - 1) * this.pageSize() + 1;
+    const end = Math.min(this.page() * this.pageSize(), total);
+    return `Mostrando ${start} a ${end} de ${total} animales`;
+  });
 
   ngOnInit(): void {
     this.loadAnimales();
@@ -88,7 +126,8 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
   protected loadAnimales(selectId?: string) {
     this.loading.set(true);
     this.errorMessage.set('');
-    this.ganaderiaService.getAnimales(this.filters()).subscribe({
+    const { search: _search, ...apiFilters } = this.filters();
+    this.ganaderiaService.getAnimales(apiFilters).subscribe({
       next: (animales) => {
         this.animales.set(animales);
         this.loading.set(false);
@@ -113,8 +152,30 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     });
   }
 
-  protected updateFilter(key: 'caravana' | 'raza' | 'ubicacion' | 'estado', value: string) {
+  protected updateFilter(key: 'search' | 'caravana' | 'raza' | 'ubicacion' | 'estado', value: string) {
     this.filters.update((current) => ({ ...current, [key]: value }));
+    this.page.set(1);
+  }
+
+  protected setPage(page: number) {
+    this.page.set(Math.min(Math.max(page, 1), this.totalPages()));
+  }
+
+  protected previousPage() {
+    this.setPage(this.page() - 1);
+  }
+
+  protected nextPage() {
+    this.setPage(this.page() + 1);
+  }
+
+  protected updatePageSize(value: string) {
+    this.pageSize.set(Number(value));
+    this.page.set(1);
+  }
+
+  protected selectPanelTab(tab: 'RESUMEN' | 'MOVIMIENTOS' | 'MEDICO' | 'VACUNAS' | 'MAS') {
+    this.panelTab.set(tab);
   }
 
   protected openCreateAnimal() {
@@ -169,6 +230,21 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     this.movimientoModalOpen.set(true);
   }
 
+  protected openMovimientoModalFor(animal: Animal) {
+    this.loadAnimalDetail(animal.id);
+    this.movimientoForm.set({
+      animalId: animal.id,
+      fecha: new Date().toISOString().slice(0, 16),
+      tipoMovimiento: 'TRANSFERENCIA',
+      ubicacionOrigen: animal.ubicacionActual ?? '',
+      ubicacionDestino: '',
+      motivo: '',
+      responsable: '',
+      observaciones: '',
+    });
+    this.movimientoModalOpen.set(true);
+  }
+
   protected submitMovimiento() {
     this.saving.set(true);
     this.ganaderiaService.createMovimiento(this.movimientoForm()).subscribe({
@@ -191,6 +267,19 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     if (!animalId) return;
     this.medicoForm.set({
       animalId,
+      fecha: new Date().toISOString().slice(0, 10),
+      diagnostico: '',
+      tratamiento: '',
+      veterinario: '',
+      observaciones: '',
+    });
+    this.medicoModalOpen.set(true);
+  }
+
+  protected openMedicoModalFor(animal: Animal) {
+    this.loadAnimalDetail(animal.id);
+    this.medicoForm.set({
+      animalId: animal.id,
       fecha: new Date().toISOString().slice(0, 10),
       diagnostico: '',
       tratamiento: '',
@@ -286,12 +375,13 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     };
   }
 
-  private filterParentOptions(search: string) {
+  private filterParentOptions(role: 'madre' | 'padre', search: string) {
     const query = search.trim().toLowerCase();
     const currentCaravana = this.animalForm().caravana?.trim().toLowerCase();
 
     return this.animales()
       .filter((animal) => animal.caravana.trim().toLowerCase() !== currentCaravana)
+      .filter((animal) => role === 'madre' ? this.isFemale(animal) : this.isMale(animal))
       .filter((animal) => {
         if (!query) {
           return true;
@@ -304,5 +394,47 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
 
   protected parentOptionLabel(animal: Animal) {
     return `${animal.caravana} · ${animal.raza}${animal.ubicacionActual ? ` · ${animal.ubicacionActual}` : ''}`;
+  }
+
+  protected riesgoAnimal(animal: Animal) {
+    if (animal.estado !== 'ACTIVO') return 'Alto';
+    if (!animal.rfidCodigo || !animal.pesoActualKg) return 'Medio';
+    return 'Bajo';
+  }
+
+  protected animalAge(animal: Animal) {
+    if (!animal.fechaNacimiento) return 'Sin dato';
+    const born = new Date(animal.fechaNacimiento);
+    const now = new Date();
+    const years = now.getFullYear() - born.getFullYear();
+    return years > 0 ? `${years} años` : 'Menor a 1 año';
+  }
+
+  protected sexoLabel(animal: Animal) {
+    return animal.sexo || 'Sin dato';
+  }
+
+  protected lastMovement(animal: Animal) {
+    const selected = this.selected();
+    if (selected?.animal.id === animal.id && selected.movimientos.length) {
+      return selected.movimientos[0].fecha;
+    }
+    return animal.updatedAt?.slice(0, 10) ?? 'Sin dato';
+  }
+
+  protected isFemale(animal: Animal) {
+    return ['FEMENINO', 'HEMBRA', 'F', 'FEMALE'].includes(this.normalizeSexo(animal.sexo));
+  }
+
+  private isMale(animal: Animal) {
+    return ['MASCULINO', 'MACHO', 'TORO', 'M', 'MALE'].includes(this.normalizeSexo(animal.sexo));
+  }
+
+  private normalizeSexo(value?: string) {
+    return (value ?? '')
+      .trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toUpperCase();
   }
 }

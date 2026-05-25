@@ -1,0 +1,856 @@
+.page { display: flex; flex-direction: column; gap: 20px; }
+.page-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.page-head p { margin: 6px 0 0; color: var(--muted); }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+.metric-card {
+  position: relative;
+  min-height: 82px;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 16px;
+  padding: 16px 18px;
+  background:
+    linear-gradient(180deg, rgba(16, 28, 54, 0.9), rgba(11, 21, 41, 0.86)),
+    radial-gradient(circle at top left, rgba(110, 168, 255, 0.08), transparent 34%);
+  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+.metric-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 18% 0%, rgba(159, 232, 112, 0.08), transparent 42%);
+  pointer-events: none;
+}
+.metric-card .label {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin: 0;
+  color: #8ea0bb;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.metric-card .value {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin: 10px 0 0;
+  color: #f8fbff;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+.metric-card--accent {
+  border-color: rgba(159, 232, 112, 0.16);
+  box-shadow: inset 0 0 28px rgba(159, 232, 112, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+.metric-card--accent .value { color: #9fe870; }
+.metric-card--warning {
+  border-color: rgba(255, 184, 77, 0.18);
+  box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.065), inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+.metric-card--warning .value { color: #ffb84d; }
+.layout { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 18px; }
+.panel, .premium-band { padding: 20px; }
+.premium-band, .panel {
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(16, 28, 54, 0.9), rgba(11, 21, 41, 0.86)),
+    radial-gradient(circle at top left, rgba(110, 168, 255, 0.08), transparent 30%);
+  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+.band-head { display: grid; grid-template-columns: 56px 1fr; gap: 14px; align-items: center; margin-bottom: 16px; }
+.band-head.compact { margin-bottom: 14px; }
+.band-icon {
+  width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center;
+  color: #f8fbff; font-weight: 800; border: 1px solid rgba(148, 163, 184, 0.14);
+  background: linear-gradient(180deg, rgba(24, 39, 69, 0.9), rgba(13, 24, 47, 0.86));
+}
+.band-icon svg,
+.animal-icon svg,
+.pedigree-icon svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.band-head h3 { margin: 0; color: #f8fbff; font-size: 26px; letter-spacing: 0; }
+.band-head p { margin: 6px 0 0; color: #8ea0bb; }
+.premium-list { display: flex; flex-direction: column; gap: 12px; }
+.cards-compact { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.premium-card {
+  display: flex; gap: 16px; padding: 16px; border-radius: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  background: rgba(9, 18, 36, 0.58);
+}
+.premium-card__icon {
+  width: 54px; height: 54px; flex: 0 0 54px; border-radius: 18px; display: grid; place-items: center;
+  color: #9fe870; background: rgba(110, 168, 255, 0.08);
+}
+.premium-card__body { flex: 1; min-width: 0; }
+.premium-card__top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.premium-card h4 { margin: 0; color: #f8fbff; font-size: 18px; }
+.premium-card p { margin: 6px 0 0; color: #90a1bb; }
+.premium-card__note { font-size: 14px; }
+.badge { border-radius: 999px; padding: 8px 12px; color: #9fe870; background: rgba(159, 232, 112, 0.12); border: 1px solid rgba(159, 232, 112, 0.2); font-weight: 800; font-size: 12px; }
+.badge--danger { color: #fecaca; background: rgba(248, 113, 113, 0.14); border-color: rgba(248, 113, 113, 0.24); }
+.birth-alerts {
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 18px;
+  padding: 14px 16px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(110, 168, 255, 0.14), transparent 34%),
+    linear-gradient(180deg, rgba(16, 28, 54, 0.92), rgba(8, 18, 37, 0.92));
+  box-shadow: 0 22px 44px rgba(2, 8, 23, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.cross-panel {
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 18px;
+  padding: 14px 16px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(159, 232, 112, 0.1), transparent 32%),
+    linear-gradient(180deg, rgba(16, 28, 54, 0.92), rgba(8, 18, 37, 0.92));
+  box-shadow: 0 22px 44px rgba(2, 8, 23, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.birth-alerts__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.birth-alerts__title {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+.birth-alerts__icon,
+.birth-card__avatar {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(110, 168, 255, 0.2);
+  background: linear-gradient(180deg, rgba(25, 43, 76, 0.88), rgba(11, 23, 48, 0.82));
+  color: #9fe870;
+  box-shadow: 0 0 26px rgba(110, 168, 255, 0.1);
+}
+.birth-alerts__icon { width: 46px; height: 46px; border-radius: 13px; }
+.birth-alerts svg,
+.birth-card svg,
+.birth-pagination svg,
+.birth-alerts__footer svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.birth-alerts__icon svg { width: 25px; height: 25px; }
+.birth-card__avatar svg { width: 31px; height: 31px; }
+.birth-alerts__title h3 { margin: 0; color: #f8fbff; font-size: 18px; letter-spacing: -0.02em; }
+.birth-alerts__title p { margin: 8px 0 0; color: #9caec8; font-size: 13px; }
+.birth-alerts__metrics {
+  display: grid;
+  grid-template-columns: 46px repeat(2, minmax(92px, 1fr));
+  align-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(7, 15, 31, 0.42);
+}
+.birth-alerts__metric-icon {
+  display: grid;
+  place-items: center;
+  height: 58px;
+  color: #9fe870;
+}
+.birth-alerts__metric-icon svg { width: 30px; height: 30px; }
+.birth-metric { padding: 11px 14px; }
+.birth-metric + .birth-metric { border-left: 1px solid rgba(148, 163, 184, 0.12); }
+.birth-metric strong { display: block; margin-top: 4px; color: #f8fbff; font-size: 18px; line-height: 1; }
+.birth-metric span { display: block; color: #8ea0bb; font-size: 11px; font-weight: 700; }
+.birth-metric--orange strong { color: #ff7a3d; }
+.birth-metric--green { box-shadow: inset 0 0 28px rgba(159, 232, 112, 0.06); }
+.birth-metric--orange { box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.07); }
+.birth-alerts__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.birth-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 12px;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(13, 27, 52, 0.88), rgba(8, 18, 37, 0.86));
+  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);
+}
+.birth-card.risk-high { border-color: rgba(255, 107, 107, 0.2); box-shadow: 0 14px 30px rgba(255, 107, 107, 0.06); }
+.birth-card.risk-medium { border-color: rgba(255, 184, 77, 0.2); box-shadow: 0 14px 30px rgba(255, 184, 77, 0.06); }
+.birth-card.risk-low { border-color: rgba(159, 232, 112, 0.18); box-shadow: 0 14px 30px rgba(159, 232, 112, 0.05); }
+.birth-card__top {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+}
+.birth-card__avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border-color: rgba(159, 232, 112, 0.22);
+  background:
+    radial-gradient(circle at 38% 28%, rgba(255, 255, 255, 0.2), transparent 16%),
+    linear-gradient(145deg, rgba(159, 232, 112, 0.2), rgba(8, 18, 37, 0.9));
+}
+.birth-card__content { min-width: 0; }
+.birth-card h4 { margin: 0 0 4px; color: #f8fbff; font-size: 15px; letter-spacing: -0.02em; }
+.birth-card p { margin: 0; color: #8ea0bb; font-size: 11px; line-height: 1.35; }
+.birth-card__lot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px !important;
+  color: #c9d7ec !important;
+  font-size: 10.5px !important;
+}
+.birth-card__lot svg {
+  width: 13px;
+  height: 13px;
+  color: #9fe870;
+  flex: 0 0 16px;
+}
+.risk-badge {
+  display: inline-flex;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: #9fe870;
+  background: rgba(159, 232, 112, 0.1);
+  border: 1px solid rgba(159, 232, 112, 0.18);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+.risk-badge.risk-high { color: #fecaca; background: rgba(255, 107, 107, 0.12); border-color: rgba(255, 107, 107, 0.24); }
+.risk-badge.risk-medium { color: #fde68a; background: rgba(255, 184, 77, 0.12); border-color: rgba(255, 184, 77, 0.24); }
+.birth-card__metrics {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin-top: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.birth-data {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  border: 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 0;
+  padding: 12px 8px;
+  background: rgba(7, 15, 31, 0.42);
+}
+.birth-data:last-child { border-bottom: 0; }
+.birth-data svg { width: 17px; height: 17px; color: #b8c6dd; }
+.birth-data span { display: block; color: #8ea0bb; font-size: 10.5px; }
+.birth-data strong { display: block; color: #f8fbff; font-size: 12px; text-align: right; }
+.birth-data:nth-child(2) strong { color: #ffb84d; }
+.inline-risk {
+  border-radius: 999px;
+  padding: 5px 8px;
+  font-size: 10px !important;
+  background: rgba(159, 232, 112, 0.12);
+  border: 1px solid rgba(159, 232, 112, 0.14);
+}
+.inline-risk.risk-high { color: #ff6b6b; background: rgba(255, 107, 107, 0.12); border-color: rgba(255, 107, 107, 0.18); }
+.inline-risk.risk-medium { color: #ffb84d; background: rgba(255, 184, 77, 0.12); border-color: rgba(255, 184, 77, 0.18); }
+.inline-risk.risk-low { color: #9fe870; }
+.birth-card__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+  border: 1px solid rgba(159, 232, 112, 0.22);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #9fe870;
+  background: rgba(7, 15, 31, 0.42);
+  font-weight: 900;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+.birth-card__action:hover { border-color: rgba(159, 232, 112, 0.48); transform: translateY(-1px); box-shadow: 0 0 22px rgba(159, 232, 112, 0.08); }
+.birth-card__action svg { width: 18px; height: 18px; }
+.birth-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px -16px 0;
+  padding: 10px 16px;
+  border-top: 1px solid rgba(148, 163, 184, 0.08);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  background: rgba(7, 15, 31, 0.3);
+}
+.birth-pagination button {
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #dbeafe;
+  background: rgba(7, 15, 31, 0.52);
+  font-weight: 800;
+  cursor: pointer;
+}
+.birth-pagination button.active { color: #081225; background: #9fe870; border-color: #9fe870; box-shadow: 0 0 18px rgba(159, 232, 112, 0.22); }
+.birth-pagination button:disabled { opacity: 0.42; cursor: not-allowed; }
+.birth-pagination span { color: #8ea0bb; font-size: 13px; margin-left: 8px; }
+.birth-alerts__footer {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin: 12px -16px -14px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 10px;
+  padding: 13px 24px;
+  color: #8ea0bb;
+  background: rgba(7, 15, 31, 0.46);
+}
+.birth-alerts__footer svg { width: 20px; height: 20px; color: #6ea8ff; }
+.birth-alerts__footer strong { color: #c9d7ec; font-size: 13px; }
+.cross-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.cross-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 12px;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(13, 27, 52, 0.88), rgba(8, 18, 37, 0.86));
+  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);
+}
+.cross-card.risk-low { border-color: rgba(159, 232, 112, 0.18); box-shadow: 0 14px 30px rgba(159, 232, 112, 0.05); }
+.cross-card.risk-medium { border-color: rgba(255, 184, 77, 0.2); box-shadow: 0 14px 30px rgba(255, 184, 77, 0.06); }
+.cross-card.risk-high { border-color: rgba(255, 107, 107, 0.2); box-shadow: 0 14px 30px rgba(255, 107, 107, 0.06); }
+.cross-card__pair {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 4px;
+}
+.cross-animal {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+.cross-animal__icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #9fe870;
+  background: rgba(159, 232, 112, 0.1);
+  border: 1px solid rgba(159, 232, 112, 0.18);
+}
+.cross-animal__icon--male {
+  color: #6ea8ff;
+  background: rgba(110, 168, 255, 0.1);
+  border-color: rgba(110, 168, 255, 0.18);
+}
+.cross-animal__icon svg,
+.cross-link svg,
+.cross-panel svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cross-animal__icon svg { width: 23px; height: 23px; }
+.cross-animal span { display: block; color: #8ea0bb; font-size: 10.5px; }
+.cross-animal strong { display: block; color: #f8fbff; font-size: 15px; }
+.cross-link {
+  display: grid;
+  place-items: center;
+  color: #9fe870;
+  opacity: 0.8;
+}
+.cross-link svg { width: 22px; height: 22px; }
+.cross-card__metrics {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.cross-card__note {
+  min-height: 48px;
+  margin: 0;
+  color: #8ea0bb;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.tabs button { border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 999px; background: rgba(15, 23, 42, 0.54); color: #9bb0cc; padding: 10px 14px; font-weight: 800; cursor: pointer; }
+.tabs button.active { color: #081225; background: #9fe870; border-color: #9fe870; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.form-grid.one { grid-template-columns: 1fr; }
+.form-grid label, .textarea-field { display: flex; flex-direction: column; gap: 6px; color: #8ea0bb; font-size: 13px; }
+.textarea-field { margin: 12px 0; }
+.textarea-field textarea { min-height: 88px; }
+.tree { display: flex; flex-direction: column; gap: 14px; }
+.tree-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tree-title { margin: 0 0 8px; color: #8ea0bb; text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 800; }
+.tree-node { border: 1px solid rgba(148, 163, 184, 0.12); border-radius: 18px; background: rgba(9, 18, 36, 0.58); padding: 12px 14px; margin-bottom: 8px; }
+.tree-node.main { border-color: rgba(159, 232, 112, 0.22); box-shadow: 0 0 20px rgba(159, 232, 112, 0.06); }
+.tree-node strong { display: block; color: #f8fbff; }
+.tree-node span { color: #90a1bb; font-size: 13px; }
+.genealogy-card { display: flex; flex-direction: column; gap: 18px; }
+.genealogy-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.72fr);
+  gap: 16px;
+  align-items: center;
+}
+.genealogy-title { display: grid; grid-template-columns: 56px 1fr; gap: 14px; align-items: center; }
+.genealogy-title h3 { margin: 0; color: #f8fbff; font-size: 26px; }
+.genealogy-title p { margin: 6px 0 0; color: #8ea0bb; }
+.genealogy-selected {
+  display: grid;
+  grid-template-columns: 54px 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: rgba(9, 18, 36, 0.58);
+}
+.genealogy-selected span { display: block; color: #8ea0bb; font-size: 12px; margin-bottom: 4px; }
+.genealogy-selected strong { color: #f8fbff; font-size: 16px; }
+.animal-icon,
+.pedigree-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  color: #9fe870;
+  font-weight: 900;
+  background: rgba(159, 232, 112, 0.1);
+  border: 1px solid rgba(159, 232, 112, 0.16);
+}
+.icon-male {
+  color: #6ea8ff;
+  background: rgba(110, 168, 255, 0.1);
+  border-color: rgba(110, 168, 255, 0.18);
+}
+.genealogy-selector { max-width: 420px; }
+.genealogy-tree {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 24px;
+  padding: 18px;
+  background: radial-gradient(circle at top, rgba(159, 232, 112, 0.05), transparent 36%), rgba(7, 15, 31, 0.5);
+}
+.genealogy-row { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.genealogy-row--root { padding-top: 4px; }
+.genealogy-connector {
+  width: 1px;
+  height: 22px;
+  align-self: center;
+  border-left: 1px dashed rgba(159, 232, 112, 0.6);
+}
+.generation-label {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 8px 16px;
+  border-radius: 12px;
+  color: #c6d4ea;
+  font-size: 12px;
+  font-weight: 900;
+  background: rgba(110, 168, 255, 0.06);
+}
+.generation-label span { color: #8ea0bb; font-weight: 700; }
+.generation-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+}
+.pedigree-node {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 80px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 18px;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(17, 32, 60, 0.82), rgba(9, 18, 36, 0.76));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+.pedigree-node--main {
+  min-width: 240px;
+  border-color: rgba(159, 232, 112, 0.45);
+  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.pedigree-node strong { display: block; color: #f8fbff; font-size: 15px; }
+.pedigree-node span { display: block; margin-top: 4px; color: #8ea0bb; font-size: 13px; }
+.genealogy-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.11);
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: #8ea0bb;
+  background: rgba(9, 18, 36, 0.48);
+  font-size: 12px;
+}
+.premium-empty { padding: 18px; border: 1px dashed rgba(148, 163, 184, 0.22); border-radius: 18px; background: rgba(9, 18, 36, 0.5); }
+.error-box { padding: 14px 16px; border: 1px solid rgba(248, 113, 113, 0.3); border-radius: 16px; background: rgba(127, 29, 29, 0.22); color: #fecaca; }
+.empty-box { color: var(--muted); }
+.detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(2, 8, 23, 0.72);
+  backdrop-filter: blur(10px);
+}
+.cow-detail-modal {
+  width: min(1180px, 96vw);
+  max-height: 92vh;
+  overflow: auto;
+  border: 1px solid rgba(110, 168, 255, 0.18);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(110, 168, 255, 0.15), transparent 28%),
+    linear-gradient(180deg, rgba(12, 25, 50, 0.98), rgba(6, 15, 31, 0.98));
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.cow-detail-modal__header,
+.cow-detail-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+.cow-detail-modal__footer {
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 0;
+  color: #8ea0bb;
+  font-size: 12px;
+}
+.cow-detail-modal__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #f8fbff;
+  font-weight: 900;
+}
+.detail-title-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+.detail-title-icon svg { width: 18px; height: 18px; }
+.detail-close {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 10px;
+  color: #9caec8;
+  background: rgba(7, 15, 31, 0.58);
+  cursor: pointer;
+}
+.detail-close svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.cow-detail-modal__body {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 18px;
+  padding: 20px;
+}
+.cow-profile-card,
+.cow-summary-card,
+.detail-info-card,
+.events-card {
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 14px;
+  background: rgba(8, 18, 37, 0.66);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+.cow-profile-card {
+  padding: 22px 18px;
+  text-align: center;
+}
+.cow-profile-card__avatar {
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  color: #9fe870;
+  border: 1px solid rgba(159, 232, 112, 0.22);
+  background: radial-gradient(circle at 35% 22%, rgba(159, 232, 112, 0.22), rgba(8, 18, 37, 0.92));
+  box-shadow: 0 0 34px rgba(159, 232, 112, 0.09);
+}
+.cow-profile-card__avatar svg {
+  width: 48px;
+  height: 48px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cow-profile-card h3 {
+  margin: 0;
+  color: #f8fbff;
+  font-size: 25px;
+  letter-spacing: -0.03em;
+}
+.cow-profile-card__badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 20px;
+}
+.cow-profile-card__badges span {
+  border-radius: 999px;
+  padding: 6px 9px;
+  color: #a9bad3;
+  background: rgba(110, 168, 255, 0.08);
+  font-size: 11px;
+  font-weight: 800;
+}
+.cow-profile-list,
+.detail-info-card dl {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+.cow-profile-list div,
+.detail-info-card dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  padding-bottom: 9px;
+}
+.cow-profile-list dt,
+.detail-info-card dt {
+  color: #8ea0bb;
+  font-size: 12px;
+}
+.cow-profile-list dd,
+.detail-info-card dd {
+  margin: 0;
+  color: #f8fbff;
+  font-size: 12px;
+  text-align: right;
+}
+.cow-detail-main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.cow-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 12px;
+}
+.cow-summary-card {
+  padding: 18px;
+}
+.cow-summary-card--large strong {
+  display: block;
+  margin-top: 18px;
+  color: #f8fbff;
+  font-size: 28px;
+  line-height: 1;
+}
+.summary-label,
+.cow-summary-card span {
+  color: #8ea0bb;
+  font-size: 11px;
+  font-weight: 800;
+}
+.cow-summary-card small {
+  display: block;
+  margin-top: 8px;
+  color: #8ea0bb;
+}
+.summary-split {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 20px -18px -18px;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+.summary-split div {
+  padding: 13px 18px;
+  border-right: 1px solid rgba(148, 163, 184, 0.1);
+}
+.summary-split div:last-child { border-right: 0; }
+.summary-split b {
+  display: block;
+  margin-top: 6px;
+  color: #ffb84d;
+}
+.cow-summary-card:not(.cow-summary-card--large) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.cow-summary-card:not(.cow-summary-card--large) strong {
+  display: block;
+  margin-top: 6px;
+  color: #f8fbff;
+  font-size: 13px;
+}
+.detail-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+.detail-tabs span {
+  padding: 12px 14px;
+  color: #9caec8;
+  font-size: 12px;
+  font-weight: 800;
+}
+.detail-tabs span.active {
+  color: #9fe870;
+  border-bottom: 2px solid #9fe870;
+}
+.detail-content-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.detail-info-card,
+.events-card {
+  padding: 16px;
+}
+.detail-info-card h4,
+.events-card h4 {
+  margin: 0 0 14px;
+  color: #f8fbff;
+  font-size: 14px;
+}
+.events-card__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+.events-card__head span {
+  color: #8ea0bb;
+  font-size: 12px;
+}
+.events-table {
+  overflow-x: auto;
+}
+.events-table__row {
+  display: grid;
+  grid-template-columns: 110px 130px 110px 150px minmax(220px, 1fr);
+  gap: 12px;
+  min-width: 760px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  padding: 11px 0;
+  color: #b9c7dc;
+  font-size: 12px;
+}
+.events-table__row--head {
+  color: #8ea0bb;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.events-table__row strong {
+  color: #f8fbff;
+}
+.events-table__empty {
+  padding: 18px 0 4px;
+  color: #8ea0bb;
+}
+
+@media (max-width: 1080px) {
+  .layout, .tree-columns, .genealogy-head, .birth-alerts__header { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .birth-alerts__metrics { grid-template-columns: 1fr 1fr; }
+  .birth-alerts__grid, .cross-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cow-detail-modal__body, .cow-summary-grid, .detail-content-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .page-head { flex-direction: column; align-items: stretch; }
+  .band-head { grid-template-columns: 1fr; }
+  .premium-card__top { flex-direction: column; }
+  .birth-alerts { padding: 16px; border-radius: 22px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .birth-alerts__title { grid-template-columns: 1fr; }
+  .birth-alerts__metrics, .birth-alerts__grid, .cross-grid, .birth-card__metrics, .birth-alerts__footer { grid-template-columns: 1fr; }
+  .birth-metric + .birth-metric { border-left: 0; border-top: 1px solid rgba(148, 163, 184, 0.12); }
+  .genealogy-selected { grid-template-columns: 1fr; }
+  .genealogy-foot { flex-direction: column; }
+  .detail-overlay { padding: 10px; }
+  .cow-detail-modal { width: 100%; max-height: 96vh; }
+  .cow-detail-modal__body { padding: 12px; }
+  .cow-summary-card:not(.cow-summary-card--large), .summary-split { grid-template-columns: 1fr; }
+  .summary-split div { border-right: 0; border-bottom: 1px solid rgba(148, 163, 184, 0.1); }
+}
