@@ -2,67 +2,157 @@
   <header class="agri-head">
     <div>
       <p class="eyebrow">Campo App · Agricultura</p>
-      <h2>Siembra y monitoreo</h2>
-      <p>Seguimiento fenológico y eventos de campo.</p>
+      <h2>Ciclo agrícola</h2>
+      <p>Seguimiento operativo de siembra, monitoreo fenológico, cosecha y rendimiento.</p>
     </div>
-    <button class="btn-primary agri-action" type="button" (click)="showForm = true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>Registrar evento</button>
+    <button class="btn-primary agri-action" type="button" (click)="openForm()">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+      {{ activeTab === 'COSECHA' ? 'Registrar cosecha' : 'Registrar evento' }}
+    </button>
   </header>
 
-  <div class="card filter-box">
-    <label>
-      <span>Filtrar por lote</span>
-      <select [(ngModel)]="selectedLoteId" (ngModelChange)="loadEventos()" name="selectedLoteId">
-        <option value="">Seleccionar...</option>
-        <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }} - {{ lote.cultivo }}</option>
-      </select>
-    </label>
-  </div>
-
-  <div class="card timeline-card" *ngFor="let evento of eventos">
-    <div class="timeline-head">
-      <strong>{{ evento.loteNombre }}</strong>
-      <span>{{ evento.fecha }}</span>
+  <section class="cycle-shell card">
+    <div class="cycle-tabs">
+      <button type="button" [class.active]="activeTab === 'SIEMBRA'" (click)="setTab('SIEMBRA')">
+        <svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg>
+        Siembra
+      </button>
+      <button type="button" [class.active]="activeTab === 'COSECHA'" (click)="setTab('COSECHA')">
+        <svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg>
+        Cosecha
+      </button>
     </div>
-    <div class="timeline-meta">
-      <span class="badge">{{ evento.tipoEvento }}</span>
-      <span *ngIf="evento.estadoFenologico">{{ evento.estadoFenologico }}</span>
-    </div>
-    <p *ngIf="evento.descripcion">{{ evento.descripcion }}</p>
-  </div>
 
-  <div class="card empty-box" *ngIf="!eventos.length">
-    <p>Sin eventos para el lote seleccionado.</p>
-  </div>
+    <div class="cycle-toolbar">
+      <label class="lote-filter">
+        <span>Lote</span>
+        <select [(ngModel)]="selectedLoteId" (ngModelChange)="loadSelected()" name="selectedLoteId">
+          <option value="">Seleccionar...</option>
+          <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }} · {{ lote.cultivo }}</option>
+        </select>
+      </label>
+
+      <div class="cycle-pagination">
+        <span>{{ rangeLabel() }}</span>
+        <button type="button" (click)="previousPage()" [disabled]="page === 1" aria-label="Anterior">
+          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
+        </button>
+        <button type="button" *ngFor="let pageNumber of pageNumbers()" [class.active]="pageNumber === page" (click)="setPage(pageNumber)">{{ pageNumber }}</button>
+        <button type="button" (click)="nextPage()" [disabled]="page === totalPages()" aria-label="Siguiente">
+          <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <ng-container *ngIf="activeTab === 'SIEMBRA'">
+    <article class="timeline-card" *ngFor="let evento of paginatedEventos()">
+      <div class="timeline-head">
+        <div>
+          <strong>{{ evento.loteNombre }}</strong>
+          <p>{{ evento.fecha }}</p>
+        </div>
+        <span class="badge">{{ evento.tipoEvento }}</span>
+      </div>
+      <div class="timeline-meta" *ngIf="evento.estadoFenologico">
+        <span>Estado fenológico</span>
+        <strong>{{ evento.estadoFenologico }}</strong>
+      </div>
+      <p *ngIf="evento.descripcion">{{ evento.descripcion }}</p>
+    </article>
+
+    <div class="card empty-box" *ngIf="!eventos.length">
+      <p>Sin eventos para el lote seleccionado.</p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="activeTab === 'COSECHA'">
+    <div class="harvest-summary" *ngIf="promedio">
+      <article class="metric-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg></div>
+        <div>
+          <p class="label">Rendimiento promedio</p>
+          <p class="value">{{ promedio.rendimientoPromedioKgHa | number:'1.0-0' }} kg/ha</p>
+          <small>Lote seleccionado</small>
+        </div>
+      </article>
+    </div>
+
+    <article class="timeline-card harvest-card" *ngFor="let cosecha of paginatedCosechas()">
+      <div class="timeline-head">
+        <div>
+          <strong>{{ cosecha.loteNombre }}</strong>
+          <p>{{ cosecha.fecha }}</p>
+        </div>
+        <span class="badge" *ngIf="cosecha.calidadGrano">{{ cosecha.calidadGrano }}</span>
+      </div>
+      <div class="harvest-metrics">
+        <div><span>Rendimiento</span><strong>{{ cosecha.rendimientoKgHa }} kg/ha</strong></div>
+        <div><span>Toneladas</span><strong>{{ cosecha.toneladasTotal }} tn</strong></div>
+        <div *ngIf="cosecha.humedad"><span>Humedad</span><strong>{{ cosecha.humedad }}%</strong></div>
+      </div>
+    </article>
+
+    <div class="card empty-box" *ngIf="!cosechas.length">
+      <p>Sin cosechas para el lote seleccionado.</p>
+    </div>
+  </ng-container>
 
   <div class="app-modal-backdrop" *ngIf="showForm">
     <div class="app-modal-panel narrow">
-      <form class="form" (ngSubmit)="saveEvento()">
-        <h3>Registrar evento</h3>
-        <label>
-          <span>Lote</span>
-          <select [(ngModel)]="form.loteId" name="loteId" required>
-            <option value="">Seleccionar...</option>
-            <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }}</option>
-          </select>
-        </label>
-        <label>
-          <span>Tipo</span>
-          <select [(ngModel)]="form.tipoEvento" name="tipoEvento">
-            <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
-          </select>
-        </label>
-        <label>
-          <span>Estado fenologico</span>
-          <input [(ngModel)]="form.estadoFenologico" name="estadoFenologico" />
-        </label>
-        <label>
-          <span>Fecha</span>
-          <input [(ngModel)]="form.fecha" name="fecha" type="date" required />
-        </label>
-        <label>
-          <span>Descripcion</span>
-          <textarea [(ngModel)]="form.descripcion" name="descripcion" rows="4"></textarea>
-        </label>
+      <form class="form" (ngSubmit)="activeTab === 'COSECHA' ? saveCosecha() : saveEvento()">
+        <h3>{{ activeTab === 'COSECHA' ? 'Registrar cosecha' : 'Registrar evento' }}</h3>
+
+        <ng-container *ngIf="activeTab === 'SIEMBRA'">
+          <label>
+            <span>Lote</span>
+            <select [(ngModel)]="form.loteId" name="loteId" required>
+              <option value="">Seleccionar...</option>
+              <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }}</option>
+            </select>
+          </label>
+          <label>
+            <span>Tipo</span>
+            <select [(ngModel)]="form.tipoEvento" name="tipoEvento">
+              <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
+            </select>
+          </label>
+          <label>
+            <span>Estado fenológico</span>
+            <input [(ngModel)]="form.estadoFenologico" name="estadoFenologico" />
+          </label>
+          <label>
+            <span>Fecha</span>
+            <input [(ngModel)]="form.fecha" name="fecha" type="date" required />
+          </label>
+          <label>
+            <span>Descripción</span>
+            <textarea [(ngModel)]="form.descripcion" name="descripcion" rows="4"></textarea>
+          </label>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'COSECHA'">
+          <label>
+            <span>Lote</span>
+            <select [(ngModel)]="cosechaForm.loteId" name="cosechaLoteId" required>
+              <option value="">Seleccionar...</option>
+              <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }}</option>
+            </select>
+          </label>
+          <label><span>Fecha</span><input [(ngModel)]="cosechaForm.fecha" name="cosechaFecha" type="date" required /></label>
+          <label><span>Rendimiento (kg/ha)</span><input [(ngModel)]="cosechaForm.rendimientoKgHa" name="rendimientoKgHa" type="number" step="0.01" required /></label>
+          <label><span>Toneladas</span><input [(ngModel)]="cosechaForm.toneladasTotal" name="toneladasTotal" type="number" step="0.01" required /></label>
+          <label>
+            <span>Calidad</span>
+            <select [(ngModel)]="cosechaForm.calidadGrano" name="calidadGrano">
+              <option value="">Sin clasificar</option>
+              <option *ngFor="let calidad of calidades" [value]="calidad">{{ calidad }}</option>
+            </select>
+          </label>
+          <label><span>Humedad</span><input [(ngModel)]="cosechaForm.humedad" name="humedad" type="number" step="0.1" /></label>
+          <label><span>Observaciones</span><textarea [(ngModel)]="cosechaForm.observaciones" name="observaciones" rows="4"></textarea></label>
+        </ng-container>
+
         <div class="actions">
           <button class="btn-secondary" type="button" (click)="showForm = false">Cancelar</button>
           <button class="btn-primary" type="submit">Guardar</button>

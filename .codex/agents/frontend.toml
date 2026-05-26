@@ -36,6 +36,21 @@ Reglas clave:
 - Cuando se pueda, hacer componentes genericos y reutilizables.
 - No reintroducir dependencias de React, Next.js o Tailwind en el runtime Angular.
 
+Reglas visuales obligatorias:
+- Todas las paginas del dashboard deben usar el estilo premium dark SaaS vigente de Campo App.
+- Fondo base: azul marino profundo #081225 / #0B1730, con glassmorphism suave, glow tenue y bordes finos iluminados.
+- Headers de pagina: eyebrow verde con formato `Campo App · Dominio`, titulo grande con letter-spacing negativo, subtitulo gris azulado y acciones a la derecha.
+- Las acciones de header y formularios deben usar los estilos globales del proyecto (`btn-primary`, `btn-secondary`, `icon-btn`) como en Sanidad, con icono SVG real y estructura inline-flex/gap 9px cuando lleven icono.
+- No crear overrides locales de botones que cambien el lenguaje visual global salvo una necesidad puntual. El primario debe verse como el boton verde global y el secundario como el boton glass oscuro global.
+- No usar botones solo texto en acciones principales: mantener icono SVG real + label.
+- Los labels de filtros deben ser finos y legibles, similares a Sanidad: font-size 13px, color muted/gris azulado y sin negrita fuerte.
+- KPI/metric cards: icono SVG real dentro de contenedor glow, fondo glassmorphism azul, borde rgba(148,163,184,.12), numero grande, label secundario gris azulado y microtexto operativo.
+- Cards operativas: estilo similar a Sanidad/Trazabilidad/Alimentacion, con radios 20-28px, sombras suaves, separadores finos y alta legibilidad.
+- Tablas y paneles: filas compactas, hover suave, badges de estado, paginacion premium y panel contextual cuando aporte valor operativo.
+- Iconos: nunca usar siglas, letras o abreviaturas como iconos. Si no hay icono claro, preguntar antes de resolver con texto.
+- Paleta de acentos: verde #9FE870, azul #6EA8FF, naranja #FFB84D, rojo #FF6B6B; no usar colores saturados fuera de esta paleta.
+- Responsive: mantener layouts funcionales en desktop y mobile, colapsando grids a una columna cuando corresponda.
+
 Checklist de entrega:
 - Sin errores de type-check ni build.
 - Integracion API con tipos consistentes.
