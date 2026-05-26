@@ -1,23 +1,33 @@
 <div class="page">
-  <div class="page-head">
+  <header class="sanidad-head">
     <div>
-      <h2>Sanidad y Vacunacion</h2>
-      <p>Calendario sanitario, aplicaciones, tratamientos, diagnosticos y auditoria del rodeo.</p>
+      <p class="eyebrow">Campo App · Ganadería</p>
+      <h2>Sanidad y vacunación</h2>
+      <p>Calendario sanitario, aplicaciones, tratamientos, diagnósticos y auditoría del rodeo.</p>
     </div>
     <div class="head-actions">
-      <button class="btn-secondary" type="button" (click)="exportReporte()">Exportar auditoria</button>
-      <button class="btn-secondary" type="button" (click)="openVacunaModal()">Nueva vacuna</button>
-      <button class="btn-primary" type="button" (click)="openAplicacionModal()">Registrar aplicacion</button>
+      <button class="btn-secondary sanidad-action" type="button" (click)="exportReporte()">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>
+        Exportar auditoría
+      </button>
+      <button class="btn-secondary sanidad-action" type="button" (click)="openVacunaModal()">
+        <svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>
+        Nueva vacuna
+      </button>
+      <button class="btn-primary sanidad-action" type="button" (click)="openAplicacionModal()">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+        Registrar aplicación
+      </button>
     </div>
-  </div>
+  </header>
 
-  <div class="stats-grid" *ngIf="dashboard() as summary">
-    <article class="metric-card"><p class="label">Catalogo</p><p class="value">{{ summary.vacunasCatalogadas }}</p></article>
-    <article class="metric-card"><p class="label">Aplicaciones del mes</p><p class="value">{{ summary.aplicacionesMesActual }}</p></article>
-    <article class="metric-card"><p class="label">Diagnosticos abiertos</p><p class="value">{{ summary.diagnosticosAbiertos }}</p></article>
-    <article class="metric-card"><p class="label">Tratamientos activos</p><p class="value">{{ summary.tratamientosActivos }}</p></article>
-    <article class="metric-card metric-card--accent"><p class="label">Costo sanitario mes</p><p class="value">${{ summary.costoSanitarioMes | number:'1.0-2' }}</p></article>
-    <article class="metric-card metric-card--warning"><p class="label">Alertas vencidas</p><p class="value">{{ alertasCriticas() }}</p></article>
+  <div class="stats-grid sanidad-kpis" *ngIf="dashboard() as summary">
+    <article class="metric-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></div><div><p class="label">Catálogo</p><p class="value">{{ summary.vacunasCatalogadas }}</p><small>Vacunas disponibles</small></div></article>
+    <article class="metric-card metric-card--blue"><div class="metric-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></div><div><p class="label">Aplicaciones del mes</p><p class="value">{{ summary.aplicacionesMesActual }}</p><small>Actividad sanitaria</small></div></article>
+    <article class="metric-card metric-card--warning"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 4v7" /><path d="M8 8c0 2 1.8 4 4 4s4-2 4-4" /><path d="M7 14c0 3 2 6 5 6s5-3 5-6" /><path d="M6 4v3a2 2 0 0 0 4 0V4M14 4v3a2 2 0 0 0 4 0V4" /></svg></div><div><p class="label">Diagnósticos abiertos</p><p class="value">{{ summary.diagnosticosAbiertos }}</p><small>Casos en seguimiento</small></div></article>
+    <article class="metric-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg></div><div><p class="label">Tratamientos activos</p><p class="value">{{ summary.tratamientosActivos }}</p><small>Protocolos vigentes</small></div></article>
+    <article class="metric-card metric-card--accent"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" /></svg></div><div><p class="label">Costo sanitario mes</p><p class="value">${{ summary.costoSanitarioMes | number:'1.0-2' }}</p><small>Inversión mensual</small></div></article>
+    <article class="metric-card metric-card--danger"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 3.5 18h17L12 3Z" /><path d="M12 9v4m0 3h.01" /></svg></div><div><p class="label">Alertas vencidas</p><p class="value">{{ alertasCriticas() }}</p><small>Requieren atención</small></div></article>
   </div>
 
   <div class="card filters-card">

@@ -22,6 +22,9 @@ Mejorar la consistencia operativa en ganaderia, reducir errores de carga y dejar
 8. **Veterinario Seleccionable**: convertir el registro medico para que el veterinario se elija desde un selector de profesionales habilitados. Utilizar lo definido en 1
 9. **Refactor Madre/Padre**: reemplazar el esquema actual por selectores buscables sobre animales existentes, optimizados para volumen alto de registros.
 10. **Integracion de Formularios**: aplicar el componente generico al alta/edicion de animal, registro de movimientos y registro medico.
+11. **Alimentacion - Nuevo Pesaje**: convertir `responsable` y `metodo` en selectores buscables. `responsable` debe consultar personal autorizado y `metodo` debe consultar un catalogo operativo de metodos de pesaje.
+12. **Alimentacion - Registrar Suministro**: convertir `responsable`, `potrero` y `alimento` en selectores buscables. `responsable` debe consultar personal autorizado, `potrero` debe consultar potreros ganaderos y `alimento` debe consultar un catalogo de alimentos/insumos nutricionales.
+13. **Alimentacion - Nueva Dieta**: reemplazar el input libre de ingredientes/alimentos por selector buscable contra catalogo de alimentos, manteniendo proporciones, costo por kg y materia seca como datos editables de la composicion.
 
 ## Servicios
 - `AnimalService`: alta y actualizacion de animales con referencias normalizadas.
@@ -29,6 +32,8 @@ Mejorar la consistencia operativa en ganaderia, reducir errores de carga y dejar
 - `PersonalService`: consulta de personal autorizado para operaciones.
 - `VeterinarioService`: consulta de veterinarios habilitados.
 - `CatalogoGanaderoService`: catalogos de razas y entidades de apoyo.
+- `AlimentoCatalogoService`: consulta de alimentos e insumos nutricionales disponibles.
+- `MetodoPesajeCatalogoService`: consulta de metodos de pesaje permitidos.
 
 ## Repositorios
 - `AnimalRepository`

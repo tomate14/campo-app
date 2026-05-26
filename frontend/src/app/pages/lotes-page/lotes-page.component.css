@@ -1,8 +1,26 @@
 ﻿.page { display: flex; flex-direction: column; gap: 24px; }
 .page-head { display: flex; justify-content: space-between; align-items: center; gap: 18px; }
-h2 { margin: 0; font-size: 34px; }
-.page-head p { margin: 6px 0 0; color: var(--muted); }
+.agri-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  color: #f8fbff;
+}
+h2 { margin: 0; font-size: 34px; letter-spacing: -0.04em; }
+.page-head p, .agri-head p { margin: 6px 0 0; color: #8ea0bb; }
+.eyebrow { margin: 0 0 8px !important; color: #9fe870 !important; font-size: 11px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
 .toolbar-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.agri-action { display: inline-flex; align-items: center; gap: 9px; }
+.agri-action svg, .icon-chip svg, .info-icon svg, .action-button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
 .filters-card {
   padding: 18px;
   display: flex;
@@ -84,9 +102,7 @@ h2 { margin: 0; font-size: 34px; }
   letter-spacing: 0.01em;
 }
 
-.icon-chip {
-  opacity: 0.9;
-}
+.icon-chip { display: inline-flex; color: #9fe870; opacity: 0.95; }
 
 .divider {
   color: rgba(191, 219, 254, 0.34);
@@ -158,16 +174,29 @@ h2 { margin: 0; font-size: 34px; }
 }
 
 .info-icon {
+  display: grid;
   width: 42px;
   height: 42px;
-  border-radius: 16px;
+  place-items: center;
+  flex: 0 0 42px;
+  border: 1px solid rgba(159, 232, 112, 0.16);
+  border-radius: 15px;
+  background: rgba(159, 232, 112, 0.08);
+  color: #9fe870;
+}
+
+.info-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.action-button span:first-child {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,0.02);
-  color: #aebbd2;
-  font-size: 23px;
-  flex-shrink: 0;
+  color: currentColor;
+}
+
+@media (max-width: 720px) {
+  .agri-head { flex-direction: column; align-items: stretch; }
 }
 
 .info-label {

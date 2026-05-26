@@ -94,3 +94,11 @@ JWT_REFRESH_EXPIRATION_MS    # default 604800000 (7 días)
 | 15 | Insumos Agrícolas | Inventario | 26 ✅ |
 | 20 | Mapas y Lotes | Geo | 01 |
 | 25 | Control de Plagas y Enfermedades | Agricultura | 01, 20 |
+
+---
+
+## Reglas Visuales Vigentes
+
+- Todos los headers de paginas del dashboard deben respetar el estilo premium dark SaaS usado en Trazabilidad, Alimentacion y Agricultura: eyebrow verde `Campo App · Dominio`, titulo grande, subtitulo gris azulado, acciones alineadas a la derecha con iconos SVG reales y botones modernos.
+- Todas las metric cards/KPI cards deben mantener el mismo patron visual: icono SVG real en contenedor glow, fondo glassmorphism azul marino, borde suave, numero grande, label secundario y microtexto operativo.
+- No usar siglas, letras o abreviaturas como iconos. Si no hay icono claro, preguntar antes de resolver con texto.
