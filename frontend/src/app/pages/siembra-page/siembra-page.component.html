@@ -12,15 +12,18 @@
   </header>
 
   <section class="cycle-shell card">
-    <div class="cycle-tabs">
-      <button type="button" [class.active]="activeTab === 'SIEMBRA'" (click)="setTab('SIEMBRA')">
-        <svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg>
-        Siembra
-      </button>
-      <button type="button" [class.active]="activeTab === 'COSECHA'" (click)="setTab('COSECHA')">
-        <svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg>
-        Cosecha
-      </button>
+    <div class="cycle-tabs-bar">
+      <div class="cycle-tabs">
+        <button type="button" [class.active]="activeTab === 'SIEMBRA'" (click)="setTab('SIEMBRA')">
+          <svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg>
+          Siembra
+        </button>
+        <button type="button" [class.active]="activeTab === 'COSECHA'" (click)="setTab('COSECHA')">
+          <svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg>
+          Cosecha
+        </button>
+      </div>
+      <span>{{ totalItems() }} vigente(s)</span>
     </div>
 
     <div class="cycle-toolbar">
@@ -32,7 +35,7 @@
         </select>
       </label>
 
-      <div class="cycle-pagination">
+      <div class="cycle-pagination cycle-pagination--top">
         <span>{{ rangeLabel() }}</span>
         <button type="button" (click)="previousPage()" [disabled]="page === 1" aria-label="Anterior">
           <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
@@ -43,61 +46,64 @@
         </button>
       </div>
     </div>
-  </section>
 
-  <ng-container *ngIf="activeTab === 'SIEMBRA'">
-    <article class="timeline-card" *ngFor="let evento of paginatedEventos()">
-      <div class="timeline-head">
-        <div>
-          <strong>{{ evento.loteNombre }}</strong>
-          <p>{{ evento.fecha }}</p>
+    <div class="cycle-card-grid" *ngIf="activeTab === 'SIEMBRA'">
+      <article class="cycle-card card-success" *ngFor="let evento of paginatedEventos()">
+        <div class="cycle-card__head">
+          <div class="cycle-card__identity">
+            <div class="cycle-card__icon"><svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg></div>
+            <div><h3>{{ evento.loteNombre }}</h3><p>{{ evento.descripcion || 'Evento operativo agricola' }}</p></div>
+          </div>
+          <span class="badge">{{ evento.tipoEvento }}</span>
         </div>
-        <span class="badge">{{ evento.tipoEvento }}</span>
-      </div>
-      <div class="timeline-meta" *ngIf="evento.estadoFenologico">
-        <span>Estado fenológico</span>
-        <strong>{{ evento.estadoFenologico }}</strong>
-      </div>
-      <p *ngIf="evento.descripcion">{{ evento.descripcion }}</p>
-    </article>
-
-    <div class="card empty-box" *ngIf="!eventos.length">
-      <p>Sin eventos para el lote seleccionado.</p>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="activeTab === 'COSECHA'">
-    <div class="harvest-summary" *ngIf="promedio">
-      <article class="metric-card">
-        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg></div>
-        <div>
-          <p class="label">Rendimiento promedio</p>
-          <p class="value">{{ promedio.rendimientoPromedioKgHa | number:'1.0-0' }} kg/ha</p>
-          <small>Lote seleccionado</small>
+        <div class="metric-list">
+          <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha</span><strong>{{ evento.fecha | date:'dd/MM/yyyy' }}</strong></div>
+          <div><svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg><span>Estado fenologico</span><strong>{{ evento.estadoFenologico || 'Sin dato' }}</strong></div>
+          <div><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg><span>Tipo</span><strong>{{ evento.tipoEvento }}</strong></div>
         </div>
+        <div class="card-actions-inline"><button class="card-action" type="button" (click)="openForm()"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
       </article>
+      <div class="card empty-box premium-empty-box" *ngIf="!eventos.length"><p>Sin eventos para el lote seleccionado.</p></div>
     </div>
 
-    <article class="timeline-card harvest-card" *ngFor="let cosecha of paginatedCosechas()">
-      <div class="timeline-head">
-        <div>
-          <strong>{{ cosecha.loteNombre }}</strong>
-          <p>{{ cosecha.fecha }}</p>
-        </div>
-        <span class="badge" *ngIf="cosecha.calidadGrano">{{ cosecha.calidadGrano }}</span>
+    <ng-container *ngIf="activeTab === 'COSECHA'">
+      <div class="harvest-summary" *ngIf="promedio">
+        <article class="metric-card">
+          <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg></div>
+          <div class="metric-copy"><p class="label">Rendimiento promedio</p><small>Lote seleccionado</small></div>
+          <p class="value">{{ promedio.rendimientoPromedioKgHa | number:'1.0-0' }} kg/ha</p>
+        </article>
       </div>
-      <div class="harvest-metrics">
-        <div><span>Rendimiento</span><strong>{{ cosecha.rendimientoKgHa }} kg/ha</strong></div>
-        <div><span>Toneladas</span><strong>{{ cosecha.toneladasTotal }} tn</strong></div>
-        <div *ngIf="cosecha.humedad"><span>Humedad</span><strong>{{ cosecha.humedad }}%</strong></div>
+
+      <div class="cycle-card-grid">
+        <article class="cycle-card card-success" *ngFor="let cosecha of paginatedCosechas()">
+          <div class="cycle-card__head">
+            <div class="cycle-card__identity">
+              <div class="cycle-card__icon"><svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg></div>
+              <div><h3>{{ cosecha.loteNombre }}</h3><p>{{ cosecha.observaciones || 'Registro de cosecha' }}</p></div>
+            </div>
+            <span class="badge" *ngIf="cosecha.calidadGrano">{{ cosecha.calidadGrano }}</span>
+          </div>
+          <div class="metric-list">
+            <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha</span><strong>{{ cosecha.fecha | date:'dd/MM/yyyy' }}</strong></div>
+            <div><svg viewBox="0 0 24 24"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg><span>Rendimiento</span><strong>{{ cosecha.rendimientoKgHa }} kg/ha</strong></div>
+            <div><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg><span>Toneladas</span><strong>{{ cosecha.toneladasTotal }} tn</strong></div>
+          </div>
+          <div class="card-actions-inline"><button class="card-action" type="button" (click)="openForm()"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
+        </article>
+        <div class="card empty-box premium-empty-box" *ngIf="!cosechas.length"><p>Sin cosechas para el lote seleccionado.</p></div>
       </div>
-    </article>
+    </ng-container>
 
-    <div class="card empty-box" *ngIf="!cosechas.length">
-      <p>Sin cosechas para el lote seleccionado.</p>
-    </div>
-  </ng-container>
-
+    <footer class="cycle-pagination cycle-pagination--bottom">
+      <span>Mostrando {{ rangeLabel() }} {{ activeTab === 'COSECHA' ? 'cosechas' : 'eventos' }}</span>
+      <div>
+        <button type="button" (click)="previousPage()" [disabled]="page === 1">Anterior</button>
+        <button type="button" *ngFor="let pageNumber of pageNumbers()" [class.active]="pageNumber === page" (click)="setPage(pageNumber)">{{ pageNumber }}</button>
+        <button type="button" (click)="nextPage()" [disabled]="page === totalPages()">Siguiente</button>
+      </div>
+    </footer>
+  </section>
   <div class="app-modal-backdrop" *ngIf="showForm">
     <div class="app-modal-panel narrow">
       <form class="form" (ngSubmit)="activeTab === 'COSECHA' ? saveCosecha() : saveEvento()">

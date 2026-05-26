@@ -10,10 +10,19 @@ import type {
   DocumentoMaquinariaRequest,
   EstadoMaquinariaRequest,
   HistorialEstadoMaquinaria,
+  IntervencionMantenimiento,
+  IntervencionMantenimientoRequest,
   Maquinaria,
   MaquinariaDashboard,
   MaquinariaRequest,
   MaquinariaResumen,
+  MantenimientoDashboard,
+  MantenimientoProgramado,
+  MantenimientoProgramadoRequest,
+  MantenimientoResumen,
+  PlanMantenimiento,
+  PlanMantenimientoRequest,
+  RepuestoUtilizado,
   UsoMaquinaria,
   UsoMaquinariaRequest,
 } from '../models/maquinaria.models'
@@ -39,6 +48,7 @@ function cleanParams(params?: Record<string, unknown>): Record<string, HttpParam
 export class MaquinariaService {
   private readonly http = inject(HttpClient)
   private readonly baseUrl = `${API_BASE_URL}/maquinaria/inventario`
+  private readonly maintenanceUrl = `${API_BASE_URL}/maquinaria/mantenimiento`
 
   getResumen(params?: { tipo?: string; estado?: string; ubicacion?: string }) {
     return this.http.get<ApiResponse<MaquinariaResumen> | MaquinariaResumen>(this.baseUrl, { params: cleanParams(params) })
@@ -111,6 +121,56 @@ export class MaquinariaService {
 
   createDocumento(data: DocumentoMaquinariaRequest) {
     return this.http.post<ApiResponse<DocumentoMaquinaria> | DocumentoMaquinaria>(`${this.baseUrl}/documentos`, data)
+      .pipe(map((response) => unwrapApiResponse(response)))
+  }
+
+  getMantenimientoResumen(params?: { maquinariaId?: string; estado?: string }) {
+    return this.http.get<ApiResponse<MantenimientoResumen> | MantenimientoResumen>(this.maintenanceUrl, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)))
+  }
+
+  getMantenimientoDashboard() {
+    return this.http.get<ApiResponse<MantenimientoDashboard> | MantenimientoDashboard>(`${this.maintenanceUrl}/dashboard`)
+      .pipe(map((response) => unwrapApiResponse(response)))
+  }
+
+  getPlanesMantenimiento() {
+    return this.http.get<ApiResponse<PlanMantenimiento[]> | PlanMantenimiento[]>(`${this.maintenanceUrl}/planes`)
+      .pipe(map((response) => unwrapApiResponse(response)))
+  }
+
+  createPlanMantenimiento(data: PlanMantenimientoRequest) {
+    return this.http.post<ApiResponse<PlanMantenimiento> | PlanMantenimiento>(`${this.maintenanceUrl}/planes`, data)
+      .pipe(map((response) => unwrapApiResponse(response)))
+  }
+
+  getProgramacionesMantenimiento(params?: { maquinariaId?: string; estado?: string }) {
+    return this.http.get<ApiResponse<MantenimientoProgramado[]> | MantenimientoProgramado[]>(`${this.maintenanceUrl}/programaciones`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)))
+  }
+
+  createProgramacionMantenimiento(data: MantenimientoProgramadoRequest) {
+    return this.http.post<ApiResponse<MantenimientoProgramado> | MantenimientoProgramado>(`${this.maintenanceUrl}/programaciones`, data)
+      .pipe(map((response) => unwrapApiResponse(response)))
+  }
+
+  updateProgramacionMantenimientoEstado(id: string, estado: string) {
+    return this.http.patch<ApiResponse<MantenimientoProgramado> | MantenimientoProgramado>(`${this.maintenanceUrl}/programaciones/${id}/estado`, null, { params: cleanParams({ estado }) })
+      .pipe(map((response) => unwrapApiResponse(response)))
+  }
+
+  getIntervencionesMantenimiento(params?: { maquinariaId?: string; tipo?: string }) {
+    return this.http.get<ApiResponse<IntervencionMantenimiento[]> | IntervencionMantenimiento[]>(`${this.maintenanceUrl}/intervenciones`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)))
+  }
+
+  createIntervencionMantenimiento(data: IntervencionMantenimientoRequest) {
+    return this.http.post<ApiResponse<IntervencionMantenimiento> | IntervencionMantenimiento>(`${this.maintenanceUrl}/intervenciones`, data)
+      .pipe(map((response) => unwrapApiResponse(response)))
+  }
+
+  getRepuestosIntervencion(intervencionId: string) {
+    return this.http.get<ApiResponse<RepuestoUtilizado[]> | RepuestoUtilizado[]>(`${this.maintenanceUrl}/intervenciones/${intervencionId}/repuestos`)
       .pipe(map((response) => unwrapApiResponse(response)))
   }
 }

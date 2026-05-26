@@ -22,54 +22,18 @@
 
   <ng-container *ngIf="!loading() && resumen() as data">
     <section class="kpi-grid">
-      <article class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-icon">
+      <article class="kpi-card"><div class="metric-icon">
             <svg viewBox="0 0 24 24"><path d="M5 15h12l2 4H3l2-4Z" /><path d="M6 15V9h7l4 6" /><path d="M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>
-          </div>
-          <div>
-            <span>Total máquinas</span>
-            <strong>{{ data.dashboard.total }}</strong>
-            <small>Parque operativo registrado</small>
-          </div>
-        </div>
-      </article>
-      <article class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-icon">
+          </div><div class="kpi-copy"><span>Total máquinas</span><small>Parque operativo registrado</small></div><strong>{{ data.dashboard.total }}</strong></article>
+      <article class="kpi-card"><div class="metric-icon">
             <svg viewBox="0 0 24 24"><path d="M20 7 9 18l-5-5" /></svg>
-          </div>
-          <div>
-            <span>Disponibles</span>
-            <strong>{{ data.dashboard.disponibles }}</strong>
-            <small>Listas para asignar</small>
-          </div>
-        </div>
-      </article>
-      <article class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-icon warning">
+          </div><div class="kpi-copy"><span>Disponibles</span><small>Listas para asignar</small></div><strong>{{ data.dashboard.disponibles }}</strong></article>
+      <article class="kpi-card"><div class="metric-icon warning">
             <svg viewBox="0 0 24 24"><path d="M12 3v4" /><path d="M12 17v4" /><path d="M4.9 4.9l2.8 2.8" /><path d="M16.3 16.3l2.8 2.8" /><path d="M3 12h4" /><path d="M17 12h4" /><path d="M4.9 19.1l2.8-2.8" /><path d="M16.3 7.7l2.8-2.8" /><path d="M9 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z" /></svg>
-          </div>
-          <div>
-            <span>En reparación</span>
-            <strong>{{ data.dashboard.enReparacion }}</strong>
-            <small>Mantenimiento o parada técnica</small>
-          </div>
-        </div>
-      </article>
-      <article class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-icon blue">
+          </div><div class="kpi-copy"><span>En reparación</span><small>Mantenimiento o parada técnica</small></div><strong>{{ data.dashboard.enReparacion }}</strong></article>
+      <article class="kpi-card"><div class="metric-icon blue">
             <svg viewBox="0 0 24 24"><path d="M6 8h12" /><path d="M6 12h12" /><path d="M6 16h8" /><path d="M4 4h16v16H4z" /></svg>
-          </div>
-          <div>
-            <span>Docs vencidos</span>
-            <strong>{{ data.dashboard.documentosVencidos }}</strong>
-            <small>Seguros, VTV o permisos</small>
-          </div>
-        </div>
-      </article>
+          </div><div class="kpi-copy"><span>Docs vencidos</span><small>Seguros, VTV o permisos</small></div><strong>{{ data.dashboard.documentosVencidos }}</strong></article>
     </section>
 
     <section class="filters-card">

@@ -1,0 +1,288 @@
+﻿<div class="maintenance-page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Campo App Â· Maquinaria</p>
+      <h2>Mantenimiento preventivo</h2>
+      <p>PlanificaciÃ³n, alertas, intervenciones, repuestos y costos tÃ©cnicos del parque de maquinaria.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-secondary maintenance-action" type="button" (click)="openModal('PLAN')">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h10" /></svg>
+        Plan
+      </button>
+      <button class="btn-secondary maintenance-action" type="button" (click)="openModal('PROGRAMACION')">
+        <svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg>
+        Programar
+      </button>
+      <button class="btn-primary maintenance-action" type="button" (click)="openModal('INTERVENCION')">
+        <svg viewBox="0 0 24 24"><path d="m14 7 3 3" /><path d="M5 19 16 8l-3-3L2 16v3h3Z" /><path d="M12 19h9" /></svg>
+        IntervenciÃ³n
+      </button>
+    </div>
+  </header>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="card empty-box" *ngIf="loading()">Cargando mantenimiento...</div>
+
+  <ng-container *ngIf="!loading() && resumen() as data">
+    <section class="kpi-grid">
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h10" /></svg></div>
+        <div class="kpi-copy"><span>Planes activos</span><small>Rutinas disponibles</small></div>
+        <strong>{{ data.dashboard.planesActivos }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon blue"><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg></div>
+        <div class="kpi-copy"><span>Pendientes</span><small>Tareas programadas</small></div>
+        <strong>{{ data.dashboard.mantenimientosPendientes }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon danger"><svg viewBox="0 0 24 24"><path d="M12 9v4" /><path d="M12 17h.01" /><path d="m10 3-8 18h20L14 3z" /></svg></div>
+        <div class="kpi-copy"><span>Vencidos</span><small>Requieren atencion</small></div>
+        <strong>{{ data.dashboard.mantenimientosVencidos }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon warning"><svg viewBox="0 0 24 24"><path d="m14 7 3 3" /><path d="M5 19 16 8l-3-3L2 16v3h3Z" /></svg></div>
+        <div class="kpi-copy"><span>Costo mensual</span><small>Mano de obra y repuestos</small></div>
+        <strong>{{ formatCurrency(data.dashboard.costoMes) }}</strong>
+      </article>
+    </section>
+
+    <section class="filters-card card">
+      <label>
+        <span>MÃ¡quina</span>
+        <select [ngModel]="filters().maquinariaId" (ngModelChange)="filters.update(f => ({ ...f, maquinariaId: $event }))">
+          <option value="">Todas</option>
+          <option *ngFor="let machine of maquinas()" [value]="machine.id">{{ machine.codigo }} Â· {{ machine.modelo }}</option>
+        </select>
+      </label>
+      <label>
+        <span>Estado</span>
+        <select [ngModel]="filters().estado" (ngModelChange)="filters.update(f => ({ ...f, estado: $event }))">
+          <option value="">Todos</option>
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="COMPLETADO">Completado</option>
+          <option value="CANCELADO">Cancelado</option>
+        </select>
+      </label>
+      <div class="card-actions">
+        <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>
+        <button class="btn-secondary" type="button" (click)="clearFilters()">Limpiar</button>
+      </div>
+    </section>
+
+    <section class="maintenance-panel card">
+      <div class="tabs-bar">
+        <div class="tabs">
+          <button type="button" [class.active]="activeTab() === 'PROGRAMADAS'" (click)="setTab('PROGRAMADAS')">
+            <svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg>
+            Programadas
+          </button>
+          <button type="button" [class.active]="activeTab() === 'INTERVENCIONES'" (click)="setTab('INTERVENCIONES')">
+            <svg viewBox="0 0 24 24"><path d="m14 7 3 3" /><path d="M5 19 16 8l-3-3L2 16v3h3Z" /><path d="M12 19h9" /></svg>
+            Intervenciones
+          </button>
+          <button type="button" [class.active]="activeTab() === 'PLANES'" (click)="setTab('PLANES')">
+            <svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z" /><path d="M14 3v4h4" /><path d="M9 12h6" /><path d="M9 16h5" /></svg>
+            Planes
+          </button>
+          <button type="button" [class.active]="activeTab() === 'ALERTAS'" (click)="setTab('ALERTAS')">
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg>
+            Alertas
+          </button>
+        </div>
+        <span>{{ totalItems() }} vigente(s)</span>
+      </div>
+
+      <div class="maintenance-grid" *ngIf="activeTab() === 'PROGRAMADAS'">
+        <article class="maintenance-card" [class.card-danger]="item.vencido" [class.card-warning]="!item.vencido && item.estado === 'PENDIENTE'" [class.card-success]="!item.vencido && item.estado !== 'PENDIENTE'" *ngFor="let item of programacionesPage()">
+          <div class="maintenance-card__head">
+            <div class="maintenance-card__identity">
+              <div class="maintenance-card__icon"><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg></div>
+              <div><h3>{{ item.maquinariaCodigo }}</h3><p>{{ item.planNombre || 'Mantenimiento puntual' }}</p></div>
+            </div>
+            <span class="badge" [class.badge-warning]="!item.vencido && item.estado === 'PENDIENTE'" [class.badge-danger]="item.vencido">{{ item.vencido ? 'Vencida' : item.estado }}</span>
+          </div>
+          <div class="metric-list">
+            <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha de inicio</span><strong>{{ item.createdAt | date:'dd/MM/yyyy' }}</strong></div>
+            <div><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2" /><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg><span>Proxima ejecucion</span><strong>{{ item.fechaProgramada | date:'dd/MM/yyyy' }}</strong></div>
+            <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.responsable || 'Sin asignar' }}</strong></div>
+          </div>
+          <div class="card-actions-inline">
+            <button class="card-action" type="button" (click)="openModal('INTERVENCION', item)">
+              <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+              Registrar
+            </button>
+            <button class="card-action card-action--ghost" type="button">
+              Ver completo
+              <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+          </div>
+        </article>
+        <div class="empty-box" *ngIf="!data.programaciones.length">Sin mantenimientos programados.</div>
+      </div>
+
+      <div class="maintenance-grid" *ngIf="activeTab() === 'INTERVENCIONES'">
+        <article class="maintenance-card card-success" *ngFor="let item of intervencionesPage()">
+          <div class="maintenance-card__head">
+            <div class="maintenance-card__identity">
+              <div class="maintenance-card__icon"><svg viewBox="0 0 24 24"><path d="m14 7 3 3" /><path d="M5 19 16 8l-3-3L2 16v3h3Z" /><path d="M12 19h9" /></svg></div>
+              <div><h3>{{ item.maquinariaCodigo }}</h3><p>{{ item.tipo }} - {{ item.operario || 'Sin operario' }}</p></div>
+            </div>
+            <span class="badge">En curso</span>
+          </div>
+          <div class="metric-list">
+            <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha de inicio</span><strong>{{ item.fecha | date:'dd/MM/yyyy' }}</strong></div>
+            <div><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2" /><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg><span>Proxima ejecucion</span><strong>{{ item.estadoResultante || 'Sin dato' }}</strong></div>
+            <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.operario || 'Sin asignar' }}</strong></div>
+          </div>
+          <div class="card-actions-inline">
+            <button class="card-action" type="button" (click)="openModal('INTERVENCION')">
+              <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+              Registrar
+            </button>
+            <button class="card-action card-action--ghost" type="button">
+              Ver completo
+              <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+          </div>
+        </article>
+        <div class="empty-box" *ngIf="!data.intervenciones.length">Sin intervenciones registradas.</div>
+      </div>
+
+      <div class="maintenance-grid" *ngIf="activeTab() === 'PLANES'">
+        <article class="maintenance-card" [class.card-warning]="item.prioridad === 'ALTA'" [class.card-success]="item.prioridad !== 'ALTA'" *ngFor="let item of planesPage()">
+          <div class="maintenance-card__head">
+            <div class="maintenance-card__identity">
+              <div class="maintenance-card__icon"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z" /><path d="M14 3v4h4" /><path d="M9 12h6" /><path d="M9 16h5" /></svg></div>
+              <div><h3>{{ item.maquinariaCodigo || item.tipoMaquinaria || 'Plan general' }}</h3><p>{{ item.nombre }}</p></div>
+            </div>
+            <span class="badge" [class.badge-warning]="item.prioridad === 'ALTA'">{{ item.prioridad }}</span>
+          </div>
+          <div class="metric-list">
+            <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha de inicio</span><strong>{{ item.createdAt | date:'dd/MM/yyyy' }}</strong></div>
+            <div><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2" /><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg><span>Proxima ejecucion</span><strong>{{ item.intervaloDias || 0 }} dias</strong></div>
+            <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.modelo || 'General' }}</strong></div>
+          </div>
+          <div class="card-actions-inline">
+            <button class="card-action" type="button" (click)="openModal('PROGRAMACION')">
+              <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+              Registrar
+            </button>
+            <button class="card-action card-action--ghost" type="button">
+              Ver completo
+              <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+          </div>
+        </article>
+        <div class="empty-box" *ngIf="!data.planes.length">Sin planes registrados.</div>
+      </div>
+
+      <div class="maintenance-grid" *ngIf="activeTab() === 'ALERTAS'">
+        <article class="maintenance-card card-warning" *ngFor="let alerta of alertasPage()">
+          <div class="maintenance-card__head">
+            <div class="maintenance-card__identity">
+              <div class="maintenance-card__icon warning"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg></div>
+              <div><h3>Alerta operativa</h3><p>{{ alerta }}</p></div>
+            </div>
+            <span class="badge badge-warning">Pendiente</span>
+          </div>
+          <div class="metric-list">
+            <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha de inicio</span><strong>Hoy</strong></div>
+            <div><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2" /><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg><span>Proxima ejecucion</span><strong>Revisar</strong></div>
+            <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>Taller</strong></div>
+          </div>
+          <div class="card-actions-inline">
+            <button class="card-action" type="button" (click)="openModal('PROGRAMACION')">
+              <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+              Registrar
+            </button>
+            <button class="card-action card-action--ghost" type="button">
+              Ver completo
+              <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+          </div>
+        </article>
+        <div class="empty-box" *ngIf="!data.dashboard.alertas.length">Sin alertas de mantenimiento.</div>
+      </div>
+
+      <footer class="pagination">
+        <span>Mostrando {{ pageStart() }} a {{ pageEnd() }} de {{ totalItems() }} {{ activeTabLabel() }}</span>
+        <div>
+          <button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
+          <button type="button" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage() === i + 1" (click)="setPage(i + 1)">{{ i + 1 }}</button>
+          <button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
+        </div>
+      </footer>
+    </section>
+  </ng-container>
+
+  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()">
+    <div class="app-modal-panel" (click)="$event.stopPropagation()">
+      <ng-container *ngIf="modal() === 'PLAN'">
+        <div class="modal-head"><h3>Nuevo plan de mantenimiento</h3></div>
+        <div class="form-grid">
+          <label><span>MÃ¡quina especÃ­fica</span><select [ngModel]="planForm().maquinariaId" (ngModelChange)="planForm.update(f => ({ ...f, maquinariaId: $event }))"><option value="">Plan general</option><option *ngFor="let machine of maquinas()" [value]="machine.id">{{ machine.codigo }} Â· {{ machine.modelo }}</option></select></label>
+          <label><span>Tipo maquinaria</span><input [ngModel]="planForm().tipoMaquinaria" (ngModelChange)="planForm.update(f => ({ ...f, tipoMaquinaria: $event }))" /></label>
+          <label><span>Modelo</span><input [ngModel]="planForm().modelo" (ngModelChange)="planForm.update(f => ({ ...f, modelo: $event }))" /></label>
+          <label><span>Nombre</span><input [ngModel]="planForm().nombre" (ngModelChange)="planForm.update(f => ({ ...f, nombre: $event }))" /></label>
+          <label><span>Intervalo horas</span><input type="number" [ngModel]="planForm().intervaloHoras" (ngModelChange)="planForm.update(f => ({ ...f, intervaloHoras: $event }))" /></label>
+          <label><span>Intervalo dÃ­as</span><input type="number" [ngModel]="planForm().intervaloDias" (ngModelChange)="planForm.update(f => ({ ...f, intervaloDias: $event }))" /></label>
+          <label><span>Prioridad</span><select [ngModel]="planForm().prioridad" (ngModelChange)="planForm.update(f => ({ ...f, prioridad: $event }))"><option>BAJA</option><option>MEDIA</option><option>ALTA</option></select></label>
+        </div>
+        <label class="textarea-field"><span>DescripciÃ³n</span><textarea [ngModel]="planForm().descripcion" (ngModelChange)="planForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitPlan()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'PROGRAMACION'">
+        <div class="modal-head"><h3>Programar mantenimiento</h3></div>
+        <div class="form-grid">
+          <label><span>MÃ¡quina</span><select [ngModel]="programacionForm().maquinariaId" (ngModelChange)="programacionForm.update(f => ({ ...f, maquinariaId: $event }))"><option value="">Seleccionar</option><option *ngFor="let machine of maquinas()" [value]="machine.id">{{ machine.codigo }} Â· {{ machine.modelo }}</option></select></label>
+          <label><span>Plan</span><select [ngModel]="programacionForm().planId" (ngModelChange)="programacionForm.update(f => ({ ...f, planId: $event }))"><option value="">Sin plan</option><option *ngFor="let plan of resumen()?.planes ?? []" [value]="plan.id">{{ plan.nombre }}</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="programacionForm().fechaProgramada" (ngModelChange)="programacionForm.update(f => ({ ...f, fechaProgramada: $event }))" /></label>
+          <label><span>HorÃ³metro objetivo</span><input type="number" [ngModel]="programacionForm().horometroObjetivo" (ngModelChange)="programacionForm.update(f => ({ ...f, horometroObjetivo: $event }))" /></label>
+          <label><span>Responsable</span><input [ngModel]="programacionForm().responsable" (ngModelChange)="programacionForm.update(f => ({ ...f, responsable: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="programacionForm().observaciones" (ngModelChange)="programacionForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitProgramacion()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'INTERVENCION'">
+        <div class="modal-head"><h3>Registrar intervenciÃ³n</h3></div>
+        <div class="form-grid">
+          <label><span>MÃ¡quina</span><select [ngModel]="intervencionForm().maquinariaId" (ngModelChange)="intervencionForm.update(f => ({ ...f, maquinariaId: $event }))"><option value="">Seleccionar</option><option *ngFor="let machine of maquinas()" [value]="machine.id">{{ machine.codigo }} Â· {{ machine.modelo }}</option></select></label>
+          <label><span>Plan</span><select [ngModel]="intervencionForm().planId" (ngModelChange)="intervencionForm.update(f => ({ ...f, planId: $event }))"><option value="">Sin plan</option><option *ngFor="let plan of resumen()?.planes ?? []" [value]="plan.id">{{ plan.nombre }}</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="intervencionForm().fecha" (ngModelChange)="intervencionForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Tipo</span><select [ngModel]="intervencionForm().tipo" (ngModelChange)="intervencionForm.update(f => ({ ...f, tipo: $event }))"><option>PREVENTIVO</option><option>CORRECTIVO</option><option>INSPECCION</option></select></label>
+          <label><span>Operario</span><input [ngModel]="intervencionForm().operario" (ngModelChange)="intervencionForm.update(f => ({ ...f, operario: $event }))" /></label>
+          <label><span>Horas mÃ¡quina</span><input type="number" [ngModel]="intervencionForm().horasMaquina" (ngModelChange)="intervencionForm.update(f => ({ ...f, horasMaquina: $event }))" /></label>
+          <label><span>Mano de obra</span><input type="number" [ngModel]="intervencionForm().manoObraCosto" (ngModelChange)="intervencionForm.update(f => ({ ...f, manoObraCosto: $event }))" /></label>
+          <label><span>Costo repuestos</span><input type="number" [ngModel]="intervencionForm().repuestosCosto" (ngModelChange)="intervencionForm.update(f => ({ ...f, repuestosCosto: $event }))" /></label>
+          <label><span>Estado resultante</span><select [ngModel]="intervencionForm().estadoResultante" (ngModelChange)="intervencionForm.update(f => ({ ...f, estadoResultante: $event }))"><option>DISPONIBLE</option><option>EN_REPARACION</option><option>MANTENIMIENTO</option><option>INACTIVA</option></select></label>
+        </div>
+        <label class="textarea-field"><span>Tareas realizadas</span><textarea [ngModel]="intervencionForm().tareasRealizadas" (ngModelChange)="intervencionForm.update(f => ({ ...f, tareasRealizadas: $event }))"></textarea></label>
+        <div class="repuesto-box">
+          <h4>Repuestos utilizados</h4>
+          <div class="repuesto-row">
+            <input placeholder="CÃ³digo" [ngModel]="repuestoDraft().codigo" (ngModelChange)="repuestoDraft.update(r => ({ ...r, codigo: $event }))" />
+            <input placeholder="DescripciÃ³n" [ngModel]="repuestoDraft().descripcion" (ngModelChange)="repuestoDraft.update(r => ({ ...r, descripcion: $event }))" />
+            <input type="number" placeholder="Cantidad" [ngModel]="repuestoDraft().cantidad" (ngModelChange)="repuestoDraft.update(r => ({ ...r, cantidad: $event }))" />
+            <input type="number" placeholder="Costo unit." [ngModel]="repuestoDraft().costoUnitario" (ngModelChange)="repuestoDraft.update(r => ({ ...r, costoUnitario: $event }))" />
+            <button class="btn-secondary" type="button" (click)="addRepuesto()">Agregar</button>
+          </div>
+          <div class="repuesto-list" *ngIf="intervencionForm().repuestos?.length">
+            <div *ngFor="let item of intervencionForm().repuestos; let i = index">
+              <span>{{ item.descripcion }} Â· {{ item.cantidad }}</span>
+              <button type="button" (click)="removeRepuesto(i)">Quitar</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitIntervencion()">Guardar</button></div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+
+
+

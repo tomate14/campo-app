@@ -151,3 +151,131 @@ export interface MaquinariaResumen {
   usosRecientes: UsoMaquinaria[]
   documentos: DocumentoMaquinaria[]
 }
+
+export interface PlanMantenimiento {
+  id: string
+  maquinariaId?: string
+  maquinariaCodigo?: string
+  tipoMaquinaria?: string
+  modelo?: string
+  nombre: string
+  descripcion?: string
+  intervaloHoras?: number
+  intervaloDias?: number
+  prioridad: string
+  activo: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PlanMantenimientoRequest {
+  maquinariaId?: string
+  tipoMaquinaria?: string
+  modelo?: string
+  nombre: string
+  descripcion?: string
+  intervaloHoras?: number
+  intervaloDias?: number
+  prioridad?: string
+  activo?: boolean
+}
+
+export interface MantenimientoProgramado {
+  id: string
+  maquinariaId: string
+  maquinariaCodigo: string
+  planId?: string
+  planNombre?: string
+  fechaProgramada: string
+  horometroObjetivo?: number
+  estado: string
+  responsable?: string
+  observaciones?: string
+  vencido: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface MantenimientoProgramadoRequest {
+  maquinariaId: string
+  planId?: string
+  fechaProgramada: string
+  horometroObjetivo?: number
+  estado?: string
+  responsable?: string
+  observaciones?: string
+}
+
+export interface RepuestoUtilizado {
+  id: string
+  intervencionId: string
+  codigo?: string
+  descripcion: string
+  cantidad: number
+  costoUnitario?: number
+  costoTotal?: number
+  proveedor?: string
+}
+
+export interface RepuestoUtilizadoRequest {
+  codigo?: string
+  descripcion: string
+  cantidad: number
+  costoUnitario?: number
+  costoTotal?: number
+  proveedor?: string
+}
+
+export interface IntervencionMantenimiento {
+  id: string
+  maquinariaId: string
+  maquinariaCodigo: string
+  planId?: string
+  planNombre?: string
+  programacionId?: string
+  fecha: string
+  tipo: string
+  tareasRealizadas: string
+  operario?: string
+  horasMaquina?: number
+  manoObraCosto?: number
+  repuestosCosto?: number
+  costoTotal?: number
+  estadoResultante?: string
+  observaciones?: string
+  repuestos: RepuestoUtilizado[]
+  createdAt: string
+}
+
+export interface IntervencionMantenimientoRequest {
+  maquinariaId: string
+  planId?: string
+  programacionId?: string
+  fecha: string
+  tipo: string
+  tareasRealizadas: string
+  operario?: string
+  horasMaquina?: number
+  manoObraCosto?: number
+  repuestosCosto?: number
+  costoTotal?: number
+  estadoResultante?: string
+  observaciones?: string
+  repuestos?: RepuestoUtilizadoRequest[]
+}
+
+export interface MantenimientoDashboard {
+  planesActivos: number
+  mantenimientosPendientes: number
+  mantenimientosVencidos: number
+  maquinasEnTaller: number
+  costoMes: number
+  alertas: string[]
+}
+
+export interface MantenimientoResumen {
+  dashboard: MantenimientoDashboard
+  planes: PlanMantenimiento[]
+  programaciones: MantenimientoProgramado[]
+  intervenciones: IntervencionMantenimiento[]
+}

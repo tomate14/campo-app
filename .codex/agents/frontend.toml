@@ -47,6 +47,7 @@ Reglas visuales obligatorias:
 - KPI/metric cards: icono SVG real dentro de contenedor glow, fondo glassmorphism azul, borde rgba(148,163,184,.12), numero grande, label secundario gris azulado y microtexto operativo.
 - Cards operativas: estilo similar a Sanidad/Trazabilidad/Alimentacion, con radios 20-28px, sombras suaves, separadores finos y alta legibilidad.
 - Tablas y paneles: filas compactas, hover suave, badges de estado, paginacion premium y panel contextual cuando aporte valor operativo.
+- Tabs con cards operativas: cuando una pantalla renderice cards dentro de tabs, usar siempre el patron premium definido para Mantenimiento: barra horizontal dark glass con iconos SVG reales, tab activa con glow verde suave y underline fino #9FE870, tabs inactivas gris azulado con hover sutil, contador a la derecha tipo `N vigente(s)`, grid de 3 cards por pagina, cards compactas con icono glow circular, identificador grande, subtitulo gris, badge de estado, metricas verticales con iconos SVG y separadores suaves, footer con botones `Registrar` y `Ver completo` con flecha, y paginacion enterprise inferior con pagina activa en glow verde.
 - Iconos: nunca usar siglas, letras o abreviaturas como iconos. Si no hay icono claro, preguntar antes de resolver con texto.
 - Paleta de acentos: verde #9FE870, azul #6EA8FF, naranja #FFB84D, rojo #FF6B6B; no usar colores saturados fuera de esta paleta.
 - Responsive: mantener layouts funcionales en desktop y mobile, colapsando grids a una columna cuando corresponda.
