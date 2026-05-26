@@ -18,22 +18,10 @@
   </header>
 
   <section class="trace-kpis">
-    <article class="trace-kpi">
-      <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M6 8c0-3 2-5 6-5s6 2 6 5v5c0 4-2.5 7-6 7s-6-3-6-7V8Z" /><path d="M9 9h.01M15 9h.01M9 14c1.8 1.2 4.2 1.2 6 0" /></svg></div>
-      <div><span>Animales activos</span><strong>{{ resumen().activos }}</strong><small>↑ 8.4% vs. mes anterior</small></div>
-    </article>
-    <article class="trace-kpi trace-kpi--blue">
-      <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /><path d="M5 6v12" /></svg></div>
-      <div><span>En movimiento</span><strong>{{ resumen().enMovimiento }}</strong><small>↑ 12.1% vs. mes anterior</small></div>
-    </article>
-    <article class="trace-kpi trace-kpi--warning">
-      <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /><path d="M12 8v5m0 3h.01" /></svg></div>
-      <div><span>Riesgo sanitario</span><strong>{{ resumen().riesgoSanitario }}</strong><small>↓ 2.3% vs. mes anterior</small></div>
-    </article>
-    <article class="trace-kpi">
-      <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M6 8a8 8 0 0 0 0 8" /><path d="M18 8a8 8 0 0 1 0 8" /><path d="M9 10a4 4 0 0 0 0 4" /><path d="M15 10a4 4 0 0 1 0 4" /><circle cx="12" cy="12" r="1" /></svg></div>
-      <div><span>RFID activos</span><strong>{{ resumen().conRfid }}</strong><small>↑ 5.7% vs. mes anterior</small></div>
-    </article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M6 8c0-3 2-5 6-5s6 2 6 5v5c0 4-2.5 7-6 7s-6-3-6-7V8Z" /><path d="M9 9h.01M15 9h.01M9 14c1.8 1.2 4.2 1.2 6 0" /></svg></div><div class="kpi-copy"><span>Animales activos</span><small>↑ 8.4% vs. mes anterior</small></div><strong>{{ resumen().activos }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /><path d="M5 6v12" /></svg></div><div class="kpi-copy"><span>En movimiento</span><small>↑ 12.1% vs. mes anterior</small></div><strong>{{ resumen().enMovimiento }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /><path d="M12 8v5m0 3h.01" /></svg></div><div class="kpi-copy"><span>Riesgo sanitario</span><small>↓ 2.3% vs. mes anterior</small></div><strong>{{ resumen().riesgoSanitario }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M6 8a8 8 0 0 0 0 8" /><path d="M18 8a8 8 0 0 1 0 8" /><path d="M9 10a4 4 0 0 0 0 4" /><path d="M15 10a4 4 0 0 1 0 4" /><circle cx="12" cy="12" r="1" /></svg></div><div class="kpi-copy"><span>RFID activos</span><small>↑ 5.7% vs. mes anterior</small></div><strong>{{ resumen().conRfid }}</strong></article>
   </section>
 
   <section class="trace-filters card">

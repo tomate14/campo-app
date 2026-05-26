@@ -23,7 +23,7 @@ export class SiembraPageComponent implements OnInit {
   protected activeTab: CicloTab = 'SIEMBRA';
   protected showForm = false;
   protected page = 1;
-  protected readonly pageSize = 5;
+  protected readonly pageSize = 3;
   protected promedio?: { loteId: string; rendimientoPromedioKgHa: number };
   protected readonly tipos: TipoEvento[] = ['SIEMBRA', 'MONITOREO_FENOLOGICO', 'ALERTA', 'TRATAMIENTO'];
   protected readonly calidades: CalidadGrano[] = ['PREMIUM', 'ESTANDAR', 'DESCUENTO'];

@@ -304,4 +304,169 @@ ON DUPLICATE KEY UPDATE
     motivo = VALUES(motivo),
     deleted_at = NULL;
 
+INSERT INTO planes_mantenimiento (
+    id, maquinaria_id, tipo_maquinaria, modelo, nombre, descripcion,
+    intervalo_horas, intervalo_dias, prioridad, activo
+) VALUES
+    (
+        '85000000-0000-0000-0000-000000000001',
+        '80000000-0000-0000-0000-000000000001',
+        'TRACTOR',
+        '8120',
+        'Servicio 250 horas',
+        'Cambio de aceite, filtros, engrase general y control hidraulico.',
+        250.00,
+        90,
+        'ALTA',
+        b'1'
+    ),
+    (
+        '85000000-0000-0000-0000-000000000002',
+        '80000000-0000-0000-0000-000000000002',
+        'COSECHADORA',
+        'Axial-Flow 9760',
+        'Inspeccion de cosecha',
+        'Control de correas, zarandas, rotor, plataforma y sensores de rendimiento.',
+        180.00,
+        45,
+        'ALTA',
+        b'1'
+    ),
+    (
+        '85000000-0000-0000-0000-000000000003',
+        NULL,
+        'PULVERIZADORA',
+        NULL,
+        'Calibracion de aplicacion',
+        'Calibracion de picos, bomba, filtros y caudalimetro.',
+        120.00,
+        60,
+        'MEDIA',
+        b'1'
+    )
+ON DUPLICATE KEY UPDATE
+    maquinaria_id = VALUES(maquinaria_id),
+    tipo_maquinaria = VALUES(tipo_maquinaria),
+    modelo = VALUES(modelo),
+    nombre = VALUES(nombre),
+    descripcion = VALUES(descripcion),
+    intervalo_horas = VALUES(intervalo_horas),
+    intervalo_dias = VALUES(intervalo_dias),
+    prioridad = VALUES(prioridad),
+    activo = VALUES(activo),
+    deleted_at = NULL;
+
+INSERT INTO mantenimientos_programados (
+    id, maquinaria_id, plan_id, fecha_programada, horometro_objetivo,
+    estado, responsable, observaciones
+) VALUES
+    (
+        '86000000-0000-0000-0000-000000000001',
+        '80000000-0000-0000-0000-000000000001',
+        '85000000-0000-0000-0000-000000000001',
+        '2026-05-30',
+        1500.00,
+        'PENDIENTE',
+        'Jefe de taller',
+        'Preparar kit de filtros y aceite.'
+    ),
+    (
+        '86000000-0000-0000-0000-000000000002',
+        '80000000-0000-0000-0000-000000000002',
+        '85000000-0000-0000-0000-000000000002',
+        '2026-05-20',
+        2300.00,
+        'PENDIENTE',
+        'Juan Perez',
+        'Revision vencida para validar alerta.'
+    ),
+    (
+        '86000000-0000-0000-0000-000000000003',
+        '80000000-0000-0000-0000-000000000004',
+        '85000000-0000-0000-0000-000000000003',
+        '2026-06-03',
+        1950.00,
+        'PENDIENTE',
+        'Jefe de taller',
+        'Realizar junto con reparacion actual.'
+    )
+ON DUPLICATE KEY UPDATE
+    maquinaria_id = VALUES(maquinaria_id),
+    plan_id = VALUES(plan_id),
+    fecha_programada = VALUES(fecha_programada),
+    horometro_objetivo = VALUES(horometro_objetivo),
+    estado = VALUES(estado),
+    responsable = VALUES(responsable),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+INSERT INTO intervenciones_mantenimiento (
+    id, maquinaria_id, plan_id, programacion_id, fecha, tipo, tareas_realizadas,
+    operario, horas_maquina, mano_obra_costo, repuestos_costo, costo_total,
+    estado_resultante, observaciones
+) VALUES
+    (
+        '87000000-0000-0000-0000-000000000001',
+        '80000000-0000-0000-0000-000000000001',
+        '85000000-0000-0000-0000-000000000001',
+        NULL,
+        '2026-05-12',
+        'PREVENTIVO',
+        'Cambio de aceite, filtros y engrase completo.',
+        'Jefe de taller',
+        1240.50,
+        95000.00,
+        185000.00,
+        280000.00,
+        'DISPONIBLE',
+        'Servicio realizado sin novedades.'
+    ),
+    (
+        '87000000-0000-0000-0000-000000000002',
+        '80000000-0000-0000-0000-000000000004',
+        '85000000-0000-0000-0000-000000000003',
+        NULL,
+        '2026-05-21',
+        'CORRECTIVO',
+        'Revision de bomba, cambio de picos y limpieza de filtros.',
+        'Taller Central',
+        1890.75,
+        140000.00,
+        260000.00,
+        400000.00,
+        'EN_REPARACION',
+        'Queda pendiente prueba de presion.'
+    )
+ON DUPLICATE KEY UPDATE
+    maquinaria_id = VALUES(maquinaria_id),
+    plan_id = VALUES(plan_id),
+    programacion_id = VALUES(programacion_id),
+    fecha = VALUES(fecha),
+    tipo = VALUES(tipo),
+    tareas_realizadas = VALUES(tareas_realizadas),
+    operario = VALUES(operario),
+    horas_maquina = VALUES(horas_maquina),
+    mano_obra_costo = VALUES(mano_obra_costo),
+    repuestos_costo = VALUES(repuestos_costo),
+    costo_total = VALUES(costo_total),
+    estado_resultante = VALUES(estado_resultante),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+INSERT INTO repuestos_utilizados (
+    id, intervencion_id, codigo, descripcion, cantidad, costo_unitario, costo_total, proveedor
+) VALUES
+    ('88000000-0000-0000-0000-000000000001', '87000000-0000-0000-0000-000000000001', 'FIL-ACE-8120', 'Filtro de aceite tractor 8120', 1.00, 85000.00, 85000.00, 'Agro Repuestos SA'),
+    ('88000000-0000-0000-0000-000000000002', '87000000-0000-0000-0000-000000000001', 'ACE-15W40', 'Aceite 15W40 bidon 20L', 2.00, 50000.00, 100000.00, 'Agro Repuestos SA'),
+    ('88000000-0000-0000-0000-000000000003', '87000000-0000-0000-0000-000000000002', 'PICO-11003', 'Pico pulverizador abanico 11003', 24.00, 8500.00, 204000.00, 'Pulverizaciones del Centro'),
+    ('88000000-0000-0000-0000-000000000004', '87000000-0000-0000-0000-000000000002', 'FILT-LINEA', 'Filtro de linea pulverizadora', 2.00, 28000.00, 56000.00, 'Pulverizaciones del Centro')
+ON DUPLICATE KEY UPDATE
+    codigo = VALUES(codigo),
+    descripcion = VALUES(descripcion),
+    cantidad = VALUES(cantidad),
+    costo_unitario = VALUES(costo_unitario),
+    costo_total = VALUES(costo_total),
+    proveedor = VALUES(proveedor),
+    deleted_at = NULL;
+
 COMMIT;

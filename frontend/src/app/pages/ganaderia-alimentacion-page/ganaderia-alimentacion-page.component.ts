@@ -29,6 +29,8 @@ export class GanaderiaAlimentacionPageComponent implements OnInit {
   protected readonly errorMessage = signal('');
   protected readonly activeTab = signal<AlimentacionTab>('DIETAS');
   protected readonly modal = signal<'DIETA' | 'SUMINISTRO' | 'PESAJE' | null>(null);
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = 3;
 
   protected readonly dietaForm = signal<DietaRequest>({
     nombre: '',
@@ -71,6 +73,22 @@ export class GanaderiaAlimentacionPageComponent implements OnInit {
     if (this.activeTab() === 'ALERTAS') return data.dashboard.alertas.length;
     return data.dietas.length;
   });
+  protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalItems() / this.pageSize)));
+  protected readonly pageStart = computed(() => (this.totalItems() === 0 ? 0 : (this.currentPage() - 1) * this.pageSize + 1));
+  protected readonly pageEnd = computed(() => Math.min(this.currentPage() * this.pageSize, this.totalItems()));
+  protected readonly activeTabLabel = computed(() => {
+    const labels: Record<AlimentacionTab, string> = {
+      DIETAS: 'dietas',
+      SUMINISTROS: 'suministros',
+      PESAJES: 'pesajes',
+      ALERTAS: 'alertas',
+    };
+    return labels[this.activeTab()];
+  });
+  protected readonly dietasPage = computed(() => this.paginate(this.resumen()?.dietas ?? []));
+  protected readonly suministrosPage = computed(() => this.paginate(this.resumen()?.registros ?? []));
+  protected readonly pesajesPage = computed(() => this.paginate(this.resumen()?.pesajes ?? []));
+  protected readonly alertasPage = computed(() => this.paginate(this.resumen()?.dashboard.alertas ?? []));
 
   ngOnInit(): void {
     this.loadAll();
@@ -96,6 +114,13 @@ export class GanaderiaAlimentacionPageComponent implements OnInit {
 
   protected setTab(tab: AlimentacionTab) {
     this.activeTab.set(tab);
+    this.currentPage.set(1);
+  }
+
+  protected setPage(page: number) {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
+    }
   }
 
   protected openModal(type: 'DIETA' | 'SUMINISTRO' | 'PESAJE') {
@@ -188,6 +213,11 @@ export class GanaderiaAlimentacionPageComponent implements OnInit {
 
   private numberOrUndefined(value: unknown) {
     return value === undefined || value === null || value === '' ? undefined : Number(value);
+  }
+
+  private paginate<T>(items: T[]): T[] {
+    const start = (this.currentPage() - 1) * this.pageSize;
+    return items.slice(start, start + this.pageSize);
   }
 
   private afterSave() {

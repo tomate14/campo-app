@@ -71,6 +71,11 @@
         <svg viewBox="0 0 24 24"><path d="M5 15h12l2 4H3l2-4Z" /><path d="M6 15V9h7l4 6" /><path d="M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>
         <span *ngIf="!collapsed()">Inventario</span>
       </a>
+
+      <a routerLink="/maquinaria/mantenimiento" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Mantenimiento' : ''">
+        <svg viewBox="0 0 24 24"><path d="m14 7 3 3" /><path d="M5 19 16 8l-3-3L2 16v3h3Z" /><path d="M12 19h9" /></svg>
+        <span *ngIf="!collapsed()">Mantenimiento</span>
+      </a>
     </nav>
 
     <div class="sidebar-footer">

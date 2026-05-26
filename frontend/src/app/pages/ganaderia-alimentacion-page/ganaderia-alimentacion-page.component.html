@@ -17,63 +17,124 @@
 
   <ng-container *ngIf="!loading() && resumen() as data">
     <section class="kpi-grid">
-      <article class="kpi-card"><span>Dietas activas</span><strong>{{ data.dashboard.dietasActivas }}</strong><small>Planes nutricionales vigentes</small></article>
-      <article class="kpi-card"><span>Kg suministrados</span><strong>{{ data.dashboard.kgSuministradosMes || 0 }}</strong><small>Mes operativo actual</small></article>
-      <article class="kpi-card"><span>Costo mensual</span><strong>${{ data.dashboard.costoMes || 0 }}</strong><small>Alimentación registrada</small></article>
-      <article class="kpi-card"><span>Conversión</span><strong>{{ data.dashboard.conversionAlimenticia || 0 }}</strong><small>Kg alimento / kg ganado</small></article>
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>
+        <div class="kpi-copy"><span>Dietas activas</span><small>Planes nutricionales vigentes</small></div>
+        <strong>{{ data.dashboard.dietasActivas }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon blue"><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg></div>
+        <div class="kpi-copy"><span>Kg suministrados</span><small>Mes operativo actual</small></div>
+        <strong>{{ data.dashboard.kgSuministradosMes || 0 }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon warning"><svg viewBox="0 0 24 24"><path d="M12 2v20" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H15a3.5 3.5 0 0 1 0 7H6" /></svg></div>
+        <div class="kpi-copy"><span>Costo mensual</span><small>Alimentacion registrada</small></div>
+        <strong>${{ data.dashboard.costoMes || 0 }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg></div>
+        <div class="kpi-copy"><span>Conversion</span><small>Kg alimento / kg ganado</small></div>
+        <strong>{{ data.dashboard.conversionAlimenticia || 0 }}</strong>
+      </article>
     </section>
 
     <section class="nutrition-layout">
       <article class="card nutrition-panel">
         <div class="tabs-bar">
           <div class="tabs">
-            <button type="button" [class.active]="activeTab() === 'DIETAS'" (click)="setTab('DIETAS')">Dietas</button>
-            <button type="button" [class.active]="activeTab() === 'SUMINISTROS'" (click)="setTab('SUMINISTROS')">Suministros</button>
-            <button type="button" [class.active]="activeTab() === 'PESAJES'" (click)="setTab('PESAJES')">Pesajes</button>
-            <button type="button" [class.active]="activeTab() === 'ALERTAS'" (click)="setTab('ALERTAS')">Alertas</button>
+            <button type="button" [class.active]="activeTab() === 'DIETAS'" (click)="setTab('DIETAS')">
+              <svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg>
+              Dietas
+            </button>
+            <button type="button" [class.active]="activeTab() === 'SUMINISTROS'" (click)="setTab('SUMINISTROS')">
+              <svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg>
+              Suministros
+            </button>
+            <button type="button" [class.active]="activeTab() === 'PESAJES'" (click)="setTab('PESAJES')">
+              <svg viewBox="0 0 24 24"><path d="M6 3h12" /><path d="M6 21h12" /><path d="M8 3v18" /><path d="M16 3v18" /><path d="M8 8h8" /><path d="M8 16h8" /></svg>
+              Pesajes
+            </button>
+            <button type="button" [class.active]="activeTab() === 'ALERTAS'" (click)="setTab('ALERTAS')">
+              <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg>
+              Alertas
+            </button>
           </div>
-          <span>{{ totalItems() }} registros</span>
+          <span>{{ totalItems() }} vigente(s)</span>
         </div>
 
         <div class="card-grid" *ngIf="activeTab() === 'DIETAS'">
-          <article class="premium-card" *ngFor="let dieta of data.dietas">
-            <div class="card-top"><div><h3>{{ dieta.nombre }}</h3><p>{{ dieta.tipoAnimal }} · {{ dieta.objetivo || 'Sin objetivo' }}</p></div><span class="badge" [class.badge-muted]="!dieta.activa">{{ dieta.activa ? 'Activa' : 'Inactiva' }}</span></div>
-            <div class="metric-list">
-              <div><span>Materia seca</span><strong>{{ dieta.materiaSecaKg || 0 }} kg</strong></div>
-              <div><span>Costo diario</span><strong>${{ dieta.costoDiario || 0 }}</strong></div>
-              <div><span>Ingredientes</span><strong>{{ dieta.ingredientes.length }}</strong></div>
-              <div><span>Actualizada</span><strong>{{ dieta.updatedAt | date:'dd/MM/yyyy' }}</strong></div>
+          <article class="premium-card" [class.card-success]="dieta.activa" [class.card-muted]="!dieta.activa" *ngFor="let dieta of dietasPage()">
+            <div class="premium-card__head">
+              <div class="premium-card__identity">
+                <div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>
+                <div><h3>{{ dieta.nombre }}</h3><p>{{ dieta.tipoAnimal }} - {{ dieta.objetivo || 'Sin objetivo' }}</p></div>
+              </div>
+              <span class="badge" [class.badge-muted]="!dieta.activa">{{ dieta.activa ? 'Activa' : 'Inactiva' }}</span>
             </div>
-            <button class="detail-btn" type="button">Ver composición</button>
+            <div class="metric-list">
+              <div><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg><span>Materia seca</span><strong>{{ dieta.materiaSecaKg || 0 }} kg</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M12 2v20" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H15a3.5 3.5 0 0 1 0 7H6" /></svg><span>Costo diario</span><strong>${{ dieta.costoDiario || 0 }}</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg><span>Ingredientes</span><strong>{{ dieta.ingredientes.length }}</strong></div>
+            </div>
+            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
           </article>
           <div class="empty-box premium-empty-box" *ngIf="!data.dietas.length">Sin dietas cargadas.</div>
         </div>
 
-        <div class="table-wrap" *ngIf="activeTab() === 'SUMINISTROS'">
-          <table>
-            <thead><tr><th>Fecha</th><th>Animal</th><th>Dieta</th><th>Alimento</th><th>Kg</th><th>Costo</th><th>Responsable</th></tr></thead>
-            <tbody><tr *ngFor="let item of data.registros"><td>{{ item.fecha }}</td><td>{{ item.animalCaravana || 'Rodeo' }}</td><td>{{ item.dietaNombre || 'Sin dieta' }}</td><td>{{ item.alimento }}</td><td>{{ item.cantidadKg }}</td><td>${{ item.costoTotal || 0 }}</td><td>{{ item.responsable || 'Sin responsable' }}</td></tr></tbody>
-          </table>
+        <div class="card-grid" *ngIf="activeTab() === 'SUMINISTROS'">
+          <article class="premium-card card-success" *ngFor="let item of suministrosPage()">
+            <div class="premium-card__head">
+              <div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg></div><div><h3>{{ item.animalCaravana || 'Rodeo' }}</h3><p>{{ item.dietaNombre || item.alimento }}</p></div></div>
+              <span class="badge">Registrado</span>
+            </div>
+            <div class="metric-list">
+              <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha</span><strong>{{ item.fecha | date:'dd/MM/yyyy' }}</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg><span>Cantidad</span><strong>{{ item.cantidadKg }} kg</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.responsable || 'Sin responsable' }}</strong></div>
+            </div>
+            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
+          </article>
           <div class="empty-box premium-empty-box" *ngIf="!data.registros.length">Sin suministros registrados.</div>
         </div>
 
-        <div class="table-wrap" *ngIf="activeTab() === 'PESAJES'">
-          <table>
-            <thead><tr><th>Fecha</th><th>Animal</th><th>Peso</th><th>BCS</th><th>Método</th><th>Responsable</th></tr></thead>
-            <tbody><tr *ngFor="let item of data.pesajes"><td>{{ item.fecha }}</td><td>{{ item.animalCaravana }}</td><td>{{ item.pesoKg }} kg</td><td>{{ item.condicionCorporal || 'Sin dato' }}</td><td>{{ item.metodo || 'Sin método' }}</td><td>{{ item.responsable || 'Sin responsable' }}</td></tr></tbody>
-          </table>
+        <div class="card-grid" *ngIf="activeTab() === 'PESAJES'">
+          <article class="premium-card card-success" *ngFor="let item of pesajesPage()">
+            <div class="premium-card__head">
+              <div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M6 3h12" /><path d="M6 21h12" /><path d="M8 3v18" /><path d="M16 3v18" /><path d="M8 8h8" /><path d="M8 16h8" /></svg></div><div><h3>{{ item.animalCaravana }}</h3><p>{{ item.metodo || 'Sin metodo' }}</p></div></div>
+              <span class="badge">Pesaje</span>
+            </div>
+            <div class="metric-list">
+              <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha</span><strong>{{ item.fecha | date:'dd/MM/yyyy' }}</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg><span>Peso</span><strong>{{ item.pesoKg }} kg</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.responsable || 'Sin responsable' }}</strong></div>
+            </div>
+            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('PESAJE')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
+          </article>
           <div class="empty-box premium-empty-box" *ngIf="!data.pesajes.length">Sin pesajes registrados.</div>
         </div>
 
         <div class="card-grid" *ngIf="activeTab() === 'ALERTAS'">
-          <article class="premium-card alert-card" *ngFor="let alerta of data.dashboard.alertas">
-            <div class="card-top"><div><h3>{{ alerta.animalCaravana }}</h3><p>{{ alerta.mensaje }}</p></div><span class="badge badge-danger">{{ alerta.prioridad }}</span></div>
-            <div class="metric-list"><div><span>Tipo</span><strong>{{ alerta.tipo }}</strong></div><div><span>Animal</span><strong>{{ alerta.animalCaravana }}</strong></div></div>
+          <article class="premium-card card-warning" *ngFor="let alerta of alertasPage()">
+            <div class="premium-card__head">
+              <div class="premium-card__identity"><div class="premium-card__icon warning"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg></div><div><h3>{{ alerta.animalCaravana || 'Alerta nutricional' }}</h3><p>{{ alerta.mensaje }}</p></div></div>
+              <span class="badge badge-warning">{{ alerta.prioridad }}</span>
+            </div>
+            <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg><span>Tipo</span><strong>{{ alerta.tipo }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Animal</span><strong>{{ alerta.animalCaravana || 'Rodeo' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M12 9v4" /><path d="M12 17h.01" /><path d="m10 3-8 18h20L14 3z" /></svg><span>Prioridad</span><strong>{{ alerta.prioridad }}</strong></div></div>
+            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
           </article>
           <div class="empty-box premium-empty-box" *ngIf="!data.dashboard.alertas.length">Sin alertas nutricionales.</div>
         </div>
-      </article>
 
+        <footer class="pagination">
+          <span>Mostrando {{ pageStart() }} a {{ pageEnd() }} de {{ totalItems() }} {{ activeTabLabel() }}</span>
+          <div>
+            <button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
+            <button type="button" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage() === i + 1" (click)="setPage(i + 1)">{{ i + 1 }}</button>
+            <button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
+          </div>
+        </footer>
+      </article>
       <aside class="card context-panel">
         <div class="context-icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>
         <h3>Resumen nutricional</h3>
@@ -137,3 +198,4 @@
     </div>
   </div>
 </div>
+
