@@ -1,0 +1,285 @@
+<div class="machinery-page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Campo App · Maquinaria</p>
+      <h2>Inventario de maquinaria</h2>
+      <p>Control operativo del parque, estado, ubicación, uso, documentación y asignación de operadores.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-secondary machinery-action" type="button" (click)="openModal('USO')" [disabled]="!selectedMachine()">
+        <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M7 16V9" /><path d="M12 16V5" /><path d="M17 16v-4" /></svg>
+        Registrar uso
+      </button>
+      <button class="btn-primary machinery-action" type="button" (click)="openModal('MAQUINA')">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+        Nueva máquina
+      </button>
+    </div>
+  </header>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="card empty-box" *ngIf="loading()">Cargando inventario...</div>
+
+  <ng-container *ngIf="!loading() && resumen() as data">
+    <section class="kpi-grid">
+      <article class="kpi-card">
+        <div class="kpi-content">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24"><path d="M5 15h12l2 4H3l2-4Z" /><path d="M6 15V9h7l4 6" /><path d="M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>
+          </div>
+          <div>
+            <span>Total máquinas</span>
+            <strong>{{ data.dashboard.total }}</strong>
+            <small>Parque operativo registrado</small>
+          </div>
+        </div>
+      </article>
+      <article class="kpi-card">
+        <div class="kpi-content">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24"><path d="M20 7 9 18l-5-5" /></svg>
+          </div>
+          <div>
+            <span>Disponibles</span>
+            <strong>{{ data.dashboard.disponibles }}</strong>
+            <small>Listas para asignar</small>
+          </div>
+        </div>
+      </article>
+      <article class="kpi-card">
+        <div class="kpi-content">
+          <div class="kpi-icon warning">
+            <svg viewBox="0 0 24 24"><path d="M12 3v4" /><path d="M12 17v4" /><path d="M4.9 4.9l2.8 2.8" /><path d="M16.3 16.3l2.8 2.8" /><path d="M3 12h4" /><path d="M17 12h4" /><path d="M4.9 19.1l2.8-2.8" /><path d="M16.3 7.7l2.8-2.8" /><path d="M9 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z" /></svg>
+          </div>
+          <div>
+            <span>En reparación</span>
+            <strong>{{ data.dashboard.enReparacion }}</strong>
+            <small>Mantenimiento o parada técnica</small>
+          </div>
+        </div>
+      </article>
+      <article class="kpi-card">
+        <div class="kpi-content">
+          <div class="kpi-icon blue">
+            <svg viewBox="0 0 24 24"><path d="M6 8h12" /><path d="M6 12h12" /><path d="M6 16h8" /><path d="M4 4h16v16H4z" /></svg>
+          </div>
+          <div>
+            <span>Docs vencidos</span>
+            <strong>{{ data.dashboard.documentosVencidos }}</strong>
+            <small>Seguros, VTV o permisos</small>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="filters-card">
+      <label>
+        <span>Tipo</span>
+        <select [ngModel]="filters().tipo" (ngModelChange)="filters.update(f => ({ ...f, tipo: $event }))">
+          <option value="">Todos</option>
+          <option value="TRACTOR">Tractor</option>
+          <option value="COSECHADORA">Cosechadora</option>
+          <option value="SEMBRADORA">Sembradora</option>
+          <option value="PULVERIZADORA">Pulverizadora</option>
+          <option value="CAMIONETA">Camioneta</option>
+        </select>
+      </label>
+      <label>
+        <span>Estado</span>
+        <select [ngModel]="filters().estado" (ngModelChange)="filters.update(f => ({ ...f, estado: $event }))">
+          <option value="">Todos</option>
+          <option value="DISPONIBLE">Disponible</option>
+          <option value="ASIGNADA">Asignada</option>
+          <option value="OPERANDO">Operando</option>
+          <option value="EN_REPARACION">En reparación</option>
+          <option value="INACTIVA">Inactiva</option>
+        </select>
+      </label>
+      <label>
+        <span>Ubicación</span>
+        <input [ngModel]="filters().ubicacion" (ngModelChange)="filters.update(f => ({ ...f, ubicacion: $event }))" placeholder="Base, lote o taller" />
+      </label>
+      <div class="filter-actions">
+        <button class="btn-primary machinery-action" type="button" (click)="applyFilters()">
+          <svg viewBox="0 0 24 24"><path d="M4 5h16" /><path d="M7 12h10" /><path d="M10 19h4" /></svg>
+          Aplicar
+        </button>
+        <button class="btn-secondary machinery-action" type="button" (click)="clearFilters()">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18" /><path d="M8 6v12" /><path d="M16 6v12" /><path d="M5 18h14" /></svg>
+          Limpiar
+        </button>
+      </div>
+    </section>
+
+    <section class="machinery-layout">
+      <article class="card table-panel">
+        <div class="panel-head">
+          <div>
+            <h3>Máquinas registradas</h3>
+            <p>{{ data.maquinas.length }} unidades filtradas</p>
+          </div>
+          <span class="panel-badge">{{ data.dashboard.horasMes || 0 }} h este mes</span>
+        </div>
+
+        <div class="machine-list">
+          <article class="machine-row" *ngFor="let machine of maquinasPage()" [class.selected]="selectedId() === machine.id" (click)="selectMachine(machine)">
+            <div class="machine-icon">
+              <svg viewBox="0 0 24 24"><path d="M5 15h12l2 4H3l2-4Z" /><path d="M6 15V9h7l4 6" /><path d="M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>
+            </div>
+            <div class="machine-main">
+              <strong>{{ machine.codigo }}</strong>
+              <span>{{ machine.tipo }} · {{ machine.marca }} {{ machine.modelo }}</span>
+            </div>
+            <div class="machine-meta"><span>Ubicación</span><strong>{{ machine.ubicacionActual || 'Sin dato' }}</strong></div>
+            <div class="machine-meta"><span>Horómetro</span><strong>{{ formatNumber(machine.horometro) }} h</strong></div>
+            <span class="badge" [class.badge-warning]="statusClass(machine.estado) === 'warning'" [class.badge-danger]="statusClass(machine.estado) === 'danger'">{{ machine.estado }}</span>
+            <div class="row-actions">
+              <button type="button" title="Editar" (click)="openModal('MAQUINA', machine); $event.stopPropagation()">
+                <svg viewBox="0 0 24 24"><path d="m4 20 4-1 11-11-3-3L5 16l-1 4Z" /><path d="m14 6 3 3" /></svg>
+              </button>
+              <button type="button" title="Estado" (click)="openModal('ESTADO', machine); $event.stopPropagation()">
+                <svg viewBox="0 0 24 24"><path d="M12 6v6l4 2" /><path d="M21 12a9 9 0 1 1-3-6.7" /><path d="M21 3v6h-6" /></svg>
+              </button>
+              <button class="danger-action" type="button" title="Eliminar" (click)="deleteMachine(machine); $event.stopPropagation()">
+                <svg viewBox="0 0 24 24"><path d="M5 7h14" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M6 7l1 14h10l1-14" /><path d="M9 7V4h6v3" /></svg>
+              </button>
+            </div>
+          </article>
+          <div class="empty-box premium-empty-box" *ngIf="!data.maquinas.length">Sin maquinaria cargada.</div>
+        </div>
+
+        <footer class="pagination">
+          <span>Mostrando página {{ currentPage() }} de {{ totalPages() }}</span>
+          <div>
+            <button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
+            <button type="button" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage() === i + 1" (click)="setPage(i + 1)">{{ i + 1 }}</button>
+            <button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
+          </div>
+        </footer>
+      </article>
+
+      <aside class="card context-panel" *ngIf="selectedMachine() as machine">
+        <div class="context-head">
+          <div class="context-icon">
+            <svg viewBox="0 0 24 24"><path d="M5 15h12l2 4H3l2-4Z" /><path d="M6 15V9h7l4 6" /><path d="M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>
+          </div>
+          <div>
+            <span>Máquina seleccionada</span>
+            <h3>{{ machine.codigo }}</h3>
+            <p>{{ machine.marca }} {{ machine.modelo }} · {{ machine.estado }}</p>
+          </div>
+        </div>
+
+        <div class="context-metrics">
+          <div><span>Tipo</span><strong>{{ machine.tipo }}</strong></div>
+          <div><span>HP</span><strong>{{ machine.potenciaHp || 0 }}</strong></div>
+          <div><span>Km</span><strong>{{ formatNumber(machine.kilometraje) }}</strong></div>
+          <div><span>Año</span><strong>{{ machine.anio || 'S/D' }}</strong></div>
+        </div>
+
+        <section class="info-card">
+          <h4>Ficha técnica</h4>
+          <div class="info-grid">
+            <span>Serie</span><strong>{{ machine.numeroSerie || 'Sin dato' }}</strong>
+            <span>Capacidad</span><strong>{{ machine.capacidad || 'Sin dato' }}</strong>
+            <span>Accesorios</span><strong>{{ machine.accesorios || 'Sin dato' }}</strong>
+            <span>Ubicación</span><strong>{{ machine.ubicacionActual || 'Sin dato' }}</strong>
+          </div>
+        </section>
+
+        <section class="info-card">
+          <h4>Usos recientes</h4>
+          <div class="timeline-item" *ngFor="let uso of selectedUsos()">
+            <span>{{ uso.fecha | date:'dd/MM/yyyy' }}</span>
+            <strong>{{ uso.actividad }}</strong>
+            <small>{{ uso.operario || 'Sin operario' }} · {{ uso.horasTrabajadas || 0 }} h</small>
+          </div>
+          <p class="muted" *ngIf="!selectedUsos().length">Sin usos registrados.</p>
+        </section>
+
+        <section class="info-card">
+          <h4>Documentación</h4>
+          <div class="timeline-item" *ngFor="let doc of selectedDocumentos()">
+            <span>{{ doc.tipoDocumento }}</span>
+            <strong>{{ doc.numero || 'Sin número' }}</strong>
+            <small>Vence: {{ doc.vencimiento ? (doc.vencimiento | date:'dd/MM/yyyy') : 'Sin dato' }}</small>
+          </div>
+          <p class="muted" *ngIf="!selectedDocumentos().length">Sin documentación cargada.</p>
+        </section>
+
+        <div class="context-actions">
+          <button class="btn-secondary machinery-action" type="button" (click)="openModal('DOCUMENTO', machine)">
+            <svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z" /><path d="M14 3v5h5" /></svg>
+            Agregar documento
+          </button>
+          <button class="btn-primary machinery-action" type="button" (click)="openModal('USO', machine)">
+            <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M7 16V9" /><path d="M12 16V5" /><path d="M17 16v-4" /></svg>
+            Registrar uso
+          </button>
+        </div>
+      </aside>
+    </section>
+  </ng-container>
+
+  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()">
+    <div class="app-modal-panel" (click)="$event.stopPropagation()">
+      <ng-container *ngIf="modal() === 'MAQUINA'">
+        <div class="modal-head"><h3>Datos de maquinaria</h3></div>
+        <div class="form-grid">
+          <label><span>Código</span><input [ngModel]="maquinaForm().codigo" (ngModelChange)="maquinaForm.update(f => ({ ...f, codigo: $event }))" /></label>
+          <label><span>Tipo</span><select [ngModel]="maquinaForm().tipo" (ngModelChange)="maquinaForm.update(f => ({ ...f, tipo: $event }))"><option>TRACTOR</option><option>COSECHADORA</option><option>SEMBRADORA</option><option>PULVERIZADORA</option><option>CAMIONETA</option></select></label>
+          <label><span>Marca</span><input [ngModel]="maquinaForm().marca" (ngModelChange)="maquinaForm.update(f => ({ ...f, marca: $event }))" /></label>
+          <label><span>Modelo</span><input [ngModel]="maquinaForm().modelo" (ngModelChange)="maquinaForm.update(f => ({ ...f, modelo: $event }))" /></label>
+          <label><span>Número de serie</span><input [ngModel]="maquinaForm().numeroSerie" (ngModelChange)="maquinaForm.update(f => ({ ...f, numeroSerie: $event }))" /></label>
+          <label><span>Año</span><input type="number" [ngModel]="maquinaForm().anio" (ngModelChange)="maquinaForm.update(f => ({ ...f, anio: $event }))" /></label>
+          <label><span>Estado</span><select [ngModel]="maquinaForm().estado" (ngModelChange)="maquinaForm.update(f => ({ ...f, estado: $event }))"><option>DISPONIBLE</option><option>ASIGNADA</option><option>OPERANDO</option><option>EN_REPARACION</option><option>INACTIVA</option></select></label>
+          <label><span>Ubicación actual</span><input [ngModel]="maquinaForm().ubicacionActual" (ngModelChange)="maquinaForm.update(f => ({ ...f, ubicacionActual: $event }))" /></label>
+          <label><span>Potencia HP</span><input type="number" [ngModel]="maquinaForm().potenciaHp" (ngModelChange)="maquinaForm.update(f => ({ ...f, potenciaHp: $event }))" /></label>
+          <label><span>Capacidad</span><input [ngModel]="maquinaForm().capacidad" (ngModelChange)="maquinaForm.update(f => ({ ...f, capacidad: $event }))" /></label>
+          <label><span>Horómetro</span><input type="number" [ngModel]="maquinaForm().horometro" (ngModelChange)="maquinaForm.update(f => ({ ...f, horometro: $event }))" /></label>
+          <label><span>Kilometraje</span><input type="number" [ngModel]="maquinaForm().kilometraje" (ngModelChange)="maquinaForm.update(f => ({ ...f, kilometraje: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="maquinaForm().observaciones" (ngModelChange)="maquinaForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary machinery-action" type="button" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>Cancelar</button><button class="btn-primary machinery-action" type="button" [disabled]="saving()" (click)="submitMaquina()"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'USO'">
+        <div class="modal-head"><h3>Registrar uso</h3></div>
+        <div class="form-grid">
+          <label><span>Máquina</span><select [ngModel]="usoForm().maquinariaId" (ngModelChange)="usoForm.update(f => ({ ...f, maquinariaId: $event }))"><option *ngFor="let machine of resumen()?.maquinas ?? []" [value]="machine.id">{{ machine.codigo }} · {{ machine.modelo }}</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="usoForm().fecha" (ngModelChange)="usoForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Actividad</span><input [ngModel]="usoForm().actividad" (ngModelChange)="usoForm.update(f => ({ ...f, actividad: $event }))" /></label>
+          <label><span>Lote</span><input [ngModel]="usoForm().loteNombre" (ngModelChange)="usoForm.update(f => ({ ...f, loteNombre: $event }))" /></label>
+          <label><span>Operario</span><input [ngModel]="usoForm().operario" (ngModelChange)="usoForm.update(f => ({ ...f, operario: $event }))" /></label>
+          <label><span>Horas</span><input type="number" [ngModel]="usoForm().horasTrabajadas" (ngModelChange)="usoForm.update(f => ({ ...f, horasTrabajadas: $event }))" /></label>
+          <label><span>Kilómetros</span><input type="number" [ngModel]="usoForm().kilometrosRecorridos" (ngModelChange)="usoForm.update(f => ({ ...f, kilometrosRecorridos: $event }))" /></label>
+          <label><span>Combustible litros</span><input type="number" [ngModel]="usoForm().combustibleLitros" (ngModelChange)="usoForm.update(f => ({ ...f, combustibleLitros: $event }))" /></label>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary machinery-action" type="button" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>Cancelar</button><button class="btn-primary machinery-action" type="button" [disabled]="saving()" (click)="submitUso()"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'DOCUMENTO'">
+        <div class="modal-head"><h3>Agregar documento</h3></div>
+        <div class="form-grid">
+          <label><span>Máquina</span><select [ngModel]="documentoForm().maquinariaId" (ngModelChange)="documentoForm.update(f => ({ ...f, maquinariaId: $event }))"><option *ngFor="let machine of resumen()?.maquinas ?? []" [value]="machine.id">{{ machine.codigo }} · {{ machine.modelo }}</option></select></label>
+          <label><span>Tipo</span><input [ngModel]="documentoForm().tipoDocumento" (ngModelChange)="documentoForm.update(f => ({ ...f, tipoDocumento: $event }))" /></label>
+          <label><span>Número</span><input [ngModel]="documentoForm().numero" (ngModelChange)="documentoForm.update(f => ({ ...f, numero: $event }))" /></label>
+          <label><span>Emisión</span><input type="date" [ngModel]="documentoForm().emision" (ngModelChange)="documentoForm.update(f => ({ ...f, emision: $event }))" /></label>
+          <label><span>Vencimiento</span><input type="date" [ngModel]="documentoForm().vencimiento" (ngModelChange)="documentoForm.update(f => ({ ...f, vencimiento: $event }))" /></label>
+          <label><span>URL</span><input [ngModel]="documentoForm().url" (ngModelChange)="documentoForm.update(f => ({ ...f, url: $event }))" /></label>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary machinery-action" type="button" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>Cancelar</button><button class="btn-primary machinery-action" type="button" [disabled]="saving()" (click)="submitDocumento()"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'ESTADO'">
+        <div class="modal-head"><h3>Actualizar estado</h3></div>
+        <div class="form-grid">
+          <label><span>Estado</span><select [ngModel]="estadoForm().estado" (ngModelChange)="estadoForm.update(f => ({ ...f, estado: $event }))"><option>DISPONIBLE</option><option>ASIGNADA</option><option>OPERANDO</option><option>EN_REPARACION</option><option>INACTIVA</option></select></label>
+          <label><span>Responsable</span><input [ngModel]="estadoForm().responsable" (ngModelChange)="estadoForm.update(f => ({ ...f, responsable: $event }))" /></label>
+          <label><span>Motivo</span><input [ngModel]="estadoForm().motivo" (ngModelChange)="estadoForm.update(f => ({ ...f, motivo: $event }))" /></label>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary machinery-action" type="button" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>Cancelar</button><button class="btn-primary machinery-action" type="button" [disabled]="saving()" (click)="submitEstado()"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>Guardar</button></div>
+      </ng-container>
+    </div>
+  </div>
+</div>

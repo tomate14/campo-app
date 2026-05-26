@@ -1,0 +1,102 @@
+CREATE TABLE maquinaria (
+    id VARCHAR(36) NOT NULL,
+    codigo VARCHAR(80) NOT NULL,
+    tipo VARCHAR(80) NOT NULL,
+    marca VARCHAR(120) NOT NULL,
+    modelo VARCHAR(120) NOT NULL,
+    numero_serie VARCHAR(120) NULL,
+    anio INT NULL,
+    estado VARCHAR(40) NOT NULL DEFAULT 'DISPONIBLE',
+    ubicacion_actual VARCHAR(180) NULL,
+    potencia_hp DECIMAL(10,2) NULL,
+    capacidad VARCHAR(180) NULL,
+    accesorios TEXT NULL,
+    horometro DECIMAL(12,2) NULL,
+    kilometraje DECIMAL(12,2) NULL,
+    costo_adquisicion DECIMAL(14,2) NULL,
+    fecha_alta DATE NULL,
+    observaciones TEXT NULL,
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    deleted_at DATETIME(6) NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_maquinaria_codigo (codigo),
+    INDEX idx_maquinaria_tipo (tipo),
+    INDEX idx_maquinaria_estado (estado),
+    INDEX idx_maquinaria_deleted_at (deleted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE asignaciones_maquinaria (
+    id VARCHAR(36) NOT NULL,
+    maquinaria_id VARCHAR(36) NOT NULL,
+    operario VARCHAR(180) NOT NULL,
+    fecha_inicio DATETIME(6) NOT NULL,
+    fecha_fin DATETIME(6) NULL,
+    actividad VARCHAR(180) NULL,
+    ubicacion VARCHAR(180) NULL,
+    observaciones TEXT NULL,
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    deleted_at DATETIME(6) NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_asignacion_maquinaria FOREIGN KEY (maquinaria_id) REFERENCES maquinaria(id),
+    INDEX idx_asignacion_maquinaria (maquinaria_id),
+    INDEX idx_asignacion_fecha (fecha_inicio),
+    INDEX idx_asignacion_deleted_at (deleted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE usos_maquinaria (
+    id VARCHAR(36) NOT NULL,
+    maquinaria_id VARCHAR(36) NOT NULL,
+    fecha DATE NOT NULL,
+    actividad VARCHAR(180) NOT NULL,
+    lote VARCHAR(180) NULL,
+    operario VARCHAR(180) NULL,
+    horas_trabajadas DECIMAL(10,2) NULL,
+    kilometros_recorridos DECIMAL(10,2) NULL,
+    combustible_litros DECIMAL(10,2) NULL,
+    observaciones TEXT NULL,
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    deleted_at DATETIME(6) NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_uso_maquinaria FOREIGN KEY (maquinaria_id) REFERENCES maquinaria(id),
+    INDEX idx_uso_maquinaria (maquinaria_id),
+    INDEX idx_uso_fecha (fecha),
+    INDEX idx_uso_deleted_at (deleted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE documentos_maquinaria (
+    id VARCHAR(36) NOT NULL,
+    maquinaria_id VARCHAR(36) NOT NULL,
+    tipo_documento VARCHAR(100) NOT NULL,
+    numero VARCHAR(120) NULL,
+    vencimiento DATE NULL,
+    url VARCHAR(500) NULL,
+    observaciones TEXT NULL,
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    deleted_at DATETIME(6) NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_documento_maquinaria FOREIGN KEY (maquinaria_id) REFERENCES maquinaria(id),
+    INDEX idx_documento_maquinaria (maquinaria_id),
+    INDEX idx_documento_vencimiento (vencimiento),
+    INDEX idx_documento_deleted_at (deleted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE historial_estado_maquinaria (
+    id VARCHAR(36) NOT NULL,
+    maquinaria_id VARCHAR(36) NOT NULL,
+    estado_anterior VARCHAR(40) NULL,
+    estado_nuevo VARCHAR(40) NOT NULL,
+    fecha DATETIME(6) NOT NULL,
+    responsable VARCHAR(180) NULL,
+    motivo VARCHAR(255) NULL,
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    deleted_at DATETIME(6) NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_historial_estado_maquinaria FOREIGN KEY (maquinaria_id) REFERENCES maquinaria(id),
+    INDEX idx_historial_maquinaria (maquinaria_id),
+    INDEX idx_historial_fecha (fecha)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

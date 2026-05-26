@@ -201,4 +201,153 @@ ON DUPLICATE KEY UPDATE
     observaciones = VALUES(observaciones),
     deleted_at = NULL;
 
+-- =============================================================
+-- Mock manual de datos para pruebas de agricultura.
+-- Incluye lotes, ciclo agricola, cosecha, suelo e historial.
+-- =============================================================
+
+INSERT INTO lotes (
+    id, nombre, area, cultivo, latitud, longitud, temporada, poligono,
+    ph_minimo, ph_maximo, fecha_siembra, fecha_cosecha_estimada
+) VALUES
+    (
+        '60000000-0000-0000-0000-000000000001',
+        'Lote Norte 1',
+        157.78,
+        'MAIZ',
+        -36.1966878,
+        -60.6735049,
+        '2026',
+        CAST('{"type":"Polygon","coordinates":[[[-60.6965793,-36.1823326],[-60.6676145,-36.2091681],[-60.6563210,-36.1985626],[-60.6965793,-36.1823326]]]}' AS JSON),
+        5.70,
+        7.20,
+        '2025-09-15',
+        '2026-02-20'
+    ),
+    (
+        '60000000-0000-0000-0000-000000000002',
+        'Lote Sur 4',
+        98.45,
+        'SOJA',
+        -36.2141200,
+        -60.6419000,
+        '2026',
+        CAST('{"type":"Polygon","coordinates":[[[-60.6509000,-36.2071000],[-60.6315000,-36.2178000],[-60.6428000,-36.2312000],[-60.6622000,-36.2195000],[-60.6509000,-36.2071000]]]}' AS JSON),
+        5.90,
+        6.80,
+        '2025-11-05',
+        '2026-04-12'
+    ),
+    (
+        '60000000-0000-0000-0000-000000000003',
+        'Lote Oeste 2',
+        121.30,
+        'TRIGO',
+        -36.1785000,
+        -60.7023000,
+        '2025',
+        CAST('{"type":"Polygon","coordinates":[[[-60.7165000,-36.1710000],[-60.6935000,-36.1745000],[-60.6981000,-36.1902000],[-60.7210000,-36.1874000],[-60.7165000,-36.1710000]]]}' AS JSON),
+        6.10,
+        7.10,
+        '2025-06-10',
+        '2025-12-05'
+    ),
+    (
+        '60000000-0000-0000-0000-000000000004',
+        'Lote Bajo 7',
+        76.62,
+        'GIRASOL',
+        -36.2326000,
+        -60.6892000,
+        '2026',
+        CAST('{"type":"Polygon","coordinates":[[[-60.6990000,-36.2246000],[-60.6812000,-36.2263000],[-60.6828000,-36.2410000],[-60.7035000,-36.2386000],[-60.6990000,-36.2246000]]]}' AS JSON),
+        5.60,
+        6.70,
+        '2025-10-01',
+        '2026-03-15'
+    )
+ON DUPLICATE KEY UPDATE
+    nombre = VALUES(nombre),
+    area = VALUES(area),
+    cultivo = VALUES(cultivo),
+    latitud = VALUES(latitud),
+    longitud = VALUES(longitud),
+    temporada = VALUES(temporada),
+    poligono = VALUES(poligono),
+    ph_minimo = VALUES(ph_minimo),
+    ph_maximo = VALUES(ph_maximo),
+    fecha_siembra = VALUES(fecha_siembra),
+    fecha_cosecha_estimada = VALUES(fecha_cosecha_estimada),
+    deleted_at = NULL;
+
+INSERT INTO eventos_siembra (
+    id, lote_id, tipo_evento, estado_fenologico, descripcion, fecha
+) VALUES
+    ('61000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000001', 'SIEMBRA', 'V1', 'Siembra directa con densidad objetivo y fertilizacion base.', '2025-09-15'),
+    ('61000000-0000-0000-0000-000000000002', '60000000-0000-0000-0000-000000000001', 'MONITOREO_FENOLOGICO', 'V6', 'Emergencia uniforme. Buen stand de plantas.', '2025-10-20'),
+    ('61000000-0000-0000-0000-000000000003', '60000000-0000-0000-0000-000000000001', 'TRATAMIENTO', 'V8', 'Aplicacion preventiva por presion inicial de malezas.', '2025-11-08'),
+    ('61000000-0000-0000-0000-000000000004', '60000000-0000-0000-0000-000000000002', 'SIEMBRA', 'VE', 'Implantacion de soja con humedad adecuada.', '2025-11-05'),
+    ('61000000-0000-0000-0000-000000000005', '60000000-0000-0000-0000-000000000002', 'MONITOREO_FENOLOGICO', 'R1', 'Inicio de floracion con buen cierre de surco.', '2026-01-12'),
+    ('61000000-0000-0000-0000-000000000006', '60000000-0000-0000-0000-000000000003', 'SIEMBRA', 'Z10', 'Siembra de trigo en lote de rotacion.', '2025-06-10'),
+    ('61000000-0000-0000-0000-000000000007', '60000000-0000-0000-0000-000000000003', 'ALERTA', 'Z32', 'Alerta por deficit hidrico moderado.', '2025-09-02'),
+    ('61000000-0000-0000-0000-000000000008', '60000000-0000-0000-0000-000000000004', 'SIEMBRA', 'V2', 'Siembra de girasol con lote bajo monitoreo.', '2025-10-01')
+ON DUPLICATE KEY UPDATE
+    tipo_evento = VALUES(tipo_evento),
+    estado_fenologico = VALUES(estado_fenologico),
+    descripcion = VALUES(descripcion),
+    fecha = VALUES(fecha),
+    deleted_at = NULL;
+
+INSERT INTO registros_cosecha (
+    id, lote_id, fecha, rendimiento_kg_ha, toneladas_total, calidad_grano, humedad, observaciones
+) VALUES
+    ('62000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000001', '2026-02-20', 9450.00, 1491.02, 'PREMIUM', 13.20, 'Maiz con excelente rendimiento y humedad dentro de rango.'),
+    ('62000000-0000-0000-0000-000000000002', '60000000-0000-0000-0000-000000000002', '2026-04-12', 3480.00, 342.61, 'ESTANDAR', 12.80, 'Soja con rendimiento estable.'),
+    ('62000000-0000-0000-0000-000000000003', '60000000-0000-0000-0000-000000000003', '2025-12-05', 5120.00, 621.06, 'PREMIUM', 11.50, 'Trigo premium con buena calidad panadera.'),
+    ('62000000-0000-0000-0000-000000000004', '60000000-0000-0000-0000-000000000004', '2026-03-15', 2860.00, 219.13, 'ESTANDAR', 9.70, 'Girasol con aceite dentro de parametros esperados.')
+ON DUPLICATE KEY UPDATE
+    fecha = VALUES(fecha),
+    rendimiento_kg_ha = VALUES(rendimiento_kg_ha),
+    toneladas_total = VALUES(toneladas_total),
+    calidad_grano = VALUES(calidad_grano),
+    humedad = VALUES(humedad),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+INSERT INTO propiedades_suelo (
+    id, lote_id, fecha, ph, nitrogeno_kg_ha, fosforo_kg_ha, potasio_kg_ha,
+    materia_organica_pct, conductividad_electrica, observaciones
+) VALUES
+    ('63000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000001', '2025-08-20', 6.40, 78.00, 18.50, 310.00, 3.20, 0.820, 'Suelo apto para maiz de alto potencial.'),
+    ('63000000-0000-0000-0000-000000000002', '60000000-0000-0000-0000-000000000002', '2025-10-15', 6.20, 62.00, 16.30, 285.00, 2.80, 0.760, 'Lote con buena disponibilidad para soja.'),
+    ('63000000-0000-0000-0000-000000000003', '60000000-0000-0000-0000-000000000003', '2025-05-18', 6.70, 55.00, 21.00, 295.00, 3.60, 0.690, 'Trigo con buena base de fosforo.'),
+    ('63000000-0000-0000-0000-000000000004', '60000000-0000-0000-0000-000000000004', '2025-09-10', 6.00, 48.00, 14.80, 260.00, 2.50, 0.910, 'Requiere seguimiento por posicion baja.')
+ON DUPLICATE KEY UPDATE
+    fecha = VALUES(fecha),
+    ph = VALUES(ph),
+    nitrogeno_kg_ha = VALUES(nitrogeno_kg_ha),
+    fosforo_kg_ha = VALUES(fosforo_kg_ha),
+    potasio_kg_ha = VALUES(potasio_kg_ha),
+    materia_organica_pct = VALUES(materia_organica_pct),
+    conductividad_electrica = VALUES(conductividad_electrica),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+INSERT INTO historico_cultivos (
+    id, lote_id, cultivo, temporada, fecha_siembra, fecha_cosecha, rendimiento_kg_ha, observaciones
+) VALUES
+    ('64000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000001', 'MAIZ', '2026', '2025-09-15', '2026-02-20', 9450.00, 'Campana maicera de referencia.'),
+    ('64000000-0000-0000-0000-000000000002', '60000000-0000-0000-0000-000000000001', 'SOJA', '2025', '2024-11-10', '2025-04-02', 3220.00, 'Rotacion previa a maiz.'),
+    ('64000000-0000-0000-0000-000000000003', '60000000-0000-0000-0000-000000000002', 'SOJA', '2026', '2025-11-05', '2026-04-12', 3480.00, 'Soja de primera.'),
+    ('64000000-0000-0000-0000-000000000004', '60000000-0000-0000-0000-000000000003', 'TRIGO', '2025', '2025-06-10', '2025-12-05', 5120.00, 'Trigo premium.'),
+    ('64000000-0000-0000-0000-000000000005', '60000000-0000-0000-0000-000000000004', 'GIRASOL', '2026', '2025-10-01', '2026-03-15', 2860.00, 'Girasol en lote bajo.')
+ON DUPLICATE KEY UPDATE
+    cultivo = VALUES(cultivo),
+    temporada = VALUES(temporada),
+    fecha_siembra = VALUES(fecha_siembra),
+    fecha_cosecha = VALUES(fecha_cosecha),
+    rendimiento_kg_ha = VALUES(rendimiento_kg_ha),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
 COMMIT;
