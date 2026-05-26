@@ -392,3 +392,117 @@ export interface ReproduccionResumen {
   partos: Parto[]
   indices: IndiceGenetico[]
 }
+
+export interface DietaIngrediente {
+  id: string
+  ingrediente: string
+  proporcionPct: number
+  costoKg?: number
+  materiaSecaPct?: number
+}
+
+export interface DietaIngredienteRequest {
+  ingrediente: string
+  proporcionPct: number
+  costoKg?: number
+  materiaSecaPct?: number
+}
+
+export interface Dieta {
+  id: string
+  nombre: string
+  tipoAnimal: string
+  objetivo?: string
+  materiaSecaKg?: number
+  costoDiario?: number
+  activa: boolean
+  observaciones?: string
+  ingredientes: DietaIngrediente[]
+  updatedAt: string
+}
+
+export interface DietaRequest {
+  nombre: string
+  tipoAnimal: string
+  objetivo?: string
+  materiaSecaKg?: number
+  costoDiario?: number
+  activa?: boolean
+  observaciones?: string
+  ingredientes?: DietaIngredienteRequest[]
+}
+
+export interface RegistroAlimentacion {
+  id: string
+  animalId?: string
+  animalCaravana?: string
+  dietaId?: string
+  dietaNombre?: string
+  fecha: string
+  alimento: string
+  cantidadKg: number
+  costoTotal?: number
+  potrero?: string
+  responsable?: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface RegistroAlimentacionRequest {
+  animalId?: string
+  dietaId?: string
+  fecha: string
+  alimento: string
+  cantidadKg: number
+  costoTotal?: number
+  potrero?: string
+  responsable?: string
+  observaciones?: string
+}
+
+export interface Pesaje {
+  id: string
+  animalId: string
+  animalCaravana: string
+  fecha: string
+  pesoKg: number
+  condicionCorporal?: number
+  metodo?: string
+  responsable?: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface PesajeRequest {
+  animalId: string
+  fecha: string
+  pesoKg: number
+  condicionCorporal?: number
+  metodo?: string
+  responsable?: string
+  observaciones?: string
+}
+
+export interface AlertaNutricional {
+  animalId: string
+  animalCaravana: string
+  tipo: string
+  prioridad: string
+  mensaje: string
+}
+
+export interface AlimentacionDashboard {
+  dietasActivas: number
+  kgSuministradosMes: number
+  costoMes: number
+  gananciaPromedioKg: number
+  conversionAlimenticia: number
+  alertas: AlertaNutricional[]
+}
+
+export interface AlimentacionResumen {
+  dashboard: AlimentacionDashboard
+  dietas: Dieta[]
+  registros: RegistroAlimentacion[]
+  pesajes: Pesaje[]
+}

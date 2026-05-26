@@ -1,10 +1,22 @@
 .page { display: flex; flex-direction: column; gap: 18px; }
-.page-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-h2 { margin: 0; font-size: 32px; }
-.page-head p { margin: 6px 0 0; color: var(--muted); }
+.page-head, .agri-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; color: #f8fbff; }
+h2 { margin: 0; font-size: 34px; letter-spacing: -0.04em; }
+.page-head p, .agri-head p { margin: 6px 0 0; color: #8ea0bb; }
+.eyebrow { margin: 0 0 8px !important; color: #9fe870 !important; font-size: 11px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+.agri-action { display: inline-flex; align-items: center; gap: 9px; }
+.agri-action svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .filter-box, .timeline-card, .empty-box { padding: 18px; }
+.filter-box, .timeline-card {
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(13, 27, 52, 0.92), rgba(8, 18, 37, 0.9)),
+    radial-gradient(circle at top left, rgba(159, 232, 112, 0.09), transparent 34%);
+  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
 .timeline-head, .timeline-meta, .actions { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .badge { padding: 6px 10px; border-radius: 999px; background: rgba(8, 145, 178, 0.16); color: #67e8f9; }
 .form { display: flex; flex-direction: column; gap: 14px; }
 .narrow { max-width: 560px; }
 .empty-box { color: var(--muted); text-align: center; }
+@media (max-width: 720px) { .page-head, .agri-head { flex-direction: column; align-items: stretch; } }

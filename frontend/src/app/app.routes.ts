@@ -11,6 +11,7 @@ import { AnalyticsPageComponent } from './pages/analytics-page/analytics-page.co
 import { GanaderiaTrazabilidadPageComponent } from './pages/ganaderia-trazabilidad-page/ganaderia-trazabilidad-page.component';
 import { GanaderiaSanidadPageComponent } from './pages/ganaderia-sanidad-page/ganaderia-sanidad-page.component';
 import { GanaderiaReproduccionPageComponent } from './pages/ganaderia-reproduccion-page/ganaderia-reproduccion-page.component';
+import { GanaderiaAlimentacionPageComponent } from './pages/ganaderia-alimentacion-page/ganaderia-alimentacion-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -28,6 +29,7 @@ export const routes: Routes = [
       { path: 'ganaderia/trazabilidad', component: GanaderiaTrazabilidadPageComponent },
       { path: 'ganaderia/sanidad', component: GanaderiaSanidadPageComponent },
       { path: 'ganaderia/reproduccion', component: GanaderiaReproduccionPageComponent },
+      { path: 'ganaderia/alimentacion', component: GanaderiaAlimentacionPageComponent },
       { path: 'clima', component: ClimaPageComponent },
     ],
   },

@@ -1,7 +1,20 @@
 .page { display: flex; flex-direction: column; gap: 18px; }
-.page-head, .row, .actions { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.page-head, .row, .actions, .agri-head { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.agri-head { align-items: flex-start; color: #f8fbff; }
+.agri-head p { margin: 6px 0 0; color: #8ea0bb; }
+.eyebrow { margin: 0 0 8px !important; color: #9fe870 !important; font-size: 11px; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+.agri-action { display: inline-flex; align-items: center; gap: 9px; }
+.agri-action svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .filter-row { display: flex; gap: 16px; flex-wrap: wrap; }
 .filter-box, .metric-box, .cosecha-card, .empty-box { padding: 18px; }
+.filter-box, .metric-box, .cosecha-card {
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(13, 27, 52, 0.92), rgba(8, 18, 37, 0.9)),
+    radial-gradient(circle at top left, rgba(159, 232, 112, 0.09), transparent 34%);
+  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
 .badge { padding: 6px 10px; border-radius: 999px; background: rgba(77, 124, 15, 0.16); color: #d9f99d; }
 .metric-box { min-width: 260px; }
 .label { margin: 0; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
@@ -9,5 +22,6 @@
 .form { display: flex; flex-direction: column; gap: 14px; }
 .narrow { max-width: 560px; }
 .empty-box { color: var(--muted); text-align: center; }
-h2 { margin: 0; font-size: 32px; }
+h2 { margin: 0; font-size: 34px; letter-spacing: -0.04em; }
 .page-head p, .row p { margin: 6px 0 0; color: var(--muted); }
+@media (max-width: 720px) { .agri-head { flex-direction: column; align-items: stretch; } }

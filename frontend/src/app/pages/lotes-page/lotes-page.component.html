@@ -1,15 +1,16 @@
 ﻿<div class="page">
-  <div class="page-head">
+  <header class="agri-head">
     <div>
+      <p class="eyebrow">Campo App · Agricultura</p>
       <h2>Lotes</h2>
-      <p>Gestion premium de lotes agroindustriales con filtros, cartografia y exportacion GeoJSON.</p>
+      <p>Gestión premium de lotes agroindustriales con filtros, cartografía y exportación GeoJSON.</p>
     </div>
     <div class="toolbar-actions">
-      <button class="btn-secondary" type="button" (click)="openImportModal()">Importar GeoJSON</button>
-      <button class="btn-secondary" type="button" (click)="exportGeoJson()">Exportar GeoJSON</button>
-      <button class="btn-primary" type="button" (click)="startCreate()">+ Nuevo lote</button>
+      <button class="btn-secondary agri-action" type="button" (click)="openImportModal()"><svg viewBox="0 0 24 24"><path d="M12 21V9" /><path d="m8 13 4-4 4 4" /><path d="M5 3h14" /></svg>Importar GeoJSON</button>
+      <button class="btn-secondary agri-action" type="button" (click)="exportGeoJson()"><svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>Exportar GeoJSON</button>
+      <button class="btn-primary agri-action" type="button" (click)="startCreate()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>Nuevo lote</button>
     </div>
-  </div>
+  </header>
 
   <div class="card filters-card">
     <div class="filters-grid">
@@ -64,10 +65,10 @@
             <div class="title-stack">
               <h3>{{ lote.nombre }}</h3>
               <div class="meta-inline">
-                <span class="icon-chip">🌱</span>
+                <span class="icon-chip"><svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg></span>
                 <span>{{ lote.cultivo }}</span>
                 <span class="divider">•</span>
-                <span class="icon-chip">🗓</span>
+                <span class="icon-chip"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></span>
                 <span>{{ latestSeason(lote) }}</span>
               </div>
             </div>
@@ -80,21 +81,21 @@
           <div class="metrics-panel">
             <div class="metric-row metric-row--three">
               <div class="info-item">
-                <span class="info-icon">🌿</span>
+                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg></span>
                 <div>
                   <span class="info-label">Cultivo</span>
                   <strong>{{ lote.cultivo }}</strong>
                 </div>
               </div>
               <div class="info-item">
-                <span class="info-icon">🗓</span>
+                <span class="info-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></span>
                 <div>
                   <span class="info-label">Temporada</span>
                   <strong>{{ latestSeason(lote) }}</strong>
                 </div>
               </div>
               <div class="info-item">
-                <span class="info-icon">⬚</span>
+                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z" /><path d="M12 4v16" /></svg></span>
                 <div>
                   <span class="info-label">Area</span>
                   <strong>{{ formatArea(lote.area) }}</strong>
@@ -104,21 +105,21 @@
 
             <div class="metric-row metric-row--three">
               <div class="info-item">
-                <span class="info-icon">💧</span>
+                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z" /></svg></span>
                 <div>
                   <span class="info-label">pH minimo</span>
                   <strong>{{ metricValue(lote, 'phMin') }}</strong>
                 </div>
               </div>
               <div class="info-item">
-                <span class="info-icon">💧</span>
+                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z" /></svg></span>
                 <div>
                   <span class="info-label">pH maximo</span>
                   <strong>{{ metricValue(lote, 'phMax') }}</strong>
                 </div>
               </div>
               <div class="info-item">
-                <span class="info-icon">🚜</span>
+                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M4 16h5l2-5h5l2 5h2" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /><path d="M11 11V6h4" /></svg></span>
                 <div>
                   <span class="info-label">Fecha de siembra</span>
                   <strong>{{ metricValue(lote, 'siembra') }}</strong>
@@ -128,14 +129,14 @@
 
             <div class="metric-row metric-row--three">
               <div class="info-item">
-                <span class="info-icon">🌾</span>
+                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg></span>
                 <div>
                   <span class="info-label">Cosecha estimada</span>
                   <strong>{{ metricValue(lote, 'cosecha') }}</strong>
                 </div>
               </div>
               <div class="info-item info-item--wide info-item--update">
-                <span class="info-icon">🕘</span>
+                <span class="info-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg></span>
                 <div>
                   <span class="info-label">Ultima actualizacion</span>
                   <strong>{{ metricValue(lote, 'updated') }}</strong>
@@ -149,15 +150,15 @@
 
           <div class="action-row">
             <button class="action-button action-button--primary" type="button" (click)="openDetail(lote.id)">
-              <span>👁</span>
+              <span><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg></span>
               <span>Detalle</span>
             </button>
             <button class="action-button" type="button" (click)="startEdit(lote)">
-              <span>✎</span>
+              <span><svg viewBox="0 0 24 24"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3Z" /><path d="m13.5 7.5 3 3" /></svg></span>
               <span>Editar</span>
             </button>
             <button class="action-button action-button--danger" type="button" (click)="remove(lote.id)">
-              <span>🗑</span>
+              <span><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M10 11v6M14 11v6" /><path d="M6 7l1 14h10l1-14" /><path d="M9 7V4h6v3" /></svg></span>
               <span>Eliminar</span>
             </button>
           </div>

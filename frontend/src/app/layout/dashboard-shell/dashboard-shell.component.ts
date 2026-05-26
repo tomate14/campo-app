@@ -17,7 +17,10 @@ export class DashboardShellComponent {
   private readonly router = inject(Router);
 
   protected readonly collapsed = signal(false);
-  protected readonly currentUserName = this.session.getCurrentUser()?.name ?? this.session.getCurrentUser()?.email ?? 'Operador';
+  protected readonly currentUser = this.session.getCurrentUser();
+  protected readonly currentUserName = this.currentUser?.name ?? this.currentUser?.email ?? 'Operador';
+  protected readonly currentUserRole = this.currentUser?.roles?.[0]?.replace('ROLE_', '') ?? 'Usuario activo';
+  protected readonly currentUserInitials = this.buildInitials(this.currentUserName);
 
   toggleSidebar() {
     this.collapsed.update((value) => !value);
@@ -33,6 +36,15 @@ export class DashboardShellComponent {
   private finishLogout() {
     this.session.clear();
     void this.router.navigate(['/login']);
+  }
+
+  private buildInitials(value: string) {
+    return value
+      .split(/\s|@/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join('') || 'U';
   }
 }
 

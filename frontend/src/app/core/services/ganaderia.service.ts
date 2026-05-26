@@ -9,8 +9,12 @@ import type {
   Animal,
   AnimalDetalle,
   AnimalRequest,
+  AlimentacionDashboard,
+  AlimentacionResumen,
   DiagnosticoSanitario,
   DiagnosticoSanitarioRequest,
+  Dieta,
+  DietaRequest,
   HistorialMedicoAnimal,
   HistorialMedicoAnimalRequest,
   ControlPrenez,
@@ -29,6 +33,10 @@ import type {
   RecomendacionCruzamiento,
   ReproduccionDashboard,
   ReproduccionResumen,
+  Pesaje,
+  PesajeRequest,
+  RegistroAlimentacion,
+  RegistroAlimentacionRequest,
   SanidadDashboard,
   TratamientoMedicamento,
   TratamientoMedicamentoRequest,
@@ -192,6 +200,46 @@ export class GanaderiaService {
 
   getRecomendacionesCruzamiento() {
     return this.http.get<ApiResponse<RecomendacionCruzamiento[]> | RecomendacionCruzamiento[]>(`${API_BASE_URL}/ganaderia/reproduccion/recomendaciones`)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getAlimentacionResumen(params?: { desde?: string; hasta?: string }) {
+    return this.http.get<ApiResponse<AlimentacionResumen> | AlimentacionResumen>(`${API_BASE_URL}/ganaderia/alimentacion`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getAlimentacionDashboard(referencia?: string) {
+    return this.http.get<ApiResponse<AlimentacionDashboard> | AlimentacionDashboard>(`${API_BASE_URL}/ganaderia/alimentacion/dashboard`, { params: cleanParams({ referencia }) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getDietas() {
+    return this.http.get<ApiResponse<Dieta[]> | Dieta[]>(`${API_BASE_URL}/ganaderia/alimentacion/dietas`)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createDieta(data: DietaRequest) {
+    return this.http.post<ApiResponse<Dieta> | Dieta>(`${API_BASE_URL}/ganaderia/alimentacion/dietas`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getRegistrosAlimentacion(params?: { animalId?: string; desde?: string; hasta?: string }) {
+    return this.http.get<ApiResponse<RegistroAlimentacion[]> | RegistroAlimentacion[]>(`${API_BASE_URL}/ganaderia/alimentacion/registros`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createRegistroAlimentacion(data: RegistroAlimentacionRequest) {
+    return this.http.post<ApiResponse<RegistroAlimentacion> | RegistroAlimentacion>(`${API_BASE_URL}/ganaderia/alimentacion/registros`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getPesajes(params?: { animalId?: string; desde?: string; hasta?: string }) {
+    return this.http.get<ApiResponse<Pesaje[]> | Pesaje[]>(`${API_BASE_URL}/ganaderia/alimentacion/pesajes`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createPesaje(data: PesajeRequest) {
+    return this.http.post<ApiResponse<Pesaje> | Pesaje>(`${API_BASE_URL}/ganaderia/alimentacion/pesajes`, data)
       .pipe(map((response) => unwrapApiResponse(response)));
   }
 }

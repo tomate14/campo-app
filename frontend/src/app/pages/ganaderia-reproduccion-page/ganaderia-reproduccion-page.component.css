@@ -1,6 +1,45 @@
 .page { display: flex; flex-direction: column; gap: 20px; }
 .page-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .page-head p { margin: 6px 0 0; color: var(--muted); }
+.reproduction-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  color: #f8fbff;
+}
+.reproduction-head h2 {
+  margin: 0;
+  font-size: 34px;
+  letter-spacing: -0.04em;
+}
+.reproduction-head p {
+  margin: 6px 0 0;
+  color: #8ea0bb;
+}
+.eyebrow {
+  margin: 0 0 8px !important;
+  color: #9fe870 !important;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.reproduction-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.reproduction-action svg,
+.metric-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -57,6 +96,61 @@
   box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.065), inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 .metric-card--warning .value { color: #ffb84d; }
+.reproduction-kpis .metric-card {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-height: 104px;
+  border-radius: 20px;
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(16, 31, 59, 0.88), rgba(8, 18, 37, 0.86)),
+    radial-gradient(circle at top left, rgba(159, 232, 112, 0.1), transparent 34%);
+  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+.reproduction-kpis .metric-card--blue {
+  background:
+    linear-gradient(180deg, rgba(16, 31, 59, 0.88), rgba(8, 18, 37, 0.86)),
+    radial-gradient(circle at top left, rgba(110, 168, 255, 0.14), transparent 34%);
+}
+.metric-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border: 1px solid rgba(159, 232, 112, 0.16);
+  border-radius: 18px;
+  background: rgba(159, 232, 112, 0.1);
+  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08);
+  color: #9fe870;
+}
+.metric-icon svg {
+  width: 28px;
+  height: 28px;
+}
+.reproduction-kpis .metric-card .label {
+  margin: 0;
+  color: #8ea0bb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.reproduction-kpis .metric-card .value {
+  margin: 4px 0 0;
+  color: #f8fbff;
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+.reproduction-kpis .metric-card small {
+  display: block;
+  margin-top: 5px;
+  color: #9fe870;
+  font-size: 11px;
+}
 .layout { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 18px; }
 .panel, .premium-band { padding: 20px; }
 .premium-band, .panel {
@@ -838,7 +932,7 @@
 }
 
 @media (max-width: 720px) {
-  .page-head { flex-direction: column; align-items: stretch; }
+  .page-head, .reproduction-head { flex-direction: column; align-items: stretch; }
   .band-head { grid-template-columns: 1fr; }
   .premium-card__top { flex-direction: column; }
   .birth-alerts { padding: 16px; border-radius: 22px; }

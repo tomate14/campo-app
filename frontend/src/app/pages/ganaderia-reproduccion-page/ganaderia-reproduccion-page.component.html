@@ -1,23 +1,27 @@
 ﻿<div class="page">
-  <div class="page-head">
+  <header class="reproduction-head">
     <div>
-      <h2>Reproduccion y Genealogia</h2>
+      <p class="eyebrow">Campo App · Ganadería</p>
+      <h2>Reproducción y genealogía</h2>
       <p>Programa reproductivo, preñez, partos, pedigree e índices genéticos del rodeo.</p>
     </div>
-    <button class="btn-secondary" type="button" (click)="loadAll()">Actualizar</button>
-  </div>
+    <button class="btn-secondary reproduction-action" type="button" (click)="loadAll()">
+      <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7" /><path d="M20 4v6h-6" /></svg>
+      Actualizar
+    </button>
+  </header>
 
   <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
   <div class="card empty-box" *ngIf="loading()">Cargando reproduccion...</div>
 
   <ng-container *ngIf="!loading() && resumen() as data">
-    <section class="stats-grid">
-      <article class="metric-card"><p class="label">Montas</p><p class="value">{{ data.dashboard.montasRegistradas }}</p></article>
-      <article class="metric-card"><p class="label">IA</p><p class="value">{{ data.dashboard.inseminacionesRegistradas }}</p></article>
-      <article class="metric-card"><p class="label">Preñez activa</p><p class="value">{{ data.dashboard.prenezActivas }}</p></article>
-      <article class="metric-card"><p class="label">Partos</p><p class="value">{{ data.dashboard.partosRegistrados }}</p></article>
-      <article class="metric-card metric-card--accent"><p class="label">Tasa preñez</p><p class="value">{{ data.dashboard.tasaPrenez }}%</p></article>
-      <article class="metric-card metric-card--warning"><p class="label">Servicios/preñez</p><p class="value">{{ data.dashboard.serviciosPorPrenez }}</p></article>
+    <section class="stats-grid reproduction-kpis">
+      <article class="metric-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="5" /><path d="M14 10l6-6m0 0h-5m5 0v5" /></svg></div><div><p class="label">Montas</p><p class="value">{{ data.dashboard.montasRegistradas }}</p><small>Eventos naturales</small></div></article>
+      <article class="metric-card metric-card--blue"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></div><div><p class="label">Inseminaciones</p><p class="value">{{ data.dashboard.inseminacionesRegistradas }}</p><small>Protocolos IA</small></div></article>
+      <article class="metric-card metric-card--accent"><div class="metric-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="5" /><path d="M12 14v7m-4-3.5h8" /></svg></div><div><p class="label">Preñez activa</p><p class="value">{{ data.dashboard.prenezActivas }}</p><small>Vacas en seguimiento</small></div></article>
+      <article class="metric-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></div><div><p class="label">Partos</p><p class="value">{{ data.dashboard.partosRegistrados }}</p><small>Nacimientos registrados</small></div></article>
+      <article class="metric-card metric-card--accent"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg></div><div><p class="label">Tasa preñez</p><p class="value">{{ data.dashboard.tasaPrenez }}%</p><small>Eficiencia reproductiva</small></div></article>
+      <article class="metric-card metric-card--warning"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="M12 5v14" /><circle cx="12" cy="12" r="9" /></svg></div><div><p class="label">Servicios/preñez</p><p class="value">{{ data.dashboard.serviciosPorPrenez }}</p><small>Promedio operativo</small></div></article>
     </section>
 
     <section class="birth-alerts">

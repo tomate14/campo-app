@@ -1,0 +1,139 @@
+<div class="feed-page">
+  <header class="feed-head">
+    <div>
+      <p class="eyebrow">Campo App · Nutrición</p>
+      <h2>Alimentación y peso</h2>
+      <p>Programas nutricionales, suministros, pesajes, BCS y eficiencia alimenticia del rodeo.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-secondary" type="button" (click)="openModal('PESAJE')">Nuevo pesaje</button>
+      <button class="btn-secondary" type="button" (click)="openModal('SUMINISTRO')">Registrar suministro</button>
+      <button class="btn-primary" type="button" (click)="openModal('DIETA')">Nueva dieta</button>
+    </div>
+  </header>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="card empty-box" *ngIf="loading()">Cargando nutrición...</div>
+
+  <ng-container *ngIf="!loading() && resumen() as data">
+    <section class="kpi-grid">
+      <article class="kpi-card"><span>Dietas activas</span><strong>{{ data.dashboard.dietasActivas }}</strong><small>Planes nutricionales vigentes</small></article>
+      <article class="kpi-card"><span>Kg suministrados</span><strong>{{ data.dashboard.kgSuministradosMes || 0 }}</strong><small>Mes operativo actual</small></article>
+      <article class="kpi-card"><span>Costo mensual</span><strong>${{ data.dashboard.costoMes || 0 }}</strong><small>Alimentación registrada</small></article>
+      <article class="kpi-card"><span>Conversión</span><strong>{{ data.dashboard.conversionAlimenticia || 0 }}</strong><small>Kg alimento / kg ganado</small></article>
+    </section>
+
+    <section class="nutrition-layout">
+      <article class="card nutrition-panel">
+        <div class="tabs-bar">
+          <div class="tabs">
+            <button type="button" [class.active]="activeTab() === 'DIETAS'" (click)="setTab('DIETAS')">Dietas</button>
+            <button type="button" [class.active]="activeTab() === 'SUMINISTROS'" (click)="setTab('SUMINISTROS')">Suministros</button>
+            <button type="button" [class.active]="activeTab() === 'PESAJES'" (click)="setTab('PESAJES')">Pesajes</button>
+            <button type="button" [class.active]="activeTab() === 'ALERTAS'" (click)="setTab('ALERTAS')">Alertas</button>
+          </div>
+          <span>{{ totalItems() }} registros</span>
+        </div>
+
+        <div class="card-grid" *ngIf="activeTab() === 'DIETAS'">
+          <article class="premium-card" *ngFor="let dieta of data.dietas">
+            <div class="card-top"><div><h3>{{ dieta.nombre }}</h3><p>{{ dieta.tipoAnimal }} · {{ dieta.objetivo || 'Sin objetivo' }}</p></div><span class="badge" [class.badge-muted]="!dieta.activa">{{ dieta.activa ? 'Activa' : 'Inactiva' }}</span></div>
+            <div class="metric-list">
+              <div><span>Materia seca</span><strong>{{ dieta.materiaSecaKg || 0 }} kg</strong></div>
+              <div><span>Costo diario</span><strong>${{ dieta.costoDiario || 0 }}</strong></div>
+              <div><span>Ingredientes</span><strong>{{ dieta.ingredientes.length }}</strong></div>
+              <div><span>Actualizada</span><strong>{{ dieta.updatedAt | date:'dd/MM/yyyy' }}</strong></div>
+            </div>
+            <button class="detail-btn" type="button">Ver composición</button>
+          </article>
+          <div class="empty-box premium-empty-box" *ngIf="!data.dietas.length">Sin dietas cargadas.</div>
+        </div>
+
+        <div class="table-wrap" *ngIf="activeTab() === 'SUMINISTROS'">
+          <table>
+            <thead><tr><th>Fecha</th><th>Animal</th><th>Dieta</th><th>Alimento</th><th>Kg</th><th>Costo</th><th>Responsable</th></tr></thead>
+            <tbody><tr *ngFor="let item of data.registros"><td>{{ item.fecha }}</td><td>{{ item.animalCaravana || 'Rodeo' }}</td><td>{{ item.dietaNombre || 'Sin dieta' }}</td><td>{{ item.alimento }}</td><td>{{ item.cantidadKg }}</td><td>${{ item.costoTotal || 0 }}</td><td>{{ item.responsable || 'Sin responsable' }}</td></tr></tbody>
+          </table>
+          <div class="empty-box premium-empty-box" *ngIf="!data.registros.length">Sin suministros registrados.</div>
+        </div>
+
+        <div class="table-wrap" *ngIf="activeTab() === 'PESAJES'">
+          <table>
+            <thead><tr><th>Fecha</th><th>Animal</th><th>Peso</th><th>BCS</th><th>Método</th><th>Responsable</th></tr></thead>
+            <tbody><tr *ngFor="let item of data.pesajes"><td>{{ item.fecha }}</td><td>{{ item.animalCaravana }}</td><td>{{ item.pesoKg }} kg</td><td>{{ item.condicionCorporal || 'Sin dato' }}</td><td>{{ item.metodo || 'Sin método' }}</td><td>{{ item.responsable || 'Sin responsable' }}</td></tr></tbody>
+          </table>
+          <div class="empty-box premium-empty-box" *ngIf="!data.pesajes.length">Sin pesajes registrados.</div>
+        </div>
+
+        <div class="card-grid" *ngIf="activeTab() === 'ALERTAS'">
+          <article class="premium-card alert-card" *ngFor="let alerta of data.dashboard.alertas">
+            <div class="card-top"><div><h3>{{ alerta.animalCaravana }}</h3><p>{{ alerta.mensaje }}</p></div><span class="badge badge-danger">{{ alerta.prioridad }}</span></div>
+            <div class="metric-list"><div><span>Tipo</span><strong>{{ alerta.tipo }}</strong></div><div><span>Animal</span><strong>{{ alerta.animalCaravana }}</strong></div></div>
+          </article>
+          <div class="empty-box premium-empty-box" *ngIf="!data.dashboard.alertas.length">Sin alertas nutricionales.</div>
+        </div>
+      </article>
+
+      <aside class="card context-panel">
+        <div class="context-icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>
+        <h3>Resumen nutricional</h3>
+        <p>La eficiencia combina consumo mensual registrado y ganancia diaria promedio de los últimos pesajes.</p>
+        <div class="context-metrics">
+          <div><span>Ganancia diaria</span><strong>{{ data.dashboard.gananciaPromedioKg || 0 }} kg/día</strong></div>
+          <div><span>Alertas</span><strong>{{ data.dashboard.alertas.length }}</strong></div>
+          <div><span>Animales activos</span><strong>{{ animales().length }}</strong></div>
+        </div>
+      </aside>
+    </section>
+  </ng-container>
+
+  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()">
+    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">
+      <ng-container *ngIf="modal() === 'DIETA'">
+        <div class="modal-head"><h3>Nueva dieta</h3></div>
+        <div class="form-grid">
+          <label><span>Nombre</span><input [ngModel]="dietaForm().nombre" (ngModelChange)="dietaForm.update(f => ({ ...f, nombre: $event }))" /></label>
+          <label><span>Tipo animal</span><input [ngModel]="dietaForm().tipoAnimal" (ngModelChange)="dietaForm.update(f => ({ ...f, tipoAnimal: $event }))" /></label>
+          <label><span>Materia seca kg</span><input type="number" [ngModel]="dietaForm().materiaSecaKg" (ngModelChange)="dietaForm.update(f => ({ ...f, materiaSecaKg: $event }))" /></label>
+          <label><span>Costo diario</span><input type="number" [ngModel]="dietaForm().costoDiario" (ngModelChange)="dietaForm.update(f => ({ ...f, costoDiario: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Objetivo</span><textarea [ngModel]="dietaForm().objetivo" (ngModelChange)="dietaForm.update(f => ({ ...f, objetivo: $event }))"></textarea></label>
+        <div class="ingredient-row" *ngFor="let item of dietaForm().ingredientes; let i = index; trackBy: trackByIndex">
+          <input placeholder="Ingrediente" [ngModel]="item.ingrediente" (ngModelChange)="updateIngrediente(i, 'ingrediente', $event)" />
+          <input placeholder="%" type="number" [ngModel]="item.proporcionPct" (ngModelChange)="updateIngrediente(i, 'proporcionPct', $event)" />
+          <input placeholder="Costo/kg" type="number" [ngModel]="item.costoKg" (ngModelChange)="updateIngrediente(i, 'costoKg', $event)" />
+        </div>
+        <button class="btn-secondary" type="button" (click)="addIngrediente()">Agregar ingrediente</button>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDieta()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'SUMINISTRO'">
+        <div class="modal-head"><h3>Registrar suministro</h3></div>
+        <div class="form-grid">
+          <label><span>Animal</span><select [ngModel]="suministroForm().animalId" (ngModelChange)="suministroForm.update(f => ({ ...f, animalId: $event }))"><option value="">Rodeo completo</option><option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option></select></label>
+          <label><span>Dieta</span><select [ngModel]="suministroForm().dietaId" (ngModelChange)="suministroForm.update(f => ({ ...f, dietaId: $event }))"><option value="">Sin dieta</option><option *ngFor="let dieta of resumen()?.dietas ?? []" [value]="dieta.id">{{ dieta.nombre }}</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="suministroForm().fecha" (ngModelChange)="suministroForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Alimento</span><input [ngModel]="suministroForm().alimento" (ngModelChange)="suministroForm.update(f => ({ ...f, alimento: $event }))" /></label>
+          <label><span>Cantidad kg</span><input type="number" [ngModel]="suministroForm().cantidadKg" (ngModelChange)="suministroForm.update(f => ({ ...f, cantidadKg: $event }))" /></label>
+          <label><span>Costo total</span><input type="number" [ngModel]="suministroForm().costoTotal" (ngModelChange)="suministroForm.update(f => ({ ...f, costoTotal: $event }))" /></label>
+          <label><span>Potrero</span><input [ngModel]="suministroForm().potrero" (ngModelChange)="suministroForm.update(f => ({ ...f, potrero: $event }))" /></label>
+          <label><span>Responsable</span><input [ngModel]="suministroForm().responsable" (ngModelChange)="suministroForm.update(f => ({ ...f, responsable: $event }))" /></label>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitSuministro()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'PESAJE'">
+        <div class="modal-head"><h3>Registrar pesaje</h3></div>
+        <div class="form-grid">
+          <label><span>Animal</span><select [ngModel]="pesajeForm().animalId" (ngModelChange)="pesajeForm.update(f => ({ ...f, animalId: $event }))"><option value="">Seleccionar</option><option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="pesajeForm().fecha" (ngModelChange)="pesajeForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Peso kg</span><input type="number" [ngModel]="pesajeForm().pesoKg" (ngModelChange)="pesajeForm.update(f => ({ ...f, pesoKg: $event }))" /></label>
+          <label><span>BCS</span><input type="number" step="0.1" min="1" max="5" [ngModel]="pesajeForm().condicionCorporal" (ngModelChange)="pesajeForm.update(f => ({ ...f, condicionCorporal: $event }))" /></label>
+          <label><span>Método</span><input [ngModel]="pesajeForm().metodo" (ngModelChange)="pesajeForm.update(f => ({ ...f, metodo: $event }))" /></label>
+          <label><span>Responsable</span><input [ngModel]="pesajeForm().responsable" (ngModelChange)="pesajeForm.update(f => ({ ...f, responsable: $event }))" /></label>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitPesaje()">Guardar</button></div>
+      </ng-container>
+    </div>
+  </div>
+</div>

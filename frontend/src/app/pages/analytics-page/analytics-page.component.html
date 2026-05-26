@@ -1,11 +1,12 @@
 <div class="page">
-  <div class="page-head">
+  <header class="agri-head">
     <div>
-      <h2>Rendimiento y Analytics</h2>
-      <p>KPIs agricolas, comparativas, outliers y proyecciones de produccion.</p>
+      <p class="eyebrow">Campo App · Agricultura</p>
+      <h2>Rendimiento y analytics</h2>
+      <p>KPIs agrícolas, comparativas, outliers y proyecciones de producción.</p>
     </div>
-    <button class="btn-secondary" type="button" (click)="exportPdf()">Exportar PDF</button>
-  </div>
+    <button class="btn-secondary agri-action" type="button" (click)="exportPdf()"><svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>Exportar PDF</button>
+  </header>
 
   <div class="card filters-card">
     <div class="filters-grid">
@@ -50,12 +51,12 @@
 
   <ng-container *ngIf="!loading() && analytics() as data">
     <div class="kpis-grid">
-      <article class="metric-card"><p class="label">Rendimiento promedio</p><p class="value">{{ data.kpis.rendimientoPromedioKgHa }} kg/ha</p></article>
-      <article class="metric-card"><p class="label">Toneladas totales</p><p class="value">{{ data.kpis.toneladasTotales }} t</p></article>
-      <article class="metric-card"><p class="label">Total cosechas</p><p class="value">{{ data.kpis.totalCosechas }}</p></article>
-      <article class="metric-card"><p class="label">Lotes analizados</p><p class="value">{{ data.kpis.totalLotes }}</p></article>
-      <article class="metric-card"><p class="label">Premium</p><p class="value">{{ data.kpis.tasaPremiumPct }}%</p></article>
-      <article class="metric-card"><p class="label">Desvio estandar</p><p class="value">{{ data.kpis.desviacionEstandarKgHa }} kg/ha</p></article>
+      <article class="metric-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg></div><div><p class="label">Rendimiento promedio</p><p class="value">{{ data.kpis.rendimientoPromedioKgHa }} kg/ha</p><small>Productividad consolidada</small></div></article>
+      <article class="metric-card metric-card--blue"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4z" /><path d="M8 7V4h8v3" /></svg></div><div><p class="label">Toneladas totales</p><p class="value">{{ data.kpis.toneladasTotales }} t</p><small>Producción acumulada</small></div></article>
+      <article class="metric-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></div><div><p class="label">Total cosechas</p><p class="value">{{ data.kpis.totalCosechas }}</p><small>Registros analizados</small></div></article>
+      <article class="metric-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z" /><path d="M12 4v16" /></svg></div><div><p class="label">Lotes analizados</p><p class="value">{{ data.kpis.totalLotes }}</p><small>Base comparativa</small></div></article>
+      <article class="metric-card metric-card--accent"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /><path d="m9 12 2 2 4-5" /></svg></div><div><p class="label">Premium</p><p class="value">{{ data.kpis.tasaPremiumPct }}%</p><small>Calidad superior</small></div></article>
+      <article class="metric-card metric-card--warning"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 12h16" /><path d="M8 8v8" /><path d="M16 6v12" /></svg></div><div><p class="label">Desvío estándar</p><p class="value">{{ data.kpis.desviacionEstandarKgHa }} kg/ha</p><small>Variabilidad productiva</small></div></article>
     </div>
 
     <div class="analytics-layout">

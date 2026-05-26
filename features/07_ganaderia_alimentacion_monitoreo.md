@@ -1,50 +1,43 @@
 # 07 - Ganadería: Alimentación y Monitoreo de Peso
 
+## Estado
+Core operativo desarrollado.
+
 ## Descripción
 Gestión de programas nutricionales y seguimiento de peso/condición corporal del rodeo.
 
 ## Funcionalidades Principales
-- Planes nutricionales por tipo de animal
-- Registro de alimentos suministrados
-- Monitoreo de peso y condición corporal (BCS)
-- Cálculos de conversión alimenticia
-- Alertas de desnutrición o sobrepeso
+- Planes nutricionales por tipo de animal.
+- Registro de alimentos suministrados.
+- Monitoreo de peso y condición corporal (BCS).
+- Cálculos de conversión alimenticia.
+- Alertas de desnutrición o sobrepeso por BCS.
 
 ## Tareas
-1. **Formulación de Dietas**: Ingredientes, proporciones, costo
-2. **Registro de Alimentación**: Qué, cuánto, cuándo se suministró
-3. **Pesaje de Animales**: Registro periódico de peso
-4. **Calificación de Condición**: Escala BCS (Body Condition Score)
-5. **Consumo de Alimentos**: Seguimiento de inventario consumido
-6. **Eficiencia Alimenticia**: Ganancia de peso vs. alimento consumido
-7. **Análisis de Costos**: Costo de alimentación por animal
-8. **Alertas Nutricionales**: Cambios bruscos de peso o condición
+- [x] Formulación de dietas: ingredientes, proporciones, costo.
+- [x] Registro de alimentación: qué, cuánto, cuándo se suministró.
+- [x] Pesaje de animales: registro periódico de peso.
+- [x] Calificación de condición: escala BCS.
+- [x] Consumo de alimentos: seguimiento de alimento consumido.
+- [x] Eficiencia alimenticia: ganancia de peso vs. alimento consumido.
+- [x] Análisis de costos: costo de alimentación por animal/mes operativo.
+- [x] Alertas nutricionales: condición corporal fuera de rango.
 
 ## Servicios
-- `AlimentacionService`: Gestión de dietas y suministros
-- `PesajeService`: Registro y análisis de peso
-- `NutricionService`: Cálculos nutricionales
+- `AlimentacionService`: gestión de dietas, suministros, pesajes, KPIs y alertas.
 
 ## Repositorios
-- `DietaRepository`
+- `DietaNutricionalRepository`
+- `DietaIngredienteRepository`
 - `RegistroAlimentacionRepository`
-- `PesajeRepository`
-- `CondicionCorporalRepository`
+- `PesajeAnimalRepository`
 
-## Requisitos Técnicos
-- Almacenamiento de series temporales (peso)
-- UUID para registros
-- Cálculos automáticos de conversión
-- Endpoint REST: `/api/v1/ganaderia/alimentacion`
-- Disponible offline
+## Endpoints
+- `GET /api/v1/ganaderia/alimentacion`
+- `GET /api/v1/ganaderia/alimentacion/dashboard`
+- `GET|POST /api/v1/ganaderia/alimentacion/dietas`
+- `GET|POST /api/v1/ganaderia/alimentacion/registros`
+- `GET|POST /api/v1/ganaderia/alimentacion/pesajes`
 
-## Integraciones Externas
-- Balanzas inteligentes (para pesaje automático)
-- Cálculos nutricionales estándar (NRC, INRA)
-
-## Dependencias
-- Animales (identidad, tipo)
-- Inventario (stock de alimentos)
-- Operarios (quién alimenta)
-- Finanzas (costo de alimentación)
-- Reportes (análisis de eficiencia)
+## Pendientes Fuera De Alcance
+Offline real, balanzas inteligentes e integración con estándares NRC/INRA quedan separados en la feature `35_ganaderia_alimentacion_offline_balanzas_nrc_inra.md`.
