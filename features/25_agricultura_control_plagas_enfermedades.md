@@ -1,163 +1,239 @@
-# 25 - Agricultura: Control de Plagas y Enfermedades
+# 25 - Agricultura: Control avanzado de plagas, IA, offline y reportes
 
-## Descripción
-Sistema integral de detección, registro y monitoreo de plagas y enfermedades en cultivos con geoposicionamiento fotográfico y recomendaciones de tratamiento.
+## Estado
+Pendiente.
 
-## Funcionalidades Principales
-- Mapa interactivo del campo por lote
-- Captura de fotos geolocalizadas de plagas
-- Catálogo de plagas/enfermedades identificables
-- Identificación asistida por IA
-- Recomendaciones de tratamiento
-- Registro de aplicaciones de plaguicidas
-- Alertas de plagas frecuentes en zona
+## Contexto
+La feature `37_agricultura_control_plagas_fitosanitarios.md` ya implementa el core operativo del modulo de plagas: catalogo, detecciones, seguimientos, aplicaciones fitosanitarias, mapa web con pins, resolucion de lote por poligono y dashboard basico.
 
-## Tareas
-1. **Mapa del Campo**: Visualización de lotes con layer de plagas detectadas
-2. **Captura de Foto Geoposicionada**: 
-   - Operario abre cámara en app móvil
-   - Foto se toma con GPS del teléfono automáticamente
-   - Se captura: Coordenadas (lat/lon), altitud, precisión GPS
-3. **Descripción Técnica**: 
-   - Campo de texto libre para detalles
-   - Dropdown de severidad (leve, moderada, severa)
-   - Dropdown de área afectada estimada
-4. **Identificación de Plaga**:
-   - Análisis de imagen (IA/ML opcional)
-   - Sugerencias de plagas basadas en foto
-   - Catálogo búsqueda manual
-5. **Recomendaciones**: 
-   - Tratamientos sugeridos según plaga
-   - Dosis y momento de aplicación
-   - Productos autorizados
-   - Período de carencia
-6. **Registro de Plagas**: Historial por lote, fecha, ubicación exacta
-7. **Aplicación de Tratamiento**: Registro de qué se aplicó, cuándo, dosis
-8. **Reportes de Plagas**: Mapas de presión, evolución temporal, alertas
+Esta feature 25 queda reformulada para implementar la capa avanzada que todavia falta: captura mobile real con camara/GPS, storage de imagenes, offline-first, identificacion asistida por IA, recomendaciones tecnicas, alertas por zona, integracion real con inventario/regulacion y reportes avanzados.
 
-## Servicios
-- `PlagaService`: CRUD de registros de plagas
-- `DeteccionService`: Análisis de fotos y geolocalización
-- `IdentificacionService`: Búsqueda en catálogo y ML
-- `TratamientoService`: Recomendaciones y registro de aplicaciones
-- `AlertaService`: Notificaciones de plagas frecuentes
+## Objetivo funcional
+Permitir que Campo App pase de un registro operativo de plagas a un sistema avanzado de deteccion, diagnostico, decision tecnica, trazabilidad regulatoria y analisis territorial.
 
-## Repositorios
-- `PlagaRepository`
-- `RegistroPlagaRepository`
-- `FotoGeolocalizadaRepository`
-- `TratamientoAplicadoRepository`
-- `CatalogoPlagaRepository`
-- `RecomendacionRepository`
+El usuario debe poder:
+- Capturar una foto real desde mobile con coordenadas completas del dispositivo.
+- Trabajar offline en campo y sincronizar automaticamente cuando vuelva la conexion.
+- Obtener sugerencias de identificacion de plaga/enfermedad/maleza por imagen o sintomas.
+- Consultar recomendaciones tecnicas de tratamiento por cultivo, plaga y severidad.
+- Validar productos autorizados y stock disponible antes de registrar aplicaciones.
+- Analizar presion de plagas por lote, sector, temporada y evolucion temporal.
+- Recibir alertas por zona, reincidencia y condiciones climaticas favorables.
 
-## Requisitos Técnicos
+## Alcance
 
-### Captura y Geolocalización
-- Integración con cámara del dispositivo
-- GPS activado durante captura
-- Metadata EXIF: lat/lon, timestamp, altitud
-- UUID para cada registro de plaga
-- Compresión de imagen (max 2MB)
-- Almacenamiento en S3/nube
+### 1. Captura real de camara mobile
+- Integrar camara nativa en Expo/React Native para `Registrar evento`.
+- Permitir `Tomar foto`, `Repetir foto` y `Omitir foto`.
+- Capturar metadata de imagen:
+  - timestamp;
+  - latitud;
+  - longitud;
+  - altitud si el dispositivo la informa;
+  - precision GPS;
+  - origen `MOBILE_GPS`.
+- Precargar lote por pertenencia geografica usando el endpoint de resolucion por poligono de la feature 37.
+- Si el punto no pertenece a ningun lote, mostrar advertencia y permitir seleccion manual.
 
-### Identificación
-- Catálogo de plagas comunes por región/cultivo
-- Búsqueda por síntomas (descripciones)
-- API de IA para identificación (opcional: TensorFlow, AWS Rekognition)
-- Base de datos de características visuales
+### 2. Procesamiento y almacenamiento de imagenes
+- Comprimir imagen en mobile antes de subirla.
+- Limite objetivo: maximo 2 MB por imagen.
+- Validar formatos permitidos: `image/jpeg`, `image/png`, `image/webp`.
+- Crear servicio backend de adjuntos para plagas:
+  - guardar archivo en storage configurado;
+  - persistir metadata;
+  - asociar archivo a deteccion.
+- Soportar estrategia configurable:
+  - filesystem local para desarrollo;
+  - S3-compatible para produccion.
+- Endpoint multipart real para detecciones con foto.
 
-### API REST
-- `POST /api/v1/agricultura/plagas/capturar` - Sube foto con GPS
-- `GET /api/v1/agricultura/plagas/mapa/{loteId}` - Mapa con puntos de plagas
-- `GET /api/v1/agricultura/plagas/{plagaId}` - Recomendaciones
-- `POST /api/v1/agricultura/plagas/{plagaId}/tratamiento` - Registra aplicación
-- `GET /api/v1/agricultura/plagas/reporte/{loteId}` - Historial por lote
+### 3. Offline-first mobile
+- Guardar localmente detecciones pendientes cuando no haya conectividad.
+- Persistir:
+  - foto comprimida;
+  - coordenadas;
+  - formulario tecnico;
+  - lote resuelto o seleccion manual;
+  - timestamp de captura.
+- Implementar cola de sincronizacion.
+- Reintentar automaticamente cuando vuelva la conexion.
+- Mostrar estado de cada registro:
+  - `PENDIENTE_SYNC`;
+  - `SINCRONIZANDO`;
+  - `SINCRONIZADO`;
+  - `ERROR_SYNC`.
+- Permitir reintento manual.
+- Descargar catalogo de plagas para uso offline.
 
-### Datos Capturados
-```json
-{
-  "id": "uuid",
-  "loteId": "uuid",
-  "foto": {
-    "url": "s3://...",
-    "timestamp": "2026-05-16T14:30:00Z",
-    "coordenadas": {
-      "latitud": -34.6037,
-      "longitud": -58.3816,
-      "altitud": 25,
-      "precision": 5.5
-    }
-  },
-  "descripcion": "Manchas circulares en hojas, color marrón oscuro",
-  "severidad": "moderada",
-  "areaAfectada": 0.25,
-  "plagaIdentificada": "Mancha foliar bacteriana",
-  "confianzaIdentificacion": 0.87,
-  "tratamientoAplicado": {
-    "producto": "Cobre fungicida",
-    "dosis": "2.5 L/ha",
-    "aplicadoEn": "2026-05-17T08:00:00Z"
-  }
-}
-```
+### 4. Identificacion asistida por IA
+- Crear servicio `IdentificacionPlagaService`.
+- Implementar flujo inicial desacoplado del proveedor:
+  - input: foto + cultivo + sintomas opcionales;
+  - output: sugerencias ordenadas por confianza.
+- Respuesta esperada:
+  - plaga/enfermedad/maleza sugerida;
+  - confianza;
+  - explicacion corta;
+  - sintomas coincidentes;
+  - recomendacion de verificacion manual.
+- Registrar feedback del usuario:
+  - sugerencia aceptada;
+  - sugerencia rechazada;
+  - plaga corregida manualmente.
+- Preparar integraciones futuras con proveedores como Google Vision, AWS Rekognition o modelo propio, pero mantener interfaz interna estable.
 
-### Offline-First
-- Almacenamiento local de fotos y coordenadas
-- Sincronización automática al tener conexión
-- Queue de fotos pendientes de subir
-- Catálogo de plagas descargable para uso offline
+### 5. Busqueda por sintomas y catalogo avanzado
+- Ampliar catalogo de plagas con caracteristicas visuales y sintomas estructurados.
+- Permitir busqueda por:
+  - cultivo;
+  - tipo;
+  - sintomas;
+  - etapa fenologica;
+  - region/zona;
+  - severidad.
+- Incluir imagenes o referencias visuales ligeras si existe storage disponible.
 
-### Disponible en
-- App móvil iOS/Android
-- Dashboard web para revisión y reportes
+### 6. Recomendaciones tecnicas de tratamiento
+- Crear modelo de recomendaciones por combinacion:
+  - cultivo;
+  - plaga/enfermedad/maleza;
+  - severidad;
+  - etapa fenologica;
+  - condiciones climaticas;
+  - umbral de accion.
+- Devolver:
+  - tratamiento sugerido;
+  - principio activo;
+  - dosis recomendada;
+  - momento de aplicacion;
+  - periodo de carencia;
+  - periodo de reingreso;
+  - restricciones y observaciones.
+- Permitir que el usuario tome una recomendacion y cree una aplicacion fitosanitaria prellenada.
+
+### 7. Integracion real con inventario de insumos
+- Validar producto contra inventario de insumos agricolas cuando exista.
+- Mostrar stock disponible antes de registrar aplicacion.
+- Descontar stock al confirmar aplicacion, si el modulo de inventario agricola esta disponible.
+- Si no hay stock suficiente, mostrar advertencia operativa y permitir bloquear o confirmar segun permisos.
+
+### 8. Validacion regulatoria y productos autorizados
+- Crear catalogo de productos fitosanitarios autorizados.
+- Asociar producto con:
+  - cultivos permitidos;
+  - plagas objetivo;
+  - principio activo;
+  - dosis minima/maxima;
+  - carencia;
+  - reingreso;
+  - restricciones.
+- Validar aplicaciones contra ese catalogo.
+- Registrar auditoria de excepciones si el usuario aplica fuera de recomendacion.
+
+### 9. Alertas por zona y condiciones favorables
+- Generar alertas por:
+  - reincidencia en un lote;
+  - multiples detecciones cercanas;
+  - plagas frecuentes por region;
+  - condiciones climaticas predisponentes;
+  - vencimiento de seguimiento.
+- Integrar con clima para evaluar riesgo por humedad, temperatura y precipitacion.
+- Mostrar alertas en dashboard web y mobile.
+
+### 10. Reportes avanzados
+- Reportes por lote y temporada:
+  - cantidad de eventos;
+  - severidad promedio;
+  - superficie afectada;
+  - productos aplicados;
+  - tiempo hasta control;
+  - reincidencias.
+- Mapa de presion de plagas:
+  - heatmap o clusters por lote/sector;
+  - evolucion temporal;
+  - filtros por plaga/cultivo/severidad.
+- Exportacion de reporte para auditoria tecnica.
+
+### 11. Privacidad y auditoria avanzada
+- Registrar auditoria completa para:
+  - captura de foto;
+  - coordenadas;
+  - cambios de plaga identificada;
+  - recomendaciones aceptadas/rechazadas;
+  - aplicaciones fitosanitarias.
+- Evitar exponer coordenadas sensibles a usuarios sin permiso.
+- Definir permisos especificos para visualizar fotos y ubicaciones exactas.
+
+## Backend
+
+### Servicios nuevos o ampliados
+- `AdjuntoPlagaService`
+- `IdentificacionPlagaService`
+- `RecomendacionTratamientoService`
+- `PlagaOfflineSyncService`
+- `ProductoFitosanitarioService`
+- `AlertaPlagaZonaService`
+- `ReportePlagaAvanzadoService`
+- `AuditoriaPlagaService`
+
+### Endpoints esperados
+- `POST /api/v1/agricola/plagas/detecciones/con-foto` con almacenamiento real de archivo.
+- `POST /api/v1/agricola/plagas/identificar` para sugerencias por IA/sintomas.
+- `POST /api/v1/agricola/plagas/identificaciones/{id}/feedback`.
+- `GET /api/v1/agricola/plagas/recomendaciones`.
+- `POST /api/v1/agricola/plagas/recomendaciones/{id}/aplicar`.
+- `GET /api/v1/agricola/plagas/productos-autorizados`.
+- `GET /api/v1/agricola/plagas/alertas-zona`.
+- `GET /api/v1/agricola/plagas/reportes/lotes/{loteId}`.
+- `GET /api/v1/agricola/plagas/reportes/presion`.
+- `POST /api/v1/agricola/plagas/offline/sync`.
+
+## Frontend Web
+- Ampliar `/agricola/plagas` sin romper lo implementado en feature 37.
+- Agregar:
+  - panel de recomendaciones;
+  - visualizacion de fotos;
+  - estado de identificacion IA;
+  - reportes de presion/evolucion;
+  - alertas por zona;
+  - validacion de stock/productos autorizados.
+- Mantener estilo premium dark SaaS vigente:
+  - headers tipo Trazabilidad/Alimentacion;
+  - metric cards icono/titulo/subtitulo/valor;
+  - tabs y cards premium con paginacion;
+  - iconos SVG reales, sin letras como iconos.
+
+## Mobile
+- Implementar flujo real de campo:
+  - abrir camara;
+  - capturar foto;
+  - obtener GPS;
+  - funcionar offline;
+  - guardar en cola;
+  - sincronizar luego.
+- Mostrar feedback claro de sincronizacion.
+- Permitir revisar registros pendientes.
+- Usar catalogo offline descargado.
 
 ## Dependencias
-- **Lotes** (Feature 01): Ubicación de plagas
-- **Geolocalización** (Feature 20): Mapa y cálculos
-- **Clima** (Feature 02): Condiciones favorables para plagas
-- **Inventario** (Feature 15): Stock de plaguicidas
-- **Reportes Agrícola** (Feature 23): Análisis de presión
-- **Sincronización Offline** (Feature 24): Almacenamiento local y sync
+- Feature 37: modulo operativo base de plagas y fitosanitarios.
+- Feature 01: Gestion de lotes.
+- Feature 02: Clima.
+- Feature 15: Inventario de insumos agricolas.
+- Feature 20: Mapas de lotes.
+- Feature 23: Reportes agricola.
+- Feature 24: Sincronizacion offline.
+- Feature 31: Selector buscador generico para responsables/personal autorizado.
 
-## Integraciones Externas
-- Google Maps / Mapbox (visualización)
-- AWS Rekognition / Google Vision (identificación IA)
-- Bases de datos de plagas (INTA, CASAFE)
-- API de clima local (predicción de condiciones favorables)
-
-## Flujo Típico del Operario
-
-1. **En el campo**: Abre app, selecciona lote
-2. **Ve mapa**: Visualiza puntos rojos de plagas previas
-3. **Detecta síntomas**: Toma foto con cámara
-4. **Automático**: GPS registra ubicación exacta
-5. **Describe**: Escribe síntomas y severidad
-6. **Sistema sugiere**: IA propone plaga
-7. **Confirma**: Operario valida o selecciona otra
-8. **Recomendación**: Sistema sugiere tratamiento
-9. **Registra**: Sistema guarda con todas las coordenadas
-10. **Aplica**: Operario registra cuando aplicó el tratamiento
-
-## Métricas de Valor
-- Detección temprana de plagas (reducir daño 20-30%)
-- Reducción de uso innecesario de plaguicidas (trazabilidad)
-- Mapeo de presión de plagas por sector
-- Seguimiento de evolución en el tiempo
-- Información para alertar a vecinos de plagas cercanas
-
-## Notas
-- **Crítico para offline**: Operarios rurales sin conexión permanente
-- **Auditoría obligatoria**: Todo registro de plaguicida debe estar trazable
-- **Privacidad**: Coordenadas exactas de operarios + fotos sensibles
-- **Regulación**: Control de venta de plaguicidas autorizados
-- **IA opcional**: Puede mejorar con feedback (foto + plaga real confirmada)
-
-## MVP de Feature
-1. Captura de foto con GPS
-2. Mapa con puntos de plagas
-3. Catálogo de plagas búsqueda manual
-4. Descripción técnica y severidad
-5. Historial por lote
-6. Sincronización offline
-
-**Identificación IA**: Para Phase 2
+## Criterios de aceptacion
+- Mobile permite tomar foto real y registrar coordenadas completas.
+- Mobile permite registrar detecciones sin conexion y sincronizarlas luego.
+- Las fotos se comprimen y se almacenan en backend/storage real.
+- El catalogo puede consultarse offline.
+- El sistema sugiere identificaciones con confianza y permite feedback.
+- El sistema devuelve recomendaciones tecnicas accionables.
+- Las aplicaciones fitosanitarias pueden validarse contra producto autorizado y stock disponible.
+- Existen alertas por zona/reincidencia/condiciones climaticas.
+- Existen reportes de presion y evolucion temporal.
+- El modulo mantiene trazabilidad y auditoria de decisiones tecnicas.

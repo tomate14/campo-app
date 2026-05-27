@@ -35,6 +35,11 @@ export default function HomeScreen() {
             <Text style={[styles.cardLabel, { color: c.mutedForeground }]}>Registrar</Text>
             <Text style={[styles.cardValue, { color: c.foreground }]}>+ Cosecha</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.card} onPress={() => router.push('/agricola/plagas')} activeOpacity={0.8}>
+            <Text style={[styles.cardLabel, { color: c.mutedForeground }]}>Registrar</Text>
+            <Text style={[styles.cardValue, { color: c.foreground }]}>+ Plaga</Text>
+          </TouchableOpacity>
         </View>
 
         <Text style={styles.sectionTitle}>Últimos lotes</Text>

@@ -1,6 +1,7 @@
 import { apiClient as api } from './client'
 import type {
   ApiResponse, GeoJsonImportRequest, Lote, LoteFilters, LoteReporte, LoteRequest,
+  CatalogoPlaga, DeteccionPlaga, DeteccionPlagaRequest,
   EventoSiembra, EventoSiembraRequest, TipoEvento,
   RegistroCosecha, RegistroCosechaRequest,
   PropiedadSuelo, PropiedadSueloRequest,
@@ -101,3 +102,12 @@ export const updateHistorico = (id: string, data: HistoricoCultivoRequest) =>
 
 export const deleteHistorico = (id: string) =>
   api.delete(`/agricola/historial/${id}`)
+
+export const getCatalogoPlagas = () =>
+  api.get<ApiResponse<CatalogoPlaga[]>>('/agricola/plagas/catalogo').then(r => r.data.data)
+
+export const getDeteccionesPlaga = () =>
+  api.get<ApiResponse<DeteccionPlaga[]>>('/agricola/plagas/detecciones').then(r => r.data.data)
+
+export const createDeteccionPlaga = (data: DeteccionPlagaRequest) =>
+  api.post<ApiResponse<DeteccionPlaga>>('/agricola/plagas/detecciones', data).then(r => r.data.data)

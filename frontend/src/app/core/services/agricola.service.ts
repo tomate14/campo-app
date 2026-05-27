@@ -5,7 +5,14 @@ import { API_BASE_URL } from './api.config';
 import type {
   ApiResponse,
   AgriculturaAnalytics,
+  AplicacionFitosanitaria,
+  AplicacionFitosanitariaRequest,
   AnalyticsFiltros,
+  CatalogoPlaga,
+  CatalogoPlagaRequest,
+  DeteccionPlaga,
+  DeteccionPlagaRequest,
+  EstadoDeteccionPlaga,
   EventoSiembra,
   EventoSiembraRequest,
   HistoricoCultivo,
@@ -18,8 +25,14 @@ import type {
   PropiedadSueloRequest,
   RegistroCosecha,
   RegistroCosechaRequest,
+  ResolverLoteResponse,
   RotacionRecomendacion,
+  SeguimientoPlaga,
+  SeguimientoPlagaRequest,
+  SeveridadPlaga,
+  TipoPlaga,
   TipoEvento,
+  PlagasDashboard,
 } from '../models/agricola.models';
 
 function unwrapApiResponse<T>(response: ApiResponse<T> | T): T {
@@ -182,5 +195,53 @@ export class AgricolaService {
 
   deleteHistorico(id: string) {
     return this.http.delete(`${API_BASE_URL}/agricola/historial/${id}`);
+  }
+
+  getPlagasDashboard() {
+    return this.http.get<ApiResponse<PlagasDashboard> | PlagasDashboard>(`${API_BASE_URL}/agricola/plagas/dashboard`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getCatalogoPlagas(tipo?: TipoPlaga) {
+    return this.http.get<ApiResponse<CatalogoPlaga[]> | CatalogoPlaga[]>(`${API_BASE_URL}/agricola/plagas/catalogo`, { params: tipo ? { tipo } : undefined }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createCatalogoPlaga(data: CatalogoPlagaRequest) {
+    return this.http.post<ApiResponse<CatalogoPlaga> | CatalogoPlaga>(`${API_BASE_URL}/agricola/plagas/catalogo`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getDeteccionesPlaga(params?: { loteId?: string; estado?: EstadoDeteccionPlaga; severidad?: SeveridadPlaga; cultivo?: string }) {
+    return this.http.get<ApiResponse<DeteccionPlaga[]> | DeteccionPlaga[]>(`${API_BASE_URL}/agricola/plagas/detecciones`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createDeteccionPlaga(data: DeteccionPlagaRequest) {
+    return this.http.post<ApiResponse<DeteccionPlaga> | DeteccionPlaga>(`${API_BASE_URL}/agricola/plagas/detecciones`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  changeDeteccionPlagaEstado(id: string, estado: EstadoDeteccionPlaga) {
+    return this.http.patch<ApiResponse<DeteccionPlaga> | DeteccionPlaga>(`${API_BASE_URL}/agricola/plagas/detecciones/${id}/estado`, null, { params: { estado } }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createSeguimientoPlaga(deteccionId: string, data: SeguimientoPlagaRequest) {
+    return this.http.post<ApiResponse<SeguimientoPlaga> | SeguimientoPlaga>(`${API_BASE_URL}/agricola/plagas/detecciones/${deteccionId}/seguimientos`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createAplicacionFitosanitaria(deteccionId: string, data: AplicacionFitosanitariaRequest) {
+    return this.http.post<ApiResponse<AplicacionFitosanitaria> | AplicacionFitosanitaria>(`${API_BASE_URL}/agricola/plagas/detecciones/${deteccionId}/aplicaciones`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getAplicacionesFitosanitarias() {
+    return this.http.get<ApiResponse<AplicacionFitosanitaria[]> | AplicacionFitosanitaria[]>(`${API_BASE_URL}/agricola/plagas/aplicaciones`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getSeguimientosPlaga() {
+    return this.http.get<ApiResponse<SeguimientoPlaga[]> | SeguimientoPlaga[]>(`${API_BASE_URL}/agricola/plagas/seguimientos`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getMapaPlagasLote(loteId: string) {
+    return this.http.get<ApiResponse<DeteccionPlaga[]> | DeteccionPlaga[]>(`${API_BASE_URL}/agricola/plagas/lotes/${loteId}/mapa`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  resolverLotePorPunto(latitud: number, longitud: number) {
+    return this.http.post<ApiResponse<ResolverLoteResponse> | ResolverLoteResponse>(`${API_BASE_URL}/agricola/plagas/geolocalizacion/resolver-lote`, { latitud, longitud }).pipe(map((response) => unwrapApiResponse(response)));
   }
 }

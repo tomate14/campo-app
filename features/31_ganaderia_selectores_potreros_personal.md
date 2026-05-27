@@ -25,6 +25,7 @@ Mejorar la consistencia operativa en ganaderia, reducir errores de carga y dejar
 11. **Alimentacion - Nuevo Pesaje**: convertir `responsable` y `metodo` en selectores buscables. `responsable` debe consultar personal autorizado y `metodo` debe consultar un catalogo operativo de metodos de pesaje.
 12. **Alimentacion - Registrar Suministro**: convertir `responsable`, `potrero` y `alimento` en selectores buscables. `responsable` debe consultar personal autorizado, `potrero` debe consultar potreros ganaderos y `alimento` debe consultar un catalogo de alimentos/insumos nutricionales.
 13. **Alimentacion - Nueva Dieta**: reemplazar el input libre de ingredientes/alimentos por selector buscable contra catalogo de alimentos, manteniendo proporciones, costo por kg y materia seca como datos editables de la composicion.
+14. **Agricultura - Plagas - Registrar Evento**: reemplazar el input libre `responsable` del formulario `Registrar evento` en `/agricola/plagas` por el componente generico de select con buscador, consultando personal autorizado/usuarios operativos habilitados.
 
 ## Servicios
 - `AnimalService`: alta y actualizacion de animales con referencias normalizadas.
@@ -34,6 +35,7 @@ Mejorar la consistencia operativa en ganaderia, reducir errores de carga y dejar
 - `CatalogoGanaderoService`: catalogos de razas y entidades de apoyo.
 - `AlimentoCatalogoService`: consulta de alimentos e insumos nutricionales disponibles.
 - `MetodoPesajeCatalogoService`: consulta de metodos de pesaje permitidos.
+- `PersonalService` tambien debe exponer lookup reutilizable para formularios agricolas como control de plagas.
 
 ## Repositorios
 - `AnimalRepository`

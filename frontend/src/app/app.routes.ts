@@ -13,6 +13,7 @@ import { GanaderiaReproduccionPageComponent } from './pages/ganaderia-reproducci
 import { GanaderiaAlimentacionPageComponent } from './pages/ganaderia-alimentacion-page/ganaderia-alimentacion-page.component';
 import { MaquinariaInventarioPageComponent } from './pages/maquinaria-inventario-page/maquinaria-inventario-page.component';
 import { MaquinariaMantenimientoPageComponent } from './pages/maquinaria-mantenimiento-page/maquinaria-mantenimiento-page.component';
+import { PlagasPageComponent } from './pages/plagas-page/plagas-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -27,6 +28,7 @@ export const routes: Routes = [
       { path: 'agricola/siembra', component: SiembraPageComponent },
       { path: 'agricola/cosecha', redirectTo: 'agricola/siembra' },
       { path: 'agricola/analytics', component: AnalyticsPageComponent },
+      { path: 'agricola/plagas', component: PlagasPageComponent },
       { path: 'ganaderia/trazabilidad', component: GanaderiaTrazabilidadPageComponent },
       { path: 'ganaderia/sanidad', component: GanaderiaSanidadPageComponent },
       { path: 'ganaderia/reproduccion', component: GanaderiaReproduccionPageComponent },

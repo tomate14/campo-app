@@ -1,5 +1,8 @@
 export type TipoEvento = 'SIEMBRA' | 'MONITOREO_FENOLOGICO' | 'ALERTA' | 'TRATAMIENTO'
 export type CalidadGrano = 'PREMIUM' | 'ESTANDAR' | 'DESCUENTO'
+export type TipoPlaga = 'PLAGA' | 'ENFERMEDAD' | 'MALEZA'
+export type SeveridadPlaga = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA'
+export type EstadoDeteccionPlaga = 'ABIERTA' | 'EN_TRATAMIENTO' | 'CONTROLADA' | 'CERRADA'
 
 export interface Lote {
   id: string
@@ -160,4 +163,45 @@ export interface ApiResponse<T> {
   data: T
   error?: string
   metadata?: Record<string, unknown>
+}
+
+export interface CatalogoPlaga {
+  id: string
+  nombreComun: string
+  tipo: TipoPlaga
+  cultivosAfectados?: string
+}
+
+export interface DeteccionPlaga {
+  id: string
+  loteId: string
+  loteNombre: string
+  catalogoPlagaId: string
+  plagaNombre: string
+  fechaDeteccion: string
+  severidad: SeveridadPlaga
+  estado: EstadoDeteccionPlaga
+  latitud?: number
+  longitud?: number
+  descripcion?: string
+  responsable?: string
+}
+
+export interface DeteccionPlagaRequest {
+  loteId: string
+  catalogoPlagaId: string
+  fechaDeteccion?: string
+  cultivo?: string
+  severidad: SeveridadPlaga
+  areaAfectadaHa?: number
+  porcentajeAfectado?: number
+  estado?: EstadoDeteccionPlaga
+  latitud?: number
+  longitud?: number
+  precisionMetros?: number
+  origenGeolocalizacion?: 'MOBILE_GPS' | 'WEB_MAPA' | 'MANUAL'
+  fotoUrl?: string
+  fotoNombre?: string
+  descripcion?: string
+  responsable?: string
 }

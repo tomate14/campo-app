@@ -1,5 +1,10 @@
 export type TipoEvento = 'SIEMBRA' | 'MONITOREO_FENOLOGICO' | 'ALERTA' | 'TRATAMIENTO'
 export type CalidadGrano = 'PREMIUM' | 'ESTANDAR' | 'DESCUENTO'
+export type TipoPlaga = 'PLAGA' | 'ENFERMEDAD' | 'MALEZA'
+export type SeveridadPlaga = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA'
+export type EstadoDeteccionPlaga = 'ABIERTA' | 'EN_TRATAMIENTO' | 'CONTROLADA' | 'CERRADA'
+export type OrigenGeolocalizacion = 'MOBILE_GPS' | 'WEB_MAPA' | 'MANUAL'
+export type ResultadoSeguimientoPlaga = 'SIN_CAMBIOS' | 'MEJORA' | 'EMPEORA' | 'CONTROLADA'
 
 export interface Lote {
   id: string
@@ -260,4 +265,151 @@ export interface AgriculturaAnalytics {
   outliers: AnalyticsOutlier[]
   prediccion: AnalyticsPrediccion
   clima: AnalyticsClimaResumen
+}
+
+export interface CatalogoPlaga {
+  id: string
+  nombreComun: string
+  nombreCientifico?: string
+  tipo: TipoPlaga
+  cultivosAfectados?: string
+  descripcion?: string
+  sintomas?: string
+  umbralAccion?: string
+  activo: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CatalogoPlagaRequest {
+  nombreComun: string
+  nombreCientifico?: string
+  tipo: TipoPlaga
+  cultivosAfectados?: string
+  descripcion?: string
+  sintomas?: string
+  umbralAccion?: string
+  activo?: boolean
+}
+
+export interface DeteccionPlaga {
+  id: string
+  loteId: string
+  loteNombre: string
+  catalogoPlagaId: string
+  plagaNombre: string
+  tipo: TipoPlaga
+  fechaDeteccion: string
+  cultivo?: string
+  severidad: SeveridadPlaga
+  areaAfectadaHa?: number
+  porcentajeAfectado?: number
+  estado: EstadoDeteccionPlaga
+  latitud?: number
+  longitud?: number
+  precisionMetros?: number
+  origenGeolocalizacion?: OrigenGeolocalizacion
+  fotoUrl?: string
+  fotoNombre?: string
+  fotoContentType?: string
+  fotoTamanioBytes?: number
+  descripcion?: string
+  responsable?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface DeteccionPlagaRequest {
+  loteId: string
+  catalogoPlagaId: string
+  fechaDeteccion?: string
+  cultivo?: string
+  severidad: SeveridadPlaga
+  areaAfectadaHa?: number
+  porcentajeAfectado?: number
+  estado?: EstadoDeteccionPlaga
+  latitud?: number
+  longitud?: number
+  precisionMetros?: number
+  origenGeolocalizacion?: OrigenGeolocalizacion
+  fotoUrl?: string
+  fotoNombre?: string
+  fotoContentType?: string
+  fotoTamanioBytes?: number
+  descripcion?: string
+  responsable?: string
+}
+
+export interface AplicacionFitosanitaria {
+  id: string
+  deteccionId: string
+  loteId: string
+  loteNombre: string
+  fechaAplicacion: string
+  producto: string
+  principioActivo?: string
+  dosis: number
+  unidadDosis: string
+  volumenCaldoLHa?: number
+  superficieTratadaHa?: number
+  periodoCarenciaDias?: number
+  periodoReingresoHoras?: number
+  fechaReingresoSeguro?: string
+  fechaCosechaSegura?: string
+  maquinariaId?: string
+  operarioResponsable: string
+  condicionesClimaticas?: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface AplicacionFitosanitariaRequest {
+  fechaAplicacion?: string
+  producto: string
+  principioActivo?: string
+  dosis: number
+  unidadDosis: string
+  volumenCaldoLHa?: number
+  superficieTratadaHa?: number
+  periodoCarenciaDias?: number
+  periodoReingresoHoras?: number
+  maquinariaId?: string
+  operarioResponsable: string
+  condicionesClimaticas?: string
+  observaciones?: string
+}
+
+export interface SeguimientoPlaga {
+  id: string
+  deteccionId: string
+  plagaNombre: string
+  loteNombre: string
+  fecha: string
+  resultado: ResultadoSeguimientoPlaga
+  severidad: SeveridadPlaga
+  observaciones?: string
+  responsable?: string
+  createdAt: string
+}
+
+export interface SeguimientoPlagaRequest {
+  fecha?: string
+  resultado: ResultadoSeguimientoPlaga
+  severidad: SeveridadPlaga
+  observaciones?: string
+  responsable?: string
+}
+
+export interface PlagasDashboard {
+  casosAbiertos: number
+  enTratamiento: number
+  controlados: number
+  alertasCriticas: number
+}
+
+export interface ResolverLoteResponse {
+  loteId?: string
+  loteNombre?: string
+  encontrado: boolean
+  advertencia?: string
 }
