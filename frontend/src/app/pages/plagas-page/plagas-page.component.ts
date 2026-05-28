@@ -24,7 +24,15 @@ import type {
 } from '../../core/models/agricola.models';
 
 type ActiveTab = 'DETECCIONES' | 'APLICACIONES' | 'SEGUIMIENTOS' | 'CATALOGO';
-type ModalType = 'DETECCION' | 'APLICACION' | 'SEGUIMIENTO' | 'CATALOGO' | null;
+type ModalType = 'DETECCION' | 'APLICACION' | 'SEGUIMIENTO' | 'HISTORICO' | 'CATALOGO' | null;
+type HistorialPlagaEvento = {
+  tipo: 'APLICACION' | 'SEGUIMIENTO';
+  fecha: string;
+  titulo: string;
+  detalle: string;
+  responsable?: string;
+  estado?: string;
+};
 
 @Component({
   selector: 'app-plagas-page',
@@ -109,6 +117,33 @@ export class PlagasPageComponent {
       const statusMatch = filter === 'TODAS' || (filter === 'ACTIVAS' ? ['ABIERTA', 'EN_TRATAMIENTO'].includes(item.estado) : item.estado === filter);
       return hasCoords && sameLote && statusMatch;
     });
+  });
+  protected readonly historialEventos = computed<HistorialPlagaEvento[]>(() => {
+    const deteccion = this.selectedDeteccion();
+    if (!deteccion) {
+      return [];
+    }
+    const aplicaciones = this.aplicaciones()
+      .filter((item) => item.deteccionId === deteccion.id)
+      .map((item): HistorialPlagaEvento => ({
+        tipo: 'APLICACION',
+        fecha: item.fechaAplicacion,
+        titulo: item.producto,
+        detalle: `${item.dosis} ${item.unidadDosis}${item.superficieTratadaHa ? ` · ${item.superficieTratadaHa} ha` : ''}`,
+        responsable: item.operarioResponsable,
+        estado: 'Aplicación',
+      }));
+    const seguimientos = this.seguimientos()
+      .filter((item) => item.deteccionId === deteccion.id)
+      .map((item): HistorialPlagaEvento => ({
+        tipo: 'SEGUIMIENTO',
+        fecha: item.fecha,
+        titulo: item.resultado,
+        detalle: item.observaciones || `Severidad ${item.severidad}`,
+        responsable: item.responsable,
+        estado: item.severidad,
+      }));
+    return [...aplicaciones, ...seguimientos].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
   });
 
   protected readonly totalItems = computed(() => this.currentItems().length);

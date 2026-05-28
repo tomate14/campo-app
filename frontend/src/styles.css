@@ -145,6 +145,7 @@ button {
 }
 
 .app-modal-panel {
+  position: relative;
   width: min(1120px, 100%);
   margin: 32px auto 16px;
   max-height: calc(100vh - 48px);
@@ -154,6 +155,38 @@ button {
   background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.95));
   box-shadow: var(--shadow-lg);
   padding: 24px;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 10px;
+  background: rgba(7, 15, 31, 0.62);
+  color: #dbe8fb;
+  cursor: pointer;
+  transition: border-color .18s ease, color .18s ease, background .18s ease;
+}
+
+.modal-close-button:hover {
+  border-color: rgba(159, 232, 112, 0.34);
+  background: rgba(159, 232, 112, 0.08);
+  color: #9fe870;
+}
+
+.modal-close-button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 
 .stats-grid {

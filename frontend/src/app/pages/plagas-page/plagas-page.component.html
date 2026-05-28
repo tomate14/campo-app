@@ -62,7 +62,7 @@
             <div><dt>Responsable</dt><dd>{{ pin.responsable || 'Sin responsable' }}</dd></div>
             <div><dt>Área</dt><dd>{{ pin.areaAfectadaHa || 0 }} ha</dd></div>
           </dl>
-          <div class="pin-actions"><button type="button" (click)="openModal('APLICACION', pin)">Aplicación</button><button type="button" (click)="openModal('SEGUIMIENTO', pin)">Seguimiento</button></div>
+          <div class="pin-actions"><button type="button" (click)="openModal('APLICACION', pin)">Aplicación</button><button type="button" (click)="openModal('SEGUIMIENTO', pin)">Seguimiento</button><button type="button" (click)="openModal('HISTORICO', pin)">Histórico</button></div>
         </article>
       </div>
     </section>
@@ -84,7 +84,7 @@
             <ng-container *ngSwitchCase="'DETECCIONES'">
               <div class="premium-card__head"><div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"/></svg></div><div><h3>{{ $any(item).plagaNombre }}</h3><p>{{ $any(item).loteNombre }} · {{ $any(item).cultivo || 'Sin cultivo' }}</p></div></div><span class="badge" [class]="severityClass($any(item).severidad)">{{ $any(item).severidad }}</span></div>
               <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M7 3v4"/><path d="M17 3v4"/><path d="M4 8h16"/><path d="M5 5h14v16H5z"/></svg><span>Fecha</span><strong>{{ $any(item).fechaDeteccion | date:'dd/MM/yyyy' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z"/></svg><span>Área afectada</span><strong>{{ $any(item).areaAfectadaHa || 0 }} ha</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Responsable</span><strong>{{ $any(item).responsable || 'Sin dato' }}</strong></div></div>
-              <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('APLICACION', $any(item))">Registrar</button><button class="card-action card-action--ghost" type="button" (click)="openModal('SEGUIMIENTO', $any(item))">Seguimiento</button></div>
+              <div class="card-actions-inline card-actions-inline--three"><button class="card-action" type="button" (click)="openModal('APLICACION', $any(item))">Registrar aplicación</button><button class="card-action card-action--ghost" type="button" (click)="openModal('SEGUIMIENTO', $any(item))">Seguimiento</button><button class="card-action card-action--ghost" type="button" (click)="openModal('HISTORICO', $any(item))">Histórico</button></div>
             </ng-container>
             <ng-container *ngSwitchCase="'APLICACIONES'">
               <div class="premium-card__head"><div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="m14 7 3 3"/><path d="M5 19 16 8l-3-3L2 16v3h3Z"/></svg></div><div><h3>{{ $any(item).producto }}</h3><p>{{ $any(item).principioActivo || $any(item).loteNombre }}</p></div></div><span class="badge">Aplicada</span></div>
@@ -107,8 +107,9 @@
     </section>
   </ng-container>
 
-  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()">
+  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()" (document:keydown.escape)="closeModal()">
     <div class="app-modal-panel" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
       <ng-container *ngIf="modal() === 'DETECCION'">
         <div class="modal-head"><h3>Nueva detección</h3><p>Registrá ubicación, severidad y datos técnicos.</p></div>
         <div class="form-grid">
@@ -154,6 +155,46 @@
         </div>
         <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="seguimientoForm().observaciones" (ngModelChange)="seguimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
         <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitSeguimiento()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'HISTORICO'">
+        <div class="modal-head">
+          <h3>Histórico de la detección</h3>
+          <p>{{ selectedDeteccion()?.plagaNombre }} · {{ selectedDeteccion()?.loteNombre }}</p>
+        </div>
+        <div class="history-summary" *ngIf="selectedDeteccion() as deteccion">
+          <span class="badge" [class]="severityClass(deteccion.severidad)">{{ deteccion.severidad }}</span>
+          <strong>{{ deteccion.estado }}</strong>
+          <small>{{ deteccion.fechaDeteccion | date:'dd/MM/yyyy HH:mm' }}</small>
+        </div>
+        <div class="history-table-wrap">
+          <table class="history-table" *ngIf="historialEventos().length; else emptyHistory">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Registro</th>
+                <th>Detalle</th>
+                <th>Responsable</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let evento of historialEventos()">
+                <td>{{ evento.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td><span class="history-kind" [class.history-kind--follow]="evento.tipo === 'SEGUIMIENTO'">{{ evento.tipo === 'APLICACION' ? 'Aplicación' : 'Seguimiento' }}</span></td>
+                <td>{{ evento.titulo }}</td>
+                <td>{{ evento.detalle }}</td>
+                <td>{{ evento.responsable || 'Sin dato' }}</td>
+                <td>{{ evento.estado || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #emptyHistory>
+            <div class="empty-box">Todavía no hay aplicaciones ni seguimientos para esta detección.</div>
+          </ng-template>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cerrar</button></div>
       </ng-container>
 
       <ng-container *ngIf="modal() === 'CATALOGO'">

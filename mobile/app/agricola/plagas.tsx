@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
-import { Colors } from '@/constants/colors'
-import { createDeteccionPlaga, getCatalogoPlagas, getLotes } from '@/shared/api/agricola'
-import type { CatalogoPlaga, DeteccionPlagaRequest, Lote, SeveridadPlaga } from '@/shared/types/agricola'
+import { Colors } from '../../constants/colors'
+import { createDeteccionPlaga, getCatalogoPlagas, getLotes } from '../../shared/api/agricola'
+import type { CatalogoPlaga, DeteccionPlagaRequest, Lote, SeveridadPlaga } from '../../shared/types/agricola'
 
 const severityOptions: SeveridadPlaga[] = ['BAJA', 'MEDIA', 'ALTA', 'CRITICA']
 
