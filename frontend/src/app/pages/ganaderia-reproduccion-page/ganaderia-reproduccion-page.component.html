@@ -375,7 +375,7 @@
     </section>
   </ng-container>
 
-  <div class="detail-overlay" *ngIf="selectedAlert() as alerta" (click)="closeAlertaDetalle()">
+  <div class="detail-overlay" *ngIf="selectedAlert() as alerta" (click)="closeAlertaDetalle()" (document:keydown.escape)="closeAlertaDetalle()">
     <section class="cow-detail-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
       <header class="cow-detail-modal__header">
         <div class="cow-detail-modal__eyebrow">

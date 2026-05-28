@@ -259,8 +259,9 @@
     </section>
   </div>
 
-  <div class="app-modal-backdrop" *ngIf="vacunaModalOpen() || aplicacionModalOpen() || tratamientoModalOpen() || diagnosticoModalOpen()" (click)="closeModals()">
+  <div class="app-modal-backdrop" *ngIf="vacunaModalOpen() || aplicacionModalOpen() || tratamientoModalOpen() || diagnosticoModalOpen()" (click)="closeModals()" (document:keydown.escape)="closeModals()">
     <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModals()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
       <ng-container *ngIf="vacunaModalOpen()">
         <div class="modal-head"><h3>Registrar vacuna</h3></div>
         <div class="form-grid">

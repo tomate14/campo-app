@@ -41,8 +41,9 @@
     <p>Sin cosechas para el lote seleccionado.</p>
   </div>
 
-  <div class="app-modal-backdrop" *ngIf="showForm">
+  <div class="app-modal-backdrop" *ngIf="showForm" (document:keydown.escape)="showForm = false">
     <div class="app-modal-panel narrow">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="showForm = false"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
       <form class="form" (ngSubmit)="saveCosecha()">
         <h3>Registrar cosecha</h3>
         <label>

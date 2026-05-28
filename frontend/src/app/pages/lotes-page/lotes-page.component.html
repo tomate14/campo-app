@@ -182,14 +182,16 @@
     </div>
   </ng-template>
 
-  <div class="app-modal-backdrop" *ngIf="showForm()">
+  <div class="app-modal-backdrop" *ngIf="showForm()" (document:keydown.escape)="closeForm()">
     <div class="app-modal-panel">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeForm()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
       <app-lote-form [lote]="editingLote()" (cancel)="closeForm()" (save)="persist($event)" />
     </div>
   </div>
 
-  <div class="app-modal-backdrop" *ngIf="importModalOpen()">
+  <div class="app-modal-backdrop" *ngIf="importModalOpen()" (document:keydown.escape)="closeImportModal()">
     <div class="app-modal-panel import-panel">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeImportModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
       <div class="import-header">
         <div>
           <h3>Importar GeoJSON</h3>

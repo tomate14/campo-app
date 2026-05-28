@@ -1,0 +1,214 @@
+<div class="plagas-page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Campo App · Agricultura</p>
+      <h2>Control de plagas</h2>
+      <p>Detecciones georreferenciadas, seguimiento y aplicaciones fitosanitarias por lote.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-secondary" type="button" (click)="openModal('CATALOGO')">Nuevo catálogo</button>
+      <button class="btn-primary" type="button" (click)="openModal('DETECCION')">Registrar evento</button>
+    </div>
+  </header>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="card empty-box" *ngIf="loading()">Cargando control de plagas...</div>
+
+  <ng-container *ngIf="!loading()">
+    <section class="kpi-grid" *ngIf="dashboard() as data">
+      <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"/><path d="M12 9v8"/><path d="M8 13h8"/></svg></div><div class="kpi-copy"><span>Casos abiertos</span><small>Requieren monitoreo</small></div><strong>{{ data.casosAbiertos }}</strong></article>
+      <article class="kpi-card"><div class="metric-icon warning"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M12 4v16"/><path d="m7 7 10 10"/><path d="m17 7-10 10"/></svg></div><div class="kpi-copy"><span>En tratamiento</span><small>Aplicaciones activas</small></div><strong>{{ data.enTratamiento }}</strong></article>
+      <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div><div class="kpi-copy"><span>Controlados</span><small>Casos estabilizados</small></div><strong>{{ data.controlados }}</strong></article>
+      <article class="kpi-card"><div class="metric-icon danger"><svg viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m10 3-8 18h20L14 3z"/></svg></div><div class="kpi-copy"><span>Alertas críticas</span><small>Prioridad inmediata</small></div><strong>{{ data.alertasCriticas }}</strong></article>
+    </section>
+
+    <section class="filters-card">
+      <label><span>Lote</span><select [ngModel]="filters().loteId" (ngModelChange)="filters.update(f => ({ ...f, loteId: $event || undefined }))"><option value="">Todos</option><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
+      <label><span>Cultivo</span><input [ngModel]="filters().cultivo" (ngModelChange)="filters.update(f => ({ ...f, cultivo: $event || undefined }))" /></label>
+      <label><span>Severidad</span><select [ngModel]="filters().severidad" (ngModelChange)="filters.update(f => ({ ...f, severidad: $event || undefined }))"><option value="">Todas</option><option *ngFor="let item of severidades" [value]="item">{{ item }}</option></select></label>
+      <label><span>Estado</span><select [ngModel]="filters().estado" (ngModelChange)="filters.update(f => ({ ...f, estado: $event || undefined }))"><option value="">Todos</option><option *ngFor="let item of estados" [value]="item">{{ item }}</option></select></label>
+      <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>
+    </section>
+
+    <section class="map-panel card">
+      <div class="map-toolbar">
+        <div>
+          <h3>Mapa operativo del lote</h3>
+          <p>Seleccioná un punto para registrar una detección web. Los pins muestran alertas ya cargadas.</p>
+        </div>
+        <div class="map-controls">
+          <select [ngModel]="selectedLoteId()" (ngModelChange)="selectedLoteId.set($event)"><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select>
+          <select [ngModel]="mapFilter()" (ngModelChange)="mapFilter.set($event)"><option value="ACTIVAS">Activas</option><option value="TODAS">Todas</option><option *ngFor="let item of estados" [value]="item">{{ item }}</option></select>
+          <button type="button" [class.active]="mapMode() === 'mapa'" (click)="mapMode.set('mapa')">Mapa</button>
+          <button type="button" [class.active]="mapMode() === 'satelite'" (click)="mapMode.set('satelite')">Satélite</button>
+        </div>
+      </div>
+      <div class="map-frame">
+        <mgl-map [mapStyle]="mapStyle()" [zoom]="zoom()" [center]="center()" [doubleClickZoom]="false" [trackResize]="true" (mapClick)="onMapClick($event)">
+          <mgl-geojson-source id="plagas-lote-source" [data]="mapData()"></mgl-geojson-source>
+          <mgl-layer id="plagas-lote-fill" type="fill" source="plagas-lote-source" [paint]="{ 'fill-color': '#9FE870', 'fill-opacity': 0.12 }"></mgl-layer>
+          <mgl-layer id="plagas-lote-line" type="line" source="plagas-lote-source" [paint]="{ 'line-color': '#9FE870', 'line-width': 2.4 }"></mgl-layer>
+          <mgl-marker *ngFor="let pin of pins()" [lngLat]="[pin.longitud!, pin.latitud!]">
+            <button class="map-pin" type="button" [style.--pin-color]="pinColor(pin.severidad)" (click)="$event.stopPropagation(); selectedPin.set(pin)"></button>
+          </mgl-marker>
+        </mgl-map>
+        <article class="pin-card" *ngIf="selectedPin() as pin">
+          <button type="button" class="pin-close" (click)="selectedPin.set(null)">×</button>
+          <span class="badge" [class]="severityClass(pin.severidad)">{{ pin.severidad }}</span>
+          <h4>{{ pin.plagaNombre }}</h4>
+          <p>{{ pin.loteNombre }} · {{ pin.estado }}</p>
+          <dl>
+            <div><dt>Fecha</dt><dd>{{ pin.fechaDeteccion | date:'dd/MM/yyyy HH:mm' }}</dd></div>
+            <div><dt>Responsable</dt><dd>{{ pin.responsable || 'Sin responsable' }}</dd></div>
+            <div><dt>Área</dt><dd>{{ pin.areaAfectadaHa || 0 }} ha</dd></div>
+          </dl>
+          <div class="pin-actions"><button type="button" (click)="openModal('APLICACION', pin)">Aplicación</button><button type="button" (click)="openModal('SEGUIMIENTO', pin)">Seguimiento</button><button type="button" (click)="openModal('HISTORICO', pin)">Histórico</button></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card tabs-panel">
+      <div class="tabs-bar">
+        <div class="tabs">
+          <button type="button" [class.active]="activeTab() === 'DETECCIONES'" (click)="setTab('DETECCIONES')"><svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"/></svg>Detecciones</button>
+          <button type="button" [class.active]="activeTab() === 'APLICACIONES'" (click)="setTab('APLICACIONES')"><svg viewBox="0 0 24 24"><path d="m14 7 3 3"/><path d="M5 19 16 8l-3-3L2 16v3h3Z"/></svg>Aplicaciones</button>
+          <button type="button" [class.active]="activeTab() === 'SEGUIMIENTOS'" (click)="setTab('SEGUIMIENTOS')"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-4"/></svg>Seguimientos</button>
+          <button type="button" [class.active]="activeTab() === 'CATALOGO'" (click)="setTab('CATALOGO')"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8"/><path d="M8 12h8"/></svg>Catálogo</button>
+        </div>
+        <span>{{ totalItems() }} registro(s)</span>
+      </div>
+
+      <div class="card-grid">
+        <article class="premium-card" [ngClass]="severityClass($any(item).severidad)" *ngFor="let item of pageItems()">
+          <ng-container [ngSwitch]="activeTab()">
+            <ng-container *ngSwitchCase="'DETECCIONES'">
+              <div class="premium-card__head"><div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"/></svg></div><div><h3>{{ $any(item).plagaNombre }}</h3><p>{{ $any(item).loteNombre }} · {{ $any(item).cultivo || 'Sin cultivo' }}</p></div></div><span class="badge" [class]="severityClass($any(item).severidad)">{{ $any(item).severidad }}</span></div>
+              <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M7 3v4"/><path d="M17 3v4"/><path d="M4 8h16"/><path d="M5 5h14v16H5z"/></svg><span>Fecha</span><strong>{{ $any(item).fechaDeteccion | date:'dd/MM/yyyy' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z"/></svg><span>Área afectada</span><strong>{{ $any(item).areaAfectadaHa || 0 }} ha</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Responsable</span><strong>{{ $any(item).responsable || 'Sin dato' }}</strong></div></div>
+              <div class="card-actions-inline card-actions-inline--three"><button class="card-action" type="button" (click)="openModal('APLICACION', $any(item))">Registrar aplicación</button><button class="card-action card-action--ghost" type="button" (click)="openModal('SEGUIMIENTO', $any(item))">Seguimiento</button><button class="card-action card-action--ghost" type="button" (click)="openModal('HISTORICO', $any(item))">Histórico</button></div>
+            </ng-container>
+            <ng-container *ngSwitchCase="'APLICACIONES'">
+              <div class="premium-card__head"><div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="m14 7 3 3"/><path d="M5 19 16 8l-3-3L2 16v3h3Z"/></svg></div><div><h3>{{ $any(item).producto }}</h3><p>{{ $any(item).principioActivo || $any(item).loteNombre }}</p></div></div><span class="badge">Aplicada</span></div>
+              <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M7 3v4"/><path d="M17 3v4"/><path d="M4 8h16"/><path d="M5 5h14v16H5z"/></svg><span>Fecha</span><strong>{{ $any(item).fechaAplicacion | date:'dd/MM/yyyy' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M8 3h8"/><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3"/></svg><span>Dosis</span><strong>{{ $any(item).dosis }} {{ $any(item).unidadDosis }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Operario</span><strong>{{ $any(item).operarioResponsable }}</strong></div></div>
+            </ng-container>
+            <ng-container *ngSwitchCase="'SEGUIMIENTOS'">
+              <div class="premium-card__head"><div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-4"/></svg></div><div><h3>{{ $any(item).plagaNombre }}</h3><p>{{ $any(item).loteNombre }}</p></div></div><span class="badge" [class]="severityClass($any(item).severidad)">{{ $any(item).resultado }}</span></div>
+              <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M7 3v4"/><path d="M17 3v4"/><path d="M4 8h16"/><path d="M5 5h14v16H5z"/></svg><span>Fecha</span><strong>{{ $any(item).fecha | date:'dd/MM/yyyy' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m10 3-8 18h20L14 3z"/></svg><span>Severidad</span><strong>{{ $any(item).severidad }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Responsable</span><strong>{{ $any(item).responsable || 'Sin dato' }}</strong></div></div>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <div class="premium-card__head"><div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8"/><path d="M8 12h8"/></svg></div><div><h3>{{ $any(item).nombreComun }}</h3><p>{{ $any(item).nombreCientifico || $any(item).cultivosAfectados || 'Sin descripción' }}</p></div></div><span class="badge">{{ $any(item).tipo }}</span></div>
+              <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"/></svg><span>Cultivos</span><strong>{{ $any(item).cultivosAfectados || '-' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m10 3-8 18h20L14 3z"/></svg><span>Umbral</span><strong>{{ $any(item).umbralAccion || '-' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>Estado</span><strong>{{ $any(item).activo ? 'Activo' : 'Inactivo' }}</strong></div></div>
+            </ng-container>
+          </ng-container>
+        </article>
+        <div class="empty-box premium-empty-box" *ngIf="!pageItems().length">Sin registros para mostrar.</div>
+      </div>
+
+      <footer class="pagination"><span>Mostrando {{ totalItems() ? ((currentPage() - 1) * pageSize) + 1 : 0 }} a {{ currentPage() * pageSize > totalItems() ? totalItems() : currentPage() * pageSize }} de {{ totalItems() }}</span><div><button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button><button type="button" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage() === i + 1" (click)="setPage(i + 1)">{{ i + 1 }}</button><button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button></div></footer>
+    </section>
+  </ng-container>
+
+  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()" (document:keydown.escape)="closeModal()">
+    <div class="app-modal-panel" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
+      <ng-container *ngIf="modal() === 'DETECCION'">
+        <div class="modal-head"><h3>Nueva detección</h3><p>Registrá ubicación, severidad y datos técnicos.</p></div>
+        <div class="form-grid">
+          <label><span>Lote</span><select [ngModel]="deteccionForm().loteId" (ngModelChange)="deteccionForm.update(f => ({ ...f, loteId: $event }))"><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
+          <label><span>Plaga</span><select [ngModel]="deteccionForm().catalogoPlagaId" (ngModelChange)="deteccionForm.update(f => ({ ...f, catalogoPlagaId: $event }))"><option *ngFor="let item of catalogo()" [value]="item.id">{{ item.nombreComun }}</option></select></label>
+          <label><span>Fecha</span><input type="datetime-local" [ngModel]="deteccionForm().fechaDeteccion" (ngModelChange)="deteccionForm.update(f => ({ ...f, fechaDeteccion: $event }))" /></label>
+          <label><span>Cultivo</span><input [ngModel]="deteccionForm().cultivo" (ngModelChange)="deteccionForm.update(f => ({ ...f, cultivo: $event }))" /></label>
+          <label><span>Severidad</span><select [ngModel]="deteccionForm().severidad" (ngModelChange)="deteccionForm.update(f => ({ ...f, severidad: $event }))"><option *ngFor="let item of severidades" [value]="item">{{ item }}</option></select></label>
+          <label><span>Estado</span><select [ngModel]="deteccionForm().estado" (ngModelChange)="deteccionForm.update(f => ({ ...f, estado: $event }))"><option *ngFor="let item of estados" [value]="item">{{ item }}</option></select></label>
+          <label><span>Latitud</span><input type="number" step="0.0000001" [ngModel]="deteccionForm().latitud" (ngModelChange)="deteccionForm.update(f => ({ ...f, latitud: $event }))" /></label>
+          <label><span>Longitud</span><input type="number" step="0.0000001" [ngModel]="deteccionForm().longitud" (ngModelChange)="deteccionForm.update(f => ({ ...f, longitud: $event }))" /></label>
+          <label><span>Área afectada ha</span><input type="number" [ngModel]="deteccionForm().areaAfectadaHa" (ngModelChange)="deteccionForm.update(f => ({ ...f, areaAfectadaHa: $event }))" /></label>
+          <label><span>% afectado</span><input type="number" [ngModel]="deteccionForm().porcentajeAfectado" (ngModelChange)="deteccionForm.update(f => ({ ...f, porcentajeAfectado: $event }))" /></label>
+          <label><span>Responsable</span><input [ngModel]="deteccionForm().responsable" (ngModelChange)="deteccionForm.update(f => ({ ...f, responsable: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Descripción</span><textarea [ngModel]="deteccionForm().descripcion" (ngModelChange)="deteccionForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDeteccion()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'APLICACION'">
+        <div class="modal-head"><h3>Registrar aplicación</h3><p>{{ selectedDeteccion()?.plagaNombre }}</p></div>
+        <div class="form-grid">
+          <label><span>Fecha</span><input type="datetime-local" [ngModel]="aplicacionForm().fechaAplicacion" (ngModelChange)="aplicacionForm.update(f => ({ ...f, fechaAplicacion: $event }))" /></label>
+          <label><span>Producto</span><input [ngModel]="aplicacionForm().producto" (ngModelChange)="aplicacionForm.update(f => ({ ...f, producto: $event }))" /></label>
+          <label><span>Principio activo</span><input [ngModel]="aplicacionForm().principioActivo" (ngModelChange)="aplicacionForm.update(f => ({ ...f, principioActivo: $event }))" /></label>
+          <label><span>Dosis</span><input type="number" [ngModel]="aplicacionForm().dosis" (ngModelChange)="aplicacionForm.update(f => ({ ...f, dosis: $event }))" /></label>
+          <label><span>Unidad</span><input [ngModel]="aplicacionForm().unidadDosis" (ngModelChange)="aplicacionForm.update(f => ({ ...f, unidadDosis: $event }))" /></label>
+          <label><span>Superficie ha</span><input type="number" [ngModel]="aplicacionForm().superficieTratadaHa" (ngModelChange)="aplicacionForm.update(f => ({ ...f, superficieTratadaHa: $event }))" /></label>
+          <label><span>Carencia días</span><input type="number" [ngModel]="aplicacionForm().periodoCarenciaDias" (ngModelChange)="aplicacionForm.update(f => ({ ...f, periodoCarenciaDias: $event }))" /></label>
+          <label><span>Reingreso horas</span><input type="number" [ngModel]="aplicacionForm().periodoReingresoHoras" (ngModelChange)="aplicacionForm.update(f => ({ ...f, periodoReingresoHoras: $event }))" /></label>
+          <label><span>Responsable</span><input [ngModel]="aplicacionForm().operarioResponsable" (ngModelChange)="aplicacionForm.update(f => ({ ...f, operarioResponsable: $event }))" /></label>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAplicacion()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'SEGUIMIENTO'">
+        <div class="modal-head"><h3>Registrar seguimiento</h3><p>{{ selectedDeteccion()?.plagaNombre }}</p></div>
+        <div class="form-grid">
+          <label><span>Fecha</span><input type="datetime-local" [ngModel]="seguimientoForm().fecha" (ngModelChange)="seguimientoForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Resultado</span><select [ngModel]="seguimientoForm().resultado" (ngModelChange)="seguimientoForm.update(f => ({ ...f, resultado: $event }))"><option *ngFor="let item of resultados" [value]="item">{{ item }}</option></select></label>
+          <label><span>Severidad</span><select [ngModel]="seguimientoForm().severidad" (ngModelChange)="seguimientoForm.update(f => ({ ...f, severidad: $event }))"><option *ngFor="let item of severidades" [value]="item">{{ item }}</option></select></label>
+          <label><span>Responsable</span><input [ngModel]="seguimientoForm().responsable" (ngModelChange)="seguimientoForm.update(f => ({ ...f, responsable: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="seguimientoForm().observaciones" (ngModelChange)="seguimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitSeguimiento()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'HISTORICO'">
+        <div class="modal-head">
+          <h3>Histórico de la detección</h3>
+          <p>{{ selectedDeteccion()?.plagaNombre }} · {{ selectedDeteccion()?.loteNombre }}</p>
+        </div>
+        <div class="history-summary" *ngIf="selectedDeteccion() as deteccion">
+          <span class="badge" [class]="severityClass(deteccion.severidad)">{{ deteccion.severidad }}</span>
+          <strong>{{ deteccion.estado }}</strong>
+          <small>{{ deteccion.fechaDeteccion | date:'dd/MM/yyyy HH:mm' }}</small>
+        </div>
+        <div class="history-table-wrap">
+          <table class="history-table" *ngIf="historialEventos().length; else emptyHistory">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Registro</th>
+                <th>Detalle</th>
+                <th>Responsable</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let evento of historialEventos()">
+                <td>{{ evento.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td><span class="history-kind" [class.history-kind--follow]="evento.tipo === 'SEGUIMIENTO'">{{ evento.tipo === 'APLICACION' ? 'Aplicación' : 'Seguimiento' }}</span></td>
+                <td>{{ evento.titulo }}</td>
+                <td>{{ evento.detalle }}</td>
+                <td>{{ evento.responsable || 'Sin dato' }}</td>
+                <td>{{ evento.estado || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #emptyHistory>
+            <div class="empty-box">Todavía no hay aplicaciones ni seguimientos para esta detección.</div>
+          </ng-template>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cerrar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'CATALOGO'">
+        <div class="modal-head"><h3>Nuevo catálogo</h3></div>
+        <div class="form-grid">
+          <label><span>Nombre común</span><input [ngModel]="catalogoForm().nombreComun" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreComun: $event }))" /></label>
+          <label><span>Nombre científico</span><input [ngModel]="catalogoForm().nombreCientifico" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreCientifico: $event }))" /></label>
+          <label><span>Tipo</span><select [ngModel]="catalogoForm().tipo" (ngModelChange)="catalogoForm.update(f => ({ ...f, tipo: $event }))"><option *ngFor="let item of tipos" [value]="item">{{ item }}</option></select></label>
+          <label><span>Cultivos afectados</span><input [ngModel]="catalogoForm().cultivosAfectados" (ngModelChange)="catalogoForm.update(f => ({ ...f, cultivosAfectados: $event }))" /></label>
+          <label><span>Umbral de acción</span><input [ngModel]="catalogoForm().umbralAccion" (ngModelChange)="catalogoForm.update(f => ({ ...f, umbralAccion: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Síntomas</span><textarea [ngModel]="catalogoForm().sintomas" (ngModelChange)="catalogoForm.update(f => ({ ...f, sintomas: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitCatalogo()">Guardar</button></div>
+      </ng-container>
+    </div>
+  </div>
+</div>

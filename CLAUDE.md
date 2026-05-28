@@ -32,6 +32,8 @@ campo-app/
 - Esa feature nueva debe usar siempre el numero siguiente al maximo numero de feature existente en el proyecto.
 - No reutilizar numeros viejos ni crear nombres ad hoc fuera de la secuencia principal.
 - Ejemplo: si la maxima feature existente es `27_*`, el siguiente pendiente nuevo se crea como `28_*`.
+- Toda feature nueva o cambio de estado de una feature debe registrarse tambien en `features/MANIFEST.md`.
+- Cuando una feature se termine, actualizar `features/MANIFEST.md` marcandola como `Realizada` o `Parcial` segun corresponda.
 
 ## Flujo de Nuevas Features
 1. Leer la feature objetivo en `features/`.
