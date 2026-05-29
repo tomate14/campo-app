@@ -43,9 +43,6 @@ El usuario debe poder:
   - guardar archivo en storage configurado;
   - persistir metadata;
   - asociar archivo a deteccion.
-- Soportar estrategia configurable:
-  - filesystem local para desarrollo;
-  - S3-compatible para produccion.
 - Endpoint multipart real para detecciones con foto.
 
 ### 3. Offline-first mobile
