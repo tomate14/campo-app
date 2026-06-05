@@ -27,4 +27,7 @@ public interface HistoricoCultivoRepository extends JpaRepository<HistoricoCulti
 
     @Query("SELECT AVG(h.rendimientoKgHa) FROM HistoricoCultivo h WHERE h.lote.id = :loteId AND h.deletedAt IS NULL AND h.rendimientoKgHa IS NOT NULL")
     Double calcularRendimientoPromedio(@Param("loteId") String loteId);
+
+    @Query("SELECT h FROM HistoricoCultivo h JOIN FETCH h.lote WHERE h.deletedAt IS NULL ORDER BY h.temporada DESC, h.fechaCosecha DESC")
+    List<HistoricoCultivo> findAllActive();
 }

@@ -38,4 +38,7 @@ public interface DeteccionPlagaRepository extends JpaRepository<DeteccionPlaga, 
 
     @Query("SELECT d FROM DeteccionPlaga d JOIN FETCH d.lote JOIN FETCH d.catalogoPlaga WHERE d.deletedAt IS NULL AND d.lote.id = :loteId AND d.latitud IS NOT NULL AND d.longitud IS NOT NULL ORDER BY d.fechaDeteccion DESC")
     List<DeteccionPlaga> findMapPinsByLote(@Param("loteId") String loteId);
+
+    @Query("SELECT d FROM DeteccionPlaga d JOIN FETCH d.lote JOIN FETCH d.catalogoPlaga WHERE d.deletedAt IS NULL ORDER BY d.fechaDeteccion DESC")
+    List<DeteccionPlaga> findAllActive();
 }

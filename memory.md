@@ -102,3 +102,7 @@ JWT_REFRESH_EXPIRATION_MS    # default 604800000 (7 días)
 - Todos los headers de paginas del dashboard deben respetar el estilo premium dark SaaS usado en Trazabilidad, Alimentacion y Agricultura: eyebrow verde `Campo App · Dominio`, titulo grande, subtitulo gris azulado, acciones alineadas a la derecha con iconos SVG reales y botones modernos.
 - Todas las metric cards/KPI cards deben mantener el mismo patron visual: icono SVG real en contenedor glow, fondo glassmorphism azul marino, borde suave, numero grande, label secundario y microtexto operativo.
 - No usar siglas, letras o abreviaturas como iconos. Si no hay icono claro, preguntar antes de resolver con texto.
+
+## Regla Visual de Tooltips
+- Todos los tooltips nuevos de graficos y visualizaciones deben seguir el patron premium Campo App: card dark SaaS 380x430 aprox., fondo #081225/#0B1730, borde verde suave, border-radius 24px, glow sutil, banda superior con color de serie/cultivo, icono real, titulo grande, subtitulo gris, badge de estado, separador, metricas icono-label-valor y footer con leyenda. Evitar tooltips nativos simples en graficos.
+

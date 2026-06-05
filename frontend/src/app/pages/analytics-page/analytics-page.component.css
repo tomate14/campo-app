@@ -34,6 +34,7 @@ h2, h3 { margin: 0; }
 .kpis-grid .metric-card small { display: block; margin-top: 5px; color: #9fe870; font-size: 11px; }
 .analytics-layout { display: grid; gap: 16px; grid-template-columns: 1.3fr 0.9fr; }
 .analytics-panel { padding: 18px; }
+.analytics-panel { overflow: visible; }
 .analytics-panel.wide { grid-column: span 1; }
 .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 12px; }
 .helper { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }

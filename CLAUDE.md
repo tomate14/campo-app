@@ -60,3 +60,7 @@ campo-app/
 - Todas las cards nuevas del sistema deben seguir el lenguaje visual premium dark SaaS ya definido en la pantalla de ganaderia/sanidad.
 - Evitar cards genericas o basicas: usar jerarquia visual clara, glassmorphism suave, bordes amplios, espaciado limpio, contraste alto y acabado enterprise consistente con Campo App.
 - No usar siglas, letras o abreviaturas como iconos visuales. Todo icono nuevo debe ser un SVG o un icono real; si no hay un icono claro para representar la accion o entidad, preguntar antes de resolverlo con texto.
+
+## Regla Visual de Tooltips
+- Todos los tooltips nuevos de graficos y visualizaciones deben usar el patron premium de Campo App: card dark SaaS de aproximadamente 380x430px, fondo #081225/#0B1730, borde 1px rgba(159,232,112,0.20), radio 24px, glow verde sutil, banda superior con color de serie/cultivo, icono real, titulo grande, subtitulo gris, badge de estado, separador sutil, metricas con icono-label-valor y footer de leyenda. No usar tooltips nativos simples para graficos salvo fallback tecnico temporal.
+

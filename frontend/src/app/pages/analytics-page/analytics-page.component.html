@@ -1,7 +1,7 @@
 <div class="page">
   <header class="agri-head">
     <div>
-      <p class="eyebrow">Campo App · Agricultura</p>
+      <p class="eyebrow">Campo App - Agricultura</p>
       <h2>Rendimiento y analytics</h2>
       <p>KPIs agrícolas, comparativas, outliers y proyecciones de producción.</p>
     </div>
@@ -65,16 +65,7 @@
           <h3>Series temporales</h3>
           <span class="helper">{{ data.filtros.granularidad }}</span>
         </div>
-        <div class="bar-chart" *ngIf="data.series.length; else noSeries">
-          <div class="bar-column" *ngFor="let item of data.series">
-            <div class="bar-value">{{ item.rendimientoPromedioKgHa }}</div>
-            <div class="bar" [style.height]="seriesHeight(item.rendimientoPromedioKgHa)"></div>
-            <div class="bar-label">{{ item.periodo }}</div>
-          </div>
-        </div>
-        <ng-template #noSeries>
-          <div class="empty-box">Sin series temporales.</div>
-        </ng-template>
+        <app-material-bar-chart [points]="seriesChart()" color="#9FE870" seriesLabel="Rendimiento temporal" valueSuffix="kg/ha" xAxisTitle="Períodos" yAxisTitle="Rendimiento kg/ha" emptyText="Sin series temporales." />
       </section>
 
       <section class="card analytics-panel">
@@ -101,25 +92,11 @@
         <div class="section-head">
           <h3>Comparativa por cultivo</h3>
         </div>
-        <app-uplot-chart
-          [labels]="cultivoChart().labels"
-          [values]="cultivoChart().values"
-          [averageValue]="cultivoChart().average"
-          [height]="280"
-          color="#9FE870"
-          seriesLabel="Rendimiento por cultivo"
-          averageLabel="Promedio general"
-          tooltipIcon="🌿"
-          tooltipReferenceLabel="Cultivo"
-          valueSuffix="kg/ha"
-          xAxisTitle="Cultivos"
-          yAxisTitle="Rendimiento kg/ha"
-          type="bar"
-        />
+        <app-material-bar-chart [points]="cultivoChart().points" [averageValue]="cultivoChart().average" color="#9FE870" seriesLabel="Rendimiento por cultivo" averageLabel="Promedio general" valueSuffix="kg/ha" xAxisTitle="Cultivos" yAxisTitle="Rendimiento kg/ha" />
         <div class="chart-summary-grid" *ngIf="data.cultivos.length">
           <article class="chart-summary-item" *ngFor="let item of data.cultivos">
             <strong>{{ item.cultivo }}</strong>
-            <p>{{ item.rendimientoPromedioKgHa }} kg/ha · {{ item.toneladasTotales }} t</p>
+            <p>{{ item.rendimientoPromedioKgHa }} kg/ha - {{ item.toneladasTotales }} t</p>
           </article>
         </div>
       </section>
@@ -128,25 +105,11 @@
         <div class="section-head">
           <h3>Comparativa por temporada</h3>
         </div>
-        <app-uplot-chart
-          [labels]="temporadaChart().labels"
-          [values]="temporadaChart().values"
-          [averageValue]="temporadaChart().average"
-          [height]="280"
-          color="#4FD1C5"
-          seriesLabel="Rendimiento por temporada"
-          averageLabel="Promedio general"
-          tooltipIcon="📅"
-          tooltipReferenceLabel="Temporada"
-          valueSuffix="kg/ha"
-          xAxisTitle="Temporadas"
-          yAxisTitle="Rendimiento kg/ha"
-          type="bar"
-        />
+        <app-material-bar-chart [points]="temporadaChart().points" [averageValue]="temporadaChart().average" color="#4FD1C5" seriesLabel="Rendimiento por temporada" averageLabel="Promedio general" valueSuffix="kg/ha" xAxisTitle="Temporadas" yAxisTitle="Rendimiento kg/ha" />
         <div class="chart-summary-grid" *ngIf="data.temporadas.length">
           <article class="chart-summary-item" *ngFor="let item of data.temporadas">
             <strong>{{ item.temporada }}</strong>
-            <p>{{ item.rendimientoPromedioKgHa }} kg/ha · {{ item.toneladasTotales }} t</p>
+            <p>{{ item.rendimientoPromedioKgHa }} kg/ha - {{ item.toneladasTotales }} t</p>
           </article>
         </div>
       </section>
@@ -157,25 +120,11 @@
         <div class="section-head">
           <h3>Ranking por lote</h3>
         </div>
-        <app-uplot-chart
-          [labels]="loteRankingChart().labels"
-          [values]="loteRankingChart().values"
-          [averageValue]="loteRankingChart().average"
-          [height]="320"
-          color="#60A5FA"
-          seriesLabel="Rendimiento por lote"
-          averageLabel="Promedio ranking"
-          tooltipIcon="📍"
-          tooltipReferenceLabel="Lote"
-          valueSuffix="kg/ha"
-          xAxisTitle="Lotes"
-          yAxisTitle="Rendimiento kg/ha"
-          type="bar"
-        />
+        <app-material-bar-chart [points]="loteRankingChart().points" [averageValue]="loteRankingChart().average" color="#60A5FA" seriesLabel="Rendimiento por lote" averageLabel="Promedio ranking" valueSuffix="kg/ha" xAxisTitle="Lotes" yAxisTitle="Rendimiento kg/ha" />
         <div class="chart-summary-grid chart-summary-grid--wide" *ngIf="data.lotes.length">
           <article class="chart-summary-item" *ngFor="let item of data.lotes | slice:0:10">
             <strong>{{ item.loteNombre }}</strong>
-            <p>{{ item.cultivo }} · {{ item.rendimientoPromedioKgHa }} kg/ha · {{ item.calidadDominante }}</p>
+            <p>{{ item.cultivo }} - {{ item.rendimientoPromedioKgHa }} kg/ha - {{ item.calidadDominante }}</p>
           </article>
         </div>
       </section>
@@ -184,25 +133,11 @@
         <div class="section-head">
           <h3>Outliers</h3>
         </div>
-        <app-uplot-chart
-          [labels]="outliersChart().labels"
-          [values]="outliersChart().values"
-          [averageValue]="outliersChart().average"
-          [height]="320"
-          color="#FB7185"
-          seriesLabel="Desvio sobre media"
-          averageLabel="Linea base"
-          tooltipIcon="⚠"
-          tooltipReferenceLabel="Lote"
-          valueSuffix="kg/ha"
-          xAxisTitle="Lotes"
-          yAxisTitle="Desvio kg/ha"
-          type="bar"
-        />
+        <app-material-bar-chart [points]="outliersChart().points" [averageValue]="outliersChart().average" color="#FB7185" seriesLabel="Desvío sobre media" averageLabel="Línea base" valueSuffix="kg/ha" xAxisTitle="Lotes" yAxisTitle="Desvío kg/ha" />
         <div class="chart-summary-grid" *ngIf="data.outliers.length; else noOutliers">
           <article class="chart-summary-item" *ngFor="let item of data.outliers">
             <strong>{{ item.loteNombre }}</strong>
-            <p>{{ item.tipo }} · {{ item.desviacionSobreMediaKgHa }} kg/ha</p>
+            <p>{{ item.tipo }} - {{ item.desviacionSobreMediaKgHa }} kg/ha</p>
           </article>
         </div>
         <ng-template #noOutliers>

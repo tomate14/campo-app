@@ -3,12 +3,12 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { AgriculturaAnalytics, AnalyticsFiltros, Lote } from '../../core/models/agricola.models';
 import { AgricolaService } from '../../core/services/agricola.service';
-import { UplotChartComponent } from '../../shared/uplot-chart/uplot-chart.component';
+import { MaterialBarChartComponent, type MaterialBarPoint } from '../../shared/material-bar-chart/material-bar-chart.component';
 
 @Component({
   selector: 'app-analytics-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, UplotChartComponent],
+  imports: [CommonModule, FormsModule, MaterialBarChartComponent],
   templateUrl: './analytics-page.component.html',
   styleUrl: './analytics-page.component.css',
 })
@@ -26,31 +26,31 @@ export class AnalyticsPageComponent implements OnInit {
   });
 
   protected readonly cultivoChart = computed(() => ({
-    labels: this.analytics()?.cultivos.map((item) => item.cultivo) ?? [],
-    values: this.analytics()?.cultivos.map((item) => item.rendimientoPromedioKgHa) ?? [],
+    points: this.analytics()?.cultivos.map((item) => ({ label: item.cultivo, value: item.rendimientoPromedioKgHa })) ?? [],
     average: this.averageOf(this.analytics()?.cultivos.map((item) => item.rendimientoPromedioKgHa) ?? []),
   }));
 
   protected readonly temporadaChart = computed(() => ({
-    labels: this.analytics()?.temporadas.map((item) => item.temporada) ?? [],
-    values: this.analytics()?.temporadas.map((item) => item.rendimientoPromedioKgHa) ?? [],
+    points: this.analytics()?.temporadas.map((item) => ({ label: item.temporada, value: item.rendimientoPromedioKgHa })) ?? [],
     average: this.averageOf(this.analytics()?.temporadas.map((item) => item.rendimientoPromedioKgHa) ?? []),
   }));
 
   protected readonly loteRankingChart = computed(() => {
     const lotes = this.analytics()?.lotes.slice(0, 10) ?? [];
     return {
-      labels: lotes.map((item) => item.loteNombre),
-      values: lotes.map((item) => item.rendimientoPromedioKgHa),
+      points: lotes.map((item) => ({ label: item.loteNombre, value: item.rendimientoPromedioKgHa })),
       average: this.averageOf(lotes.map((item) => item.rendimientoPromedioKgHa)),
     };
   });
 
   protected readonly outliersChart = computed(() => ({
-    labels: this.analytics()?.outliers.map((item) => item.loteNombre) ?? [],
-    values: this.analytics()?.outliers.map((item) => item.desviacionSobreMediaKgHa) ?? [],
+    points: this.analytics()?.outliers.map((item) => ({ label: item.loteNombre, value: item.desviacionSobreMediaKgHa })) ?? [],
     average: 0,
   }));
+
+  protected readonly seriesChart = computed<MaterialBarPoint[]>(() =>
+    this.analytics()?.series.map((item) => ({ label: item.periodo, value: item.rendimientoPromedioKgHa })) ?? [],
+  );
 
   ngOnInit() {
     this.agricolaService.getLotes().subscribe((lotes) => this.lotes.set(lotes));

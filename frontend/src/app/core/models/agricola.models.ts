@@ -413,3 +413,80 @@ export interface ResolverLoteResponse {
   encontrado: boolean
   advertencia?: string
 }
+
+export interface ReporteAgricolaDashboard {
+  campania: string
+  ultimaActualizacion: string
+  kpis: ReporteAgricolaKpi[]
+  estadosFenologicos: ReporteCultivoFenologico[]
+  rendimientoComparativo: ReporteRendimientoComparativo
+  distribucionCultivos: ReporteCultivoDistribucion[]
+  lotesMapa: ReporteLoteMapa[]
+  evolucionSalud: ReporteSeriePunto[]
+  alertasRecientes: ReporteAlertaResumen[]
+  tareasRecomendadas: ReporteTareaResumen[]
+}
+
+export interface ReporteAgricolaKpi {
+  codigo: string
+  titulo: string
+  valor?: string
+  subtitulo?: string
+  tono: 'green' | 'blue' | 'yellow' | 'red' | 'purple'
+  valorNumerico?: number
+  tendencia: ReporteSeriePunto[]
+}
+
+export interface ReporteCultivoFenologico {
+  cultivo: string
+  estadoFenologico: string
+  fecha: string
+}
+
+export interface ReporteRendimientoComparativo {
+  actualTnHa?: number
+  historicoTnHa?: number
+  actual: ReporteSeriePunto[]
+  historico: ReporteSeriePunto[]
+}
+
+export interface ReporteCultivoDistribucion {
+  cultivo: string
+  lotes: number
+  hectareas: number
+  porcentaje: number
+}
+
+export interface ReporteLoteMapa {
+  loteId: string
+  nombre: string
+  cultivo: string
+  area: number
+  poligono: string
+  salud: string
+  color: string
+}
+
+export interface ReporteSeriePunto {
+  etiqueta: string
+  valor?: number
+}
+
+export interface ReporteAlertaResumen {
+  tipo: string
+  titulo: string
+  detalle: string
+  prioridad: string
+  fecha: string
+  origen: string
+}
+
+export interface ReporteTareaResumen {
+  tipo: string
+  titulo: string
+  detalle: string
+  fechaSugerida: string
+  prioridad: string
+  lotesAfectados: number
+  origen: string
+}
