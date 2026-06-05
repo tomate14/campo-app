@@ -26,4 +26,7 @@ public interface EventoSiembraRepository extends JpaRepository<EventoSiembra, St
 
     @Query("SELECT COUNT(e) FROM EventoSiembra e WHERE e.lote.id = :loteId AND e.deletedAt IS NULL")
     long countByLoteId(@Param("loteId") String loteId);
+
+    @Query("SELECT e FROM EventoSiembra e JOIN FETCH e.lote WHERE e.deletedAt IS NULL ORDER BY e.fecha DESC")
+    List<EventoSiembra> findAllActive();
 }

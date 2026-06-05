@@ -12,7 +12,9 @@ public interface MantenimientoProgramadoRepository extends JpaRepository<Manteni
     Optional<MantenimientoProgramado> findByIdAndDeletedAtIsNull(String id);
 
     @Query("""
-        select m from MantenimientoProgramado m
+        select distinct m from MantenimientoProgramado m
+        join fetch m.maquinaria
+        left join fetch m.plan
         where m.deletedAt is null
           and (:maquinariaId is null or m.maquinaria.id = :maquinariaId)
           and (:estado is null or m.estado = :estado)

@@ -4,11 +4,14 @@ import com.campoapp.agricultura.entity.Lote;
 import com.campoapp.agricultura.repository.LoteRepository;
 import com.campoapp.clima.config.ClimaProperties;
 import com.campoapp.clima.dto.DatoClimaResponse;
+import com.campoapp.clima.dto.PrecipitacionDiariaResponse;
 import com.campoapp.clima.dto.PronosticoResponse;
 import com.campoapp.clima.dto.openmeteo.OpenMeteoForecastResponse;
 import com.campoapp.clima.entity.DatoClima;
+import com.campoapp.clima.entity.PrecipitacionDiaria;
 import com.campoapp.clima.entity.Pronostico;
 import com.campoapp.clima.repository.DatoClimaRepository;
+import com.campoapp.clima.repository.PrecipitacionDiariaRepository;
 import com.campoapp.clima.repository.PronosticoRepository;
 import com.campoapp.clima.service.AlertaClimaService;
 import com.campoapp.clima.service.ClimaService;
@@ -62,6 +65,7 @@ public class ClimaServiceImpl implements ClimaService {
     );
 
     private final DatoClimaRepository datoClimaRepository;
+    private final PrecipitacionDiariaRepository precipitacionDiariaRepository;
     private final PronosticoRepository pronosticoRepository;
     private final LoteRepository loteRepository;
     private final AlertaClimaService alertaClimaService;
@@ -105,6 +109,27 @@ public class ClimaServiceImpl implements ClimaService {
     }
 
     @Override
+    @Transactional
+    public void sincronizarPrecipitacionesHistoricas(int dias) {
+        if (!properties.isConfigured()) {
+            log.warn("Sincronizacion historica de precipitaciones omitida: Open-Meteo no configurado");
+            return;
+        }
+        int diasNormalizados = Math.max(1, dias);
+        List<Lote> lotes = loteRepository.findAllActive().stream()
+                .filter(l -> l.getLatitud() != null && l.getLongitud() != null)
+                .toList();
+        log.info("Sincronizando precipitaciones historicas de {} lotes para {} dias", lotes.size(), diasNormalizados);
+        lotes.forEach(lote -> {
+            try {
+                sincronizarPrecipitacionesHistoricas(lote, diasNormalizados);
+            } catch (RestClientException | BusinessException e) {
+                log.error("Error al sincronizar precipitaciones historicas para lote {}: {}", lote.getId(), e.getMessage());
+            }
+        });
+    }
+
+    @Override
     public Optional<DatoClimaResponse> obtenerActual(String loteId) {
         return datoClimaRepository.findUltimoByLoteId(loteId).map(this::toResponse);
     }
@@ -120,6 +145,14 @@ public class ClimaServiceImpl implements ClimaService {
         LocalDateTime desde = LocalDateTime.now().minusDays(Math.min(dias, properties.getRetencionDias()));
         return datoClimaRepository.findHistorico(loteId, desde)
                 .stream().map(this::toResponse).toList();
+    }
+
+    @Override
+    public List<PrecipitacionDiariaResponse> obtenerPrecipitacionesDiarias(String loteId, int dias) {
+        LocalDate hasta = LocalDate.now().minusDays(1);
+        LocalDate desde = hasta.minusDays(Math.max(1, dias) - 1L);
+        return precipitacionDiariaRepository.findByLoteIdAndFechaBetween(loteId, desde, hasta)
+                .stream().map(this::toPrecipitacionResponse).toList();
     }
 
     private DatoClimaResponse doSincronizar(Lote lote) {
@@ -153,6 +186,48 @@ public class ClimaServiceImpl implements ClimaService {
 
         log.debug("Clima sincronizado para lote {} ({}) con Open-Meteo", lote.getNombre(), lote.getId());
         return toResponse(dato);
+    }
+
+    private void sincronizarPrecipitacionesHistoricas(Lote lote, int dias) {
+        OpenMeteoForecastResponse response = restClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/forecast")
+                        .queryParam("latitude", lote.getLatitud())
+                        .queryParam("longitude", lote.getLongitud())
+                        .queryParam("daily", "precipitation_sum")
+                        .queryParam("past_days", dias)
+                        .queryParam("forecast_days", 1)
+                        .queryParam("timezone", "auto")
+                        .build())
+                .retrieve()
+                .body(OpenMeteoForecastResponse.class);
+
+        if (response == null || response.daily() == null || response.daily().time() == null) {
+            throw new BusinessException("Open-Meteo no devolvio precipitaciones historicas validas para el lote");
+        }
+
+        LocalDate hoy = LocalDate.now();
+        OpenMeteoForecastResponse.Daily daily = response.daily();
+        for (int index = 0; index < daily.time().size(); index++) {
+            LocalDate fecha = LocalDate.parse(daily.time().get(index));
+            if (!fecha.isBefore(hoy)) continue;
+            BigDecimal precipitacion = value(daily.precipitation_sum(), index);
+            upsertPrecipitacion(lote, fecha, precipitacion == null ? BigDecimal.ZERO : precipitacion);
+        }
+    }
+
+    private void upsertPrecipitacion(Lote lote, LocalDate fecha, BigDecimal precipitacionMm) {
+        PrecipitacionDiaria precipitacion = precipitacionDiariaRepository
+                .findByLoteIdAndFechaIncludingDeleted(lote.getId(), fecha)
+                .orElseGet(() -> PrecipitacionDiaria.builder()
+                        .lote(lote)
+                        .fecha(fecha)
+                        .fuente("Open-Meteo")
+                        .build());
+
+        precipitacion.setPrecipitacionMm(precipitacionMm);
+        precipitacion.setFuente("Open-Meteo");
+        precipitacion.setDeletedAt(null);
+        precipitacionDiariaRepository.save(precipitacion);
     }
 
     private DatoClima mapToDatoClima(OpenMeteoForecastResponse response, Lote lote) {
@@ -226,6 +301,13 @@ public class ClimaServiceImpl implements ClimaService {
                 p.getHumedadPct(), p.getUvIndexMax(), p.getProbabilidadLluvia(), p.getPrecipitacionMm(),
                 p.getDescripcion(), p.getIconoCodigo(), p.getVelocidadViento(),
                 p.getDireccionVientoDominante(), p.getCondicionCodigo()
+        );
+    }
+
+    private PrecipitacionDiariaResponse toPrecipitacionResponse(PrecipitacionDiaria p) {
+        return new PrecipitacionDiariaResponse(
+                p.getId(), p.getLote().getId(), p.getLote().getNombre(),
+                p.getFecha(), p.getPrecipitacionMm(), p.getFuente()
         );
     }
 

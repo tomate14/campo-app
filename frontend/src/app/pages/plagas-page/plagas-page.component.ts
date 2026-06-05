@@ -1,8 +1,8 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxMapLibreGLModule } from '@maplibre/ngx-maplibre-gl';
-import type { FeatureCollection, Polygon } from 'geojson';
+import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
 import { forkJoin } from 'rxjs';
 import { AgricolaService } from '../../core/services/agricola.service';
@@ -59,8 +59,6 @@ export class PlagasPageComponent {
   protected readonly modal = signal<ModalType>(null);
   protected readonly selectedDeteccion = signal<DeteccionPlaga | null>(null);
   protected readonly selectedPin = signal<DeteccionPlaga | null>(null);
-  protected readonly selectedLoteId = signal('');
-  protected readonly mapFilter = signal<'ACTIVAS' | 'TODAS' | EstadoDeteccionPlaga>('ACTIVAS');
 
   protected readonly severidades: SeveridadPlaga[] = ['BAJA', 'MEDIA', 'ALTA', 'CRITICA'];
   protected readonly estados: EstadoDeteccionPlaga[] = ['ABIERTA', 'EN_TRATAMIENTO', 'CONTROLADA', 'CERRADA'];
@@ -93,29 +91,43 @@ export class PlagasPageComponent {
     if (lote?.longitud !== undefined && lote?.latitud !== undefined) {
       return [lote.longitud, lote.latitud];
     }
-    return [-58.3816, -34.6037];
+
+    return this.computeMapCenter(this.mapData());
   });
-  protected readonly zoom = computed<[number]>(() => this.selectedLote() ? [13] : [5]);
-  protected readonly selectedLote = computed(() => this.lotes().find((lote) => lote.id === this.selectedLoteId()) ?? this.lotes()[0]);
-  protected readonly mapData = computed<FeatureCollection<Polygon>>(() => {
-    const lote = this.selectedLote();
-    if (!lote?.poligono) {
-      return { type: 'FeatureCollection', features: [] };
-    }
-    try {
-      return { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: JSON.parse(lote.poligono) }] };
-    } catch {
-      return { type: 'FeatureCollection', features: [] };
-    }
+  protected readonly zoom = computed<[number]>(() => this.filters().loteId ? [13] : [9]);
+  protected readonly selectedLote = computed(() => this.lotes().find((lote) => lote.id === this.filters().loteId));
+  protected readonly filteredLotes = computed(() => {
+    const filters = this.filters();
+    return this.lotes().filter((lote) => {
+      const sameLote = !filters.loteId || lote.id === filters.loteId;
+      const sameCultivo = !filters.cultivo || lote.cultivo?.toLowerCase().includes(filters.cultivo.toLowerCase());
+      return sameLote && sameCultivo;
+    });
   });
+  protected readonly mapData = computed<FeatureCollection<Polygon | MultiPolygon>>(() => {
+    const features = this.filteredLotes()
+      .map((lote) => this.toLoteFeature(lote))
+      .filter((feature): feature is FeatureCollection<Polygon | MultiPolygon>['features'][number] => feature !== null);
+
+    return { type: 'FeatureCollection', features };
+  });
+  protected readonly selectedLoteLabel = computed(() => this.selectedLote()?.nombre ?? 'Todos los lotes');
+  protected readonly selectedLoteCultivo = computed(() => this.selectedLote()?.cultivo);
+  protected readonly selectedLoteForForm = computed(() => this.selectedLote() ?? this.filteredLotes()[0] ?? this.lotes()[0]);
+  protected readonly mapTitle = computed(() => this.filters().loteId ? 'Mapa operativo del lote' : 'Mapa operativo de lotes');
+  protected readonly mapSubtitle = computed(() => this.filters().loteId
+    ? 'Seleccioná un punto para registrar una detección web. Los pins muestran alertas ya cargadas.'
+    : 'Vista global de los lotes filtrados. Seleccioná un lote específico para registrar una detección.'
+  );
   protected readonly pins = computed(() => {
-    const loteId = this.selectedLote()?.id;
-    const filter = this.mapFilter();
+    const filters = this.filters();
     return this.detecciones().filter((item) => {
       const hasCoords = item.latitud !== undefined && item.longitud !== undefined;
-      const sameLote = !loteId || item.loteId === loteId;
-      const statusMatch = filter === 'TODAS' || (filter === 'ACTIVAS' ? ['ABIERTA', 'EN_TRATAMIENTO'].includes(item.estado) : item.estado === filter);
-      return hasCoords && sameLote && statusMatch;
+      const sameLote = !filters.loteId || item.loteId === filters.loteId;
+      const sameCultivo = !filters.cultivo || item.cultivo?.toLowerCase().includes(filters.cultivo.toLowerCase()) || false;
+      const sameSeveridad = !filters.severidad || item.severidad === filters.severidad;
+      const sameEstado = !filters.estado || item.estado === filters.estado;
+      return hasCoords && sameLote && sameCultivo && sameSeveridad && sameEstado;
     });
   });
   protected readonly historialEventos = computed<HistorialPlagaEvento[]>(() => {
@@ -183,9 +195,6 @@ export class PlagasPageComponent {
         this.detecciones.set(data.detecciones);
         this.aplicaciones.set(data.aplicaciones);
         this.seguimientos.set(data.seguimientos);
-        if (!this.selectedLoteId() && data.lotes[0]) {
-          this.selectedLoteId.set(data.lotes[0].id);
-        }
         this.loading.set(false);
       },
       error: () => {
@@ -197,8 +206,12 @@ export class PlagasPageComponent {
 
   protected applyFilters() {
     this.currentPage.set(1);
-    this.agricolaService.getDeteccionesPlaga(this.filters()).subscribe({
-      next: (items) => this.detecciones.set(items),
+    const filters = this.filters();
+    this.agricolaService.getDeteccionesPlaga(filters).subscribe({
+      next: (items) => {
+        this.detecciones.set(items);
+        this.selectedPin.set(null);
+      },
       error: () => this.errorMessage.set('No se pudieron aplicar los filtros.'),
     });
   }
@@ -215,7 +228,7 @@ export class PlagasPageComponent {
   protected openModal(type: ModalType, deteccion?: DeteccionPlaga) {
     this.selectedDeteccion.set(deteccion ?? null);
     if (type === 'DETECCION') {
-      const lote = this.selectedLote();
+      const lote = this.selectedLoteForForm();
       this.deteccionForm.set({ loteId: lote?.id ?? '', catalogoPlagaId: this.catalogo()[0]?.id ?? '', cultivo: lote?.cultivo, severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
     }
     if (type === 'APLICACION') {
@@ -235,22 +248,31 @@ export class PlagasPageComponent {
   protected onMapClick(event: any) {
     const lat = Number(event.lngLat.lat.toFixed(7));
     const lng = Number(event.lngLat.lng.toFixed(7));
-    const lote = this.selectedLote();
-    this.deteccionForm.update((form) => ({ ...form, loteId: lote?.id ?? form.loteId, latitud: lat, longitud: lng, origenGeolocalizacion: 'WEB_MAPA' }));
-    this.openModal('DETECCION');
-    this.deteccionForm.update((form) => ({ ...form, loteId: lote?.id ?? form.loteId, latitud: lat, longitud: lng, origenGeolocalizacion: 'WEB_MAPA' }));
+    const selected = this.selectedLote();
+    if (selected) {
+      this.openDetectionFromMap(selected, lat, lng);
+      return;
+    }
+
+    this.agricolaService.resolverLotePorPunto(lat, lng).subscribe({
+      next: (response) => {
+        const resolved = response.loteId ? this.lotes().find((lote) => lote.id === response.loteId) : undefined;
+        this.openDetectionFromMap(resolved ?? this.selectedLoteForForm(), lat, lng);
+      },
+      error: () => this.openDetectionFromMap(this.selectedLoteForForm(), lat, lng),
+    });
   }
 
   protected submitDeteccion() {
     this.saving.set(true);
-    this.agricolaService.createDeteccionPlaga(this.deteccionForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo guardar la deteccion.') });
+    this.agricolaService.createDeteccionPlaga(this.deteccionForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo guardar la detección.') });
   }
 
   protected submitAplicacion() {
     const deteccion = this.selectedDeteccion();
     if (!deteccion) return;
     this.saving.set(true);
-    this.agricolaService.createAplicacionFitosanitaria(deteccion.id, this.aplicacionForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo registrar la aplicacion.') });
+    this.agricolaService.createAplicacionFitosanitaria(deteccion.id, this.aplicacionForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo registrar la aplicación.') });
   }
 
   protected submitSeguimiento() {
@@ -262,7 +284,7 @@ export class PlagasPageComponent {
 
   protected submitCatalogo() {
     this.saving.set(true);
-    this.agricolaService.createCatalogoPlaga(this.catalogoForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo guardar el catalogo.') });
+    this.agricolaService.createCatalogoPlaga(this.catalogoForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo guardar el catálogo.') });
   }
 
   protected severityClass(value?: SeveridadPlaga) {
@@ -284,9 +306,88 @@ export class PlagasPageComponent {
     this.errorMessage.set(message);
   }
 
+  private openDetectionFromMap(lote: Lote | undefined, lat: number, lng: number) {
+    this.openModal('DETECCION');
+    this.deteccionForm.update((form) => ({
+      ...form,
+      loteId: lote?.id ?? form.loteId,
+      cultivo: lote?.cultivo ?? form.cultivo,
+      latitud: lat,
+      longitud: lng,
+      origenGeolocalizacion: 'WEB_MAPA',
+    }));
+  }
+
   private nowLocalDateTime() {
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     return now.toISOString().slice(0, 16);
+  }
+
+  private toLoteFeature(lote: Lote): FeatureCollection<Polygon | MultiPolygon>['features'][number] | null {
+    if (!lote.poligono) {
+      return null;
+    }
+
+    try {
+      const geometry = JSON.parse(lote.poligono) as Polygon | MultiPolygon;
+      if (geometry.type !== 'Polygon' && geometry.type !== 'MultiPolygon') {
+        return null;
+      }
+
+      return {
+        type: 'Feature',
+        properties: {
+          loteId: lote.id,
+          nombre: lote.nombre,
+          cultivo: lote.cultivo,
+          color: this.loteHealthColor(lote.id),
+          salud: this.loteHealthLabel(lote.id),
+        },
+        geometry,
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  private computeMapCenter(data: FeatureCollection<Polygon | MultiPolygon>): [number, number] {
+    const coordinates = data.features.flatMap((feature) => this.flattenCoordinates(feature.geometry));
+    const valid = coordinates.filter(([lng, lat]) => Number.isFinite(lng) && Number.isFinite(lat));
+    if (!valid.length) {
+      return [-58.3816, -34.6037];
+    }
+
+    const sum = valid.reduce((acc, [lng, lat]) => [acc[0] + lng, acc[1] + lat], [0, 0]);
+    return [sum[0] / valid.length, sum[1] / valid.length];
+  }
+
+  private flattenCoordinates(geometry: Polygon | MultiPolygon): [number, number][] {
+    if (geometry.type === 'Polygon') {
+      return geometry.coordinates.flat().map(([lng, lat]) => [lng, lat]);
+    }
+
+    return geometry.coordinates.flat(2).map(([lng, lat]) => [lng, lat]);
+  }
+
+  private loteHealthColor(loteId: string): string {
+    const severities = this.detecciones()
+      .filter((deteccion) => deteccion.loteId === loteId && ['ABIERTA', 'EN_TRATAMIENTO'].includes(deteccion.estado))
+      .map((deteccion) => deteccion.severidad);
+
+    if (severities.includes('CRITICA')) return '#FF6B6B';
+    if (severities.includes('ALTA')) return '#FF8A4C';
+    if (severities.includes('MEDIA')) return '#FFB84D';
+    if (severities.includes('BAJA')) return '#A3E635';
+    return '#9FE870';
+  }
+
+  private loteHealthLabel(loteId: string): string {
+    const color = this.loteHealthColor(loteId);
+    if (color === '#FF6B6B') return 'Malo';
+    if (color === '#FF8A4C') return 'Regular';
+    if (color === '#FFB84D') return 'Bueno';
+    if (color === '#A3E635') return 'Muy bueno';
+    return 'Excelente';
   }
 }

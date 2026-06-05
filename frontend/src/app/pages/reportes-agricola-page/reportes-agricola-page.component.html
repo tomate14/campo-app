@@ -1,0 +1,201 @@
+<div class="executive-dashboard">
+  <header class="dashboard-header">
+    <div class="title-block">
+      <div class="title-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M5 18c7 0 12-5 12-12-7 0-12 5-12 12Z"/><path d="M5 18c0-6 4-10 10-12"/></svg>
+      </div>
+      <div>
+        <h1>Dashboard Agrícola</h1>
+        <p>Resumen ejecutivo de tu campaña {{ campaign() }}</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="campaign-select" type="button">
+        <svg viewBox="0 0 24 24"><path d="M7 3v4"/><path d="M17 3v4"/><path d="M4 8h16"/><path d="M5 5h14v16H5z"/></svg>
+        Campaña {{ campaign() }}
+      </button>
+      <span class="last-update"><i></i> Última actualización: {{ lastUpdate() }}</span>
+      <span class="profile-chip">JS</span>
+    </div>
+  </header>
+
+  <section *ngIf="loading()" class="loading-panel">Cargando datos del backend...</section>
+  <section *ngIf="error()" class="loading-panel error-panel">{{ error() }}</section>
+
+  <ng-container *ngIf="!loading() && !error()">
+    <section class="kpi-grid">
+      <article class="kpi-card fenology-card tone-green">
+        <div class="kpi-top">
+          <span class="kpi-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 20V8"/><path d="M12 8c-4 0-7 2-8 6 4 0 7-2 8-6Z"/><path d="M12 8c4 0 7 2 8 6-4 0-7-2-8-6Z"/></svg>
+          </span>
+          <span class="kpi-index">2.</span>
+          <span class="kpi-title">Estado fenológico promedio</span>
+        </div>
+        <select class="fenology-select" [value]="selectedCultivo()" (change)="onCultivoChange($any($event.target).value)">
+          <option *ngFor="let item of fenologias()" [value]="item.cultivo">{{ item.cultivo }}</option>
+        </select>
+        <strong>{{ selectedFenologia()?.estadoFenologico || 'Sin datos' }}</strong>
+        <small>{{ selectedFenologia()?.fecha ? ('Actualizado ' + formatDate(selectedFenologia()!.fecha)) : 'Sin monitoreos fenológicos' }}</small>
+      </article>
+
+      <article class="kpi-card" *ngFor="let kpi of kpis(); let index = index" [class]="'tone-' + kpi.tono">
+        <div class="kpi-top">
+          <span class="kpi-icon">
+            <svg viewBox="0 0 24 24"><path [attr.d]="kpiIconPath(kpi.codigo)"/></svg>
+          </span>
+          <span class="kpi-index">{{ index + 1 }}.</span>
+          <span class="kpi-title">{{ kpi.titulo }}</span>
+        </div>
+        <strong>{{ kpi.valor || 'Sin datos' }}</strong>
+        <small>{{ kpi.subtitulo || 'Sin información disponible' }}</small>
+        <svg class="sparkline" viewBox="0 0 260 86" *ngIf="kpi.tendencia.length && linePoints(kpi.tendencia)">
+          <defs>
+            <linearGradient [id]="'spark-' + kpi.codigo" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#9FE870" stop-opacity=".42"/>
+              <stop offset="100%" stop-color="#9FE870" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <polyline [attr.points]="'0,86 ' + linePoints(kpi.tendencia) + ' 260,86'" [attr.fill]="'url(#spark-' + kpi.codigo + ')'" stroke="none"></polyline>
+          <polyline [attr.points]="linePoints(kpi.tendencia)" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        </svg>
+        <div class="radial" *ngIf="kpi.codigo === 'INDICE_SALUD_CULTIVOS' && kpi.valorNumerico !== undefined" [style.--value]="kpi.valorNumerico"></div>
+      </article>
+    </section>
+
+    <section class="analytics-row">
+      <article class="panel chart-panel">
+        <div class="panel-head">
+          <h2>Rendimiento actual vs histórico</h2>
+          <span>{{ rendimiento()?.actualTnHa ? rendimiento()?.actualTnHa + ' tn/ha' : 'Sin datos' }}</span>
+        </div>
+        <div class="legend">
+          <span><i class="green"></i> Cosechado {{ campaign() }}</span>
+          <span><i class="muted"></i> Promedio últimos 5 años</span>
+        </div>
+        <app-material-line-chart
+          [primary]="rendimiento()?.actual ?? []"
+          [secondary]="rendimiento()?.historico ?? []"
+          primaryLabel="Cosechado"
+          secondaryLabel="Promedio 5 años"
+          valueSuffix="tn/ha"
+          emptyText="Sin cosechas actuales ni histórico suficiente."
+        />
+      </article>
+
+      <article class="panel distribution-panel">
+        <div class="panel-head">
+          <h2>Distribución de lotes por cultivo</h2>
+        </div>
+        <ng-container *ngIf="distribucion().length; else emptyDistribution">
+          <div class="donut-layout">
+            <app-material-donut-chart [items]="donutItems()" [centerValue]="totalLotes().toString()" centerLabel="lotes" />
+            <div class="crop-list">
+              <div *ngFor="let crop of distribucion(); let index = index">
+                <span><i [style.background]="cropColor(index)"></i>{{ crop.cultivo }}</span>
+                <strong>{{ crop.lotes }} lotes</strong>
+                <small>{{ crop.porcentaje }}%</small>
+              </div>
+              <footer><span>Total</span><strong>{{ totalLotes() }} lotes</strong><small>100%</small></footer>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #emptyDistribution><div class="empty-state">Sin lotes activos con cultivo definido.</div></ng-template>
+      </article>
+
+      <article class="panel map-panel">
+        <div class="panel-head">
+          <h2>Mapa de lotes</h2>
+        </div>
+        <div class="map-frame">
+          <mgl-map [mapStyle]="satelliteStyle" [zoom]="mapZoom()" [center]="mapCenter()" [interactive]="true" [trackResize]="true">
+            <mgl-geojson-source id="dashboard-lotes-source" [data]="mapData()"></mgl-geojson-source>
+            <mgl-layer
+              id="dashboard-lotes-fill"
+              type="fill"
+              source="dashboard-lotes-source"
+              [paint]="{ 'fill-color': ['get', 'color'], 'fill-opacity': 0.68 }"
+              (layerMouseMove)="onLoteMouseMove($event)"
+              (layerMouseLeave)="onLoteMouseLeave()"
+            ></mgl-layer>
+            <mgl-layer id="dashboard-lotes-line" type="line" source="dashboard-lotes-source" [paint]="{ 'line-color': '#d9ff99', 'line-width': 1.6, 'line-opacity': 0.86 }"></mgl-layer>
+          </mgl-map>
+          <div
+            class="map-tooltip"
+            *ngIf="mapTooltip() as tooltip"
+            [style.left.px]="tooltip.x + 14"
+            [style.top.px]="tooltip.y + 14"
+          >
+            <strong>{{ tooltip.nombre }}</strong>
+            <span>{{ tooltip.cultivo }} - {{ tooltip.salud }}</span>
+            <em>{{ tooltip.area }} ha</em>
+          </div>
+          <div class="health-legend">
+            <strong>Índice de salud</strong>
+            <span><i style="background:#9FE870"></i>Excelente</span>
+            <span><i style="background:#A3E635"></i>Muy bueno</span>
+            <span><i style="background:#FFB84D"></i>Bueno</span>
+            <span><i style="background:#FF8A4C"></i>Regular</span>
+            <span><i style="background:#FF6B6B"></i>Malo</span>
+          </div>
+        </div>
+        <div *ngIf="!mapData().features.length" class="empty-state map-empty">Sin polígonos activos registrados.</div>
+      </article>
+    </section>
+
+    <section class="operations-row">
+      <article class="panel health-panel">
+        <div class="panel-head">
+          <h2>Evolución índice de salud</h2>
+          <span>{{ cropHealthIndex() ? cropHealthIndex() + '%' : 'Sin datos' }}</span>
+        </div>
+        <app-material-line-chart
+          [primary]="evolucionSalud()"
+          primaryLabel="Índice de salud"
+          valueSuffix="%"
+          emptyText="Sin serie historica de salud de cultivos."
+        />
+      </article>
+
+      <article class="panel alerts-panel">
+        <div class="panel-head">
+          <h2>Alertas recientes</h2>
+        </div>
+        <div class="timeline" *ngIf="alertas().length; else emptyAlerts">
+          <div class="alert-item" *ngFor="let alert of alertas()" [class]="'alert-' + priorityClass(alert.prioridad)">
+            <span class="alert-dot"></span>
+            <div>
+              <strong>{{ alert.titulo }}</strong>
+              <small>{{ alert.detalle }} - {{ alert.origen }}</small>
+            </div>
+            <time>{{ formatDate(alert.fecha) }}</time>
+          </div>
+        </div>
+        <ng-template #emptyAlerts><div class="empty-state">Sin alertas recientes.</div></ng-template>
+      </article>
+
+      <article class="panel tasks-panel">
+        <div class="panel-head">
+          <h2>Próximas tareas recomendadas</h2>
+        </div>
+        <div class="task-list" *ngIf="tareas().length; else emptyTasks">
+          <div *ngFor="let task of tareas()">
+            <span class="task-status" [class]="priorityClass(task.prioridad)"></span>
+            <div class="task-copy">
+              <strong>{{ task.titulo }}</strong>
+              <small>{{ task.detalle }} - {{ task.origen }}</small>
+            </div>
+            <em>{{ task.lotesAfectados }} lotes</em>
+            <small>{{ formatDate(task.fechaSugerida) }}</small>
+          </div>
+        </div>
+        <ng-template #emptyTasks><div class="empty-state">Sin tareas recomendadas registradas.</div></ng-template>
+      </article>
+    </section>
+  </ng-container>
+</div>
+
+
+
+

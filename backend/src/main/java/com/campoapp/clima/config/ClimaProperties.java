@@ -24,6 +24,10 @@ public class ClimaProperties {
     public static class Sync {
         private boolean enabled = true;
         private long intervaloMs = 1_800_000L;
+        private boolean precipitacionHistoricaEnabled = true;
+        private String precipitacionHistoricaCron = "0 0 2 * * *";
+        private String zone = "America/Argentina/Buenos_Aires";
+        private int precipitacionHistoricaDias = 14;
     }
 
     public boolean isConfigured() {

@@ -14,6 +14,7 @@ import { GanaderiaAlimentacionPageComponent } from './pages/ganaderia-alimentaci
 import { MaquinariaInventarioPageComponent } from './pages/maquinaria-inventario-page/maquinaria-inventario-page.component';
 import { MaquinariaMantenimientoPageComponent } from './pages/maquinaria-mantenimiento-page/maquinaria-mantenimiento-page.component';
 import { PlagasPageComponent } from './pages/plagas-page/plagas-page.component';
+import { ReportesAgricolaPageComponent } from './pages/reportes-agricola-page/reportes-agricola-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -22,13 +23,14 @@ export const routes: Routes = [
     component: DashboardShellComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'agricola/lotes' },
+      { path: '', pathMatch: 'full', redirectTo: 'reportes/agricola' },
       { path: 'agricola/lotes', component: LotesPageComponent },
       { path: 'agricola/lotes/:id', component: LoteDetailPageComponent },
       { path: 'agricola/siembra', component: SiembraPageComponent },
       { path: 'agricola/cosecha', redirectTo: 'agricola/siembra' },
       { path: 'agricola/analytics', component: AnalyticsPageComponent },
       { path: 'agricola/plagas', component: PlagasPageComponent },
+      { path: 'reportes/agricola', component: ReportesAgricolaPageComponent },
       { path: 'ganaderia/trazabilidad', component: GanaderiaTrazabilidadPageComponent },
       { path: 'ganaderia/sanidad', component: GanaderiaSanidadPageComponent },
       { path: 'ganaderia/reproduccion', component: GanaderiaReproduccionPageComponent },

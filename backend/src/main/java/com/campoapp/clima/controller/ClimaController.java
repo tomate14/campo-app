@@ -3,6 +3,7 @@ package com.campoapp.clima.controller;
 import com.campoapp.clima.dto.AlertaClimaResponse;
 import com.campoapp.clima.dto.ClimaMonitoreoResponse;
 import com.campoapp.clima.dto.DatoClimaResponse;
+import com.campoapp.clima.dto.PrecipitacionDiariaResponse;
 import com.campoapp.clima.dto.PronosticoResponse;
 import com.campoapp.clima.dto.RecomendacionResponse;
 import com.campoapp.clima.service.AlertaClimaService;
@@ -71,6 +72,14 @@ public class ClimaController {
         return ResponseEntity.ok(ApiResponse.ok(climaService.obtenerHistorico(loteId, dias)));
     }
 
+    @GetMapping("/{loteId}/precipitaciones")
+    @PreAuthorize("hasAuthority('read:clima')")
+    public ResponseEntity<ApiResponse<List<PrecipitacionDiariaResponse>>> obtenerPrecipitaciones(
+            @PathVariable String loteId,
+            @RequestParam(defaultValue = "14") int dias) {
+        return ResponseEntity.ok(ApiResponse.ok(climaService.obtenerPrecipitacionesDiarias(loteId, dias)));
+    }
+
     @GetMapping("/{loteId}/alertas")
     @PreAuthorize("hasAuthority('read:clima')")
     public ResponseEntity<ApiResponse<List<AlertaClimaResponse>>> obtenerAlertas(
@@ -98,5 +107,13 @@ public class ClimaController {
     @PreAuthorize("hasAuthority('create:clima')")
     public ResponseEntity<ApiResponse<DatoClimaResponse>> sincronizar(@PathVariable String loteId) {
         return ResponseEntity.ok(ApiResponse.ok(climaService.sincronizarLote(loteId)));
+    }
+
+    @PostMapping("/precipitaciones/sincronizar")
+    @PreAuthorize("hasAuthority('create:clima')")
+    public ResponseEntity<ApiResponse<String>> sincronizarPrecipitaciones(
+            @RequestParam(defaultValue = "14") int dias) {
+        climaService.sincronizarPrecipitacionesHistoricas(dias);
+        return ResponseEntity.ok(ApiResponse.ok("Sincronizacion historica de precipitaciones iniciada"));
     }
 }

@@ -26,6 +26,7 @@ import type {
   RegistroCosecha,
   RegistroCosechaRequest,
   ResolverLoteResponse,
+  ReporteAgricolaDashboard,
   RotacionRecomendacion,
   SeguimientoPlaga,
   SeguimientoPlagaRequest,
@@ -243,5 +244,9 @@ export class AgricolaService {
 
   resolverLotePorPunto(latitud: number, longitud: number) {
     return this.http.post<ApiResponse<ResolverLoteResponse> | ResolverLoteResponse>(`${API_BASE_URL}/agricola/plagas/geolocalizacion/resolver-lote`, { latitud, longitud }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getReporteAgricolaDashboard() {
+    return this.http.get<ApiResponse<ReporteAgricolaDashboard> | ReporteAgricolaDashboard>(`${API_BASE_URL}/reportes/agricola/dashboard`).pipe(map((response) => unwrapApiResponse(response)));
   }
 }

@@ -24,4 +24,7 @@ public interface RegistroCosechaRepository extends JpaRepository<RegistroCosecha
 
     @Query("SELECT COUNT(r) FROM RegistroCosecha r WHERE r.lote.id = :loteId AND r.deletedAt IS NULL")
     long countByLoteId(@Param("loteId") String loteId);
+
+    @Query("SELECT r FROM RegistroCosecha r JOIN FETCH r.lote WHERE r.deletedAt IS NULL ORDER BY r.fecha DESC")
+    List<RegistroCosecha> findAllActive();
 }

@@ -17,9 +17,9 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 39
-- Realizadas: 7
+- Realizadas: 8
 - Parciales: 5
-- Pendientes: 25
+- Pendientes: 24
 - Saltadas: 2
 - Ultima actualizacion: 2026-05-26
 
@@ -51,7 +51,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 20 | `20_geo_mapas_lotes.md` | Geolocalizacion | Pendiente | Mapas/geolocalizacion avanzada pendiente; el mapa de lotes operativo existe de forma parcial en agricultura. |
 | 21 | `21_geo_tracking_operarios.md` | Geolocalizacion | Pendiente | Tracking de operarios pendiente. |
 | 22 | `22_reportes_operacionales.md` | Reportes | Pendiente | Reportes operacionales pendiente. |
-| 23 | `23_reportes_agricola_ganaderia.md` | Reportes | Pendiente | Reportes agricola/ganaderia pendiente. |
+| 10-reportes | `10_reportes_agricola_ganaderia.md` | Reportes/Agricultura | Realizada | Dashboard Agricola Ejecutivo Premium implementado en `/reportes/agricola` consumiendo `GET /api/v1/reportes/agricola/dashboard`, sin datos mockeados en frontend. |
 | 24 | `24_sincronizacion_offline_first.md` | Infraestructura | Pendiente | Offline-first transversal pendiente. |
 | 25 | `25_agricultura_control_plagas_enfermedades.md` | Agricultura | Pendiente | Reformulada como capa avanzada de plagas: camara real, offline, IA, recomendaciones, inventario, regulacion y reportes. |
 | 26 | `26_autenticacion_seguridad_login_tokens.md` | Seguridad | Realizada | Autenticacion JWT, refresh tokens, RBAC y validez de token extendida implementadas. |
@@ -70,7 +70,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 ## Registro por Dominio
 
 ### Agricultura
-- Realizadas: 03, 37.
+- Realizadas: 03, 10-reportes, 37.
 - Parciales: 00, 01.
 - Pendientes: 00_01, 25, 27, 29.
 
@@ -101,7 +101,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 20, 21.
 
 ### Reportes
-- Pendientes: 22, 23.
+- Realizadas: 10-reportes.
+- Pendientes: 22.
 
 ### Infraestructura
 - Pendientes: 24.
@@ -110,6 +111,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 26.
 
 ## Ultimas Actualizaciones
+- 2026-05-29: Feature `10-reportes` marcada como realizada con dashboard agricola ejecutivo premium backend-driven.
+- 2026-05-29: `10_reportes_agricola_ganaderia.md` reemplazado por la especificacion Dashboard Agricola Ejecutivo Premium y registrado como `10-reportes` para no colisionar con `10_SALTEAR_maquinaria_gps_telemetria.md`.
 - 2026-05-26: Feature 37 marcada como realizada.
 - 2026-05-26: Feature 25 reformulada para cubrir pendientes avanzados no incluidos en 37.
 - 2026-05-26: Feature 31 actualizada para incluir selector buscador de responsable en plagas.

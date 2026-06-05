@@ -1,0 +1,31 @@
+<article class="premium-tooltip" [style.--tooltip-accent]="accentColor">
+  <div class="tooltip-accent-bar"></div>
+
+  <header class="tooltip-header">
+    <span class="tooltip-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path [attr.d]="iconPath(icon)" /></svg>
+    </span>
+    <div class="tooltip-title">
+      <strong>{{ title }}</strong>
+      <span>{{ subtitle }}</span>
+    </div>
+    <span class="tooltip-status">{{ status }}</span>
+  </header>
+
+  <div class="tooltip-separator"></div>
+
+  <section class="tooltip-metrics">
+    <div class="tooltip-metric" *ngFor="let metric of metrics">
+      <span class="metric-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path [attr.d]="iconPath(metric.icon)" /></svg>
+      </span>
+      <span class="metric-label">{{ metric.label }}</span>
+      <strong [class.metric-accent]="metric.accent">{{ metric.value }}</strong>
+    </div>
+  </section>
+
+  <footer class="tooltip-footer">
+    <span><i class="legend-current"></i>{{ primaryLegend }}</span>
+    <span><i class="legend-history"></i>{{ secondaryLegend }}</span>
+  </footer>
+</article>

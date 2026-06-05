@@ -18,7 +18,16 @@ public class ClimaScheduler {
     @Scheduled(fixedRateString = "${clima.sync.intervalo-ms:1800000}")
     public void sincronizarClima() {
         if (!properties.getSync().isEnabled()) return;
-        log.info("Iniciando sincronización automática de datos climáticos");
+        log.info("Iniciando sincronizacion automatica de datos climaticos");
         climaService.sincronizarTodosLotes();
+    }
+
+    @Scheduled(cron = "${clima.sync.precipitacion-historica-cron:0 0 2 * * *}",
+            zone = "${clima.sync.zone:America/Argentina/Buenos_Aires}")
+    public void sincronizarPrecipitacionHistorica() {
+        if (!properties.getSync().isEnabled() || !properties.getSync().isPrecipitacionHistoricaEnabled()) return;
+        int dias = Math.max(1, properties.getSync().getPrecipitacionHistoricaDias());
+        log.info("Iniciando sincronizacion historica de precipitaciones para los ultimos {} dias", dias);
+        climaService.sincronizarPrecipitacionesHistoricas(dias);
     }
 }
