@@ -95,6 +95,13 @@
         <svg viewBox="0 0 24 24"><path d="m14 7 3 3" /><path d="M5 19 16 8l-3-3L2 16v3h3Z" /><path d="M12 19h9" /></svg>
         <span *ngIf="!collapsed()">Mantenimiento</span>
       </a>
+
+      <div class="section-title" *ngIf="!collapsed()">Operarios</div>
+
+      <a routerLink="/operarios/gestion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Gestión de operarios' : ''">
+        <svg viewBox="0 0 24 24"><path d="M7 19v-2a5 5 0 0 1 10 0v2" /><path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0" /><path d="M17 11h4" /><path d="M19 9v4" /></svg>
+        <span *ngIf="!collapsed()">Gestión de operarios</span>
+      </a>
     </nav>
 
     <div class="sidebar-footer">

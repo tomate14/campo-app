@@ -16,6 +16,7 @@ import { MaquinariaInventarioPageComponent } from './pages/maquinaria-inventario
 import { MaquinariaMantenimientoPageComponent } from './pages/maquinaria-mantenimiento-page/maquinaria-mantenimiento-page.component';
 import { PlagasPageComponent } from './pages/plagas-page/plagas-page.component';
 import { ReportesAgricolaPageComponent } from './pages/reportes-agricola-page/reportes-agricola-page.component';
+import { OperariosGestionPageComponent } from './pages/operarios-gestion-page/operarios-gestion-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -39,6 +40,7 @@ export const routes: Routes = [
       { path: 'ganaderia/potreros', component: GanaderiaPotrerosPageComponent },
       { path: 'maquinaria/inventario', component: MaquinariaInventarioPageComponent },
       { path: 'maquinaria/mantenimiento', component: MaquinariaMantenimientoPageComponent },
+      { path: 'operarios/gestion', component: OperariosGestionPageComponent },
       { path: 'clima', component: ClimaPageComponent },
     ],
   },
