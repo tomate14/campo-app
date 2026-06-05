@@ -1,41 +1,41 @@
-# 11 - Maquinaria: Consumo de Combustible
+﻿# 11 - Maquinaria: Consumo de Combustible
 
-## Descripción
-Seguimiento integral del consumo de combustible por máquina para optimizar costos y detectar anomalías.
+## DescripciÃ³n
+Seguimiento integral del consumo de combustible por mÃ¡quina para optimizar costos y detectar anomalÃ­as.
 
 ## Funcionalidades Principales
 - Registro de recargas de combustible
-- Cálculo de consumo litros/hora
-- Detección de desvíos y robos
-- Análisis de eficiencia por máquina
+- CÃ¡lculo de consumo litros/hora
+- DetecciÃ³n de desvÃ­os y robos
+- AnÃ¡lisis de eficiencia por mÃ¡quina
 - Presupuesto vs. real
 
 ## Tareas
-1. **Registro de Recargas**: Fecha, máquina, cantidad, costo
-2. **Cálculo de Consumo**: Diferencia de tanque, horas de trabajo
-3. **Consumo por Tarea**: L/hora según actividad (arado, siembra, etc.)
-4. **Alertas de Anomalía**: Consumo inusualmente alto
-5. **Consumo Acumulado**: Histórico por máquina y período
-6. **Análisis Comparativo**: Máquinas similares
-7. **Presupuesto de Combustible**: Estimación vs. real
-8. **Integración con Sensores**: Lectura automática de tanque
+1. **Registro de Recargas**: Fecha, mÃ¡quina, cantidad, costo
+2. **CÃ¡lculo de Consumo**: Diferencia de tanque, horas de trabajo
+3. **Consumo por Tarea**: L/hora segÃºn actividad (arado, siembra, etc.)
+4. **Alertas de AnomalÃ­a**: Consumo inusualmente alto
+5. **Consumo Acumulado**: HistÃ³rico por mÃ¡quina y perÃ­odo
+6. **AnÃ¡lisis Comparativo**: MÃ¡quinas similares
+7. **Presupuesto de Combustible**: EstimaciÃ³n vs. real
+8. **IntegraciÃ³n con Sensores**: Lectura automÃ¡tica de tanque
 
 ## Servicios
-- `CombustibleService`: Gestión de recargas
-- `ConsumoService`: Cálculos y análisis
-- `AlertaAnomaliaService`: Detección de desvíos
+- `CombustibleService`: GestiÃ³n de recargas
+- `ConsumoService`: CÃ¡lculos y anÃ¡lisis
+- `AlertaAnomaliaService`: DetecciÃ³n de desvÃ­os
 
 ## Repositorios
 - `RecargaCombustibleRepository`
 - `ConsumoRepository`
 - `PresupuestoCombustibleRepository`
 
-## Requisitos Técnicos
+## Requisitos TÃ©cnicos
 - UUID para registros
-- Auditoría de todas las recargas
+- AuditorÃ­a de todas las recargas
 - Endpoint REST: `/api/v1/maquinaria/combustible`
 - Disponible offline
-- Alertas automáticas de consumo anómalo
+- Alertas automÃ¡ticas de consumo anÃ³malo
 
 ## Integraciones Externas
 - Sensores de tanque (IoT)
@@ -43,7 +43,8 @@ Seguimiento integral del consumo de combustible por máquina para optimizar cost
 
 ## Dependencias
 - Maquinaria (identidad y horometro)
-- Operarios (quién recarga)
-- GPS/Telemetría (horas de trabajo)
+- Operarios (quiÃ©n recarga)
+- GPS/TelemetrÃ­a (horas de trabajo)
 - Finanzas (costos)
-- Reportes (análisis de eficiencia)
+- Reportes (anÃ¡lisis de eficiencia)
+

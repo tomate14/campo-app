@@ -1,4 +1,4 @@
-# 27_agricultura_offline_validacion_cierre_00_01 - Agricultura: Offline, Validacion Final y Cierre de Features 00 y 01
+﻿# 27_agricultura_offline_validacion_cierre_00_01 - Agricultura: Offline, Validacion Final y Cierre de Features 00 y 01
 
 ## Descripcion
 Feature de cierre final para separar los pendientes que siguen abiertos luego de implementar el nucleo operativo de las features 00 y 01. Esta feature concentra exclusivamente lo que falta para poder marcar ambas como realmente completas.
@@ -73,3 +73,4 @@ Cerrar los ultimos gaps tecnicos y operativos de Agricultura en web Angular y mo
 - Feature 00
 - Feature 01
 - Feature 24
+

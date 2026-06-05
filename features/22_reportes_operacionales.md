@@ -1,50 +1,51 @@
-# 22 - Reportes: Operacionales
+﻿# 22 - Reportes: Operacionales
 
-## Descripción
-Generación de reportes operacionales para análisis de productividad, eficiencia y toma de decisiones diarias.
+## DescripciÃ³n
+GeneraciÃ³n de reportes operacionales para anÃ¡lisis de productividad, eficiencia y toma de decisiones diarias.
 
 ## Funcionalidades Principales
 - Reportes de actividades diarias
-- Análisis de eficiencia operativa
-- Productividad de operarios y máquinas
-- Cumplimiento de órdenes de trabajo
+- AnÃ¡lisis de eficiencia operativa
+- Productividad de operarios y mÃ¡quinas
+- Cumplimiento de Ã³rdenes de trabajo
 - Dashboards ejecutivos
 
 ## Tareas
-1. **Reporte Diario**: Resumen de actividades del día
-2. **Reporte de Órdenes**: Cumplimiento y estado de trabajos
-3. **Reporte de Máquinas**: Uso, disponibilidad, problemas
+1. **Reporte Diario**: Resumen de actividades del dÃ­a
+2. **Reporte de Ã“rdenes**: Cumplimiento y estado de trabajos
+3. **Reporte de MÃ¡quinas**: Uso, disponibilidad, problemas
 4. **Reporte de Operarios**: Productividad, horas trabajadas
 5. **Eficiencia de Lotes**: Actividades completadas por lote
-6. **Incidentes**: Problemas reportados y resolución
-7. **Reporte Climático**: Eventos y impacto
-8. **Dashboard**: Métricas en vivo
+6. **Incidentes**: Problemas reportados y resoluciÃ³n
+7. **Reporte ClimÃ¡tico**: Eventos y impacto
+8. **Dashboard**: MÃ©tricas en vivo
 
 ## Servicios
-- `ReporteOperacionalService`: Generación de reportes
-- `DashboardService`: Cálculos de métricas en vivo
-- `AlertasService`: Notificaciones de anomalías
+- `ReporteOperacionalService`: GeneraciÃ³n de reportes
+- `DashboardService`: CÃ¡lculos de mÃ©tricas en vivo
+- `AlertasService`: Notificaciones de anomalÃ­as
 
 ## Repositorios
 - `ReporteRepository`
 - `MetricaOperacionalRepository`
 
-## Requisitos Técnicos
+## Requisitos TÃ©cnicos
 - Agregaciones en tiempo real
 - Endpoint REST: `/api/v1/reportes/operacionales`
-- Generación de PDF/Excel
-- Gráficos interactivos
+- GeneraciÃ³n de PDF/Excel
+- GrÃ¡ficos interactivos
 - Disponible offline (datos cached)
-- Exportación por email automática
+- ExportaciÃ³n por email automÃ¡tica
 
 ## Integraciones Externas
-- Email (envío automático)
+- Email (envÃ­o automÃ¡tico)
 - Slack/Teams (notificaciones)
 
 ## Dependencias
-- Órdenes de Trabajo (tareas completadas)
+- Ã“rdenes de Trabajo (tareas completadas)
 - Maquinaria (uso y estado)
 - Operarios (productividad)
 - GPS/Tracking (ubicaciones)
 - Clima (eventos adversos)
 - Todas las otras features (datos consolidados)
+

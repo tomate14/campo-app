@@ -1,4 +1,4 @@
-# 10 - Reportes: Dashboard Agricola Ejecutivo Premium
+﻿# 10 - Reportes: Dashboard Agricola Ejecutivo Premium
 
 ## Estado
 Realizada. Implementada con endpoint backend `GET /api/v1/reportes/agricola/dashboard` y pantalla web Angular en `/reportes/agricola`. La UI renderiza exclusivamente datos recibidos del backend: KPIs, estado fenologico por cultivo, rendimiento actual vs historico, distribucion de cultivos, mapa satelital con poligonos GeoJSON activos, alertas recientes y tareas recomendadas.
@@ -308,3 +308,4 @@ Comparable visualmente con:
 - Stripe
 - Linear
 - Vercel
+

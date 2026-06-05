@@ -1,10 +1,10 @@
-# 25 - Agricultura: Control avanzado de plagas, IA, offline y reportes
+﻿# 25 - Agricultura: Control avanzado de plagas, IA, offline y reportes
 
 ## Estado
 Pendiente.
 
 ## Contexto
-La feature `37_agricultura_control_plagas_fitosanitarios.md` ya implementa el core operativo del modulo de plagas: catalogo, detecciones, seguimientos, aplicaciones fitosanitarias, mapa web con pins, resolucion de lote por poligono y dashboard basico.
+La feature `37_COMPLETA_agricultura_control_plagas_fitosanitarios.md` ya implementa el core operativo del modulo de plagas: catalogo, detecciones, seguimientos, aplicaciones fitosanitarias, mapa web con pins, resolucion de lote por poligono y dashboard basico.
 
 Esta feature 25 queda reformulada para implementar la capa avanzada que todavia falta: captura mobile real con camara/GPS, storage de imagenes, offline-first, identificacion asistida por IA, recomendaciones tecnicas, alertas por zona, integracion real con inventario/regulacion y reportes avanzados.
 
@@ -234,3 +234,4 @@ El usuario debe poder:
 - Existen alertas por zona/reincidencia/condiciones climaticas.
 - Existen reportes de presion y evolucion temporal.
 - El modulo mantiene trazabilidad y auditoria de decisiones tecnicas.
+

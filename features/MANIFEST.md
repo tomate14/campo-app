@@ -1,4 +1,4 @@
-# Manifest de Features - Campo App
+﻿# Manifest de Features - Campo App
 
 ## Proposito
 Este archivo es el registro operativo de features de Campo App. Debe indicar que historias existen, cuales estan realizadas, cuales estan pendientes y cuales quedaron diferidas o saltadas.
@@ -6,6 +6,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 ## Regla de Mantenimiento
 - Cada vez que se cree una feature nueva, agregarla a este manifest con estado `Pendiente`.
 - Cada vez que se termine una feature, actualizar su estado a `Realizada` o `Parcial` segun corresponda.
+- Cuando una feature quede `Realizada`, su archivo debe incluir `_COMPLETA_` entre el numero y la primera palabra del nombre.
 - Si una feature queda fuera de alcance y se reemplaza por otra, marcarla como `Saltada` o `Diferida` y explicar el motivo.
 - Si durante una feature se detectan pendientes, crear una nueva feature numerada con `max + 1` y agregarla a este manifest.
 
@@ -16,28 +17,28 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 39
-- Realizadas: 8
-- Parciales: 5
-- Pendientes: 24
+- Total de historias registradas: 40
+- Realizadas: 15
+- Parciales: 0
+- Pendientes: 23
 - Saltadas: 2
-- Ultima actualizacion: 2026-05-26
+- Ultima actualizacion: 2026-06-05
 
 ## Registro por Feature
 
 | Feature | Archivo | Dominio | Estado | Registro |
 |---|---|---|---|---|
-| 00 | `00_agricultura_monitoreo_siembra_cosecha.md` | Agricultura | Parcial | Core de siembra/cosecha implementado. Pendientes de cierre derivados a `27_agricultura_offline_validacion_cierre_00_01.md`. |
-| 00_01 | `00_01_faltantes.md` | Agricultura | Pendiente | Feature historica de faltantes 00/01; el cierre operativo queda consolidado en feature 27. |
-| 01 | `01_agricultura_gestion_lotes.md` | Agricultura | Parcial | Gestion de lotes implementada. Pendientes avanzados/offline derivados a feature 27. |
-| 02 | `02_clima_monitoreo_e_integracion.md` | Clima | Parcial | Integracion Open-Meteo y cards climaticas implementadas. Pendientes de pronostico/cache/dashboard avanzado derivados a feature 28. |
-| 03 | `03_agricultura_rendimiento_analytics.md` | Agricultura | Realizada | Analytics agricola desarrollado con backend, frontend y graficos uPlot. |
-| 04 | `04_ganaderia_trazabilidad_animal.md` | Ganaderia | Parcial | Trazabilidad core y UI enterprise implementadas. Pendientes avanzados SENASA/RFID/offline derivados a feature 30. |
-| 05 | `05_ganaderia_sanidad_vacunacion.md` | Ganaderia | Parcial | Sanidad/vacunacion core implementado con catalogo, aplicaciones, alertas y UI premium. Pendientes offline/notificaciones/mobile derivados a feature 32. |
-| 06 | `06_ganaderia_reproduccion_genealogia.md` | Ganaderia | Realizada | Core operativo de reproduccion, genealogia, alertas de parto y recomendaciones implementado. Pendientes avanzados derivados a features 33 y 34. |
-| 07 | `07_ganaderia_alimentacion_monitoreo.md` | Ganaderia | Realizada | Core de alimentacion, dietas, suministros, pesajes y dashboard implementado. Pendientes avanzados derivados a feature 35. |
-| 08 | `08_maquinaria_inventario_control.md` | Maquinaria | Realizada | Inventario de maquinaria implementado con UI y datos mock de prueba. |
-| 09 | `09_maquinaria_mantenimiento_preventivo.md` | Maquinaria | Realizada | Mantenimiento preventivo implementado con backend, frontend, mock data y UI de tabs/cards premium. Pendientes avanzados derivados a feature 36. |
+| 00 | `00_COMPLETA_agricultura_monitoreo_siembra_cosecha.md` | Agricultura | Realizada | Core de siembra/cosecha implementado y marcado como finalizado. Pendientes avanzados/offline quedan derivados a feature 27. |
+| 00_01 | `00_01_COMPLETA_faltantes.md` | Agricultura | Realizada | Feature historica de faltantes 00/01 marcada como finalizada. |
+| 01 | `01_COMPLETA_agricultura_gestion_lotes.md` | Agricultura | Realizada | Gestion de lotes implementada y marcada como finalizada. Pendientes avanzados/offline quedan derivados a feature 27. |
+| 02 | `02_COMPLETA_clima_monitoreo_e_integracion.md` | Clima | Realizada | Integracion Open-Meteo y cards climaticas implementadas y marcadas como finalizadas. Pendientes avanzados quedan derivados a feature 28. |
+| 03 | `03_COMPLETA_agricultura_rendimiento_analytics.md` | Agricultura | Realizada | Analytics agricola desarrollado con backend, frontend y graficos uPlot. |
+| 04 | `04_COMPLETA_ganaderia_trazabilidad_animal.md` | Ganaderia | Realizada | Trazabilidad core y UI enterprise implementadas y marcadas como finalizadas. Pendientes avanzados SENASA/RFID/offline quedan derivados a feature 30. |
+| 05 | `05_COMPLETA_ganaderia_sanidad_vacunacion.md` | Ganaderia | Realizada | Sanidad/vacunacion core implementado con catalogo, aplicaciones, alertas y UI premium, marcado como finalizado. Pendientes avanzados quedan derivados a feature 32. |
+| 06 | `06_COMPLETA_ganaderia_reproduccion_genealogia.md` | Ganaderia | Realizada | Core operativo de reproduccion, genealogia, alertas de parto y recomendaciones implementado. Pendientes avanzados derivados a features 33 y 34. |
+| 07 | `07_COMPLETA_ganaderia_alimentacion_monitoreo.md` | Ganaderia | Realizada | Core de alimentacion, dietas, suministros, pesajes y dashboard implementado. Pendientes avanzados derivados a feature 35. |
+| 08 | `08_COMPLETA_maquinaria_inventario_control.md` | Maquinaria | Realizada | Inventario de maquinaria implementado con UI y datos mock de prueba. |
+| 09 | `09_COMPLETA_maquinaria_mantenimiento_preventivo.md` | Maquinaria | Realizada | Mantenimiento preventivo implementado con backend, frontend, mock data y UI de tabs/cards premium. Pendientes avanzados derivados a feature 36. |
 | 10 | `10_SALTEAR_maquinaria_gps_telemetria.md` | Maquinaria | Saltada | Feature marcada explicitamente como SALTEAR. |
 | 11 | `11_SALTEAR_maquinaria_consumo_combustible.md` | Maquinaria | Saltada | Feature marcada explicitamente como SALTEAR. |
 | 12 | `12_operarios_gestion_administracion.md` | Operarios | Pendiente | Gestion de operarios/personas aun pendiente como modulo completo. |
@@ -51,10 +52,10 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 20 | `20_geo_mapas_lotes.md` | Geolocalizacion | Pendiente | Mapas/geolocalizacion avanzada pendiente; el mapa de lotes operativo existe de forma parcial en agricultura. |
 | 21 | `21_geo_tracking_operarios.md` | Geolocalizacion | Pendiente | Tracking de operarios pendiente. |
 | 22 | `22_reportes_operacionales.md` | Reportes | Pendiente | Reportes operacionales pendiente. |
-| 10-reportes | `10_reportes_agricola_ganaderia.md` | Reportes/Agricultura | Realizada | Dashboard Agricola Ejecutivo Premium implementado en `/reportes/agricola` consumiendo `GET /api/v1/reportes/agricola/dashboard`, sin datos mockeados en frontend. |
+| 10-reportes | `10_COMPLETA_reportes_agricola_ganaderia.md` | Reportes/Agricultura | Realizada | Dashboard Agricola Ejecutivo Premium implementado en `/reportes/agricola` consumiendo `GET /api/v1/reportes/agricola/dashboard`, sin datos mockeados en frontend. |
 | 24 | `24_sincronizacion_offline_first.md` | Infraestructura | Pendiente | Offline-first transversal pendiente. |
 | 25 | `25_agricultura_control_plagas_enfermedades.md` | Agricultura | Pendiente | Reformulada como capa avanzada de plagas: camara real, offline, IA, recomendaciones, inventario, regulacion y reportes. |
-| 26 | `26_autenticacion_seguridad_login_tokens.md` | Seguridad | Realizada | Autenticacion JWT, refresh tokens, RBAC y validez de token extendida implementadas. |
+| 26 | `26_COMPLETA_autenticacion_seguridad_login_tokens.md` | Seguridad | Realizada | Autenticacion JWT, refresh tokens, RBAC y validez de token extendida implementadas. |
 | 27 | `27_agricultura_offline_validacion_cierre_00_01.md` | Agricultura | Pendiente | Cierre avanzado/offline de features 00 y 01 pendiente. |
 | 28 | `28_clima_pronostico_15_dias_cache_dashboard.md` | Clima | Pendiente | Pronostico real 15 dias, cache/offline cliente y dashboard climatico avanzado pendiente. |
 | 29 | `29_agricultura_prediccion_ml_avanzada.md` | Agricultura | Pendiente | Prediccion ML agricola avanzada pendiente. |
@@ -65,22 +66,24 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 34 | `34_ganaderia_ficha_tecnica_reproductiva_avanzada.md` | Ganaderia | Pendiente | Ficha tecnica reproductiva avanzada pendiente. |
 | 35 | `35_ganaderia_alimentacion_offline_balanzas_nrc_inra.md` | Ganaderia | Pendiente | Alimentacion avanzada offline, balanzas e integracion nutricional pendiente. |
 | 36 | `36_maquinaria_mantenimiento_offline_notificaciones_avanzadas.md` | Maquinaria | Pendiente | Mantenimiento avanzado offline/notificaciones pendiente. |
-| 37 | `37_agricultura_control_plagas_fitosanitarios.md` | Agricultura | Realizada | Core operativo de plagas y aplicaciones fitosanitarias implementado: backend, web, mobile base, mapa con pins y tests. |
+| 37 | `37_COMPLETA_agricultura_control_plagas_fitosanitarios.md` | Agricultura | Realizada | Core operativo de plagas y aplicaciones fitosanitarias implementado: backend, web, mobile base, mapa con pins y tests. |
+| 38 | `38_COMPLETA_ganaderia_potreros_mapa_interactivo.md` | Ganaderia | Realizada | Pantalla de potreros con mapa interactivo, dibujo de multiples poligonos, popup de alta y persistencia implementada. |
 
 ## Registro por Dominio
 
 ### Agricultura
-- Realizadas: 03, 10-reportes, 37.
-- Parciales: 00, 01.
-- Pendientes: 00_01, 25, 27, 29.
+- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37.
+- Parciales: ninguna.
+- Pendientes: 25, 27, 29.
 
 ### Clima
-- Parciales: 02.
+- Realizadas: 02.
+- Parciales: ninguna.
 - Pendientes: 28.
 
 ### Ganaderia
-- Realizadas: 06, 07.
-- Parciales: 04, 05.
+- Realizadas: 04, 05, 06, 07, 38.
+- Parciales: ninguna.
 - Pendientes: 30, 31, 32, 33, 34, 35.
 
 ### Maquinaria
@@ -111,9 +114,13 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 26.
 
 ## Ultimas Actualizaciones
+- 2026-06-05: Features 00_01, 00, 01, 02, 04 y 05 marcadas como realizadas y renombradas con `_COMPLETA_`.
+- 2026-06-05: Feature 38 realizada con backend CRUD de potreros, mapa interactivo Angular, dibujo de poligonos y popup de alta.
 - 2026-05-29: Feature `10-reportes` marcada como realizada con dashboard agricola ejecutivo premium backend-driven.
-- 2026-05-29: `10_reportes_agricola_ganaderia.md` reemplazado por la especificacion Dashboard Agricola Ejecutivo Premium y registrado como `10-reportes` para no colisionar con `10_SALTEAR_maquinaria_gps_telemetria.md`.
+- 2026-05-29: `10_COMPLETA_reportes_agricola_ganaderia.md` reemplazado por la especificacion Dashboard Agricola Ejecutivo Premium y registrado como `10-reportes` para no colisionar con `10_SALTEAR_maquinaria_gps_telemetria.md`.
 - 2026-05-26: Feature 37 marcada como realizada.
 - 2026-05-26: Feature 25 reformulada para cubrir pendientes avanzados no incluidos en 37.
 - 2026-05-26: Feature 31 actualizada para incluir selector buscador de responsable en plagas.
 - 2026-05-26: Manifest reescrito como registro operativo de estado de features.
+
+

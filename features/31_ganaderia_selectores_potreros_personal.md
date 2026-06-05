@@ -1,4 +1,4 @@
-# 31 - Ganaderia: Selectores, Potreros y Formularios Asistidos
+﻿# 31 - Ganaderia: Selectores, Potreros y Formularios Asistidos
 
 ## Descripcion
 Refactor de la experiencia de alta y operacion sobre trazabilidad animal para reemplazar inputs manuales por selectores buscables, introducir la gestion formal de potreros y reutilizar un componente generico de seleccion remota.
@@ -53,7 +53,7 @@ Mejorar la consistencia operativa en ganaderia, reducir errores de carga y dejar
 - Formularios sin inputs libres donde la relacion deba normalizarse.
 
 ## Dependencias
-- 04_ganaderia_trazabilidad_animal
+- 04_COMPLETA_ganaderia_trazabilidad_animal
 - 12_operarios_gestion_administracion
 - 20_geo_mapas_lotes
 
@@ -61,3 +61,4 @@ Mejorar la consistencia operativa en ganaderia, reducir errores de carga y dejar
 - Alta de animal mas robusta y asistida.
 - Movimientos y registros medicos con referencias consistentes.
 - Base reutilizable para futuros selectores remotos en toda la plataforma.
+

@@ -1,29 +1,29 @@
-# 16 - Inventario: Stock y Control
+﻿# 16 - Inventario: Stock y Control
 
-## Descripción
-Control centralizado de todos los stocks (materiales, repuestos, herramientas) con auditoría completa de movimientos.
+## DescripciÃ³n
+Control centralizado de todos los stocks (materiales, repuestos, herramientas) con auditorÃ­a completa de movimientos.
 
 ## Funcionalidades Principales
-- Gestión de múltiples almacenes
+- GestiÃ³n de mÃºltiples almacenes
 - Entrada y salida de stock
 - Devoluciones y ajustes
-- Inventario físico vs. sistema
-- Auditoría de discrepancias
+- Inventario fÃ­sico vs. sistema
+- AuditorÃ­a de discrepancias
 
 ## Tareas
-1. **Almacenes**: Registro de depósitos y ubicaciones
-2. **Entrada de Stock**: Recepción de compras, devoluciones de clientes
+1. **Almacenes**: Registro de depÃ³sitos y ubicaciones
+2. **Entrada de Stock**: RecepciÃ³n de compras, devoluciones de clientes
 3. **Salida de Stock**: Ventas, uso interno, merma
 4. **Movimientos**: Transferencias entre almacenes
-5. **Ajustes**: Correcciones por inventario físico
-6. **Auditoría de Discrepancias**: Sistema vs. realidad
-7. **Stock Mínimo/Máximo**: Por producto y almacén
-8. **Reporte de Disponibilidad**: Stock por ubicación
+5. **Ajustes**: Correcciones por inventario fÃ­sico
+6. **AuditorÃ­a de Discrepancias**: Sistema vs. realidad
+7. **Stock MÃ­nimo/MÃ¡ximo**: Por producto y almacÃ©n
+8. **Reporte de Disponibilidad**: Stock por ubicaciÃ³n
 
 ## Servicios
-- `AlmacenService`: Gestión de depósitos
+- `AlmacenService`: GestiÃ³n de depÃ³sitos
 - `MovimientoStockService`: Entrada, salida, transferencias
-- `AuditStockService`: Validación de discrepancias
+- `AuditStockService`: ValidaciÃ³n de discrepancias
 
 ## Repositorios
 - `AlmacenRepository`
@@ -31,20 +31,21 @@ Control centralizado de todos los stocks (materiales, repuestos, herramientas) c
 - `MovimientoRepository`
 - `AjusteRepository`
 
-## Requisitos Técnicos
+## Requisitos TÃ©cnicos
 - UUID para productos y movimientos
-- Auditoría completa de cambios
+- AuditorÃ­a completa de cambios
 - Endpoint REST: `/api/v1/inventario/stock`
-- Disponible offline (sincronización)
-- Códigos de barras/QR para escaneo
+- Disponible offline (sincronizaciÃ³n)
+- CÃ³digos de barras/QR para escaneo
 
 ## Integraciones Externas
-- Código de barras (EAN, UPC)
+- CÃ³digo de barras (EAN, UPC)
 - Etiquetas QR
 
 ## Dependencias
 - Insumos (parte del inventario)
-- Finanzas (valorización de stock)
-- Compras (recepción de materiales)
+- Finanzas (valorizaciÃ³n de stock)
+- Compras (recepciÃ³n de materiales)
 - Ventas (salida de stock)
-- Reportes (análisis de rotación)
+- Reportes (anÃ¡lisis de rotaciÃ³n)
+

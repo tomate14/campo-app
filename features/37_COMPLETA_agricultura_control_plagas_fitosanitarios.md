@@ -1,4 +1,4 @@
-# 37 - Agricultura: Control operativo de plagas y aplicaciones fitosanitarias
+﻿# 37 - Agricultura: Control operativo de plagas y aplicaciones fitosanitarias
 
 ## Estado
 Finalizada.
@@ -188,7 +188,7 @@ Permitir que un usuario pueda:
 
 ### UI esperada
 Aplicar el estilo premium dark SaaS vigente:
-- Header con eyebrow `Campo App · Agricultura`.
+- Header con eyebrow `Campo App Â· Agricultura`.
 - Metric cards alineadas igual que Alimentacion: icono, titulo/subtitulo y valor.
 - Tabs con cards operativas premium y paginacion enterprise.
 - Maximo 3 cards por pagina en listados operativos.
@@ -319,3 +319,4 @@ Aplicar el estilo premium dark SaaS vigente:
 - La pantalla muestra metricas, cards por tab y paginacion con el estilo premium definido.
 - No se usan iconos con letras o siglas.
 - La API devuelve datos trazables para auditoria operativa.
+

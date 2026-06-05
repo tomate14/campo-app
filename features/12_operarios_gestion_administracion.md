@@ -1,29 +1,29 @@
-# 12 - Operarios: Gestión y Administración
+﻿# 12 - Operarios: GestiÃ³n y AdministraciÃ³n
 
-## Descripción
-Registro integral de operarios, roles, permisos y seguimiento de personal en operaciones agrícolas.
+## DescripciÃ³n
+Registro integral de operarios, roles, permisos y seguimiento de personal en operaciones agrÃ­colas.
 
 ## Funcionalidades Principales
 - Base de datos de operarios
 - Roles y permisos (RBAC)
-- Documentación legal (DNI, contratos)
+- DocumentaciÃ³n legal (DNI, contratos)
 - Seguimiento de jornadas
-- Evaluación de desempeño
+- EvaluaciÃ³n de desempeÃ±o
 
 ## Tareas
 1. **Registro de Operarios**: Datos personales, documento, contacto
-2. **Roles y Permisos**: Asignación de roles (peón, tractorista, supervisor, etc.)
-3. **Documentación**: Certificados, licencias, habilitaciones
+2. **Roles y Permisos**: AsignaciÃ³n de roles (peÃ³n, tractorista, supervisor, etc.)
+3. **DocumentaciÃ³n**: Certificados, licencias, habilitaciones
 4. **Contrato y Legales**: Datos del contrato, salario, fechas
-5. **RBAC (Control de Acceso)**: Qué puede hacer cada rol en el sistema
+5. **RBAC (Control de Acceso)**: QuÃ© puede hacer cada rol en el sistema
 6. **Disponibilidad**: Calendarios de trabajo
-7. **Evaluación de Desempeño**: Calificaciones, incidentes
+7. **EvaluaciÃ³n de DesempeÃ±o**: Calificaciones, incidentes
 8. **Historial de Cambios**: Promociones, cambios de rol
 
 ## Servicios
-- `OperarioService`: CRUD y gestión
+- `OperarioService`: CRUD y gestiÃ³n
 - `RBACService`: Control de permisos
-- `DesempenoService`: Evaluación y seguimiento
+- `DesempenoService`: EvaluaciÃ³n y seguimiento
 
 ## Repositorios
 - `OperarioRepository`
@@ -31,19 +31,20 @@ Registro integral de operarios, roles, permisos y seguimiento de personal en ope
 - `PermisoRepository`
 - `DesempenoRepository`
 
-## Requisitos Técnicos
+## Requisitos TÃ©cnicos
 - UUID para cada operario
 - Soft delete obligatorio
-- Auditoría de cambios de rol/permisos
+- AuditorÃ­a de cambios de rol/permisos
 - Endpoint REST: `/api/v1/operarios/gestion`
 - Cumplimiento normativo laboral
 - Disponible offline (base de datos de operarios)
 
 ## Integraciones Externas
-- Sistema de autenticación (OAuth/JWT)
+- Sistema de autenticaciÃ³n (OAuth/JWT)
 
 ## Dependencias
-- Autenticación (login)
-- Finanzas (nómina)
-- Reportes (análisis de desempeño)
-- Órdenes de Trabajo (asignaciones)
+- AutenticaciÃ³n (login)
+- Finanzas (nÃ³mina)
+- Reportes (anÃ¡lisis de desempeÃ±o)
+- Ã“rdenes de Trabajo (asignaciones)
+

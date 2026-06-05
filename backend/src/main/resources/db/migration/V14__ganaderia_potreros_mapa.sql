@@ -1,0 +1,23 @@
+CREATE TABLE potreros (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    nombre VARCHAR(120) NOT NULL,
+    descripcion TEXT NULL,
+    superficie_ha DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    tipo_uso VARCHAR(40) NOT NULL DEFAULT 'PASTOREO',
+    estado VARCHAR(40) NOT NULL DEFAULT 'ACTIVO',
+    capacidad_animales INT NULL,
+    carga_animal_actual INT NULL,
+    recurso_forrajero VARCHAR(120) NULL,
+    disponibilidad_agua BOOLEAN NOT NULL DEFAULT TRUE,
+    tiene_sombra BOOLEAN NOT NULL DEFAULT FALSE,
+    observaciones TEXT NULL,
+    poligono JSON NOT NULL,
+    centroide_latitud DECIMAL(10, 7) NULL,
+    centroide_longitud DECIMAL(10, 7) NULL,
+    created_at DATETIME(6) NOT NULL,
+    updated_at DATETIME(6) NOT NULL,
+    deleted_at DATETIME(6) NULL,
+    INDEX idx_potreros_estado (estado),
+    INDEX idx_potreros_tipo_uso (tipo_uso),
+    INDEX idx_potreros_deleted_at (deleted_at)
+);

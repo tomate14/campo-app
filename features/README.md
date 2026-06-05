@@ -1,178 +1,179 @@
-# Features - Plataforma Agropecuaria Integral
+﻿# Features - Plataforma Agropecuaria Integral
 
-## Descripción General
+## DescripciÃ³n General
 
-Este directorio contiene la especificación de todas las features del sistema agropecuaria Campo. Cada feature está documentada con:
-- Descripción y objetivos
+Este directorio contiene la especificaciÃ³n de todas las features del sistema agropecuaria Campo. Cada feature estÃ¡ documentada con:
+- DescripciÃ³n y objetivos
 - Funcionalidades principales
-- Tareas específicas
+- Tareas especÃ­ficas
 - Servicios y Repositorios necesarios
-- Requisitos técnicos
+- Requisitos tÃ©cnicos
 - Dependencias con otras features
 
 ## Estructura de Features
 
-Las features están organizadas por dominio del negocio y nombradas con el formato: `NN_modulo_nombre_feature.md`
+Las features estÃ¡n organizadas por dominio del negocio y nombradas con el formato: `NN_modulo_nombre_feature.md`
 
 ### Agricultura (00-03, 25)
-| # | Nombre | Descripción |
+| # | Nombre | DescripciÃ³n |
 |---|--------|------------|
 | 00 | Monitoreo de Siembra y Cosecha | Ciclo completo desde siembra a cosecha |
-| 01 | Gestión de Lotes | Administración de lotes y propiedades |
-| 02 | Clima y Monitoreo | Integración meteorológica e inteligencia climática |
-| 03 | Rendimiento y Analytics | Análisis de productividad y KPIs |
-| 25 | Control de Plagas y Enfermedades | Detección geoposicionada con fotos GPS |
+| 01 | GestiÃ³n de Lotes | AdministraciÃ³n de lotes y propiedades |
+| 02 | Clima y Monitoreo | IntegraciÃ³n meteorolÃ³gica e inteligencia climÃ¡tica |
+| 03 | Rendimiento y Analytics | AnÃ¡lisis de productividad y KPIs |
+| 25 | Control de Plagas y Enfermedades | DetecciÃ³n geoposicionada con fotos GPS |
 
-### Ganadería (04-07)
-| # | Nombre | Descripción |
+### GanaderÃ­a (04-07)
+| # | Nombre | DescripciÃ³n |
 |---|--------|------------|
-| 04 | Trazabilidad Animal | SENASA e identificación de animales |
-| 05 | Sanidad y Vacunación | Programas de inmunización y medicinas |
-| 06 | Reproducción y Genealogía | Programas reproductivos y pedigree |
-| 07 | Alimentación y Monitoreo | Nutrición, pesaje y condición corporal |
+| 04 | Trazabilidad Animal | SENASA e identificaciÃ³n de animales |
+| 05 | Sanidad y VacunaciÃ³n | Programas de inmunizaciÃ³n y medicinas |
+| 06 | ReproducciÃ³n y GenealogÃ­a | Programas reproductivos y pedigree |
+| 07 | AlimentaciÃ³n y Monitoreo | NutriciÃ³n, pesaje y condiciÃ³n corporal |
 
 ### Maquinaria (08-11)
-| # | Nombre | Descripción |
+| # | Nombre | DescripciÃ³n |
 |---|--------|------------|
-| 08 | Inventario y Control | Parque de máquinas |
+| 08 | Inventario y Control | Parque de mÃ¡quinas |
 | 09 | Mantenimiento Preventivo | Programas de servicio y reparaciones |
-| 10 | GPS y Telemetría | Tracking en vivo y sensores |
-| 11 | Consumo de Combustible | Monitoreo de eficiencia energética |
+| 10 | GPS y TelemetrÃ­a | Tracking en vivo y sensores |
+| 11 | Consumo de Combustible | Monitoreo de eficiencia energÃ©tica |
 
 ### Operarios (12-14)
-| # | Nombre | Descripción |
+| # | Nombre | DescripciÃ³n |
 |---|--------|------------|
-| 12 | Gestión y Administración | RRHH y RBAC |
-| 13 | Órdenes de Trabajo | Sistema de tareas y asignaciones |
-| 14 | Disponibilidad y Asignaciones | Calendarios y planificación |
+| 12 | GestiÃ³n y AdministraciÃ³n | RRHH y RBAC |
+| 13 | Ã“rdenes de Trabajo | Sistema de tareas y asignaciones |
+| 14 | Disponibilidad y Asignaciones | Calendarios y planificaciÃ³n |
 
 ### Inventario (15-16)
-| # | Nombre | Descripción |
+| # | Nombre | DescripciÃ³n |
 |---|--------|------------|
-| 15 | Insumos Agrícolas | Stock de semillas, fertilizantes, etc. |
+| 15 | Insumos AgrÃ­colas | Stock de semillas, fertilizantes, etc. |
 | 16 | Stock y Control | Almacenes y movimientos centralizados |
 
 ### Finanzas (17-19)
-| # | Nombre | Descripción |
+| # | Nombre | DescripciÃ³n |
 |---|--------|------------|
-| 17 | Facturación y Ventas | Emisión de comprobantes y AFIP |
-| 18 | Compras y Proveedores | Órdenes de compra y gestión de deuda |
-| 19 | Reportes Financieros | Estados contables y análisis |
+| 17 | FacturaciÃ³n y Ventas | EmisiÃ³n de comprobantes y AFIP |
+| 18 | Compras y Proveedores | Ã“rdenes de compra y gestiÃ³n de deuda |
+| 19 | Reportes Financieros | Estados contables y anÃ¡lisis |
 
-### Geolocalización (20-21)
-| # | Nombre | Descripción |
+### GeolocalizaciÃ³n (20-21)
+| # | Nombre | DescripciÃ³n |
 |---|--------|------------|
-| 20 | Mapas y Lotes | Visualización de territorio |
-| 21 | Tracking de Operarios | Localización en vivo de personas |
+| 20 | Mapas y Lotes | VisualizaciÃ³n de territorio |
+| 21 | Tracking de Operarios | LocalizaciÃ³n en vivo de personas |
 
 ### Reportes (22-23)
-| # | Nombre | Descripción |
+| # | Nombre | DescripciÃ³n |
 |---|--------|------------|
 | 22 | Operacionales | Productividad diaria |
-| 23 | Agrícola y Ganadería | Indicadores técnicos |
+| 23 | AgrÃ­cola y GanaderÃ­a | Indicadores tÃ©cnicos |
 
 ### Infraestructura (24)
-| # | Nombre | Descripción |
+| # | Nombre | DescripciÃ³n |
 |---|--------|------------|
-| 24 | Sincronización Offline-First | Base de datos local y sync |
+| 24 | SincronizaciÃ³n Offline-First | Base de datos local y sync |
 
 ## Matriz de Dependencias
 
 ```
-Sincronización (24) ← Todas las features
+SincronizaciÃ³n (24) â† Todas las features
 
-Reportes (22, 23) ← Todas las features operacionales
+Reportes (22, 23) â† Todas las features operacionales
 
-Finanzas (17-19) ← Maquinaria, Operarios, Inventario, Ganadería, Agricultura
-↑
-├─ Facturación: Inventario
-├─ Compras: Inventario, Presupuesto
-└─ Reportes: TodoOperacionales, Ganadería, Maquinaria
+Finanzas (17-19) â† Maquinaria, Operarios, Inventario, GanaderÃ­a, Agricultura
+â†‘
+â”œâ”€ FacturaciÃ³n: Inventario
+â”œâ”€ Compras: Inventario, Presupuesto
+â””â”€ Reportes: TodoOperacionales, GanaderÃ­a, Maquinaria
 
-Geo (20-21) ← Lotes, Máquinas, Operarios, Órdenes
+Geo (20-21) â† Lotes, MÃ¡quinas, Operarios, Ã“rdenes
 
-Operarios (12-14) ← Nada (base)
-↓ (usado por)
-├─ Órdenes (13): Máquinas, Lotes
-├─ Disponibilidad (14): Órdenes, Finanzas
-└─ Gestion (12): RBAC central
+Operarios (12-14) â† Nada (base)
+â†“ (usado por)
+â”œâ”€ Ã“rdenes (13): MÃ¡quinas, Lotes
+â”œâ”€ Disponibilidad (14): Ã“rdenes, Finanzas
+â””â”€ Gestion (12): RBAC central
 
-Inventario (15-16) ← Nada (base)
-↓ (usado por)
-├─ Insumos: Agricultura, Sanidad
-└─ Stock: Compras, Ventas, Finanzas
+Inventario (15-16) â† Nada (base)
+â†“ (usado por)
+â”œâ”€ Insumos: Agricultura, Sanidad
+â””â”€ Stock: Compras, Ventas, Finanzas
 
-Maquinaria (08-11) ← Nada (base)
-↓
-├─ Inventario: Mantenimiento, GPS
-├─ Órdenes: Disponibilidad
-└─ Finanzas: Costos deprec.
+Maquinaria (08-11) â† Nada (base)
+â†“
+â”œâ”€ Inventario: Mantenimiento, GPS
+â”œâ”€ Ã“rdenes: Disponibilidad
+â””â”€ Finanzas: Costos deprec.
 
-Ganadería (04-07) ← Nada (base)
-↓
-├─ Trazabilidad: Operarios, Geolocalización
-├─ Sanidad: Inventario (vacunas)
-├─ Reproducción: Trazabilidad
-└─ Alimentación: Inventario, Pesaje
+GanaderÃ­a (04-07) â† Nada (base)
+â†“
+â”œâ”€ Trazabilidad: Operarios, GeolocalizaciÃ³n
+â”œâ”€ Sanidad: Inventario (vacunas)
+â”œâ”€ ReproducciÃ³n: Trazabilidad
+â””â”€ AlimentaciÃ³n: Inventario, Pesaje
 
-Agricultura (00-03) ← Nada (base)
-↓
-├─ Lotes: Geolocalización, Reportes
-├─ Siembra-Cosecha: Lotes, Clima
-├─ Clima: Lotes, Alertas
-└─ Analytics: TodosAgrícola
+Agricultura (00-03) â† Nada (base)
+â†“
+â”œâ”€ Lotes: GeolocalizaciÃ³n, Reportes
+â”œâ”€ Siembra-Cosecha: Lotes, Clima
+â”œâ”€ Clima: Lotes, Alertas
+â””â”€ Analytics: TodosAgrÃ­cola
 ```
 
-## Requisitos de Implementación Según CLAUDE.md
+## Requisitos de ImplementaciÃ³n SegÃºn CLAUDE.md
 
 ### Arquitectura
-- ✅ Cada feature es un módulo independiente
-- ✅ Servicios + Repositorios con interfaz e implementación
-- ✅ DDD donde sea útil
-- ✅ Lógica en servicios, no en controllers
+- âœ… Cada feature es un mÃ³dulo independiente
+- âœ… Servicios + Repositorios con interfaz e implementaciÃ³n
+- âœ… DDD donde sea Ãºtil
+- âœ… LÃ³gica en servicios, no en controllers
 
 ### Base de Datos
-- ✅ UUID obligatorio
-- ✅ Soft delete obligatorio
-- ✅ Auditoría automática en todas las features
+- âœ… UUID obligatorio
+- âœ… Soft delete obligatorio
+- âœ… AuditorÃ­a automÃ¡tica en todas las features
 
 ### APIs
-- ✅ REST first
-- ✅ OpenAPI obligatorio
-- ✅ Versionado `/api/v1`
+- âœ… REST first
+- âœ… OpenAPI obligatorio
+- âœ… Versionado `/api/v1`
 
 ### Seguridad
-- ✅ JWT + OAuth
-- ✅ RBAC por feature
-- ✅ Auditoría de acciones críticas
+- âœ… JWT + OAuth
+- âœ… RBAC por feature
+- âœ… AuditorÃ­a de acciones crÃ­ticas
 
 ### Offline-First
-- ✅ Feature 24 de sincronización
-- ✅ Todas las features deben tener soporte offline
-- ✅ Bajo consumo de batería
+- âœ… Feature 24 de sincronizaciÃ³n
+- âœ… Todas las features deben tener soporte offline
+- âœ… Bajo consumo de baterÃ­a
 
 ### Calidad
-- ✅ Cobertura 80% mínimo
-- ✅ Conventional commits
-- ✅ PR reviews obligatorios
+- âœ… Cobertura 80% mÃ­nimo
+- âœ… Conventional commits
+- âœ… PR reviews obligatorios
 
-## Próximos Pasos
+## PrÃ³ximos Pasos
 
-1. **Revisión de Features**: Cada feature debe ser procesada por el Orchestrator Agent
-2. **Derivación de Tareas**: Descomponer cada feature en issues
-3. **Priorización**: Definir MVP (Producto Mínimo Viable)
-4. **Planificación de Sprints**: Agrupar features por sprints
-5. **Implementación**: Comenzar desarrollo según prioridades
+1. **RevisiÃ³n de Features**: Cada feature debe ser procesada por el Orchestrator Agent
+2. **DerivaciÃ³n de Tareas**: Descomponer cada feature en issues
+3. **PriorizaciÃ³n**: Definir MVP (Producto MÃ­nimo Viable)
+4. **PlanificaciÃ³n de Sprints**: Agrupar features por sprints
+5. **ImplementaciÃ³n**: Comenzar desarrollo segÃºn prioridades
 
 ## Notas Importantes
 
-- Las features están diseñadas para ser **independientes** pero **conectadas**
-- La sincronización **offline-first** (Feature 24) es **transversal** a todas
-- Mantener **bajo acoplamiento** entre módulos
-- Usar **interfaces** explícitas para comunicación entre features
+- Las features estÃ¡n diseÃ±adas para ser **independientes** pero **conectadas**
+- La sincronizaciÃ³n **offline-first** (Feature 24) es **transversal** a todas
+- Mantener **bajo acoplamiento** entre mÃ³dulos
+- Usar **interfaces** explÃ­citas para comunicaciÃ³n entre features
 - Cada feature debe tener **tests con cobertura >= 80%**
 
 ---
 
-**Última actualización**: 2026-05-16
-**Estado**: Borrador listo para revisión por Orchestrator Agent
+**Ãšltima actualizaciÃ³n**: 2026-05-16
+**Estado**: Borrador listo para revisiÃ³n por Orchestrator Agent
+

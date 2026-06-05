@@ -1,0 +1,311 @@
+﻿<div class="potreros-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Campo App · Ganadería</p>
+      <h1>Potreros</h1>
+      <p>Mapeo y gestión operativa de potreros ganaderos.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" type="button" (click)="startNewMapping()">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+        Nuevo mapeo
+      </button>
+      <button class="btn-secondary" type="button" [disabled]="drawingPoints().length === 0" (click)="undoPoint()">
+        <svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5" /><path d="M4 9h10a6 6 0 0 1 0 12h-2" /></svg>
+        Deshacer punto
+      </button>
+      <button class="btn-primary" type="button" [disabled]="drawingPoints().length < 3" (click)="openModalFromPoints(drawingPoints())">
+        <svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7" /></svg>
+        Guardar cambios
+      </button>
+      <button class="btn-secondary danger" type="button" [disabled]="drawingPoints().length === 0" (click)="cancelDrawing()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+        Cancelar dibujo
+      </button>
+    </div>
+  </header>
+
+  <section class="metric-grid">
+    <article class="metric-card" *ngFor="let kpi of kpis()">
+      <span class="metric-icon">
+        <svg viewBox="0 0 24 24"><path [attr.d]="iconPath(kpi.icon)" /></svg>
+      </span>
+      <div>
+        <p>{{ kpi.label }}</p>
+        <small>{{ kpi.helper }}</small>
+      </div>
+      <strong>{{ kpi.value }}</strong>
+    </article>
+  </section>
+
+  <section class="map-layout">
+    <article class="map-panel">
+      <div class="map-head">
+        <div>
+          <h2>Mapa operativo de potreros</h2>
+          <p>Click para agregar vértices. Doble click para finalizar y cargar la información.</p>
+        </div>
+        <div class="map-toggle">
+          <button type="button" [class.active]="mapMode() === 'satelite'" (click)="mapMode.set('satelite')">Satélite</button>
+          <button type="button" [class.active]="mapMode() === 'mapa'" (click)="mapMode.set('mapa')">Mapa</button>
+        </div>
+      </div>
+
+      <div class="drawing-status" *ngIf="drawingPoints().length">
+        <span>{{ drawingPoints().length }} puntos</span>
+        <strong>{{ draftAreaHa().toFixed(2) }} ha estimadas</strong>
+        <em>Doble click para finalizar el potrero actual.</em>
+      </div>
+
+      <div class="map-frame">
+        <mgl-map
+          [mapStyle]="mapStyle()"
+          [zoom]="mapZoom()"
+          [center]="mapCenter()"
+          [doubleClickZoom]="false"
+          [trackResize]="true"
+          (mapClick)="onMapClick($event)"
+          (mapDblClick)="onMapDoubleClick($event)"
+        >
+          <mgl-geojson-source id="potreros-source" [data]="potrerosData()"></mgl-geojson-source>
+          <mgl-layer
+            id="potreros-fill"
+            type="fill"
+            source="potreros-source"
+            [paint]="{ 'fill-color': ['get', 'color'], 'fill-opacity': 0.38 }"
+            (layerMouseMove)="onPotreroMouseMove($event)"
+            (layerMouseLeave)="onPotreroMouseLeave()"
+            (layerClick)="onPotreroClick($event)"
+          ></mgl-layer>
+          <mgl-layer id="potreros-line" type="line" source="potreros-source" [paint]="{ 'line-color': ['get', 'color'], 'line-width': 2.2, 'line-opacity': 0.95 }"></mgl-layer>
+
+          <mgl-geojson-source id="potrero-draft-source" [data]="draftData()"></mgl-geojson-source>
+          <mgl-layer id="potrero-draft-fill" type="fill" source="potrero-draft-source" [paint]="{ 'fill-color': '#9FE870', 'fill-opacity': 0.18 }"></mgl-layer>
+          <mgl-layer id="potrero-draft-line" type="line" source="potrero-draft-source" [paint]="{ 'line-color': '#9FE870', 'line-width': 2.8, 'line-dasharray': [1.2, 1], 'line-opacity': 1 }"></mgl-layer>
+
+          <mgl-marker *ngFor="let point of drawingPoints(); let index = index" [lngLat]="[point.lng, point.lat]">
+            <div class="vertex"><span>{{ index + 1 }}</span></div>
+          </mgl-marker>
+        </mgl-map>
+
+        <div
+          class="map-tooltip"
+          *ngIf="mapTooltip() as tooltip"
+          [style.left.px]="tooltip.x + 16"
+          [style.top.px]="tooltip.y + 16"
+        >
+          <strong>{{ tooltip.potrero.nombre }}</strong>
+          <span>{{ tooltip.potrero.tipoUso }} · {{ tooltip.potrero.estado }}</span>
+          <div>
+            <small>{{ tooltip.potrero.superficieHa }} ha</small>
+            <small>{{ tooltip.potrero.capacidadAnimales || 0 }} animales</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span><i style="background:#9FE870"></i>Activo</span>
+        <span><i style="background:#6EA8FF"></i>Descanso</span>
+        <span><i style="background:#FFB84D"></i>Mantenimiento</span>
+        <span><i style="background:#A6B0CF"></i>Inactivo</span>
+      </div>
+    </article>
+
+    <aside class="side-panel">
+      <div class="side-head">
+        <div>
+          <h2>Potreros registrados</h2>
+          <p>{{ potreros().length }} sectores mapeados</p>
+        </div>
+        <button type="button" (click)="load()" title="Actualizar">
+          <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7" /><path d="M20 4v6h-6" /></svg>
+        </button>
+      </div>
+
+      <div class="error-box" *ngIf="error()">{{ error() }}</div>
+      <div class="empty-box" *ngIf="!loading() && !potreros().length">Todavía no hay potreros cargados.</div>
+
+      <div class="potrero-list">
+        <article class="potrero-card" *ngFor="let potrero of potreros()" [class.selected]="selectedPotrero()?.id === potrero.id" (click)="selectedPotrero.set(potrero); closeMenu()">
+          <div class="potrero-card-head">
+            <div class="potrero-identity">
+              <span class="status-dot" [style.background]="colorFor(potrero)" [style.color]="colorFor(potrero)"></span>
+              <div>
+                <h3>{{ potrero.nombre }}</h3>
+                <p>{{ usageLabel(potrero) }}</p>
+              </div>
+            </div>
+
+            <div class="potrero-menu">
+              <button class="kebab-button" type="button" aria-label="Abrir acciones" (click)="toggleMenu(potrero, $event)">
+                <svg viewBox="0 0 24 24"><path d="M12 6h.01" /><path d="M12 12h.01" /><path d="M12 18h.01" /></svg>
+              </button>
+              <div class="context-menu" *ngIf="openMenuId() === potrero.id" (click)="$event.stopPropagation()">
+                <button type="button" (click)="showDetail(potrero, $event)">
+                  <svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z" /></svg>
+                  Ver detalle
+                </button>
+                <button type="button" (click)="editPotrero(potrero); $event.stopPropagation()">
+                  <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" /></svg>
+                  Editar
+                </button>
+                <button type="button" (click)="showHistory(potrero, $event)">
+                  <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v6h6" /><path d="M12 7v5l3 2" /></svg>
+                  Historial
+                </button>
+                <button class="danger-action" type="button" (click)="deletePotrero(potrero); $event.stopPropagation()">
+                  <svg viewBox="0 0 24 24"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6l-1 14H6L5 6" /></svg>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="potrero-main-metrics">
+            <strong>{{ potrero.superficieHa }} ha</strong>
+            <span>
+              <svg viewBox="0 0 24 24"><path d="M7 19v-2a4 4 0 0 1 8 0v2" /><path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0" /><path d="M17 19v-2a3 3 0 0 0-2-2.8" /><path d="M7 14.2A3 3 0 0 0 5 17v2" /></svg>
+              {{ potrero.cargaAnimalActual || 0 }} / {{ potrero.capacidadAnimales || 0 }}
+            </span>
+          </div>
+
+          <div class="occupancy-row">
+            <div class="occupancy-track">
+              <span [style.width.%]="occupancyWidth(potrero)" [style.background]="occupancyColor(potrero)" [style.boxShadow]="'0 0 18px ' + occupancyColor(potrero)"></span>
+            </div>
+            <strong [style.color]="occupancyColor(potrero)">{{ occupancyPercent(potrero) }}%</strong>
+          </div>
+
+          <div class="forage-badge">
+            <svg viewBox="0 0 24 24"><path d="M5 19c8 0 14-6 14-14-8 0-14 6-14 14Z" /><path d="M5 19c0-6 4-10 12-12" /></svg>
+            {{ forageLabel(potrero) }}
+          </div>
+
+          <div class="potrero-card-footer">
+            <div class="resource-row" *ngIf="potrero.disponibilidadAgua || potrero.tieneSombra">
+              <span *ngIf="potrero.disponibilidadAgua">
+                <svg viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z" /></svg>
+                Agua
+              </span>
+              <span *ngIf="potrero.tieneSombra">
+                <svg viewBox="0 0 24 24"><path d="M12 13v8" /><path d="M7 21h10" /><path d="M5 13a7 7 0 1 1 14 0c-2-1-4-1-7 0-3-1-5-1-7 0Z" /></svg>
+                Sombra
+              </span>
+            </div>
+
+            <button class="observation-row" type="button" (click)="showDetail(potrero, $event)">
+              <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z" /><path d="M8 9h8" /><path d="M8 13h5" /></svg>
+              {{ potrero.observaciones ? 'Observación registrada' : 'Sin observaciones' }}
+            </button>
+          </div>
+        </article>
+      </div>
+    </aside>
+  </section>
+
+  <div class="modal-backdrop" *ngIf="detailPotrero() as potrero">
+    <article class="potrero-detail-modal">
+      <button class="modal-close" type="button" aria-label="Cerrar" (click)="closeDetail()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+      <div class="modal-head">
+        <span class="modal-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z" /><path d="M12 4v16" /><path d="M4 7l8 3 8-3" /></svg>
+        </span>
+        <div>
+          <h2>{{ potrero.nombre }}</h2>
+          <p>{{ usageLabel(potrero) }}</p>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <span><small>Superficie</small><strong>{{ potrero.superficieHa }} ha</strong></span>
+        <span><small>Carga animal</small><strong>{{ potrero.cargaAnimalActual || 0 }} / {{ potrero.capacidadAnimales || 0 }}</strong></span>
+        <span><small>Ocupación</small><strong>{{ occupancyPercent(potrero) }}%</strong></span>
+        <span><small>Forraje</small><strong>{{ forageLabel(potrero) }}</strong></span>
+      </div>
+
+      <section class="detail-section">
+        <h3>Observaciones</h3>
+        <p>{{ potrero.observaciones || 'Sin observaciones registradas.' }}</p>
+      </section>
+
+      <section class="detail-section">
+        <h3>Historial</h3>
+        <p>El historial detallado de cambios del potrero quedara disponible cuando se implemente auditoria operativa para potreros.</p>
+      </section>
+    </article>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="modalOpen()">
+    <form class="potrero-modal" (ngSubmit)="savePotrero()">
+      <button class="modal-close" type="button" aria-label="Cerrar" (click)="closeModal()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+      <div class="modal-head">
+        <span class="modal-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z" /><path d="M12 4v16" /><path d="M4 7l8 3 8-3" /></svg>
+        </span>
+        <div>
+          <h2>{{ editingPotrero() ? 'Editar potrero' : 'Nuevo potrero' }}</h2>
+          <p>Completa los datos operativos del sector mapeado.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          <span>Nombre</span>
+          <input [ngModel]="form().nombre" (ngModelChange)="updateForm('nombre', $event)" name="nombre" required />
+        </label>
+        <label>
+          <span>Superficie ha</span>
+          <input type="number" step="0.01" min="0" [ngModel]="form().superficieHa" (ngModelChange)="updateForm('superficieHa', +$event)" name="superficieHa" />
+        </label>
+        <label>
+          <span>Tipo de uso</span>
+          <select [ngModel]="form().tipoUso" (ngModelChange)="updateForm('tipoUso', $event)" name="tipoUso">
+            <option *ngFor="let tipo of tipoUsos" [value]="tipo">{{ tipo }}</option>
+          </select>
+        </label>
+        <label>
+          <span>Estado</span>
+          <select [ngModel]="form().estado" (ngModelChange)="updateForm('estado', $event)" name="estado">
+            <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
+          </select>
+        </label>
+        <label>
+          <span>Capacidad animales</span>
+          <input type="number" min="0" [ngModel]="form().capacidadAnimales" (ngModelChange)="updateForm('capacidadAnimales', $event === '' ? undefined : +$event)" name="capacidadAnimales" />
+        </label>
+        <label>
+          <span>Carga actual</span>
+          <input type="number" min="0" [ngModel]="form().cargaAnimalActual" (ngModelChange)="updateForm('cargaAnimalActual', $event === '' ? undefined : +$event)" name="cargaAnimalActual" />
+        </label>
+        <label>
+          <span>Recurso forrajero</span>
+          <input [ngModel]="form().recursoForrajero" (ngModelChange)="updateForm('recursoForrajero', $event)" name="recursoForrajero" />
+        </label>
+        <label>
+        <span>Descripción</span>
+          <input [ngModel]="form().descripcion" (ngModelChange)="updateForm('descripcion', $event)" name="descripcion" />
+        </label>
+      </div>
+
+      <div class="switch-row">
+        <label><input type="checkbox" [ngModel]="form().disponibilidadAgua" (ngModelChange)="updateForm('disponibilidadAgua', $event)" name="disponibilidadAgua" /> Agua disponible</label>
+        <label><input type="checkbox" [ngModel]="form().tieneSombra" (ngModelChange)="updateForm('tieneSombra', $event)" name="tieneSombra" /> Sombra disponible</label>
+      </div>
+
+      <label class="full-label">
+        <span>Observaciones</span>
+        <textarea rows="4" [ngModel]="form().observaciones" (ngModelChange)="updateForm('observaciones', $event)" name="observaciones"></textarea>
+      </label>
+
+      <footer class="modal-actions">
+        <button class="btn-secondary" type="button" (click)="closeModal()">Descartar</button>
+        <button class="btn-primary" type="submit">Guardar potrero</button>
+      </footer>
+    </form>
+  </div>
+</div>
+

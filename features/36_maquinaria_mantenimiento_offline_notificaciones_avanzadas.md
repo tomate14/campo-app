@@ -1,4 +1,4 @@
-# 36 - Maquinaria: Mantenimiento offline y notificaciones avanzadas
+﻿# 36 - Maquinaria: Mantenimiento offline y notificaciones avanzadas
 
 ## Descripcion
 Extender la feature 09 con capacidades avanzadas que quedaron fuera del core operativo: disponibilidad offline real, notificaciones automaticas persistentes y sincronizacion robusta de mantenimiento.
@@ -17,3 +17,4 @@ Extender la feature 09 con capacidades avanzadas que quedaron fuera del core ope
 - Feature 09 - Maquinaria: Mantenimiento Preventivo
 - Feature 24 - Sincronizacion Offline-First
 - Mobile / notificaciones push
+

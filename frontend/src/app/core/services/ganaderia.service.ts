@@ -30,6 +30,9 @@ import type {
   MovimientoAnimalRequest,
   Parto,
   PartoRequest,
+  Potrero,
+  PotreroFilters,
+  PotreroRequest,
   RecomendacionCruzamiento,
   ReproduccionDashboard,
   ReproduccionResumen,
@@ -87,6 +90,35 @@ export class GanaderiaService {
 
   deleteAnimal(id: string) {
     return this.http.delete(`${API_BASE_URL}/ganaderia/trazabilidad/animales/${id}`);
+  }
+
+  getPotreros(params?: PotreroFilters) {
+    return this.http.get<ApiResponse<Potrero[]> | Potrero[]>(`${API_BASE_URL}/ganaderia/potreros`, { params: cleanParams(params as Record<string, unknown>) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getPotrerosMapa() {
+    return this.http.get<ApiResponse<Potrero[]> | Potrero[]>(`${API_BASE_URL}/ganaderia/potreros/mapa`)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getPotrero(id: string) {
+    return this.http.get<ApiResponse<Potrero> | Potrero>(`${API_BASE_URL}/ganaderia/potreros/${id}`)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createPotrero(data: PotreroRequest) {
+    return this.http.post<ApiResponse<Potrero> | Potrero>(`${API_BASE_URL}/ganaderia/potreros`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  updatePotrero(id: string, data: PotreroRequest) {
+    return this.http.put<ApiResponse<Potrero> | Potrero>(`${API_BASE_URL}/ganaderia/potreros/${id}`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  deletePotrero(id: string) {
+    return this.http.delete(`${API_BASE_URL}/ganaderia/potreros/${id}`);
   }
 
   createMovimiento(data: MovimientoAnimalRequest) {
