@@ -6,7 +6,7 @@ Registro de features implementadas y estado del proyecto.
 
 ## Features Completadas
 
-- Features finalizadas y renombradas con `_COMPLETA_`: 00_01, 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10-reportes, 26, 37 y 38.
+- Features finalizadas y renombradas con `_COMPLETA_`: 00_01, 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10-reportes, 12, 26, 37 y 38.
 
 ### âœ… Feature 26 â€” AutenticaciÃ³n, Seguridad y GestiÃ³n de Tokens
 **Fecha**: 2026-05-18  
@@ -70,7 +70,6 @@ JWT_REFRESH_EXPIRATION_MS    # default 604800000 (7 dÃ­as)
 
 | # | Feature | Dominio | Depende de |
 |---|---------|---------|------------|
-| 12 | Operarios: GestiÃ³n y AdministraciÃ³n | Operarios | 26 âœ… |
 | 13 | Ã“rdenes de Trabajo | Operarios | 12 |
 | 24 | SincronizaciÃ³n Offline-First | Infraestructura | 26 âœ… |
 | 16 | Stock y Control | Inventario | 26 âœ… |
@@ -86,6 +85,7 @@ JWT_REFRESH_EXPIRATION_MS    # default 604800000 (7 dÃ­as)
 | 15 | Insumos AgrÃ­colas | Inventario | 26 âœ… |
 | 20 | Mapas y Lotes | Geo | 01 |
 | 25 | Control de Plagas y Enfermedades | Agricultura | 01, 20 |
+| 39 | Cambio obligatorio de contraseña en primer login mobile | Seguridad/Mobile | 12, 26 |
 
 ---
 
@@ -98,6 +98,14 @@ JWT_REFRESH_EXPIRATION_MS    # default 604800000 (7 dÃ­as)
 ## Regla de Features Completas
 - Cuando el usuario pida marcar una feature como completa, renombrar el archivo insertando `_COMPLETA_` entre el numero y la primera palabra. Ejemplo: `NN_nombre_feature.md` pasa a `NN_COMPLETA_nombre_feature.md`.
 - Al hacer ese cambio, actualizar tambien `features/MANIFEST.md` y cualquier referencia directa al archivo.
+
+## Regla de Alta de Operarios
+- El registro de operarios no debe pedir legajo, email, tipo de contrato, jornada base, area ni ubicacion.
+- El modulo de operarios no debe registrar jornadas ni evaluar desempeno de operarios.
+- Al crear un operario, backend debe generar automaticamente un usuario con username formado por la primera letra del nombre en minuscula + la primera palabra del apellido en minuscula. Ejemplo: `Maximiliano Roselli Juarez` -> `mroselli`.
+- Si el username ya existe, agregar un numero al final.
+- La password inicial del usuario creado debe ser igual al username.
+- El cambio obligatorio de esa password inicial en primer login mobile queda pendiente en feature 39.
 
 ## Regla Visual de Tooltips
 - Todos los tooltips nuevos de graficos y visualizaciones deben seguir el patron premium Campo App: card dark SaaS 380x430 aprox., fondo #081225/#0B1730, borde verde suave, border-radius 24px, glow sutil, banda superior con color de serie/cultivo, icono real, titulo grande, subtitulo gris, badge de estado, separador, metricas icono-label-valor y footer con leyenda. Evitar tooltips nativos simples en graficos.

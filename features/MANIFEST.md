@@ -17,8 +17,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 40
-- Realizadas: 15
+- Total de historias registradas: 41
+- Realizadas: 16
 - Parciales: 0
 - Pendientes: 23
 - Saltadas: 2
@@ -41,7 +41,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 09 | `09_COMPLETA_maquinaria_mantenimiento_preventivo.md` | Maquinaria | Realizada | Mantenimiento preventivo implementado con backend, frontend, mock data y UI de tabs/cards premium. Pendientes avanzados derivados a feature 36. |
 | 10 | `10_SALTEAR_maquinaria_gps_telemetria.md` | Maquinaria | Saltada | Feature marcada explicitamente como SALTEAR. |
 | 11 | `11_SALTEAR_maquinaria_consumo_combustible.md` | Maquinaria | Saltada | Feature marcada explicitamente como SALTEAR. |
-| 12 | `12_operarios_gestion_administracion.md` | Operarios | Pendiente | Gestion de operarios/personas aun pendiente como modulo completo. |
+| 12 | `12_COMPLETA_operarios_gestion_administracion.md` | Operarios | Realizada | Gestion de operarios implementada con backend CRUD, documentacion, cambios de rol, dashboard y pantalla Angular premium. El alta genera usuario automaticamente con password inicial igual al username. |
 | 13 | `13_operarios_ordenes_trabajo.md` | Operarios | Pendiente | Ordenes de trabajo pendiente. |
 | 14 | `14_operarios_asignaciones_disponibilidad.md` | Operarios | Pendiente | Asignaciones y disponibilidad pendiente. |
 | 15 | `15_inventario_insumos_agricolas.md` | Inventario | Pendiente | Inventario agricola de insumos pendiente; requerido para fitosanitarios avanzados. |
@@ -68,6 +68,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 36 | `36_maquinaria_mantenimiento_offline_notificaciones_avanzadas.md` | Maquinaria | Pendiente | Mantenimiento avanzado offline/notificaciones pendiente. |
 | 37 | `37_COMPLETA_agricultura_control_plagas_fitosanitarios.md` | Agricultura | Realizada | Core operativo de plagas y aplicaciones fitosanitarias implementado: backend, web, mobile base, mapa con pins y tests. |
 | 38 | `38_COMPLETA_ganaderia_potreros_mapa_interactivo.md` | Ganaderia | Realizada | Pantalla de potreros con mapa interactivo, dibujo de multiples poligonos, popup de alta y persistencia implementada. |
+| 39 | `39_mobile_primer_login_cambio_password_obligatorio.md` | Seguridad/Mobile | Pendiente | Cambio obligatorio de contraseña en primer login mobile para usuarios creados automaticamente desde operarios. |
 
 ## Registro por Dominio
 
@@ -92,7 +93,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 36.
 
 ### Operarios
-- Pendientes: 12, 13, 14.
+- Realizadas: 12.
+- Pendientes: 13, 14.
 
 ### Inventario
 - Pendientes: 15, 16.
@@ -112,8 +114,13 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ### Seguridad
 - Realizadas: 26.
+- Pendientes: 39.
 
 ## Ultimas Actualizaciones
+- 2026-06-05: Feature 39 creada para cambio obligatorio de contraseña en primer login mobile de usuarios generados desde operarios.
+- 2026-06-05: Feature 12 ajustada para eliminar jornadas y evaluaciones de operarios del backend, frontend y migracion.
+- 2026-06-05: Feature 12 ajustada para generar usuario automaticamente en alta de operario y eliminar legajo/email/contrato/jornada/area/ubicacion del registro.
+- 2026-06-05: Feature 12 realizada con backend de operarios, documentacion, historial de roles y pantalla Angular de gestion.
 - 2026-06-05: Features 00_01, 00, 01, 02, 04 y 05 marcadas como realizadas y renombradas con `_COMPLETA_`.
 - 2026-06-05: Feature 38 realizada con backend CRUD de potreros, mapa interactivo Angular, dibujo de poligonos y popup de alta.
 - 2026-05-29: Feature `10-reportes` marcada como realizada con dashboard agricola ejecutivo premium backend-driven.

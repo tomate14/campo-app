@@ -54,7 +54,7 @@ Mejorar la consistencia operativa en ganaderia, reducir errores de carga y dejar
 
 ## Dependencias
 - 04_COMPLETA_ganaderia_trazabilidad_animal
-- 12_operarios_gestion_administracion
+- 12_COMPLETA_operarios_gestion_administracion
 - 20_geo_mapas_lotes
 
 ## Resultado Esperado

@@ -1,0 +1,212 @@
+<div class="operarios-page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Campo App · Operarios</p>
+      <h2>Gestión de operarios</h2>
+      <p>Administración de personal, roles y documentación operativa.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-primary" type="button" (click)="openOperarioModal()">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+        Nuevo operario
+      </button>
+    </div>
+  </header>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="empty-box" *ngIf="loading()">Cargando operarios...</div>
+
+  <ng-container *ngIf="!loading() && resumen() as data">
+    <section class="kpi-grid">
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M7 19v-2a4 4 0 0 1 8 0v2" /><path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0" /></svg></div>
+        <div class="kpi-copy"><span>Total operarios</span><small>Dotación registrada</small></div>
+        <strong>{{ data.dashboard.totalOperarios }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M20 7 9 18l-5-5" /></svg></div>
+        <div class="kpi-copy"><span>Activos</span><small>Personal operativo</small></div>
+        <strong>{{ data.dashboard.activos }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon warning"><svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z" /><path d="M10 8h4" /><path d="M10 12h4" /><path d="M10 16h2" /></svg></div>
+        <div class="kpi-copy"><span>Docs vencidos</span><small>Requieren gestión</small></div>
+        <strong>{{ data.dashboard.documentosVencidos }}</strong>
+      </article>
+    </section>
+
+    <section class="filters-card">
+      <label>
+        <span>Buscar</span>
+        <input [ngModel]="filters().search" (ngModelChange)="filters.update(f => ({ ...f, search: $event }))" placeholder="Nombre, usuario o documento" />
+      </label>
+      <label>
+        <span>Estado</span>
+        <select [ngModel]="filters().estado" (ngModelChange)="filters.update(f => ({ ...f, estado: $event }))">
+          <option value="">Todos</option>
+          <option value="ACTIVO">Activo</option>
+          <option value="DISPONIBLE">Disponible</option>
+          <option value="LICENCIA">Licencia</option>
+          <option value="SUSPENDIDO">Suspendido</option>
+          <option value="INACTIVO">Inactivo</option>
+        </select>
+      </label>
+      <label>
+        <span>Rol</span>
+        <select [ngModel]="filters().rol" (ngModelChange)="filters.update(f => ({ ...f, rol: $event }))">
+          <option value="">Todos</option>
+          <option value="OPERARIO">Operario</option>
+          <option value="TRACTORISTA">Tractorista</option>
+          <option value="SUPERVISOR">Supervisor</option>
+          <option value="VETERINARIO">Veterinario</option>
+          <option value="ENCARGADO">Encargado</option>
+        </select>
+      </label>
+      <div class="filter-actions">
+        <button class="btn-primary" type="button" (click)="applyFilters()"><svg viewBox="0 0 24 24"><path d="M4 5h16" /><path d="M7 12h10" /><path d="M10 19h4" /></svg>Aplicar</button>
+        <button class="btn-secondary" type="button" (click)="clearFilters()"><svg viewBox="0 0 24 24"><path d="M3 6h18" /><path d="M8 6v12" /><path d="M16 6v12" /></svg>Limpiar</button>
+      </div>
+    </section>
+
+    <section class="operarios-layout">
+      <article class="card table-panel">
+        <div class="panel-head">
+          <div>
+            <h3>Operarios registrados</h3>
+            <p>{{ data.operarios.length }} registros filtrados</p>
+          </div>
+          <span class="panel-badge">{{ data.dashboard.disponibles }} disponibles</span>
+        </div>
+
+        <div class="operator-list">
+          <article class="operator-row" *ngFor="let operario of operariosPage()" [class.selected]="selectedId() === operario.id" (click)="selectOperario(operario)">
+            <div class="operator-icon">
+              <svg viewBox="0 0 24 24"><path d="M7 19v-2a5 5 0 0 1 10 0v2" /><path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0" /></svg>
+            </div>
+            <div class="operator-main">
+              <strong>{{ operario.nombreCompleto }}</strong>
+              <span>{{ operario.username || operario.legajo }} · {{ operario.rolOperativo }}</span>
+            </div>
+            <div class="operator-meta"><span>Documento</span><strong>{{ operario.documentoNumero }}</strong></div>
+            <div class="operator-meta"><span>Teléfono</span><strong>{{ operario.telefono || 'Sin dato' }}</strong></div>
+            <div class="operator-meta"><span>Ingreso</span><strong>{{ operario.fechaIngreso ? (operario.fechaIngreso | date:'dd/MM/yyyy') : 'Sin dato' }}</strong></div>
+            <span class="badge" [class.badge-warning]="statusClass(operario.estado) === 'warning'" [class.badge-danger]="statusClass(operario.estado) === 'danger'">{{ operario.estado }}</span>
+            <div class="row-actions">
+              <button type="button" title="Editar" (click)="openOperarioModal(operario); $event.stopPropagation()">
+                <svg viewBox="0 0 24 24"><path d="m4 20 4-1 11-11-3-3L5 16l-1 4Z" /><path d="m14 6 3 3" /></svg>
+              </button>
+              <button type="button" title="Cambiar rol" (click)="selectOperario(operario); openModal('ROL'); $event.stopPropagation()">
+                <svg viewBox="0 0 24 24"><path d="M16 3h5v5" /><path d="m21 3-7 7" /><path d="M8 21H3v-5" /><path d="m3 21 7-7" /></svg>
+              </button>
+              <button class="danger-action" type="button" title="Eliminar" (click)="deleteOperario(operario); $event.stopPropagation()">
+                <svg viewBox="0 0 24 24"><path d="M5 7h14" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M6 7l1 14h10l1-14" /></svg>
+              </button>
+            </div>
+          </article>
+          <div class="empty-box" *ngIf="!data.operarios.length">Sin operarios cargados.</div>
+        </div>
+
+        <footer class="pagination">
+          <span>Mostrando página {{ currentPage() }} de {{ totalPages() }}</span>
+          <div>
+            <button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
+            <button type="button" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage() === i + 1" (click)="setPage(i + 1)">{{ i + 1 }}</button>
+            <button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
+          </div>
+        </footer>
+      </article>
+
+      <aside class="card context-panel" *ngIf="selectedOperario() as operario">
+        <div class="context-head">
+          <div class="context-icon"><svg viewBox="0 0 24 24"><path d="M7 19v-2a5 5 0 0 1 10 0v2" /><path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0" /></svg></div>
+          <div>
+            <span>Operario seleccionado</span>
+            <h3>{{ operario.nombreCompleto }}</h3>
+            <p>{{ operario.rolOperativo }} · {{ operario.estado }}</p>
+          </div>
+        </div>
+
+        <div class="context-metrics">
+          <div><span>Usuario</span><strong>{{ operario.username || operario.legajo }}</strong></div>
+          <div><span>Documento</span><strong>{{ operario.documentoNumero }}</strong></div>
+          <div><span>Estado</span><strong>{{ operario.estado }}</strong></div>
+          <div><span>Salario</span><strong>{{ formatCurrency(operario.salarioBase) }}</strong></div>
+        </div>
+
+        <section class="info-card">
+          <h4>Información general</h4>
+          <div class="info-grid">
+            <span>Teléfono</span><strong>{{ operario.telefono || 'Sin dato' }}</strong>
+            <span>Ingreso</span><strong>{{ operario.fechaIngreso ? (operario.fechaIngreso | date:'dd/MM/yyyy') : 'Sin dato' }}</strong>
+            <span>Nacimiento</span><strong>{{ operario.fechaNacimiento ? (operario.fechaNacimiento | date:'dd/MM/yyyy') : 'Sin dato' }}</strong>
+            <span>Emergencia</span><strong>{{ operario.contactoEmergencia || 'Sin dato' }}</strong>
+          </div>
+        </section>
+
+        <section class="info-card">
+          <h4>Documentación</h4>
+          <div class="timeline-item" *ngFor="let doc of selectedDocumentos()">
+            <span>{{ doc.tipoDocumento }}</span>
+            <strong>{{ doc.numero || doc.estado }}</strong>
+            <small>Vence: {{ doc.fechaVencimiento ? (doc.fechaVencimiento | date:'dd/MM/yyyy') : 'Sin dato' }}</small>
+          </div>
+          <p class="muted" *ngIf="!selectedDocumentos().length">Sin documentación cargada.</p>
+        </section>
+
+        <div class="context-actions">
+          <button class="btn-secondary" type="button" (click)="openModal('DOCUMENTO')"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z" /><path d="M14 3v5h5" /></svg>Documento</button>
+          <button class="btn-primary" type="button" (click)="openModal('ROL')"><svg viewBox="0 0 24 24"><path d="M16 3h5v5" /><path d="m21 3-7 7" /><path d="M8 21H3v-5" /><path d="m3 21 7-7" /></svg>Cambiar rol</button>
+        </div>
+      </aside>
+    </section>
+  </ng-container>
+
+  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()" (document:keydown.escape)="closeModal()">
+    <div class="app-modal-panel" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
+
+      <ng-container *ngIf="modal() === 'OPERARIO'">
+        <div class="modal-head"><h3>Datos del operario</h3></div>
+        <div class="form-grid">
+          <label><span>Rol operativo</span><select [ngModel]="operarioForm().rolOperativo" (ngModelChange)="operarioForm.update(f => ({ ...f, rolOperativo: $event }))"><option>OPERARIO</option><option>TRACTORISTA</option><option>SUPERVISOR</option><option>VETERINARIO</option><option>ENCARGADO</option></select></label>
+          <label><span>Nombre</span><input [ngModel]="operarioForm().nombre" (ngModelChange)="operarioForm.update(f => ({ ...f, nombre: $event }))" /></label>
+          <label><span>Apellido</span><input [ngModel]="operarioForm().apellido" (ngModelChange)="operarioForm.update(f => ({ ...f, apellido: $event }))" /></label>
+          <label><span>Documento</span><input [ngModel]="operarioForm().documentoNumero" (ngModelChange)="operarioForm.update(f => ({ ...f, documentoNumero: $event }))" /></label>
+          <label><span>Estado</span><select [ngModel]="operarioForm().estado" (ngModelChange)="operarioForm.update(f => ({ ...f, estado: $event }))"><option>ACTIVO</option><option>DISPONIBLE</option><option>LICENCIA</option><option>SUSPENDIDO</option><option>INACTIVO</option></select></label>
+          <label><span>Teléfono</span><input [ngModel]="operarioForm().telefono" (ngModelChange)="operarioForm.update(f => ({ ...f, telefono: $event }))" /></label>
+          <label><span>Fecha ingreso</span><input type="date" [ngModel]="operarioForm().fechaIngreso" (ngModelChange)="operarioForm.update(f => ({ ...f, fechaIngreso: $event }))" /></label>
+          <label><span>Fecha nacimiento</span><input type="date" [ngModel]="operarioForm().fechaNacimiento" (ngModelChange)="operarioForm.update(f => ({ ...f, fechaNacimiento: $event }))" /></label>
+          <label><span>Salario base</span><input type="number" [ngModel]="operarioForm().salarioBase" (ngModelChange)="operarioForm.update(f => ({ ...f, salarioBase: $event }))" /></label>
+          <label><span>Contacto emergencia</span><input [ngModel]="operarioForm().contactoEmergencia" (ngModelChange)="operarioForm.update(f => ({ ...f, contactoEmergencia: $event }))" /></label>
+          <label><span>Teléfono emergencia</span><input [ngModel]="operarioForm().telefonoEmergencia" (ngModelChange)="operarioForm.update(f => ({ ...f, telefonoEmergencia: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="operarioForm().observaciones" (ngModelChange)="operarioForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitOperario()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'DOCUMENTO'">
+        <div class="modal-head"><h3>Agregar documento</h3></div>
+        <div class="form-grid">
+          <label><span>Tipo</span><input [ngModel]="documentoForm().tipoDocumento" (ngModelChange)="documentoForm.update(f => ({ ...f, tipoDocumento: $event }))" /></label>
+          <label><span>Número</span><input [ngModel]="documentoForm().numero" (ngModelChange)="documentoForm.update(f => ({ ...f, numero: $event }))" /></label>
+          <label><span>Emisión</span><input type="date" [ngModel]="documentoForm().fechaEmision" (ngModelChange)="documentoForm.update(f => ({ ...f, fechaEmision: $event }))" /></label>
+          <label><span>Vencimiento</span><input type="date" [ngModel]="documentoForm().fechaVencimiento" (ngModelChange)="documentoForm.update(f => ({ ...f, fechaVencimiento: $event }))" /></label>
+          <label><span>Estado</span><select [ngModel]="documentoForm().estado" (ngModelChange)="documentoForm.update(f => ({ ...f, estado: $event }))"><option>VIGENTE</option><option>VENCIDO</option><option>PENDIENTE</option></select></label>
+          <label><span>URL</span><input [ngModel]="documentoForm().url" (ngModelChange)="documentoForm.update(f => ({ ...f, url: $event }))" /></label>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDocumento()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'ROL'">
+        <div class="modal-head"><h3>Cambiar rol operativo</h3></div>
+        <div class="form-grid">
+          <label><span>Nuevo rol</span><select [ngModel]="rolForm().rolNuevo" (ngModelChange)="rolForm.update(f => ({ ...f, rolNuevo: $event }))"><option>OPERARIO</option><option>TRACTORISTA</option><option>SUPERVISOR</option><option>VETERINARIO</option><option>ENCARGADO</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="rolForm().fecha" (ngModelChange)="rolForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Responsable</span><input [ngModel]="rolForm().responsable" (ngModelChange)="rolForm.update(f => ({ ...f, responsable: $event }))" /></label>
+          <label><span>Motivo</span><input [ngModel]="rolForm().motivo" (ngModelChange)="rolForm.update(f => ({ ...f, motivo: $event }))" /></label>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitRol()">Guardar</button></div>
+      </ng-container>
+    </div>
+  </div>
+</div>
