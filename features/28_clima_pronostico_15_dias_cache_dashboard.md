@@ -1,4 +1,4 @@
-# 28_clima_pronostico_15_dias_cache_dashboard - Clima: Pronostico 15 Dias, Cache Cliente y Dashboard Analitico
+﻿# 28_clima_pronostico_15_dias_cache_dashboard - Clima: Pronostico 15 Dias, Cache Cliente y Dashboard Analitico
 
 ## Descripcion
 Feature nueva para cerrar los pendientes funcionales detectados luego del avance principal de la Feature 02 de clima. Esta feature separa el trabajo restante en una unidad numerada propia, en lugar de dejarlo como nota pendiente dentro de la feature original.
@@ -58,3 +58,4 @@ Completar el modulo de clima con un pronostico real de 15 dias, cache/offline ex
 ## Dependencias
 - Feature 02
 - Feature 24
+

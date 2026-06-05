@@ -1,4 +1,4 @@
-# 30 - Ganaderia: Integracion SENASA, RFID y Offline
+﻿# 30 - Ganaderia: Integracion SENASA, RFID y Offline
 
 ## Descripcion
 Continuacion de la Feature 04 para cerrar las capacidades que requieren integracion normativa real, hardware de lectura y sincronizacion offline-first en trazabilidad animal.
@@ -21,5 +21,6 @@ Completar la trazabilidad ganadera con integracion externa efectiva, captura des
 - Adaptadores para hardware de escaneo.
 
 ## Dependencias
-- 04_ganaderia_trazabilidad_animal
+- 04_COMPLETA_ganaderia_trazabilidad_animal
 - 24_sincronizacion_offline_first
+

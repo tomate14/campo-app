@@ -1,4 +1,4 @@
-# 32 - Ganaderia: Sanidad Notificaciones, Offline y Mobile
+﻿# 32 - Ganaderia: Sanidad Notificaciones, Offline y Mobile
 
 ## Descripcion
 Continuacion de la Feature 05 para completar las capacidades que no quedan cubiertas solo con backend y dashboard web: notificaciones automaticas reales, trabajo offline y experiencia mobile especifica para campo.
@@ -20,8 +20,9 @@ Cerrar el circuito sanitario ganadero en contextos operativos reales, con alerta
 11. **Nuevo Diagnostico Mejorado**: `animal` debe usar select con buscador basado en endpoint, y `veterinario` debe resolverse como usuario real de la aplicacion con rol/tipo `VETERINARIO`.
 
 ## Dependencias
-- 05_ganaderia_sanidad_vacunacion
+- 05_COMPLETA_ganaderia_sanidad_vacunacion
 - 31_ganaderia_selectores_potreros_personal
 - 24_sincronizacion_offline_first
 - 15_inventario_insumos_agricolas
 - 17_finanzas_facturacion_ventas
+

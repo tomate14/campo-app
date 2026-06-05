@@ -1,4 +1,4 @@
-# 29 - Agricultura: Prediccion ML Avanzada
+﻿# 29 - Agricultura: Prediccion ML Avanzada
 
 ## Descripcion
 Evolucion del modulo de analytics agricola para reemplazar la prediccion heuristica actual por un enfoque de machine learning real, trazable y validable.
@@ -30,7 +30,8 @@ Cerrar el pendiente tecnico de la Feature 03, incorporando un modelo predictivo 
 - Fallback seguro cuando no haya datos suficientes.
 
 ## Dependencias
-- 03_agricultura_rendimiento_analytics
-- 02_clima_monitoreo_e_integracion
-- 00_agricultura_monitoreo_siembra_cosecha
-- 01_agricultura_gestion_lotes
+- 03_COMPLETA_agricultura_rendimiento_analytics
+- 02_COMPLETA_clima_monitoreo_e_integracion
+- 00_COMPLETA_agricultura_monitoreo_siembra_cosecha
+- 01_COMPLETA_agricultura_gestion_lotes
+

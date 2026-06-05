@@ -1,4 +1,4 @@
-# 00_01_faltantes - Agricultura: Cierre de Faltantes de Features 00 y 01
+﻿# 00_01_faltantes - Agricultura: Cierre de Faltantes de Features 00 y 01
 
 ## Descripcion
 Cierre de los faltantes detectados en las features 00 (Monitoreo de Siembra y Cosecha) y 01 (Gestion de Lotes), con foco en completar funcionalidad faltante, reparar flujos rotos en mobile y unificar el comportamiento entre backend, frontend Angular y mobile.
@@ -101,3 +101,4 @@ Dejar las features 00 y 01 en estado realmente operativo y consistente con su es
 - Feature 01
 - Feature 24 (sincronizacion offline-first)
 - Feature 22/23 si se amplian reportes mas alla del minimo
+

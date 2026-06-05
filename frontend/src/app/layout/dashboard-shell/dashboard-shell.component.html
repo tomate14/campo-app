@@ -15,7 +15,10 @@
       </div>
       <button class="brand-toggle" type="button" (click)="toggleSidebar()" [title]="collapsed() ? 'Expandir sidebar' : 'Colapsar sidebar'">
         <svg viewBox="0 0 24 24">
-          <path d="M9 6l6 6-6 6" *ngIf="collapsed()" />
+          <path class="mobile-menu-line" d="M4 7h16" *ngIf="collapsed()" />
+          <path class="mobile-menu-line" d="M4 12h16" *ngIf="collapsed()" />
+          <path class="mobile-menu-line" d="M4 17h16" *ngIf="collapsed()" />
+          <path class="desktop-collapse-line" d="M9 6l6 6-6 6" *ngIf="collapsed()" />
           <path d="M15 6l-6 6 6 6" *ngIf="!collapsed()" />
         </svg>
       </button>
@@ -77,7 +80,11 @@
         <svg viewBox="0 0 24 24"><path d="M4 19c6-9 12-9 16 0" /><path d="M8 13c2-4 6-4 8 0" /><path d="M12 5v15" /><path d="M7 7h10" /></svg>
         <span *ngIf="!collapsed()">Alimentación</span>
       </a>
-      <div class="section-title" *ngIf="!collapsed()">Maquinaria</div>
+
+      <a routerLink="/ganaderia/potreros" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Potreros' : ''">
+        <svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z" /><path d="M12 4v16" /><path d="M4 7l8 3 8-3" /><path d="M8 12h8" /></svg>
+        <span *ngIf="!collapsed()">Potreros</span>
+      </a>      <div class="section-title" *ngIf="!collapsed()">Maquinaria</div>
 
       <a routerLink="/maquinaria/inventario" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Inventario' : ''">
         <svg viewBox="0 0 24 24"><path d="M5 15h12l2 4H3l2-4Z" /><path d="M6 15V9h7l4 6" /><path d="M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>

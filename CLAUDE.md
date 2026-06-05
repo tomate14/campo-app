@@ -34,6 +34,7 @@ campo-app/
 - Ejemplo: si la maxima feature existente es `27_*`, el siguiente pendiente nuevo se crea como `28_*`.
 - Toda feature nueva o cambio de estado de una feature debe registrarse tambien en `features/MANIFEST.md`.
 - Cuando una feature se termine, actualizar `features/MANIFEST.md` marcandola como `Realizada` o `Parcial` segun corresponda.
+- Cuando el usuario pida marcar una feature como completa, renombrar el archivo de la feature insertando `_COMPLETA_` entre el numero y la primera palabra del nombre. Ejemplo: `NN_nombre_feature.md` pasa a `NN_COMPLETA_nombre_feature.md`. Actualizar tambien `features/MANIFEST.md` y cualquier referencia directa al archivo.
 
 ## Flujo de Nuevas Features
 1. Leer la feature objetivo en `features/`.
@@ -63,4 +64,6 @@ campo-app/
 
 ## Regla Visual de Tooltips
 - Todos los tooltips nuevos de graficos y visualizaciones deben usar el patron premium de Campo App: card dark SaaS de aproximadamente 380x430px, fondo #081225/#0B1730, borde 1px rgba(159,232,112,0.20), radio 24px, glow verde sutil, banda superior con color de serie/cultivo, icono real, titulo grande, subtitulo gris, badge de estado, separador sutil, metricas con icono-label-valor y footer de leyenda. No usar tooltips nativos simples para graficos salvo fallback tecnico temporal.
+
+
 

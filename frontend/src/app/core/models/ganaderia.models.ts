@@ -35,6 +35,54 @@ export interface AnimalRequest {
   observaciones?: string
 }
 
+export type PotreroTipoUso = 'PASTOREO' | 'RESERVA' | 'RECRIA' | 'MATERNIDAD' | 'ENCIERRE' | 'OTRO'
+export type PotreroEstado = 'ACTIVO' | 'INACTIVO' | 'DESCANSO' | 'MANTENIMIENTO'
+
+export interface Potrero {
+  id: string
+  nombre: string
+  descripcion?: string
+  superficieHa: number
+  tipoUso: PotreroTipoUso | string
+  estado: PotreroEstado | string
+  capacidadAnimales?: number
+  cargaAnimalActual?: number
+  recursoForrajero?: string
+  disponibilidadAgua: boolean
+  tieneSombra: boolean
+  observaciones?: string
+  poligono: string
+  centroideLatitud?: number
+  centroideLongitud?: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PotreroRequest {
+  nombre: string
+  descripcion?: string
+  superficieHa: number
+  tipoUso?: PotreroTipoUso | string
+  estado?: PotreroEstado | string
+  capacidadAnimales?: number
+  cargaAnimalActual?: number
+  recursoForrajero?: string
+  disponibilidadAgua?: boolean
+  tieneSombra?: boolean
+  observaciones?: string
+  poligono: string
+  centroideLatitud?: number
+  centroideLongitud?: number
+}
+
+export interface PotreroFilters {
+  nombre?: string
+  estado?: string
+  tipoUso?: string
+  superficieMin?: number
+  superficieMax?: number
+}
+
 export interface MovimientoAnimal {
   id: string
   animalId: string

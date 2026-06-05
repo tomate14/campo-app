@@ -1,4 +1,4 @@
-# Feature 34 - Ganaderia: Ficha tecnica reproductiva avanzada
+﻿# Feature 34 - Ganaderia: Ficha tecnica reproductiva avanzada
 
 ## Summary
 Completar los datos avanzados que requiere el popup de detalle de vacas proximas a parir y que todavia no estan modelados de forma persistente en el sistema.
@@ -26,3 +26,4 @@ Completar los datos avanzados que requiere el popup de detalle de vacas proximas
 - La ficha tecnica de la vaca muestra HBA/RP, categoria, estado reproductivo, condicion corporal, potrero, grupo y responsable.
 - El resumen reproductivo muestra metodo diagnostico, ultimo servicio e intervalo de parto anterior reales.
 - Historial medico, notas y documentos se muestran desde datos persistidos.
+

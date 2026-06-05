@@ -1,28 +1,28 @@
-# 24 - Sincronización: Offline-First
+﻿# 24 - SincronizaciÃ³n: Offline-First
 
-## Descripción
-Sistema de sincronización completo para operación offline-first, permitiendo trabajo sin internet con sync automático.
+## DescripciÃ³n
+Sistema de sincronizaciÃ³n completo para operaciÃ³n offline-first, permitiendo trabajo sin internet con sync automÃ¡tico.
 
 ## Funcionalidades Principales
-- Almacenamiento local de datos críticos
-- Sincronización bidireccional
-- Resolución de conflictos
+- Almacenamiento local de datos crÃ­ticos
+- SincronizaciÃ³n bidireccional
+- ResoluciÃ³n de conflictos
 - Cola de cambios pendientes
-- Visualización de estado de sync
+- VisualizaciÃ³n de estado de sync
 
 ## Tareas
-1. **Almacenamiento Local**: Base de datos móvil (SQLite, Realm)
-2. **Caché de Datos**: Descargas inteligentes de información
+1. **Almacenamiento Local**: Base de datos mÃ³vil (SQLite, Realm)
+2. **CachÃ© de Datos**: Descargas inteligentes de informaciÃ³n
 3. **Queue de Cambios**: Registro de acciones offline
-4. **Sincronización Automática**: Cuando hay conectividad
-5. **Resolución de Conflictos**: Estrategias (servidor gana, cliente gana, merge)
-6. **Compresión de Cambios**: Optimizar datos sincronizados
-7. **Versionado de Datos**: Controlar evolución de registros
-8. **Estado de Conexión**: Indicador en UI de conectividad
+4. **SincronizaciÃ³n AutomÃ¡tica**: Cuando hay conectividad
+5. **ResoluciÃ³n de Conflictos**: Estrategias (servidor gana, cliente gana, merge)
+6. **CompresiÃ³n de Cambios**: Optimizar datos sincronizados
+7. **Versionado de Datos**: Controlar evoluciÃ³n de registros
+8. **Estado de ConexiÃ³n**: Indicador en UI de conectividad
 
 ## Servicios
-- `SyncService`: Orquestación de sincronización
-- `LocalStorageService`: Gestión de datos locales
+- `SyncService`: OrquestaciÃ³n de sincronizaciÃ³n
+- `LocalStorageService`: GestiÃ³n de datos locales
 - `ConflictResolverService`: Manejo de conflictos
 - `QueueService`: Cola de cambios
 
@@ -31,14 +31,14 @@ Sistema de sincronización completo para operación offline-first, permitiendo t
 - `SyncQueueRepository`
 - `ConflictRepository`
 
-## Requisitos Técnicos
-- Base de datos móvil integrada
+## Requisitos TÃ©cnicos
+- Base de datos mÃ³vil integrada
 - Protocolo de sync eficiente
 - UUID global para registros
-- Timestamps para reconciliación
+- Timestamps para reconciliaciÃ³n
 - Endpoint REST: `/api/v1/sync`
-- Compresión de datos
-- Encriptación de datos sensibles
+- CompresiÃ³n de datos
+- EncriptaciÃ³n de datos sensibles
 
 ## Integraciones
 - SQLite/Realm (almacenamiento local)
@@ -48,10 +48,11 @@ Sistema de sincronización completo para operación offline-first, permitiendo t
 ## Dependencias de Todas las Features
 - Todas las features deben tener capacidad offline
 - Todas las operaciones CRUD disponibles sin internet
-- Sincronización automática al recuperar conectividad
-- Auditoría de cambios offline/online
+- SincronizaciÃ³n automÃ¡tica al recuperar conectividad
+- AuditorÃ­a de cambios offline/online
 
 ## Notas Importantes
-- Crítico para operarios rurales sin conectividad permanente
-- Bajo consumo de batería (sync optimizado)
-- Datos personales con privacidad (encriptación local)
+- CrÃ­tico para operarios rurales sin conectividad permanente
+- Bajo consumo de baterÃ­a (sync optimizado)
+- Datos personales con privacidad (encriptaciÃ³n local)
+

@@ -1,41 +1,41 @@
-# 20 - Geolocalización: Mapas y Lotes
+﻿# 20 - GeolocalizaciÃ³n: Mapas y Lotes
 
-## Descripción
-Sistema de geolocalización con visualización de lotes, máquinas y operarios en mapas interactivos en tiempo real.
+## DescripciÃ³n
+Sistema de geolocalizaciÃ³n con visualizaciÃ³n de lotes, mÃ¡quinas y operarios en mapas interactivos en tiempo real.
 
 ## Funcionalidades Principales
 - Mapas interactivos de lotes
-- Visualización de máquinas en movimiento
+- VisualizaciÃ³n de mÃ¡quinas en movimiento
 - Seguimiento de operarios
-- Cálculos de distancias y áreas
-- Importación de mapas base
+- CÃ¡lculos de distancias y Ã¡reas
+- ImportaciÃ³n de mapas base
 
 ## Tareas
-1. **Mapa Base**: Integración con proveedores (Google Maps, Mapbox, OSM)
-2. **Visualización de Lotes**: Polígonos en mapa con datos
-3. **Máquinas en Vivo**: Posiciones actualizadas en tiempo real
-4. **Operarios**: Localización de personas en campo
-5. **Rutas**: Visualización de recorridos realizados
-6. **Mediciones**: Distancia, área de lotes
+1. **Mapa Base**: IntegraciÃ³n con proveedores (Google Maps, Mapbox, OSM)
+2. **VisualizaciÃ³n de Lotes**: PolÃ­gonos en mapa con datos
+3. **MÃ¡quinas en Vivo**: Posiciones actualizadas en tiempo real
+4. **Operarios**: LocalizaciÃ³n de personas en campo
+5. **Rutas**: VisualizaciÃ³n de recorridos realizados
+6. **Mediciones**: Distancia, Ã¡rea de lotes
 7. **Geofencing**: Zonas permitidas/prohibidas
-8. **Importación/Exportación**: Archivos KML, GeoJSON
+8. **ImportaciÃ³n/ExportaciÃ³n**: Archivos KML, GeoJSON
 
 ## Servicios
-- `MapaService`: Gestión de capas y visualización
-- `GeoService`: Cálculos geoespaciales
-- `ProvedorMapasService`: Integración con APIs
+- `MapaService`: GestiÃ³n de capas y visualizaciÃ³n
+- `GeoService`: CÃ¡lculos geoespaciales
+- `ProvedorMapasService`: IntegraciÃ³n con APIs
 
 ## Repositorios
-- `PolígonoRepository`
+- `PolÃ­gonoRepository`
 - `PuntoInteresRepository`
 - `RutaRepository`
 
-## Requisitos Técnicos
+## Requisitos TÃ©cnicos
 - Base de datos geoespacial (PostGIS compatible)
 - Endpoint REST: `/api/v1/geo/mapas`
 - WebSocket para actualizaciones en vivo
 - Disponible offline (mapas cached)
-- Compatibilidad con estándares OGC (WMS, WFS)
+- Compatibilidad con estÃ¡ndares OGC (WMS, WFS)
 
 ## Integraciones Externas
 - Google Maps
@@ -44,7 +44,8 @@ Sistema de geolocalización con visualización de lotes, máquinas y operarios e
 - Providers de tiles
 
 ## Dependencias
-- Lotes (polígonos a mostrar)
-- Máquinas (posiciones GPS)
+- Lotes (polÃ­gonos a mostrar)
+- MÃ¡quinas (posiciones GPS)
 - Operarios (posiciones)
-- Reportes (análisis espacial)
+- Reportes (anÃ¡lisis espacial)
+
