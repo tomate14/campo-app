@@ -32,6 +32,11 @@
         <span *ngIf="!collapsed()">Dashboard agricola</span>
       </a>
 
+      <a routerLink="/operaciones/calendario" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Calendario' : ''">
+        <svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><path d="M3 10h18" /><path d="M5 5h14v16H5z" /><path d="M8 14h3" /><path d="M13 14h3" /><path d="M8 17h3" /></svg>
+        <span *ngIf="!collapsed()">Calendario</span>
+      </a>
+
       <div class="section-title" *ngIf="!collapsed()">Agricultura</div>
 
       <a routerLink="/agricola/lotes" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Lotes' : ''">
@@ -102,6 +107,12 @@
         <svg viewBox="0 0 24 24"><path d="M7 19v-2a5 5 0 0 1 10 0v2" /><path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0" /><path d="M17 11h4" /><path d="M19 9v4" /></svg>
         <span *ngIf="!collapsed()">Gestión de operarios</span>
       </a>
+
+      <a routerLink="/operarios/ordenes" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Órdenes de trabajo' : ''">
+        <svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z" /><path d="M10 8h4" /><path d="M10 12h4" /><path d="M10 16h2" /></svg>
+        <span *ngIf="!collapsed()">Órdenes de trabajo</span>
+      </a>
+
     </nav>
 
     <div class="sidebar-footer">

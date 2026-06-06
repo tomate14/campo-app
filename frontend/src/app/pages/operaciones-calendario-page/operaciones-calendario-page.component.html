@@ -1,0 +1,235 @@
+<div class="operaciones-page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Campo App · Operaciones</p>
+      <h2>Calendario de Operaciones</h2>
+      <p>Planificación y seguimiento de las ordenes de trabajo.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-secondary" type="button" (click)="changeWeek(-1)">
+        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
+        Semana anterior
+      </button>
+      <button class="btn-secondary" type="button" (click)="goToday()">Hoy</button>
+      <button class="btn-secondary" type="button" (click)="changeWeek(1)">
+        Semana siguiente
+        <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+
+  <section class="kpi-grid">
+    <article class="kpi-card">
+      <span class="metric-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><path d="M3 10h18" /><path d="M5 5h14v16H5z" /></svg></span>
+      <div class="kpi-copy"><span>Operaciones</span><small>Programadas en semana</small></div>
+      <strong>{{ dashboard().total }}</strong>
+    </article>
+    <article class="kpi-card">
+      <span class="metric-icon warning"><svg viewBox="0 0 24 24"><path d="M12 8v5" /><path d="M12 17h.01" /><path d="M10.3 3.9 2.7 17a2 2 0 0 0 1.7 3h15.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" /></svg></span>
+      <div class="kpi-copy"><span>Retrasadas</span><small>Requieren atención</small></div>
+      <strong>{{ dashboard().retrasadas }}</strong>
+    </article>
+    <article class="kpi-card">
+      <span class="metric-icon blue"><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2" /><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" /></svg></span>
+      <div class="kpi-copy"><span>En progreso</span><small>Ejecución activa</small></div>
+      <strong>{{ dashboard().enCurso }}</strong>
+    </article>
+    <article class="kpi-card">
+      <span class="metric-icon"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg></span>
+      <div class="kpi-copy"><span>Completadas</span><small>Cerradas esta semana</small></div>
+      <strong>{{ dashboard().completadas }}</strong>
+    </article>
+  </section>
+
+  <section class="filters-card">
+    <label>
+      <span>Todos los operarios</span>
+      <select [ngModel]="filters().operarioId" (ngModelChange)="filters.update(f => ({ ...f, operarioId: $event }))">
+        <option value="">Todos</option>
+        <option *ngFor="let operario of operarios()" [value]="operario.id">{{ operario.nombreCompleto }}</option>
+      </select>
+    </label>
+    <label>
+      <span>Todos los lotes</span>
+      <select [ngModel]="filters().loteId" (ngModelChange)="filters.update(f => ({ ...f, loteId: $event }))">
+        <option value="">Todos</option>
+        <option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option>
+      </select>
+    </label>
+    <label>
+      <span>Todas las operaciones</span>
+      <select [ngModel]="filters().estado" (ngModelChange)="filters.update(f => ({ ...f, estado: $event }))">
+        <option value="">Todas</option>
+        <option value="PENDIENTE">Pendientes</option>
+        <option value="EN_PROGRESO">En progreso</option>
+        <option value="COMPLETADA">Completadas</option>
+        <option value="CANCELADA">Canceladas</option>
+        <option value="RECHAZADA">Rechazadas</option>
+      </select>
+    </label>
+    <div class="filter-actions">
+      <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>
+      <button class="btn-secondary" type="button" (click)="clearFilters()">Limpiar</button>
+    </div>
+  </section>
+
+  <section class="operator-chips">
+    <span>Visualización por operario</span>
+    <button
+      type="button"
+      *ngFor="let operario of firstOperarios()"
+      [class.active]="activeOperarioIds().includes(operario.id)"
+      (click)="toggleOperario(operario.id)"
+    >
+      <svg viewBox="0 0 24 24"><path d="M7 19v-2a5 5 0 0 1 10 0v2" /><path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0" /></svg>
+      {{ operario.nombreCompleto }}
+    </button>
+  </section>
+
+  <section class="calendar-card">
+    <div class="calendar-head">
+      <div>
+        <span>Semana operativa</span>
+        <strong>{{ formatWeekRange() }}</strong>
+      </div>
+      <span class="panel-badge">{{ visibleEvents().length }} operacion(es)</span>
+    </div>
+
+    <div class="empty-box" *ngIf="loading()">Cargando calendario...</div>
+
+    <div class="calendar-grid" *ngIf="!loading()">
+      <div class="time-header"></div>
+      <div class="day-header" *ngFor="let day of days(); trackBy: trackByDay">
+        <strong>{{ day.name }}</strong>
+        <span>{{ day.label }}</span>
+      </div>
+
+      <div class="time-column">
+        <span *ngFor="let slot of timeSlots()">{{ slot }}</span>
+      </div>
+
+      <div class="day-column" *ngFor="let day of days(); trackBy: trackByDay">
+        <div class="slot-line" *ngFor="let slot of timeSlots()"></div>
+        <div
+          class="current-time-line"
+          *ngIf="day.key === todayKey() && currentTimeTop() !== null"
+          [style.top.px]="currentTimeTop()"
+        >
+          <span>{{ now() | date:'HH:mm' }}</span>
+        </div>
+        <button
+          type="button"
+          class="operation-event"
+          *ngFor="let event of dayEvents(day.key); trackBy: trackByEvent"
+          [ngClass]="statusClass(event.orden.estado)"
+          [style.top.px]="event.top"
+          [style.height.px]="event.height"
+          (click)="openDetail(event.orden)"
+        >
+          <span class="event-title">{{ event.orden.titulo }}</span>
+          <span>{{ event.orden.operarioNombre }}</span>
+          <span>{{ event.orden.loteNombre || event.orden.zona || 'Sin ubicación' }}</span>
+          <strong>{{ event.startLabel }} - {{ event.endLabel }}</strong>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="empty-box" *ngIf="!loading() && !visibleEvents().length">
+    No hay operaciones programadas en esta semana con los filtros seleccionados.
+  </section>
+</div>
+
+<div class="app-modal-backdrop" *ngIf="modal() && selectedOrden()" (click)="closeModal()">
+  <section class="app-modal-panel" (click)="$event.stopPropagation()">
+    <button class="modal-close-button" type="button" (click)="closeModal()" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12" /><path d="M18 6 6 18" /></svg>
+    </button>
+
+    <ng-container *ngIf="selectedOrden() as orden">
+      <div class="modal-head">
+        <span class="modal-icon"><svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><path d="M3 10h18" /><path d="M5 5h14v16H5z" /></svg></span>
+        <div>
+          <p class="eyebrow">Operación seleccionada</p>
+          <h3>{{ orden.titulo }}</h3>
+          <p>{{ orden.codigo }} · {{ orden.operarioNombre }}</p>
+        </div>
+        <span class="badge" [class.badge-info]="statusClass(orden.estado) === 'info'" [class.badge-warning]="statusClass(orden.estado) === 'warning'" [class.badge-danger]="statusClass(orden.estado) === 'danger'">{{ statusLabel(orden.estado) }}</span>
+      </div>
+
+      <ng-container *ngIf="modal() === 'DETALLE'">
+        <div class="detail-grid">
+          <article>
+            <span>Responsable</span>
+            <strong>{{ orden.operarioNombre }}</strong>
+          </article>
+          <article>
+            <span>Ubicación</span>
+            <strong>{{ orden.loteNombre || orden.zona || 'Sin ubicación' }}</strong>
+          </article>
+          <article>
+            <span>Inicio programado</span>
+            <strong>{{ formatDate(orden.fechaProgramada) }}</strong>
+          </article>
+          <article>
+            <span>Fin estimado</span>
+            <strong>{{ formatDate(orden.fechaFinEstimada) }}</strong>
+          </article>
+          <article>
+            <span>Prioridad</span>
+            <strong>{{ priorityLabel(orden.prioridad) }}</strong>
+          </article>
+          <article>
+            <span>Duración estimada</span>
+            <strong>{{ orden.duracionEstimadaMin || 60 }} min</strong>
+          </article>
+        </div>
+
+        <div class="detail-copy" *ngIf="orden.descripcion || orden.observaciones">
+          <h4>Detalle operativo</h4>
+          <p *ngIf="orden.descripcion">{{ orden.descripcion }}</p>
+          <p *ngIf="orden.observaciones">{{ orden.observaciones }}</p>
+        </div>
+
+        <div class="timeline-panel">
+          <h4>Historial y actividades</h4>
+          <div class="timeline-item" *ngFor="let item of orden.historial">
+            <span>{{ formatDate(item.createdAt) }}</span>
+            <strong>{{ item.accion }}</strong>
+            <small>{{ item.estadoAnterior || 'Inicial' }} → {{ item.estadoNuevo }}</small>
+          </div>
+          <div class="timeline-item" *ngFor="let actividad of orden.actividades">
+            <span>{{ formatDate(actividad.createdAt) }}</span>
+            <strong>{{ actividad.tipo }}</strong>
+            <small>{{ actividad.descripcion }}</small>
+          </div>
+          <p class="muted" *ngIf="!orden.historial.length && !orden.actividades.length">Sin registros asociados todavia.</p>
+        </div>
+
+        <footer class="modal-actions">
+          <button class="btn-secondary" type="button" (click)="changeEstado('EN_PROGRESO')" [disabled]="saving()">Marcar en progreso</button>
+          <button class="btn-primary" type="button" (click)="changeEstado('COMPLETADA')" [disabled]="saving()">Completar</button>
+          <button class="btn-secondary" type="button" (click)="openActividad()">Registrar actividad</button>
+        </footer>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'ACTIVIDAD'">
+        <div class="form-grid">
+          <label><span>Tipo</span><input [ngModel]="actividadForm().tipo" (ngModelChange)="actividadForm.update(f => ({ ...f, tipo: $event }))" /></label>
+          <label><span>Estado</span><input [ngModel]="actividadForm().estado" (ngModelChange)="actividadForm.update(f => ({ ...f, estado: $event }))" /></label>
+          <label><span>Inicio</span><input type="datetime-local" [ngModel]="actividadForm().inicio" (ngModelChange)="actividadForm.update(f => ({ ...f, inicio: $event }))" /></label>
+          <label><span>Fin</span><input type="datetime-local" [ngModel]="actividadForm().fin" (ngModelChange)="actividadForm.update(f => ({ ...f, fin: $event }))" /></label>
+          <label><span>Duración min.</span><input type="number" [ngModel]="actividadForm().duracionMin" (ngModelChange)="actividadForm.update(f => ({ ...f, duracionMin: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Descripción</span><textarea [ngModel]="actividadForm().descripcion" (ngModelChange)="actividadForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="actividadForm().observaciones" (ngModelChange)="actividadForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <footer class="modal-actions">
+          <button class="btn-secondary" type="button" (click)="modal.set('DETALLE')">Volver</button>
+          <button class="btn-primary" type="button" (click)="submitActividad()" [disabled]="saving()">Guardar actividad</button>
+        </footer>
+      </ng-container>
+    </ng-container>
+  </section>
+</div>
