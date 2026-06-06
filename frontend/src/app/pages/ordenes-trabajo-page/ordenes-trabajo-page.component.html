@@ -1,0 +1,243 @@
+<div class="ordenes-page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Campo App · Operarios</p>
+      <h2>Órdenes de trabajo</h2>
+      <p>Planificación, asignación a operarios, seguimiento y cierre operativo de tareas.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-primary" type="button" (click)="openOrdenModal()">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+        Nueva orden
+      </button>
+    </div>
+  </header>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="empty-box" *ngIf="loading()">Cargando órdenes...</div>
+
+  <ng-container *ngIf="!loading() && resumen() as data">
+    <section class="kpi-grid">
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z" /><path d="M10 8h4" /><path d="M10 12h4" /><path d="M10 16h2" /></svg></div>
+        <div class="kpi-copy"><span>Total órdenes</span><small>Trabajo registrado</small></div>
+        <strong>{{ data.dashboard.total }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon warning"><svg viewBox="0 0 24 24"><path d="M12 8v5" /><path d="M12 17h.01" /><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z" /></svg></div>
+        <div class="kpi-copy"><span>Pendientes</span><small>Por iniciar</small></div>
+        <strong>{{ data.dashboard.pendientes }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon blue"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5" /><path d="M20 4v6h-6" /><path d="M20 12a8 8 0 0 1-14 5" /><path d="M4 20v-6h6" /></svg></div>
+        <div class="kpi-copy"><span>En progreso</span><small>Ejecución activa</small></div>
+        <strong>{{ data.dashboard.enProgreso }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M20 7 9 18l-5-5" /></svg></div>
+        <div class="kpi-copy"><span>Completadas</span><small>Cierre aceptado</small></div>
+        <strong>{{ data.dashboard.completadas }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon danger"><svg viewBox="0 0 24 24"><path d="M12 6v6" /><path d="M12 16h.01" /><path d="m10 3-8 18h20L14 3h-4Z" /></svg></div>
+        <div class="kpi-copy"><span>Vencidas</span><small>Fuera de plazo</small></div>
+        <strong>{{ data.dashboard.vencidas }}</strong>
+      </article>
+    </section>
+
+    <section class="filters-card">
+      <label><span>Buscar</span><input [ngModel]="filters().search" (ngModelChange)="filters.update(f => ({ ...f, search: $event }))" placeholder="Código, título o descripción" /></label>
+      <label><span>Estado</span><select [ngModel]="filters().estado" (ngModelChange)="filters.update(f => ({ ...f, estado: $event }))"><option value="">Todos</option><option value="PENDIENTE">Pendiente</option><option value="EN_PROGRESO">En progreso</option><option value="COMPLETADA">Completada</option><option value="CANCELADA">Cancelada</option><option value="RECHAZADA">Rechazada</option></select></label>
+      <label><span>Prioridad</span><select [ngModel]="filters().prioridad" (ngModelChange)="filters.update(f => ({ ...f, prioridad: $event }))"><option value="">Todas</option><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="URGENTE">Urgente</option></select></label>
+      <label><span>Operario</span><select [ngModel]="filters().operarioId" (ngModelChange)="filters.update(f => ({ ...f, operarioId: $event }))"><option value="">Todos</option><option *ngFor="let operario of operarios()" [value]="operario.id">{{ operario.nombreCompleto }}</option></select></label>
+      <label><span>Lote</span><select [ngModel]="filters().loteId" (ngModelChange)="filters.update(f => ({ ...f, loteId: $event }))"><option value="">Todos</option><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
+      <div class="filter-actions">
+        <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar</button>
+        <button class="btn-secondary" type="button" (click)="clearFilters()">Limpiar</button>
+      </div>
+    </section>
+
+    <section class="ordenes-layout">
+      <article class="card table-panel">
+        <div class="tabs-bar">
+          <button type="button" [class.active]="filters().estado === ''" (click)="filters.update(f => ({ ...f, estado: '' })); applyFilters()">Todas</button>
+          <button type="button" [class.active]="filters().estado === 'PENDIENTE'" (click)="filters.update(f => ({ ...f, estado: 'PENDIENTE' })); applyFilters()">Pendientes</button>
+          <button type="button" [class.active]="filters().estado === 'EN_PROGRESO'" (click)="filters.update(f => ({ ...f, estado: 'EN_PROGRESO' })); applyFilters()">En progreso</button>
+          <button type="button" [class.active]="filters().estado === 'COMPLETADA'" (click)="filters.update(f => ({ ...f, estado: 'COMPLETADA' })); applyFilters()">Completadas</button>
+          <span>{{ data.ordenes.length }} vigente(s)</span>
+        </div>
+
+        <div class="order-grid">
+          <div class="trace-table-wrap" *ngIf="ordenesPage().length; else noOrdenes">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Orden</th>
+                  <th>Operario</th>
+                  <th>Ubicación</th>
+                  <th>Programada</th>
+                  <th>Duración</th>
+                  <th>Prioridad</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let orden of ordenesPage()" [class.selected]="selectedId() === orden.id" (click)="selectOrden(orden)">
+                  <td><span class="row-selector" [class.active]="selectedId() === orden.id"></span></td>
+                  <td>
+                    <div class="table-identity">
+                      <span class="table-icon"><svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z" /><path d="M10 8h4" /><path d="M10 12h4" /></svg></span>
+                      <div><strong>{{ orden.codigo }}</strong><small>{{ orden.titulo }}</small></div>
+                    </div>
+                  </td>
+                  <td>{{ orden.operarioNombre }}</td>
+                  <td>{{ orden.loteNombre || orden.zona || 'Sin dato' }}</td>
+                  <td>{{ orden.fechaProgramada ? (orden.fechaProgramada | date:'dd/MM/yyyy HH:mm') : 'Sin fecha' }}</td>
+                  <td>{{ formatMinutes(orden.duracionEstimadaMin) }}</td>
+                  <td><span class="badge" [class.badge-warning]="priorityClass(orden.prioridad) === 'warning'" [class.badge-danger]="priorityClass(orden.prioridad) === 'danger'">{{ orden.prioridad }}</span></td>
+                  <td><span class="badge" [class.badge-warning]="statusClass(orden.estado) === 'warning'" [class.badge-info]="statusClass(orden.estado) === 'info'" [class.badge-danger]="statusClass(orden.estado) === 'danger'">{{ orden.estado }}</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <button type="button" title="Editar" (click)="selectOrden(orden); openOrdenModal(orden); $event.stopPropagation()">
+                        <svg viewBox="0 0 24 24"><path d="m4 20 4-1 11-11-3-3L5 16l-1 4Z" /><path d="m14 6 3 3" /></svg>
+                      </button>
+                      <button type="button" title="Actividad" (click)="selectOrden(orden); openModal('ACTIVIDAD'); $event.stopPropagation()">
+                        <svg viewBox="0 0 24 24"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                      </button>
+                      <button class="danger-action" type="button" title="Eliminar" (click)="deleteOrden(orden); $event.stopPropagation()">
+                        <svg viewBox="0 0 24 24"><path d="M5 7h14" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M6 7l1 14h10l1-14" /></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #noOrdenes>
+            <div class="empty-box">Sin órdenes de trabajo.</div>
+          </ng-template>
+        </div>
+
+        <footer class="pagination">
+          <span>Mostrando página {{ currentPage() }} de {{ totalPages() }}</span>
+          <div>
+            <button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
+            <button type="button" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage() === i + 1" (click)="setPage(i + 1)">{{ i + 1 }}</button>
+            <button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
+          </div>
+        </footer>
+      </article>
+
+      <aside class="card context-panel" *ngIf="selectedOrden() as orden">
+        <div class="context-head">
+          <div class="context-icon"><svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z" /><path d="M10 8h4" /><path d="M10 12h4" /></svg></div>
+          <div>
+            <span>Orden seleccionada</span>
+            <h3>{{ orden.codigo }}</h3>
+            <p>{{ orden.titulo }}</p>
+          </div>
+        </div>
+
+        <div class="context-metrics">
+          <div><span>Estado</span><strong>{{ orden.estado }}</strong></div>
+          <div><span>Prioridad</span><strong>{{ orden.prioridad }}</strong></div>
+          <div><span>Estimado</span><strong>{{ formatMinutes(orden.duracionEstimadaMin) }}</strong></div>
+          <div><span>Real</span><strong>{{ formatMinutes(orden.duracionRealMin) }}</strong></div>
+        </div>
+
+        <section class="info-card">
+          <h4>Detalle operativo</h4>
+          <div class="info-grid">
+            <span>Operario</span><strong>{{ orden.operarioNombre }}</strong>
+            <span>Lote</span><strong>{{ orden.loteNombre || 'Sin lote' }}</strong>
+            <span>Zona</span><strong>{{ orden.zona || 'Sin zona' }}</strong>
+            <span>Programada</span><strong>{{ orden.fechaProgramada ? (orden.fechaProgramada | date:'dd/MM/yyyy HH:mm') : 'Sin fecha' }}</strong>
+          </div>
+        </section>
+
+        <section class="info-card">
+          <h4>Actividades</h4>
+          <div class="timeline-item" *ngFor="let actividad of orden.actividades">
+            <span>{{ actividad.tipo }} · {{ actividad.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            <strong>{{ actividad.descripcion }}</strong>
+            <small>{{ actividad.operarioNombre || 'Sin operario' }} · {{ formatMinutes(actividad.duracionMin) }}</small>
+          </div>
+          <p class="muted" *ngIf="!orden.actividades.length">Sin actividades registradas.</p>
+        </section>
+
+        <section class="info-card">
+          <h4>Historial</h4>
+          <div class="timeline-item" *ngFor="let item of orden.historial">
+            <span>{{ item.accion }} · {{ item.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            <strong>{{ item.estadoAnterior || 'Inicio' }} → {{ item.estadoNuevo }}</strong>
+            <small>{{ item.responsable || 'Sistema' }}</small>
+          </div>
+        </section>
+
+        <div class="context-actions">
+          <button class="btn-secondary" type="button" (click)="openModal('ACTIVIDAD')">Actividad</button>
+          <button class="btn-secondary" type="button" (click)="changeEstado('EN_PROGRESO')">Iniciar</button>
+          <button class="btn-primary" type="button" (click)="openModal('ACEPTAR')">Aceptar</button>
+          <button class="btn-danger" type="button" (click)="openModal('RECHAZAR')">Rechazar</button>
+        </div>
+      </aside>
+    </section>
+  </ng-container>
+
+  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()" (document:keydown.escape)="closeModal()">
+    <div class="app-modal-panel" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
+
+      <ng-container *ngIf="modal() === 'ORDEN'">
+        <div class="modal-head"><h3>Orden de trabajo</h3></div>
+        <div class="form-grid">
+          <label><span>Título</span><input [ngModel]="ordenForm().titulo" (ngModelChange)="ordenForm.update(f => ({ ...f, titulo: $event }))" /></label>
+          <label><span>Operario</span><select [ngModel]="ordenForm().operarioId" (ngModelChange)="ordenForm.update(f => ({ ...f, operarioId: $event }))"><option value="">Seleccionar</option><option *ngFor="let operario of operarios()" [value]="operario.id">{{ operario.nombreCompleto }}</option></select></label>
+          <label><span>Lote</span><select [ngModel]="ordenForm().loteId" (ngModelChange)="ordenForm.update(f => ({ ...f, loteId: $event }))"><option value="">Sin lote</option><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
+          <label><span>Zona</span><input [ngModel]="ordenForm().zona" (ngModelChange)="ordenForm.update(f => ({ ...f, zona: $event }))" /></label>
+          <label><span>Prioridad</span><select [ngModel]="ordenForm().prioridad" (ngModelChange)="ordenForm.update(f => ({ ...f, prioridad: $event }))"><option>BAJA</option><option>MEDIA</option><option>ALTA</option><option>URGENTE</option></select></label>
+          <label><span>Estado</span><select [ngModel]="ordenForm().estado" (ngModelChange)="ordenForm.update(f => ({ ...f, estado: $event }))"><option>PENDIENTE</option><option>EN_PROGRESO</option><option>COMPLETADA</option><option>CANCELADA</option><option>RECHAZADA</option></select></label>
+          <label><span>Fecha programada</span><input type="datetime-local" [ngModel]="ordenForm().fechaProgramada" (ngModelChange)="ordenForm.update(f => ({ ...f, fechaProgramada: $event }))" /></label>
+          <label><span>Fin estimado</span><input type="datetime-local" [ngModel]="ordenForm().fechaFinEstimada" (ngModelChange)="ordenForm.update(f => ({ ...f, fechaFinEstimada: $event }))" /></label>
+          <label><span>Duración estimada (min)</span><input type="number" [ngModel]="ordenForm().duracionEstimadaMin" (ngModelChange)="ordenForm.update(f => ({ ...f, duracionEstimadaMin: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Descripción</span><textarea [ngModel]="ordenForm().descripcion" (ngModelChange)="ordenForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitOrden()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'ACTIVIDAD'">
+        <div class="modal-head"><h3>Registrar actividad</h3></div>
+        <div class="form-grid">
+          <label><span>Tipo</span><input [ngModel]="actividadForm().tipo" (ngModelChange)="actividadForm.update(f => ({ ...f, tipo: $event }))" /></label>
+          <label><span>Duración (min)</span><input type="number" [ngModel]="actividadForm().duracionMin" (ngModelChange)="actividadForm.update(f => ({ ...f, duracionMin: $event }))" /></label>
+          <label><span>Inicio</span><input type="datetime-local" [ngModel]="actividadForm().inicio" (ngModelChange)="actividadForm.update(f => ({ ...f, inicio: $event }))" /></label>
+          <label><span>Fin</span><input type="datetime-local" [ngModel]="actividadForm().fin" (ngModelChange)="actividadForm.update(f => ({ ...f, fin: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Descripción</span><textarea [ngModel]="actividadForm().descripcion" (ngModelChange)="actividadForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitActividad()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'ACEPTAR'">
+        <div class="modal-head"><h3>Aceptar orden</h3></div>
+        <div class="form-grid">
+          <label><span>Responsable</span><input [ngModel]="cierreForm().responsable" (ngModelChange)="cierreForm.update(f => ({ ...f, responsable: $event }))" /></label>
+          <label><span>Duración real (min)</span><input type="number" [ngModel]="cierreForm().duracionRealMin" (ngModelChange)="cierreForm.update(f => ({ ...f, duracionRealMin: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Resultado</span><textarea [ngModel]="cierreForm().resultado" (ngModelChange)="cierreForm.update(f => ({ ...f, resultado: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAceptar()">Aceptar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'RECHAZAR'">
+        <div class="modal-head"><h3>Rechazar orden</h3></div>
+        <div class="form-grid">
+          <label><span>Responsable</span><input [ngModel]="cierreForm().responsable" (ngModelChange)="cierreForm.update(f => ({ ...f, responsable: $event }))" /></label>
+          <label><span>Duración real (min)</span><input type="number" [ngModel]="cierreForm().duracionRealMin" (ngModelChange)="cierreForm.update(f => ({ ...f, duracionRealMin: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Motivo</span><textarea [ngModel]="cierreForm().motivo" (ngModelChange)="cierreForm.update(f => ({ ...f, motivo: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-danger" type="button" [disabled]="saving()" (click)="submitRechazar()">Rechazar</button></div>
+      </ng-container>
+    </div>
+  </div>
+</div>

@@ -79,31 +79,56 @@
         </div>
 
         <div class="operator-list">
-          <article class="operator-row" *ngFor="let operario of operariosPage()" [class.selected]="selectedId() === operario.id" (click)="selectOperario(operario)">
-            <div class="operator-icon">
-              <svg viewBox="0 0 24 24"><path d="M7 19v-2a5 5 0 0 1 10 0v2" /><path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0" /></svg>
-            </div>
-            <div class="operator-main">
-              <strong>{{ operario.nombreCompleto }}</strong>
-              <span>{{ operario.username || operario.legajo }} · {{ operario.rolOperativo }}</span>
-            </div>
-            <div class="operator-meta"><span>Documento</span><strong>{{ operario.documentoNumero }}</strong></div>
-            <div class="operator-meta"><span>Teléfono</span><strong>{{ operario.telefono || 'Sin dato' }}</strong></div>
-            <div class="operator-meta"><span>Ingreso</span><strong>{{ operario.fechaIngreso ? (operario.fechaIngreso | date:'dd/MM/yyyy') : 'Sin dato' }}</strong></div>
-            <span class="badge" [class.badge-warning]="statusClass(operario.estado) === 'warning'" [class.badge-danger]="statusClass(operario.estado) === 'danger'">{{ operario.estado }}</span>
-            <div class="row-actions">
-              <button type="button" title="Editar" (click)="openOperarioModal(operario); $event.stopPropagation()">
-                <svg viewBox="0 0 24 24"><path d="m4 20 4-1 11-11-3-3L5 16l-1 4Z" /><path d="m14 6 3 3" /></svg>
-              </button>
-              <button type="button" title="Cambiar rol" (click)="selectOperario(operario); openModal('ROL'); $event.stopPropagation()">
-                <svg viewBox="0 0 24 24"><path d="M16 3h5v5" /><path d="m21 3-7 7" /><path d="M8 21H3v-5" /><path d="m3 21 7-7" /></svg>
-              </button>
-              <button class="danger-action" type="button" title="Eliminar" (click)="deleteOperario(operario); $event.stopPropagation()">
-                <svg viewBox="0 0 24 24"><path d="M5 7h14" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M6 7l1 14h10l1-14" /></svg>
-              </button>
-            </div>
-          </article>
-          <div class="empty-box" *ngIf="!data.operarios.length">Sin operarios cargados.</div>
+          <div class="trace-table-wrap" *ngIf="operariosPage().length; else noOperarios">
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Operario</th>
+                  <th>Usuario</th>
+                  <th>Documento</th>
+                  <th>Rol</th>
+                  <th>Teléfono</th>
+                  <th>Ingreso</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let operario of operariosPage()" [class.selected]="selectedId() === operario.id" (click)="selectOperario(operario)">
+                  <td><span class="row-selector" [class.active]="selectedId() === operario.id"></span></td>
+                  <td>
+                    <div class="table-identity">
+                      <span class="table-icon"><svg viewBox="0 0 24 24"><path d="M7 19v-2a5 5 0 0 1 10 0v2" /><path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0" /></svg></span>
+                      <div><strong>{{ operario.nombreCompleto }}</strong><small>{{ operario.contactoEmergencia || 'Sin contacto de emergencia' }}</small></div>
+                    </div>
+                  </td>
+                  <td><strong>{{ operario.username || operario.legajo }}</strong></td>
+                  <td>{{ operario.documentoNumero }}</td>
+                  <td>{{ operario.rolOperativo }}</td>
+                  <td>{{ operario.telefono || 'Sin dato' }}</td>
+                  <td>{{ operario.fechaIngreso ? (operario.fechaIngreso | date:'dd/MM/yyyy') : 'Sin dato' }}</td>
+                  <td><span class="badge" [class.badge-warning]="statusClass(operario.estado) === 'warning'" [class.badge-danger]="statusClass(operario.estado) === 'danger'">{{ operario.estado }}</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <button type="button" title="Editar" (click)="openOperarioModal(operario); $event.stopPropagation()">
+                        <svg viewBox="0 0 24 24"><path d="m4 20 4-1 11-11-3-3L5 16l-1 4Z" /><path d="m14 6 3 3" /></svg>
+                      </button>
+                      <button type="button" title="Cambiar rol" (click)="selectOperario(operario); openModal('ROL'); $event.stopPropagation()">
+                        <svg viewBox="0 0 24 24"><path d="M16 3h5v5" /><path d="m21 3-7 7" /><path d="M8 21H3v-5" /><path d="m3 21 7-7" /></svg>
+                      </button>
+                      <button class="danger-action" type="button" title="Eliminar" (click)="deleteOperario(operario); $event.stopPropagation()">
+                        <svg viewBox="0 0 24 24"><path d="M5 7h14" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M6 7l1 14h10l1-14" /></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #noOperarios>
+            <div class="empty-box">Sin operarios cargados.</div>
+          </ng-template>
         </div>
 
         <footer class="pagination">

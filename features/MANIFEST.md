@@ -17,10 +17,10 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 41
-- Realizadas: 16
+- Total de historias registradas: 42
+- Realizadas: 18
 - Parciales: 0
-- Pendientes: 23
+- Pendientes: 22
 - Saltadas: 2
 - Ultima actualizacion: 2026-06-05
 
@@ -42,7 +42,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 10 | `10_SALTEAR_maquinaria_gps_telemetria.md` | Maquinaria | Saltada | Feature marcada explicitamente como SALTEAR. |
 | 11 | `11_SALTEAR_maquinaria_consumo_combustible.md` | Maquinaria | Saltada | Feature marcada explicitamente como SALTEAR. |
 | 12 | `12_COMPLETA_operarios_gestion_administracion.md` | Operarios | Realizada | Gestion de operarios implementada con backend CRUD, documentacion, cambios de rol, dashboard y pantalla Angular premium. El alta genera usuario automaticamente con password inicial igual al username. |
-| 13 | `13_operarios_ordenes_trabajo.md` | Operarios | Pendiente | Ordenes de trabajo pendiente. |
+| 13 | `13_COMPLETA_operarios_ordenes_trabajo.md` | Operarios | Realizada | Ordenes de trabajo implementadas con backend, frontend, actividades, estados, aceptacion/rechazo e historial. Asignacion de maquinas excluida por pedido explicito. |
 | 14 | `14_operarios_asignaciones_disponibilidad.md` | Operarios | Pendiente | Asignaciones y disponibilidad pendiente. |
 | 15 | `15_inventario_insumos_agricolas.md` | Inventario | Pendiente | Inventario agricola de insumos pendiente; requerido para fitosanitarios avanzados. |
 | 16 | `16_inventario_stock_control.md` | Inventario | Pendiente | Stock y control centralizado pendiente. |
@@ -69,6 +69,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 37 | `37_COMPLETA_agricultura_control_plagas_fitosanitarios.md` | Agricultura | Realizada | Core operativo de plagas y aplicaciones fitosanitarias implementado: backend, web, mobile base, mapa con pins y tests. |
 | 38 | `38_COMPLETA_ganaderia_potreros_mapa_interactivo.md` | Ganaderia | Realizada | Pantalla de potreros con mapa interactivo, dibujo de multiples poligonos, popup de alta y persistencia implementada. |
 | 39 | `39_mobile_primer_login_cambio_password_obligatorio.md` | Seguridad/Mobile | Pendiente | Cambio obligatorio de contraseña en primer login mobile para usuarios creados automaticamente desde operarios. |
+| 40 | `40_COMPLETA_operaciones_calendario_operaciones.md` | Operaciones | Realizada | Calendario semanal operativo para ordenes de trabajo, con filtros, chips de operarios, popup de seguimiento, cambio de estado y registro de actividad. |
 
 ## Registro por Dominio
 
@@ -93,8 +94,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 36.
 
 ### Operarios
-- Realizadas: 12.
-- Pendientes: 13, 14.
+- Realizadas: 12, 13.
+- Pendientes: 14.
+
+### Operaciones
+- Realizadas: 40.
 
 ### Inventario
 - Pendientes: 15, 16.
@@ -117,6 +121,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 39.
 
 ## Ultimas Actualizaciones
+- 2026-06-06: Feature 40 realizada con Calendario de Operaciones semanal basado en ordenes de trabajo, filtros, chips, popup de detalle y acciones de seguimiento.
+- 2026-06-05: Feature 13 realizada con ordenes de trabajo, actividades, estados, aceptacion/rechazo e historial. Tarea 4 de asignacion de maquinas excluida.
 - 2026-06-05: Feature 39 creada para cambio obligatorio de contraseña en primer login mobile de usuarios generados desde operarios.
 - 2026-06-05: Feature 12 ajustada para eliminar jornadas y evaluaciones de operarios del backend, frontend y migracion.
 - 2026-06-05: Feature 12 ajustada para generar usuario automaticamente en alta de operario y eliminar legajo/email/contrato/jornada/area/ubicacion del registro.

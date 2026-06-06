@@ -17,6 +17,8 @@ import { MaquinariaMantenimientoPageComponent } from './pages/maquinaria-manteni
 import { PlagasPageComponent } from './pages/plagas-page/plagas-page.component';
 import { ReportesAgricolaPageComponent } from './pages/reportes-agricola-page/reportes-agricola-page.component';
 import { OperariosGestionPageComponent } from './pages/operarios-gestion-page/operarios-gestion-page.component';
+import { OrdenesTrabajoPageComponent } from './pages/ordenes-trabajo-page/ordenes-trabajo-page.component';
+import { OperacionesCalendarioPageComponent } from './pages/operaciones-calendario-page/operaciones-calendario-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -41,6 +43,8 @@ export const routes: Routes = [
       { path: 'maquinaria/inventario', component: MaquinariaInventarioPageComponent },
       { path: 'maquinaria/mantenimiento', component: MaquinariaMantenimientoPageComponent },
       { path: 'operarios/gestion', component: OperariosGestionPageComponent },
+      { path: 'operarios/ordenes', component: OrdenesTrabajoPageComponent },
+      { path: 'operaciones/calendario', component: OperacionesCalendarioPageComponent },
       { path: 'clima', component: ClimaPageComponent },
     ],
   },
