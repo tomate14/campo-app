@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { API_BASE_URL } from '../../core/services/api.config';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
+import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import type {
   AlertaReproductiva,
   Animal,
@@ -29,7 +31,7 @@ type SeguimientoEvento = {
 @Component({
   selector: 'app-ganaderia-reproduccion-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
   templateUrl: './ganaderia-reproduccion-page.component.html',
   styleUrl: './ganaderia-reproduccion-page.component.css',
 })
@@ -50,6 +52,15 @@ export class GanaderiaReproduccionPageComponent implements OnInit {
   protected readonly alertPageSize = 5;
   protected readonly recommendationPage = signal(1);
   protected readonly recommendationPageSize = 5;
+  protected readonly endpoints = {
+    animales: `${API_BASE_URL}/ganaderia/trazabilidad/animales`,
+    usuarios: `${API_BASE_URL}/operarios/gestion/operarios`,
+  };
+  protected readonly activeAnimalParams = { estado: 'ACTIVO' };
+  protected readonly activeUserParams = { estado: 'ACTIVO' };
+  protected readonly veterinarioParams = { estado: 'ACTIVO', rol: 'VETERINARIO' };
+  protected readonly hembraAllowedValues = { sexo: ['Femenino', 'HEMBRA', 'F'] };
+  protected readonly machoAllowedValues = { sexo: ['Masculino', 'MACHO', 'TORO', 'M'] };
 
   protected readonly hembras = computed(() => this.animales().filter((animal) => this.isFemale(animal)));
   protected readonly machos = computed(() => this.animales().filter((animal) => this.isMale(animal)));

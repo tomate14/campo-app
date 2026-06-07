@@ -285,11 +285,11 @@
       <ng-container *ngIf="aplicacionModalOpen()">
         <div class="modal-head"><h3>Registrar aplicacion</h3></div>
         <div class="form-grid">
-          <label><span>Animal</span><select [ngModel]="aplicacionForm().animalId" (ngModelChange)="aplicacionForm.update(f => ({ ...f, animalId: $event }))"><option value="">Seleccionar</option><option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option></select></label>
-          <label><span>Vacuna</span><select [ngModel]="aplicacionForm().vacunaId" (ngModelChange)="aplicacionForm.update(f => ({ ...f, vacunaId: $event }))"><option value="">Seleccionar</option><option *ngFor="let vacuna of vacunas()" [value]="vacuna.id">{{ vacuna.nombre }}</option></select></label>
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="aplicacionForm().animalId" (valueChange)="aplicacionForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Vacuna" placeholder="Buscar vacuna" [options]="vacunas()" valueField="id" labelField="nombre" [subtitleFields]="['codigo','laboratorio']" [searchFields]="['nombre','codigo','laboratorio']" [value]="aplicacionForm().vacunaId" (valueChange)="aplicacionForm.update(f => ({ ...f, vacunaId: $event }))"></app-remote-search-select>
           <label><span>Fecha aplicacion</span><input type="date" [ngModel]="aplicacionForm().fechaAplicacion" (ngModelChange)="aplicacionForm.update(f => ({ ...f, fechaAplicacion: $event }))" /></label>
           <label><span>Proxima dosis</span><input type="date" [ngModel]="aplicacionForm().proximaDosisFecha" (ngModelChange)="aplicacionForm.update(f => ({ ...f, proximaDosisFecha: $event }))" /></label>
-          <label><span>Operario</span><input [ngModel]="aplicacionForm().operario" (ngModelChange)="aplicacionForm.update(f => ({ ...f, operario: $event }))" /></label>
+          <app-remote-search-select label="Operario" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="nombreCompleto" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="aplicacionForm().operario" (valueChange)="aplicacionForm.update(f => ({ ...f, operario: $event }))"></app-remote-search-select>
           <label><span>Lote/marca</span><input [ngModel]="aplicacionForm().loteMarca" (ngModelChange)="aplicacionForm.update(f => ({ ...f, loteMarca: $event }))" /></label>
           <label><span>Costo aplicado</span><input type="number" [ngModel]="aplicacionForm().costoAplicado" (ngModelChange)="aplicacionForm.update(f => ({ ...f, costoAplicado: $event }))" /></label>
         </div>
@@ -303,13 +303,13 @@
       <ng-container *ngIf="tratamientoModalOpen()">
         <div class="modal-head"><h3>Registrar tratamiento</h3></div>
         <div class="form-grid">
-          <label><span>Animal</span><select [ngModel]="tratamientoForm().animalId" (ngModelChange)="tratamientoForm.update(f => ({ ...f, animalId: $event }))"><option value="">Seleccionar</option><option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option></select></label>
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="tratamientoForm().animalId" (valueChange)="tratamientoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
           <label><span>Medicamento</span><input [ngModel]="tratamientoForm().medicamento" (ngModelChange)="tratamientoForm.update(f => ({ ...f, medicamento: $event }))" /></label>
           <label><span>Fecha inicio</span><input type="date" [ngModel]="tratamientoForm().fechaInicio" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaInicio: $event }))" /></label>
           <label><span>Fecha fin</span><input type="date" [ngModel]="tratamientoForm().fechaFin" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaFin: $event }))" /></label>
           <label><span>Dosis</span><input [ngModel]="tratamientoForm().dosis" (ngModelChange)="tratamientoForm.update(f => ({ ...f, dosis: $event }))" /></label>
           <label><span>Via aplicacion</span><input [ngModel]="tratamientoForm().viaAplicacion" (ngModelChange)="tratamientoForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>
-          <label><span>Responsable</span><input [ngModel]="tratamientoForm().responsable" (ngModelChange)="tratamientoForm.update(f => ({ ...f, responsable: $event }))" /></label>
+          <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="nombreCompleto" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="tratamientoForm().responsable" (valueChange)="tratamientoForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
           <label><span>Costo</span><input type="number" [ngModel]="tratamientoForm().costo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, costo: $event }))" /></label>
           <label><span>Motivo</span><input [ngModel]="tratamientoForm().motivo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, motivo: $event }))" /></label>
         </div>
@@ -323,12 +323,12 @@
       <ng-container *ngIf="diagnosticoModalOpen()">
         <div class="modal-head"><h3>Registrar diagnostico</h3></div>
         <div class="form-grid">
-          <label><span>Animal</span><select [ngModel]="diagnosticoForm().animalId" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, animalId: $event }))"><option value="">Seleccionar</option><option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option></select></label>
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="diagnosticoForm().animalId" (valueChange)="diagnosticoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
           <label><span>Enfermedad</span><input [ngModel]="diagnosticoForm().enfermedad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, enfermedad: $event }))" /></label>
           <label><span>Fecha diagnostico</span><input type="date" [ngModel]="diagnosticoForm().fechaDiagnostico" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
           <label><span>Severidad</span><select [ngModel]="diagnosticoForm().severidad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, severidad: $event }))"><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
           <label><span>Estado</span><select [ngModel]="diagnosticoForm().estado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, estado: $event }))"><option value="ABIERTO">Abierto</option><option value="CONTROLADO">Controlado</option><option value="CERRADO">Cerrado</option></select></label>
-          <label><span>Veterinario</span><input [ngModel]="diagnosticoForm().veterinario" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, veterinario: $event }))" /></label>
+          <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [endpoint]="endpoints.operarios" [extraParams]="veterinarioParams" queryParam="search" valueField="nombreCompleto" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="diagnosticoForm().veterinario" (valueChange)="diagnosticoForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>
           <label><span>Tratamiento indicado</span><input [ngModel]="diagnosticoForm().tratamientoIndicado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, tratamientoIndicado: $event }))" /></label>
         </div>
         <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="diagnosticoForm().observaciones" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>

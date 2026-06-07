@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { API_BASE_URL } from '../../core/services/api.config';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
+import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import type {
   Animal,
   AplicacionVacuna,
@@ -20,7 +22,7 @@ type SanidadTab = 'APLICACIONES' | 'TRATAMIENTOS' | 'DIAGNOSTICOS';
 @Component({
   selector: 'app-ganaderia-sanidad-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
   templateUrl: './ganaderia-sanidad-page.component.html',
   styleUrl: './ganaderia-sanidad-page.component.css',
 })
@@ -51,6 +53,12 @@ export class GanaderiaSanidadPageComponent implements OnInit {
   protected readonly alertasCollapsed = signal(false);
   protected readonly catalogCollapsed = signal(false);
   protected readonly registrosCollapsed = signal(false);
+  protected readonly endpoints = {
+    animales: `${API_BASE_URL}/ganaderia/trazabilidad/animales`,
+    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
+  };
+  protected readonly activeOperarioParams = { estado: 'ACTIVO' };
+  protected readonly veterinarioParams = { estado: 'ACTIVO', rol: 'VETERINARIO' };
 
   protected readonly vacunaForm = signal<VacunaCatalogoRequest>({
     codigo: '',

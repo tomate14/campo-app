@@ -194,8 +194,31 @@
         <div class="modal-head"><h3>Orden de trabajo</h3></div>
         <div class="form-grid">
           <label><span>Título</span><input [ngModel]="ordenForm().titulo" (ngModelChange)="ordenForm.update(f => ({ ...f, titulo: $event }))" /></label>
-          <label><span>Operario</span><select [ngModel]="ordenForm().operarioId" (ngModelChange)="ordenForm.update(f => ({ ...f, operarioId: $event }))"><option value="">Seleccionar</option><option *ngFor="let operario of operarios()" [value]="operario.id">{{ operario.nombreCompleto }}</option></select></label>
-          <label><span>Lote</span><select [ngModel]="ordenForm().loteId" (ngModelChange)="ordenForm.update(f => ({ ...f, loteId: $event }))"><option value="">Sin lote</option><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
+          <app-remote-search-select
+            label="Operario"
+            placeholder="Buscar operario"
+            [endpoint]="endpoints.operarios"
+            [extraParams]="activeOperarioParams"
+            queryParam="search"
+            valueField="id"
+            labelField="nombreCompleto"
+            [subtitleFields]="['rolOperativo', 'documentoNumero']"
+            [searchFields]="['nombreCompleto', 'username', 'documentoNumero', 'rolOperativo']"
+            [value]="ordenForm().operarioId"
+            (valueChange)="ordenForm.update(f => ({ ...f, operarioId: $event }))"
+          ></app-remote-search-select>
+          <app-remote-search-select
+            label="Lote"
+            placeholder="Buscar lote"
+            [endpoint]="endpoints.lotes"
+            queryParam="nombre"
+            valueField="id"
+            labelField="nombre"
+            [subtitleFields]="['cultivo', 'temporada']"
+            [searchFields]="['nombre', 'cultivo', 'temporada']"
+            [value]="ordenForm().loteId"
+            (valueChange)="ordenForm.update(f => ({ ...f, loteId: $event }))"
+          ></app-remote-search-select>
           <label><span>Zona</span><input [ngModel]="ordenForm().zona" (ngModelChange)="ordenForm.update(f => ({ ...f, zona: $event }))" /></label>
           <label><span>Prioridad</span><select [ngModel]="ordenForm().prioridad" (ngModelChange)="ordenForm.update(f => ({ ...f, prioridad: $event }))"><option>BAJA</option><option>MEDIA</option><option>ALTA</option><option>URGENTE</option></select></label>
           <label><span>Estado</span><select [ngModel]="ordenForm().estado" (ngModelChange)="ordenForm.update(f => ({ ...f, estado: $event }))"><option>PENDIENTE</option><option>EN_PROGRESO</option><option>COMPLETADA</option><option>CANCELADA</option><option>RECHAZADA</option></select></label>
@@ -222,7 +245,19 @@
       <ng-container *ngIf="modal() === 'ACEPTAR'">
         <div class="modal-head"><h3>Aceptar orden</h3></div>
         <div class="form-grid">
-          <label><span>Responsable</span><input [ngModel]="cierreForm().responsable" (ngModelChange)="cierreForm.update(f => ({ ...f, responsable: $event }))" /></label>
+          <app-remote-search-select
+            label="Responsable"
+            placeholder="Buscar responsable"
+            [endpoint]="endpoints.operarios"
+            [extraParams]="activeOperarioParams"
+            queryParam="search"
+            valueField="nombreCompleto"
+            labelField="nombreCompleto"
+            [subtitleFields]="['rolOperativo', 'documentoNumero']"
+            [searchFields]="['nombreCompleto', 'username', 'documentoNumero', 'rolOperativo']"
+            [value]="cierreForm().responsable"
+            (valueChange)="cierreForm.update(f => ({ ...f, responsable: $event }))"
+          ></app-remote-search-select>
           <label><span>Duración real (min)</span><input type="number" [ngModel]="cierreForm().duracionRealMin" (ngModelChange)="cierreForm.update(f => ({ ...f, duracionRealMin: $event }))" /></label>
         </div>
         <label class="textarea-field"><span>Resultado</span><textarea [ngModel]="cierreForm().resultado" (ngModelChange)="cierreForm.update(f => ({ ...f, resultado: $event }))"></textarea></label>
@@ -232,7 +267,19 @@
       <ng-container *ngIf="modal() === 'RECHAZAR'">
         <div class="modal-head"><h3>Rechazar orden</h3></div>
         <div class="form-grid">
-          <label><span>Responsable</span><input [ngModel]="cierreForm().responsable" (ngModelChange)="cierreForm.update(f => ({ ...f, responsable: $event }))" /></label>
+          <app-remote-search-select
+            label="Responsable"
+            placeholder="Buscar responsable"
+            [endpoint]="endpoints.operarios"
+            [extraParams]="activeOperarioParams"
+            queryParam="search"
+            valueField="nombreCompleto"
+            labelField="nombreCompleto"
+            [subtitleFields]="['rolOperativo', 'documentoNumero']"
+            [searchFields]="['nombreCompleto', 'username', 'documentoNumero', 'rolOperativo']"
+            [value]="cierreForm().responsable"
+            (valueChange)="cierreForm.update(f => ({ ...f, responsable: $event }))"
+          ></app-remote-search-select>
           <label><span>Duración real (min)</span><input type="number" [ngModel]="cierreForm().duracionRealMin" (ngModelChange)="cierreForm.update(f => ({ ...f, duracionRealMin: $event }))" /></label>
         </div>
         <label class="textarea-field"><span>Motivo</span><textarea [ngModel]="cierreForm().motivo" (ngModelChange)="cierreForm.update(f => ({ ...f, motivo: $event }))"></textarea></label>

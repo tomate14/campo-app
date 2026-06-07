@@ -1,0 +1,107 @@
+.remote-select {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #9bb0cc;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.remote-select__control {
+  position: relative;
+}
+
+.remote-select__control.disabled {
+  opacity: .58;
+}
+
+.remote-select input {
+  width: 100%;
+  border: 1px solid rgba(110, 168, 255, .16);
+  border-radius: 14px;
+  background: rgba(7, 15, 31, .58);
+  color: #f8fbff;
+  padding: 13px 42px 13px 14px;
+  outline: none;
+}
+
+.remote-select input:focus {
+  border-color: rgba(159, 232, 112, .42);
+  box-shadow: 0 0 0 3px rgba(159, 232, 112, .08);
+}
+
+.remote-select__clear {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(110, 168, 255, .16);
+  border-radius: 10px;
+  background: rgba(12, 31, 58, .9);
+  color: #a6b0cf;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.remote-select__clear svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.remote-select__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 1800;
+  max-height: 240px;
+  overflow: auto;
+  border: 1px solid rgba(159, 232, 112, .18);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(159, 232, 112, .09), transparent 36%),
+    rgba(8, 18, 37, .98);
+  box-shadow: 0 18px 44px rgba(2, 8, 23, .42), 0 0 28px rgba(159, 232, 112, .08);
+  padding: 6px;
+}
+
+.remote-select__option {
+  width: 100%;
+  display: grid;
+  gap: 4px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #f8fbff;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.remote-select__option:hover {
+  background: rgba(159, 232, 112, .1);
+}
+
+.remote-select__option strong {
+  color: #fff;
+  font-size: 13px;
+}
+
+.remote-select__option small,
+.remote-select__state {
+  color: #8ea0bb;
+  font-size: 12px;
+}
+
+.remote-select__state {
+  padding: 12px;
+}

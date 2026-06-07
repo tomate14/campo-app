@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
+import { API_BASE_URL } from '../../core/services/api.config'
 import { AgricolaService } from '../../core/services/agricola.service'
 import { OperariosService } from '../../core/services/operarios.service'
 import { OrdenesTrabajoService } from '../../core/services/ordenes-trabajo.service'
+import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
 import type { Lote } from '../../core/models/agricola.models'
 import type { Operario } from '../../core/models/operarios.models'
 import type {
@@ -21,7 +23,7 @@ type OrdenModal = 'ORDEN' | 'ACTIVIDAD' | 'ACEPTAR' | 'RECHAZAR' | null
 @Component({
   selector: 'app-ordenes-trabajo-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
   templateUrl: './ordenes-trabajo-page.component.html',
   styleUrl: './ordenes-trabajo-page.component.css',
 })
@@ -29,6 +31,12 @@ export class OrdenesTrabajoPageComponent implements OnInit {
   private readonly ordenesService = inject(OrdenesTrabajoService)
   private readonly operariosService = inject(OperariosService)
   private readonly agricolaService = inject(AgricolaService)
+
+  protected readonly endpoints = {
+    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
+    lotes: `${API_BASE_URL}/agricola/lotes`,
+  }
+  protected readonly activeOperarioParams = { estado: 'ACTIVO' }
 
   protected readonly resumen = signal<OrdenTrabajoResumen | null>(null)
   protected readonly operarios = signal<Operario[]>([])

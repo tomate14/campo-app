@@ -6,6 +6,8 @@ import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
 import { forkJoin } from 'rxjs';
 import { AgricolaService } from '../../core/services/agricola.service';
+import { API_BASE_URL } from '../../core/services/api.config';
+import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import type {
   AplicacionFitosanitaria,
   AplicacionFitosanitariaRequest,
@@ -37,7 +39,7 @@ type HistorialPlagaEvento = {
 @Component({
   selector: 'app-plagas-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxMapLibreGLModule],
+  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent],
   templateUrl: './plagas-page.component.html',
   styleUrl: './plagas-page.component.css',
 })
@@ -64,6 +66,8 @@ export class PlagasPageComponent {
   protected readonly estados: EstadoDeteccionPlaga[] = ['ABIERTA', 'EN_TRATAMIENTO', 'CONTROLADA', 'CERRADA'];
   protected readonly tipos: TipoPlaga[] = ['PLAGA', 'ENFERMEDAD', 'MALEZA'];
   protected readonly resultados: ResultadoSeguimientoPlaga[] = ['SIN_CAMBIOS', 'MEJORA', 'EMPEORA', 'CONTROLADA'];
+  protected readonly operariosEndpoint = `${API_BASE_URL}/operarios/gestion/operarios`;
+  protected readonly activeOperarioParams = { estado: 'ACTIVO' };
 
   protected readonly filters = signal<{ loteId?: string; cultivo?: string; severidad?: SeveridadPlaga; estado?: EstadoDeteccionPlaga }>({});
   protected readonly deteccionForm = signal<DeteccionPlagaRequest>({ loteId: '', catalogoPlagaId: '', severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });

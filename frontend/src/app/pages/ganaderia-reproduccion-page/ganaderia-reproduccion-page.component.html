@@ -132,38 +132,38 @@
         </div>
 
         <div class="form-grid" *ngIf="mode() === 'MONTA'">
-          <label><span>Vaca</span><select [ngModel]="montaForm().vacaId" (ngModelChange)="montaForm.update(f => ({ ...f, vacaId: $event }))"><option *ngFor="let animal of hembras()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
-          <label><span>Toro</span><select [ngModel]="montaForm().toroId" (ngModelChange)="montaForm.update(f => ({ ...f, toroId: $event }))"><option *ngFor="let animal of machos()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="hembraAllowedValues" [value]="montaForm().vacaId" (valueChange)="montaForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Toro" placeholder="Buscar toro por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="machoAllowedValues" [value]="montaForm().toroId" (valueChange)="montaForm.update(f => ({ ...f, toroId: $event }))"></app-remote-search-select>
           <label><span>Fecha</span><input type="date" [ngModel]="montaForm().fecha" (ngModelChange)="montaForm.update(f => ({ ...f, fecha: $event }))" /></label>
           <label><span>Resultado</span><select [ngModel]="montaForm().resultado" (ngModelChange)="montaForm.update(f => ({ ...f, resultado: $event }))"><option value="PENDIENTE">Pendiente</option><option value="PRENADA">Preñada</option><option value="FALLIDA">Fallida</option></select></label>
         </div>
 
         <div class="form-grid" *ngIf="mode() === 'IA'">
-          <label><span>Vaca</span><select [ngModel]="inseminacionForm().vacaId" (ngModelChange)="inseminacionForm.update(f => ({ ...f, vacaId: $event }))"><option *ngFor="let animal of hembras()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="hembraAllowedValues" [value]="inseminacionForm().vacaId" (valueChange)="inseminacionForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
           <label><span>Fecha</span><input type="date" [ngModel]="inseminacionForm().fecha" (ngModelChange)="inseminacionForm.update(f => ({ ...f, fecha: $event }))" /></label>
           <label><span>Genetica usada</span><input [ngModel]="inseminacionForm().geneticaUsada" (ngModelChange)="inseminacionForm.update(f => ({ ...f, geneticaUsada: $event }))" /></label>
-          <label><span>Tecnico</span><input [ngModel]="inseminacionForm().tecnico" (ngModelChange)="inseminacionForm.update(f => ({ ...f, tecnico: $event }))" /></label>
+          <app-remote-search-select label="Tecnico" placeholder="Buscar usuario tecnico" [endpoint]="endpoints.usuarios" [extraParams]="activeUserParams" queryParam="search" valueField="nombreCompleto" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="inseminacionForm().tecnico" (valueChange)="inseminacionForm.update(f => ({ ...f, tecnico: $event }))"></app-remote-search-select>
           <label><span>Costo</span><input type="number" [ngModel]="inseminacionForm().costo" (ngModelChange)="inseminacionForm.update(f => ({ ...f, costo: $event }))" /></label>
         </div>
 
         <div class="form-grid" *ngIf="mode() === 'PRENEZ'">
-          <label><span>Vaca</span><select [ngModel]="prenezForm().vacaId" (ngModelChange)="prenezForm.update(f => ({ ...f, vacaId: $event }))"><option *ngFor="let animal of hembras()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="hembraAllowedValues" [value]="prenezForm().vacaId" (valueChange)="prenezForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
           <label><span>Diagnostico</span><input type="date" [ngModel]="prenezForm().fechaDiagnostico" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
           <label><span>Estado</span><select [ngModel]="prenezForm().estado" (ngModelChange)="prenezForm.update(f => ({ ...f, estado: $event }))"><option value="PRENADA">Preñada</option><option value="VACIA">Vacía</option><option value="CONTROL">Control</option></select></label>
           <label><span>Parto estimado</span><input type="date" [ngModel]="prenezForm().fechaEstimadaParto" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaEstimadaParto: $event }))" /></label>
           <label><span>Nivel de riesgo del parto</span><select [ngModel]="prenezForm().nivelRiesgoParto" (ngModelChange)="prenezForm.update(f => ({ ...f, nivelRiesgoParto: $event }))"><option value="BAJO">Bajo</option><option value="MEDIO">Medio</option><option value="ALTO">Alto</option></select></label>
-          <label><span>Veterinario</span><input [ngModel]="prenezForm().veterinario" (ngModelChange)="prenezForm.update(f => ({ ...f, veterinario: $event }))" /></label>
+          <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [endpoint]="endpoints.usuarios" [extraParams]="veterinarioParams" queryParam="search" valueField="nombreCompleto" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="prenezForm().veterinario" (valueChange)="prenezForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>
         </div>
 
         <div class="form-grid" *ngIf="mode() === 'PARTO'">
-          <label><span>Madre</span><select [ngModel]="partoForm().madreId" (ngModelChange)="partoForm.update(f => ({ ...f, madreId: $event }))"><option *ngFor="let animal of hembras()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
-          <label><span>Ternero</span><select [ngModel]="partoForm().terneroId" (ngModelChange)="partoForm.update(f => ({ ...f, terneroId: $event }))"><option value="">Sin asociar</option><option *ngFor="let animal of animales()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="hembraAllowedValues" [value]="partoForm().madreId" (valueChange)="partoForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Ternero" placeholder="Buscar ternero por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="partoForm().terneroId" (valueChange)="partoForm.update(f => ({ ...f, terneroId: $event }))"></app-remote-search-select>
           <label><span>Fecha</span><input type="date" [ngModel]="partoForm().fecha" (ngModelChange)="partoForm.update(f => ({ ...f, fecha: $event }))" /></label>
           <label><span>Viabilidad</span><select [ngModel]="partoForm().viabilidadTernero" (ngModelChange)="partoForm.update(f => ({ ...f, viabilidadTernero: $event }))"><option value="VIABLE">Viable</option><option value="NO_VIABLE">No viable</option><option value="OBSERVACION">Observacion</option></select></label>
         </div>
 
         <div class="form-grid" *ngIf="mode() === 'INDICE'">
-          <label><span>Animal</span><select [ngModel]="indiceForm().animalId" (ngModelChange)="indiceForm.update(f => ({ ...f, animalId: $event }))"><option *ngFor="let animal of animales()" [value]="animal.id">{{ animalLabel(animal) }}</option></select></label>
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="indiceForm().animalId" (valueChange)="indiceForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
           <label><span>Fecha</span><input type="date" [ngModel]="indiceForm().fechaEvaluacion" (ngModelChange)="indiceForm.update(f => ({ ...f, fechaEvaluacion: $event }))" /></label>
           <label><span>EPD</span><input type="number" [ngModel]="indiceForm().epd" (ngModelChange)="indiceForm.update(f => ({ ...f, epd: $event }))" /></label>
           <label><span>DEP</span><input type="number" [ngModel]="indiceForm().dep" (ngModelChange)="indiceForm.update(f => ({ ...f, dep: $event }))" /></label>
@@ -209,7 +209,7 @@
             </div>
           </div>
           <div class="form-grid one genealogy-selector">
-            <label><span>Animal</span><select [ngModel]="selectedGenealogiaId()" (ngModelChange)="selectedGenealogiaId.set($event); loadGenealogia()"><option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option></select></label>
+            <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="selectedGenealogiaId()" (valueChange)="selectedGenealogiaId.set($event); loadGenealogia()"></app-remote-search-select>
           </div>
           <div class="genealogy-tree" *ngIf="genealogia() as tree">
             <div class="genealogy-row genealogy-row--root">

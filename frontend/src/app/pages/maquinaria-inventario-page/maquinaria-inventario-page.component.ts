@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
+import { API_BASE_URL } from '../../core/services/api.config'
 import { MaquinariaService } from '../../core/services/maquinaria.service'
+import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
 import type {
   DocumentoMaquinariaRequest,
   EstadoMaquinariaRequest,
@@ -16,7 +18,7 @@ type MaquinariaModal = 'MAQUINA' | 'USO' | 'DOCUMENTO' | 'ESTADO' | null
 @Component({
   selector: 'app-maquinaria-inventario-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
   templateUrl: './maquinaria-inventario-page.component.html',
   styleUrl: './maquinaria-inventario-page.component.css',
 })
@@ -31,6 +33,12 @@ export class MaquinariaInventarioPageComponent implements OnInit {
   protected readonly modal = signal<MaquinariaModal>(null)
   protected readonly currentPage = signal(1)
   protected readonly pageSize = 5
+  protected readonly endpoints = {
+    maquinas: `${API_BASE_URL}/maquinaria/inventario/maquinas`,
+    lotes: `${API_BASE_URL}/agricola/lotes`,
+    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
+  }
+  protected readonly activeOperarioParams = { estado: 'ACTIVO' }
 
   protected readonly filters = signal({ tipo: '', estado: '', ubicacion: '' })
 

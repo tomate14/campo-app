@@ -1,0 +1,25 @@
+<label class="remote-select">
+  <span *ngIf="label">{{ label }}</span>
+  <div class="remote-select__control" [class.disabled]="disabled">
+    <input
+      type="text"
+      [disabled]="disabled"
+      [placeholder]="placeholder"
+      [ngModel]="query()"
+      (focus)="open.set(true); load(query())"
+      (ngModelChange)="onSearch($event)"
+    />
+    <button class="remote-select__clear" type="button" *ngIf="query() && !disabled" (click)="clear()" aria-label="Limpiar seleccion">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12" /><path d="M18 6 6 18" /></svg>
+    </button>
+  </div>
+
+  <div class="remote-select__menu" *ngIf="open() && !disabled">
+    <div class="remote-select__state" *ngIf="loading()">Buscando...</div>
+    <button class="remote-select__option" type="button" *ngFor="let item of items()" (click)="select(item)">
+      <strong>{{ itemLabel(item) }}</strong>
+      <small *ngIf="itemSubtitle(item)">{{ itemSubtitle(item) }}</small>
+    </button>
+    <div class="remote-select__state" *ngIf="!loading() && !items().length">Sin coincidencias.</div>
+  </div>
+</label>

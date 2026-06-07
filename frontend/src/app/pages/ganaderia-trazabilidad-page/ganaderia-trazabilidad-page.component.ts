@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
+import { API_BASE_URL } from '../../core/services/api.config';
+import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import type {
   Animal,
   AnimalDetalle,
@@ -13,7 +15,7 @@ import type {
 @Component({
   selector: 'app-ganaderia-trazabilidad-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
   templateUrl: './ganaderia-trazabilidad-page.component.html',
   styleUrl: './ganaderia-trazabilidad-page.component.css',
 })
@@ -38,6 +40,30 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     { value: 'Femenino', label: 'Femenino' },
     { value: 'Masculino', label: 'Masculino' },
   ];
+  protected readonly endpoints = {
+    animales: `${API_BASE_URL}/ganaderia/trazabilidad/animales`,
+    potreros: `${API_BASE_URL}/ganaderia/potreros`,
+    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
+  };
+  protected readonly razaOptions = [
+    'Aberdeen Angus',
+    'Angus Negro',
+    'Angus Colorado',
+    'Hereford',
+    'Braford',
+    'Brangus',
+    'Shorthorn',
+    'Holando Argentino',
+    'Jersey',
+    'Limousin',
+    'Charolais',
+    'Bonsmara',
+  ].map((label) => ({ value: label, label }));
+  protected readonly madreAllowedValues = { sexo: ['Femenino', 'HEMBRA', 'F'] };
+  protected readonly padreAllowedValues = { sexo: ['Masculino', 'MACHO', 'TORO', 'M'] };
+  protected readonly activeAnimalParams = { estado: 'ACTIVO' };
+  protected readonly veterinarioParams = { estado: 'ACTIVO', rol: 'VETERINARIO' };
+  protected readonly activeOperarioParams = { estado: 'ACTIVO' };
 
   protected readonly animalForm = signal<AnimalRequest>({
     caravana: '',
@@ -47,7 +73,6 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     fechaCompra: '',
     pesoActualKg: undefined,
     rfidCodigo: '',
-    qrCodigo: '',
     estado: 'ACTIVO',
     ubicacionActual: '',
     madreId: '',
@@ -187,7 +212,6 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       fechaCompra: '',
       pesoActualKg: undefined,
       rfidCodigo: '',
-      qrCodigo: '',
       estado: 'ACTIVO',
       ubicacionActual: '',
       madreId: '',
@@ -369,7 +393,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       fechaNacimiento: form.fechaNacimiento || undefined,
       fechaCompra: form.fechaCompra || undefined,
       rfidCodigo: form.rfidCodigo || undefined,
-      qrCodigo: form.qrCodigo || undefined,
+      qrCodigo: undefined,
       ubicacionActual: form.ubicacionActual || undefined,
       observaciones: form.observaciones || undefined,
     };

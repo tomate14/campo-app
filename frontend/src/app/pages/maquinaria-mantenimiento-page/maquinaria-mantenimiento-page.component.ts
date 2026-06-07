@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
+import { API_BASE_URL } from '../../core/services/api.config'
 import { MaquinariaService } from '../../core/services/maquinaria.service'
+import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
 import type {
   IntervencionMantenimientoRequest,
   Maquinaria,
@@ -18,7 +20,7 @@ type MaintenanceTab = 'PROGRAMADAS' | 'INTERVENCIONES' | 'PLANES' | 'ALERTAS'
 @Component({
   selector: 'app-maquinaria-mantenimiento-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
   templateUrl: './maquinaria-mantenimiento-page.component.html',
   styleUrl: './maquinaria-mantenimiento-page.component.css',
 })
@@ -35,6 +37,11 @@ export class MaquinariaMantenimientoPageComponent implements OnInit {
   protected readonly currentPage = signal(1)
   protected readonly pageSize = 3
   protected readonly filters = signal({ maquinariaId: '', estado: '' })
+  protected readonly endpoints = {
+    maquinas: `${API_BASE_URL}/maquinaria/inventario/maquinas`,
+    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
+  }
+  protected readonly activeOperarioParams = { estado: 'ACTIVO' }
 
   protected readonly planForm = signal<PlanMantenimientoRequest>({
     maquinariaId: '',

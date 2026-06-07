@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
+import { API_BASE_URL } from '../../core/services/api.config'
 import { OperariosService } from '../../core/services/operarios.service'
+import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
 import type {
   Operario,
   OperarioDocumentoRequest,
@@ -15,7 +17,7 @@ type OperarioModal = 'OPERARIO' | 'DOCUMENTO' | 'ROL' | null
 @Component({
   selector: 'app-operarios-gestion-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
   templateUrl: './operarios-gestion-page.component.html',
   styleUrl: './operarios-gestion-page.component.css',
 })
@@ -32,6 +34,8 @@ export class OperariosGestionPageComponent implements OnInit {
   protected readonly pageSize = 8
   protected readonly filters = signal({ search: '', estado: '', rol: '' })
   protected readonly editingId = signal<string | null>(null)
+  protected readonly operariosEndpoint = `${API_BASE_URL}/operarios/gestion/operarios`
+  protected readonly activeOperarioParams = { estado: 'ACTIVO' }
 
   protected readonly operarioForm = signal<OperarioRequest>(this.emptyOperario())
   protected readonly documentoForm = signal<OperarioDocumentoRequest>(this.emptyDocumento())

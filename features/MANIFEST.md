@@ -18,11 +18,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 42
-- Realizadas: 18
+- Realizadas: 19
 - Parciales: 0
-- Pendientes: 22
+- Pendientes: 21
 - Saltadas: 2
-- Ultima actualizacion: 2026-06-05
+- Ultima actualizacion: 2026-06-06
 
 ## Registro por Feature
 
@@ -60,7 +60,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 28 | `28_clima_pronostico_15_dias_cache_dashboard.md` | Clima | Pendiente | Pronostico real 15 dias, cache/offline cliente y dashboard climatico avanzado pendiente. |
 | 29 | `29_agricultura_prediccion_ml_avanzada.md` | Agricultura | Pendiente | Prediccion ML agricola avanzada pendiente. |
 | 30 | `30_ganaderia_integracion_senasa_rfid_offline.md` | Ganaderia | Pendiente | Integracion SENASA/RFID/offline avanzada pendiente. |
-| 31 | `31_ganaderia_selectores_potreros_personal.md` | Frontend/Ganaderia | Pendiente | Componente generico select-buscador, potreros, personal, veterinarios y responsables pendiente. Incluye responsable de plagas. |
+| 31 | `31_COMPLETA_ganaderia_selectores_potreros_personal.md` | Frontend/Ganaderia | Realizada | Componente generico select-buscador implementado y aplicado en animales, potreros, personal, veterinarios, responsables, plagas, sanidad y alimentacion. |
 | 32 | `32_ganaderia_sanidad_notificaciones_offline_mobile.md` | Ganaderia | Pendiente | Sanidad avanzada: notificaciones, offline/mobile y selectores en registros pendiente. |
 | 33 | `33_ganaderia_reproduccion_offline_laboratorio_genetica_avanzada.md` | Ganaderia | Pendiente | Reproduccion avanzada offline/laboratorio/genetica pendiente. |
 | 34 | `34_ganaderia_ficha_tecnica_reproductiva_avanzada.md` | Ganaderia | Pendiente | Ficha tecnica reproductiva avanzada pendiente. |
@@ -84,9 +84,9 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 28.
 
 ### Ganaderia
-- Realizadas: 04, 05, 06, 07, 38.
+- Realizadas: 04, 05, 06, 07, 31, 38.
 - Parciales: ninguna.
-- Pendientes: 30, 31, 32, 33, 34, 35.
+- Pendientes: 30, 32, 33, 34, 35.
 
 ### Maquinaria
 - Realizadas: 08, 09.
@@ -121,6 +121,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 39.
 
 ## Ultimas Actualizaciones
+- 2026-06-06: Feature 31 realizada con componente generico de select buscador aplicado a animales, potreros, operarios, veterinarios, responsables, plagas, sanidad y alimentacion.
 - 2026-06-06: Feature 40 realizada con Calendario de Operaciones semanal basado en ordenes de trabajo, filtros, chips, popup de detalle y acciones de seguimiento.
 - 2026-06-05: Feature 13 realizada con ordenes de trabajo, actividades, estados, aceptacion/rechazo e historial. Tarea 4 de asignacion de maquinas excluida.
 - 2026-06-05: Feature 39 creada para cambio obligatorio de contraseña en primer login mobile de usuarios generados desde operarios.

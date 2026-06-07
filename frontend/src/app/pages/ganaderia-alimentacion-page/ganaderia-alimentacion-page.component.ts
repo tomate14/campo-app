@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { API_BASE_URL } from '../../core/services/api.config';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
+import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import type {
   AlimentacionResumen,
   Animal,
@@ -15,7 +17,7 @@ type AlimentacionTab = 'DIETAS' | 'SUMINISTROS' | 'PESAJES' | 'ALERTAS';
 @Component({
   selector: 'app-ganaderia-alimentacion-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
   templateUrl: './ganaderia-alimentacion-page.component.html',
   styleUrl: './ganaderia-alimentacion-page.component.css',
 })
@@ -31,6 +33,26 @@ export class GanaderiaAlimentacionPageComponent implements OnInit {
   protected readonly modal = signal<'DIETA' | 'SUMINISTRO' | 'PESAJE' | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = 3;
+  protected readonly endpoints = {
+    animales: `${API_BASE_URL}/ganaderia/trazabilidad/animales`,
+    potreros: `${API_BASE_URL}/ganaderia/potreros`,
+    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
+  };
+  protected readonly activeOperarioParams = { estado: 'ACTIVO' };
+  protected readonly metodoPesajeOptions = [
+    { value: 'Balanza electronica', label: 'Balanza electronica' },
+    { value: 'Balanza mecanica', label: 'Balanza mecanica' },
+    { value: 'Cinta bovinometrica', label: 'Cinta bovinometrica' },
+    { value: 'Estimacion visual', label: 'Estimacion visual' },
+  ];
+  protected readonly alimentoOptions = [
+    { value: 'Maiz partido', label: 'Maiz partido', tipo: 'Energetico' },
+    { value: 'Silo de maiz', label: 'Silo de maiz', tipo: 'Voluminoso' },
+    { value: 'Heno de alfalfa', label: 'Heno de alfalfa', tipo: 'Fibra/proteina' },
+    { value: 'Expeller de soja', label: 'Expeller de soja', tipo: 'Proteico' },
+    { value: 'Nucleo mineral', label: 'Nucleo mineral', tipo: 'Mineral' },
+    { value: 'Sales minerales', label: 'Sales minerales', tipo: 'Mineral' },
+  ];
 
   protected readonly dietaForm = signal<DietaRequest>({
     nombre: '',
