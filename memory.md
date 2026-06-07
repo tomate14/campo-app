@@ -63,7 +63,6 @@ JWT_SECRET                   # mÃ­nimo 256 bits
 JWT_ACCESS_EXPIRATION_MS     # default 900000 (15 min)
 JWT_REFRESH_EXPIRATION_MS    # default 604800000 (7 dÃ­as)
 ```
-
 ---
 
 ## Features Pendientes

@@ -151,6 +151,46 @@
   color: #9fe870;
   font-size: 11px;
 }
+.kpi-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: -8px;
+}
+.kpi-carousel button {
+  width: 42px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  color: #dbeafe;
+  background: rgba(7, 15, 31, 0.52);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.kpi-carousel button:hover:not(:disabled) {
+  border-color: rgba(159, 232, 112, 0.42);
+  box-shadow: 0 0 18px rgba(159, 232, 112, 0.08);
+}
+.kpi-carousel button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+.kpi-carousel svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.kpi-carousel span {
+  color: #8ea0bb;
+  font-size: 13px;
+  font-weight: 700;
+}
 .layout { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 18px; }
 .panel, .premium-band { padding: 20px; }
 .premium-band, .panel {
@@ -420,6 +460,17 @@
 .birth-pagination button.active { color: #081225; background: #9fe870; border-color: #9fe870; box-shadow: 0 0 18px rgba(159, 232, 112, 0.22); }
 .birth-pagination button:disabled { opacity: 0.42; cursor: not-allowed; }
 .birth-pagination span { color: #8ea0bb; font-size: 13px; margin-left: 8px; }
+.birth-pagination .carousel-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 112px;
+  justify-content: center;
+}
+.birth-pagination .carousel-arrow svg {
+  width: 18px;
+  height: 18px;
+}
 .birth-alerts__footer {
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr) auto;
@@ -921,6 +972,24 @@
 .events-table__empty {
   padding: 18px 0 4px;
   color: #8ea0bb;
+}
+
+@media (max-width: 1366px) and (min-width: 1081px) {
+  .birth-alerts__grid,
+  .cross-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .birth-card,
+  .cross-card {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 1600px) and (min-width: 1081px) {
+  .reproduction-kpis {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 1080px) {

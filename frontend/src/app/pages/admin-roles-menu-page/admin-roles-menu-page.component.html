@@ -1,0 +1,147 @@
+<div class="roles-menu-page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Campo App · Seguridad</p>
+      <h2>Roles y menú</h2>
+      <p>Definí qué opciones de navegación puede ver cada rol operativo del sistema.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-secondary" type="button" (click)="openRoleModal()">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+        Nuevo rol
+      </button>
+      <button class="btn-secondary" type="button" (click)="load()">
+        <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5" /><path d="M20 4v6h-6" /><path d="M20 12a8 8 0 0 1-14 5" /><path d="M4 20v-6h6" /></svg>
+        Actualizar
+      </button>
+      <button class="btn-primary" type="button" [disabled]="saving() || !selectedRole()" (click)="save()">
+        <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+        Guardar cambios
+      </button>
+    </div>
+  </header>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="success-box" *ngIf="successMessage()">{{ successMessage() }}</div>
+  <div class="empty-box" *ngIf="loading()">Cargando permisos de menú...</div>
+
+  <ng-container *ngIf="!loading()">
+    <section class="kpi-grid">
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-8 0v2" /><circle cx="12" cy="7" r="4" /></svg></div>
+        <div class="kpi-copy"><span>Roles</span><small>Perfiles disponibles</small></div>
+        <strong>{{ matrix().length }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon blue"><svg viewBox="0 0 24 24"><path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" /></svg></div>
+        <div class="kpi-copy"><span>Opciones</span><small>Menú total</small></div>
+        <strong>{{ totalOptions() }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M20 7 9 18l-5-5" /></svg></div>
+        <div class="kpi-copy"><span>Visibles</span><small>Rol seleccionado</small></div>
+        <strong>{{ enabledCount() }}</strong>
+      </article>
+    </section>
+
+    <section class="roles-layout" *ngIf="matrix().length; else noRoles">
+      <aside class="roles-panel card">
+        <div class="panel-head">
+          <div>
+            <span>Roles</span>
+            <strong>Perfiles del sistema</strong>
+          </div>
+        </div>
+        <button
+          class="role-item"
+          type="button"
+          *ngFor="let role of matrix()"
+          [class.active]="role.roleId === selectedRoleId()"
+          (click)="selectRole(role.roleId)"
+        >
+          <span class="role-dot" [class.admin]="isAdminRole(role.roleName)"></span>
+          <div>
+            <strong>{{ roleLabel(role.roleName) }}</strong>
+            <small>{{ role.description || 'Sin descripción' }}</small>
+          </div>
+          <b>{{ visibleOptionsCount(role) }}</b>
+        </button>
+      </aside>
+
+      <article class="permissions-panel card" *ngIf="selectedRole() as role">
+        <div class="panel-title">
+          <div>
+            <p class="eyebrow">Rol seleccionado</p>
+            <h3>{{ roleLabel(role.roleName) }}</h3>
+            <span>{{ enabledCount() }} de {{ totalOptions() }} opciones visibles</span>
+          </div>
+          <span class="admin-badge" *ngIf="isAdminRole(role.roleName)">Admin protegido</span>
+        </div>
+
+        <div class="menu-groups">
+          <section class="menu-group" *ngFor="let group of groupedOptions()">
+            <header>
+              <h4>{{ group.section }}</h4>
+              <span>{{ group.options.length }} opciones</span>
+            </header>
+            <div class="option-list">
+              <button
+                class="option-row"
+                type="button"
+                *ngFor="let option of group.options"
+                [class.enabled]="isEnabled(option)"
+                [class.locked]="isLockedAdminOption(role, option)"
+                (click)="toggleOption(option)"
+              >
+                <span class="option-check">
+                  <svg viewBox="0 0 24 24" *ngIf="isEnabled(option)"><path d="M20 6 9 17l-5-5" /></svg>
+                </span>
+                <div class="option-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z" /><path d="M8 9h8" /><path d="M8 13h5" /></svg></div>
+                <div class="option-copy">
+                  <strong>{{ option.label }}</strong>
+                  <small>{{ option.route }}</small>
+                </div>
+                <span class="status-pill">{{ isEnabled(option) ? 'Visible' : 'Oculta' }}</span>
+              </button>
+            </div>
+          </section>
+        </div>
+      </article>
+    </section>
+  </ng-container>
+
+  <ng-template #noRoles>
+    <div class="empty-box">No hay roles configurados.</div>
+  </ng-template>
+
+  <div class="app-modal-backdrop" *ngIf="roleModalOpen()" (click)="closeRoleModal()" (document:keydown.escape)="closeRoleModal()">
+    <section class="app-modal-panel" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeRoleModal()">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg>
+      </button>
+      <div class="modal-head">
+        <p class="eyebrow">Nuevo perfil</p>
+        <h3>Crear rol</h3>
+        <span>El rol se normaliza automáticamente en formato interno.</span>
+      </div>
+      <div class="form-grid">
+        <label>
+          <span>Nombre del rol</span>
+          <input [ngModel]="roleForm().name" (ngModelChange)="roleForm.update(form => ({ ...form, name: $event }))" placeholder="Ej: Supervisor ganadero" />
+        </label>
+        <label>
+          <span>Descripción</span>
+          <input [ngModel]="roleForm().description" (ngModelChange)="roleForm.update(form => ({ ...form, description: $event }))" placeholder="Responsabilidades del rol" />
+        </label>
+      </div>
+      <label class="switch-row">
+        <input type="checkbox" [ngModel]="roleForm().enableAllMenuOptions" (ngModelChange)="roleForm.update(form => ({ ...form, enableAllMenuOptions: $event }))" />
+        <span>Habilitar todas las opciones del menú por defecto</span>
+      </label>
+      <div class="modal-actions">
+        <button class="btn-secondary" type="button" (click)="closeRoleModal()">Cancelar</button>
+        <button class="btn-primary" type="button" [disabled]="saving()" (click)="createRole()">Crear rol</button>
+      </div>
+    </section>
+  </div>
+</div>

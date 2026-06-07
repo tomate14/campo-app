@@ -27,90 +27,97 @@
     <nav class="nav-section" aria-label="Menu principal">
       <div class="section-title" *ngIf="!collapsed()">Dashboard</div>
 
-      <a routerLink="/reportes/agricola" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Dashboard agricola' : ''">
+      <a *ngIf="isMenuVisible('dashboard-agricola')" routerLink="/reportes/agricola" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Dashboard agricola' : ''">
         <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M7 16v-5" /><path d="M12 16V7" /><path d="M17 16v-8" /><path d="M5 10l4-4 4 3 5-6" /></svg>
         <span *ngIf="!collapsed()">Dashboard agricola</span>
       </a>
 
-      <a routerLink="/operaciones/calendario" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Calendario' : ''">
+      <a *ngIf="isMenuVisible('operaciones-calendario')" routerLink="/operaciones/calendario" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Calendario' : ''">
         <svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><path d="M3 10h18" /><path d="M5 5h14v16H5z" /><path d="M8 14h3" /><path d="M13 14h3" /><path d="M8 17h3" /></svg>
         <span *ngIf="!collapsed()">Calendario</span>
       </a>
 
       <div class="section-title" *ngIf="!collapsed()">Agricultura</div>
 
-      <a routerLink="/agricola/lotes" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Lotes' : ''">
+      <a *ngIf="isMenuVisible('agricola-lotes')" routerLink="/agricola/lotes" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Lotes' : ''">
         <svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z" /><path d="M12 4v16" /><path d="M4 7l8 3 8-3" /></svg>
         <span *ngIf="!collapsed()">Lotes</span>
       </a>
 
-      <a routerLink="/agricola/siembra" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Ciclo agrícola' : ''">
+      <a *ngIf="isMenuVisible('agricola-ciclo')" routerLink="/agricola/siembra" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Ciclo agrícola' : ''">
         <svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /><path d="M12 21V8" /></svg>
         <span *ngIf="!collapsed()">Ciclo agrícola</span>
       </a>
 
-      <a routerLink="/agricola/analytics" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Analytics' : ''">
+      <a *ngIf="isMenuVisible('agricola-analytics')" routerLink="/agricola/analytics" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Analytics' : ''">
         <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M7 16V9" /><path d="M12 16V5" /><path d="M17 16v-4" /></svg>
         <span *ngIf="!collapsed()">Analytics</span>
       </a>
 
-      <a routerLink="/agricola/plagas" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Plagas' : ''">
+      <a *ngIf="isMenuVisible('agricola-plagas')" routerLink="/agricola/plagas" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Plagas' : ''">
         <svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z" /><path d="M12 9v8" /><path d="M8 13h8" /></svg>
         <span *ngIf="!collapsed()">Plagas</span>
       </a>
 
-      <a routerLink="/clima" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Clima' : ''">
+      <a *ngIf="isMenuVisible('clima')" routerLink="/clima" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Clima' : ''">
         <svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.6 1.8A3.5 3.5 0 0 0 7 18Z" /><path d="M12 3v2" /><path d="M20 5l-1.5 1.5" /></svg>
         <span *ngIf="!collapsed()">Clima</span>
       </a>
 
       <div class="section-title" *ngIf="!collapsed()">Ganadería</div>
 
-      <a routerLink="/ganaderia/trazabilidad" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Trazabilidad' : ''">
+      <a *ngIf="isMenuVisible('ganaderia-trazabilidad')" routerLink="/ganaderia/trazabilidad" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Trazabilidad' : ''">
         <svg viewBox="0 0 24 24"><path d="M5 8c0-3 3-5 7-5s7 2 7 5c0 4-3 7-7 7S5 12 5 8Z" /><path d="M8 5L5 3" /><path d="M16 5l3-2" /><path d="M9 11h.01" /><path d="M15 11h.01" /><path d="M10 15v4h4v-4" /></svg>
         <span *ngIf="!collapsed()">Trazabilidad</span>
       </a>
 
-      <a routerLink="/ganaderia/sanidad" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Sanidad' : ''">
+      <a *ngIf="isMenuVisible('ganaderia-sanidad')" routerLink="/ganaderia/sanidad" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Sanidad' : ''">
         <svg viewBox="0 0 24 24"><path d="M12 21s7-4 7-11V5l-7-3-7 3v5c0 7 7 11 7 11Z" /><path d="M12 8v6" /><path d="M9 11h6" /></svg>
         <span *ngIf="!collapsed()">Sanidad</span>
       </a>
 
-      <a routerLink="/ganaderia/reproduccion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Reproducción' : ''">
+      <a *ngIf="isMenuVisible('ganaderia-reproduccion')" routerLink="/ganaderia/reproduccion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Reproducción' : ''">
         <svg viewBox="0 0 24 24"><path d="M7 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z" /><path d="M11 11v10" /><path d="M7 17h8" /><path d="M17 4h3v3" /><path d="M20 4l-5 5" /></svg>
         <span *ngIf="!collapsed()">Reproducción</span>
       </a>
 
-      <a routerLink="/ganaderia/alimentacion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Alimentación' : ''">
+      <a *ngIf="isMenuVisible('ganaderia-alimentacion')" routerLink="/ganaderia/alimentacion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Alimentación' : ''">
         <svg viewBox="0 0 24 24"><path d="M4 19c6-9 12-9 16 0" /><path d="M8 13c2-4 6-4 8 0" /><path d="M12 5v15" /><path d="M7 7h10" /></svg>
         <span *ngIf="!collapsed()">Alimentación</span>
       </a>
 
-      <a routerLink="/ganaderia/potreros" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Potreros' : ''">
+      <a *ngIf="isMenuVisible('ganaderia-potreros')" routerLink="/ganaderia/potreros" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Potreros' : ''">
         <svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z" /><path d="M12 4v16" /><path d="M4 7l8 3 8-3" /><path d="M8 12h8" /></svg>
         <span *ngIf="!collapsed()">Potreros</span>
-      </a>      <div class="section-title" *ngIf="!collapsed()">Maquinaria</div>
+      </a>
 
-      <a routerLink="/maquinaria/inventario" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Inventario' : ''">
+      <div class="section-title" *ngIf="!collapsed()">Maquinaria</div>
+
+      <a *ngIf="isMenuVisible('maquinaria-inventario')" routerLink="/maquinaria/inventario" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Inventario' : ''">
         <svg viewBox="0 0 24 24"><path d="M5 15h12l2 4H3l2-4Z" /><path d="M6 15V9h7l4 6" /><path d="M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>
         <span *ngIf="!collapsed()">Inventario</span>
       </a>
 
-      <a routerLink="/maquinaria/mantenimiento" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Mantenimiento' : ''">
+      <a *ngIf="isMenuVisible('maquinaria-mantenimiento')" routerLink="/maquinaria/mantenimiento" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Mantenimiento' : ''">
         <svg viewBox="0 0 24 24"><path d="m14 7 3 3" /><path d="M5 19 16 8l-3-3L2 16v3h3Z" /><path d="M12 19h9" /></svg>
         <span *ngIf="!collapsed()">Mantenimiento</span>
       </a>
 
       <div class="section-title" *ngIf="!collapsed()">Operarios</div>
 
-      <a routerLink="/operarios/gestion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Gestión de operarios' : ''">
+      <a *ngIf="isMenuVisible('operarios-gestion')" routerLink="/operarios/gestion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Gestión de operarios' : ''">
         <svg viewBox="0 0 24 24"><path d="M7 19v-2a5 5 0 0 1 10 0v2" /><path d="M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0" /><path d="M17 11h4" /><path d="M19 9v4" /></svg>
         <span *ngIf="!collapsed()">Gestión de operarios</span>
       </a>
 
-      <a routerLink="/operarios/ordenes" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Órdenes de trabajo' : ''">
+      <a *ngIf="isMenuVisible('operarios-ordenes')" routerLink="/operarios/ordenes" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Órdenes de trabajo' : ''">
         <svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z" /><path d="M10 8h4" /><path d="M10 12h4" /><path d="M10 16h2" /></svg>
         <span *ngIf="!collapsed()">Órdenes de trabajo</span>
+      </a>
+
+      <a *ngIf="isMenuVisible('admin-roles-menu')" routerLink="/admin/roles-menu" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Roles y menú' : ''">
+        <svg viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>
+        <span *ngIf="!collapsed()">Roles y menú</span>
       </a>
 
     </nav>

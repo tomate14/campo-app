@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { API_BASE_URL } from '../../core/services/api.config';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
@@ -48,10 +48,21 @@ export class GanaderiaReproduccionPageComponent implements OnInit {
   protected readonly selectedGenealogiaId = signal('');
   protected readonly selectedAlert = signal<AlertaReproductiva | null>(null);
   protected readonly selectedAlertDetail = signal<AnimalDetalle | null>(null);
+  protected readonly kpiOffset = signal(0);
   protected readonly alertPage = signal(1);
-  protected readonly alertPageSize = 5;
   protected readonly recommendationPage = signal(1);
-  protected readonly recommendationPageSize = 5;
+  protected readonly compactCarousel = signal(false);
+  private readonly compactCarouselMaxWidth = 1600;
+  private readonly kpiTotal = 6;
+  protected get kpiPageSize() {
+    return this.compactCarousel() ? 5 : this.kpiTotal;
+  }
+  protected get alertPageSize() {
+    return this.compactCarousel() ? 4 : 5;
+  }
+  protected get recommendationPageSize() {
+    return this.compactCarousel() ? 4 : 5;
+  }
   protected readonly endpoints = {
     animales: `${API_BASE_URL}/ganaderia/trazabilidad/animales`,
     usuarios: `${API_BASE_URL}/operarios/gestion/operarios`,
@@ -174,7 +185,13 @@ export class GanaderiaReproduccionPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.updateCarouselMode();
     this.loadAll();
+  }
+
+  @HostListener('window:resize')
+  protected onResize() {
+    this.updateCarouselMode();
   }
 
   protected loadAll() {
@@ -362,6 +379,40 @@ export class GanaderiaReproduccionPageComponent implements OnInit {
 
   protected nextRecommendationPage() {
     this.setRecommendationPage(this.recommendationPage() + 1);
+  }
+
+  protected kpiVisible(index: number) {
+    return index >= this.kpiOffset() && index < this.kpiOffset() + this.kpiPageSize;
+  }
+
+  protected previousKpiCards() {
+    this.kpiOffset.set(Math.max(0, this.kpiOffset() - 1));
+  }
+
+  protected nextKpiCards() {
+    this.kpiOffset.set(Math.min(this.maxKpiOffset(), this.kpiOffset() + 1));
+  }
+
+  protected showKpiCarousel() {
+    return this.kpiTotal > this.kpiPageSize;
+  }
+
+  protected maxKpiOffset() {
+    return Math.max(0, this.kpiTotal - this.kpiPageSize);
+  }
+
+  private updateCarouselMode() {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const nextCompact = window.innerWidth <= this.compactCarouselMaxWidth;
+    if (this.compactCarousel() === nextCompact) {
+      return;
+    }
+    this.compactCarousel.set(nextCompact);
+    this.kpiOffset.set(Math.min(this.kpiOffset(), this.maxKpiOffset()));
+    this.setAlertPage(this.alertPage());
+    this.setRecommendationPage(this.recommendationPage());
   }
 
   protected recommendationQuality(item: RecomendacionCruzamiento) {

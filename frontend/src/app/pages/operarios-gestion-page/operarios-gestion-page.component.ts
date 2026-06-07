@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common'
 import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { API_BASE_URL } from '../../core/services/api.config'
+import { AdminMenuService } from '../../core/services/admin-menu.service'
 import { OperariosService } from '../../core/services/operarios.service'
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
+import type { RoleOption } from '../../core/models/menu-permissions.models'
 import type {
   Operario,
   OperarioDocumentoRequest,
@@ -23,8 +25,10 @@ type OperarioModal = 'OPERARIO' | 'DOCUMENTO' | 'ROL' | null
 })
 export class OperariosGestionPageComponent implements OnInit {
   private readonly operariosService = inject(OperariosService)
+  private readonly adminMenuService = inject(AdminMenuService)
 
   protected readonly resumen = signal<OperarioResumen | null>(null)
+  protected readonly roles = signal<RoleOption[]>([])
   protected readonly loading = signal(false)
   protected readonly saving = signal(false)
   protected readonly errorMessage = signal('')
@@ -50,9 +54,35 @@ export class OperariosGestionPageComponent implements OnInit {
   })
   protected readonly selectedDocumentos = computed(() => (this.resumen()?.documentos ?? []).filter((item) => item.operarioId === this.selectedId()))
   protected readonly selectedHistorialRoles = computed(() => (this.resumen()?.historialRoles ?? []).filter((item) => item.operarioId === this.selectedId()))
+  protected readonly roleOptions = computed(() => this.roles().length ? this.roles() : [{ roleId: 'operario', roleName: 'operario', description: 'Operario' }])
 
   ngOnInit(): void {
+    this.loadRoles()
     this.load()
+  }
+
+  protected roleLabel(roleName?: string) {
+    const normalized = (roleName ?? '').replace(/^ROLE_/i, '').replace(/_/g, ' ').trim()
+    if (!normalized) return 'Sin rol'
+    return normalized
+      .split(' ')
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ')
+  }
+
+  private loadRoles() {
+    this.adminMenuService.getRoles().subscribe({
+      next: (roles) => {
+        this.roles.set(roles)
+        const defaultRole = roles.find((role) => role.roleName === 'operario')?.roleName ?? roles[0]?.roleName
+        if (defaultRole) {
+          this.operarioForm.update((form) => ({ ...form, rolOperativo: form.rolOperativo || defaultRole }))
+          this.rolForm.update((form) => ({ ...form, rolNuevo: form.rolNuevo || defaultRole }))
+        }
+      },
+      error: () => this.roles.set([{ roleId: 'operario', roleName: 'operario', description: 'Operario' }]),
+    })
   }
 
   protected load() {
@@ -218,7 +248,7 @@ export class OperariosGestionPageComponent implements OnInit {
       apellido: '',
       documentoTipo: 'DNI',
       documentoNumero: '',
-      rolOperativo: 'OPERARIO',
+      rolOperativo: this.roles().find((role) => role.roleName === 'operario')?.roleName ?? this.roles()[0]?.roleName ?? 'operario',
       estado: 'ACTIVO',
       fechaIngreso: new Date().toISOString().slice(0, 10),
     }
@@ -235,7 +265,7 @@ export class OperariosGestionPageComponent implements OnInit {
   private emptyRol(): OperarioHistorialRolRequest {
     return {
       operarioId: '',
-      rolNuevo: 'OPERARIO',
+      rolNuevo: this.roles().find((role) => role.roleName === 'operario')?.roleName ?? this.roles()[0]?.roleName ?? 'operario',
       fecha: new Date().toISOString().slice(0, 10),
     }
   }
