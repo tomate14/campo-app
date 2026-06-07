@@ -55,11 +55,7 @@
         <span>Rol</span>
         <select [ngModel]="filters().rol" (ngModelChange)="filters.update(f => ({ ...f, rol: $event }))">
           <option value="">Todos</option>
-          <option value="OPERARIO">Operario</option>
-          <option value="TRACTORISTA">Tractorista</option>
-          <option value="SUPERVISOR">Supervisor</option>
-          <option value="VETERINARIO">Veterinario</option>
-          <option value="ENCARGADO">Encargado</option>
+          <option *ngFor="let role of roleOptions()" [value]="role.roleName">{{ roleLabel(role.roleName) }}</option>
         </select>
       </label>
       <div class="filter-actions">
@@ -105,7 +101,7 @@
                   </td>
                   <td><strong>{{ operario.username || operario.legajo }}</strong></td>
                   <td>{{ operario.documentoNumero }}</td>
-                  <td>{{ operario.rolOperativo }}</td>
+                  <td>{{ roleLabel(operario.rolOperativo) }}</td>
                   <td>{{ operario.telefono || 'Sin dato' }}</td>
                   <td>{{ operario.fechaIngreso ? (operario.fechaIngreso | date:'dd/MM/yyyy') : 'Sin dato' }}</td>
                   <td><span class="badge" [class.badge-warning]="statusClass(operario.estado) === 'warning'" [class.badge-danger]="statusClass(operario.estado) === 'danger'">{{ operario.estado }}</span></td>
@@ -147,7 +143,7 @@
           <div>
             <span>Operario seleccionado</span>
             <h3>{{ operario.nombreCompleto }}</h3>
-            <p>{{ operario.rolOperativo }} · {{ operario.estado }}</p>
+            <p>{{ roleLabel(operario.rolOperativo) }} · {{ operario.estado }}</p>
           </div>
         </div>
 
@@ -193,7 +189,7 @@
       <ng-container *ngIf="modal() === 'OPERARIO'">
         <div class="modal-head"><h3>Datos del operario</h3></div>
         <div class="form-grid">
-          <label><span>Rol operativo</span><select [ngModel]="operarioForm().rolOperativo" (ngModelChange)="operarioForm.update(f => ({ ...f, rolOperativo: $event }))"><option>OPERARIO</option><option>TRACTORISTA</option><option>SUPERVISOR</option><option>VETERINARIO</option><option>ENCARGADO</option></select></label>
+          <label><span>Rol operativo</span><select [ngModel]="operarioForm().rolOperativo" (ngModelChange)="operarioForm.update(f => ({ ...f, rolOperativo: $event }))"><option *ngFor="let role of roleOptions()" [value]="role.roleName">{{ roleLabel(role.roleName) }}</option></select></label>
           <label><span>Nombre</span><input [ngModel]="operarioForm().nombre" (ngModelChange)="operarioForm.update(f => ({ ...f, nombre: $event }))" /></label>
           <label><span>Apellido</span><input [ngModel]="operarioForm().apellido" (ngModelChange)="operarioForm.update(f => ({ ...f, apellido: $event }))" /></label>
           <label><span>Documento</span><input [ngModel]="operarioForm().documentoNumero" (ngModelChange)="operarioForm.update(f => ({ ...f, documentoNumero: $event }))" /></label>
@@ -225,7 +221,7 @@
       <ng-container *ngIf="modal() === 'ROL'">
         <div class="modal-head"><h3>Cambiar rol operativo</h3></div>
         <div class="form-grid">
-          <label><span>Nuevo rol</span><select [ngModel]="rolForm().rolNuevo" (ngModelChange)="rolForm.update(f => ({ ...f, rolNuevo: $event }))"><option>OPERARIO</option><option>TRACTORISTA</option><option>SUPERVISOR</option><option>VETERINARIO</option><option>ENCARGADO</option></select></label>
+          <label><span>Nuevo rol</span><select [ngModel]="rolForm().rolNuevo" (ngModelChange)="rolForm.update(f => ({ ...f, rolNuevo: $event }))"><option *ngFor="let role of roleOptions()" [value]="role.roleName">{{ roleLabel(role.roleName) }}</option></select></label>
           <label><span>Fecha</span><input type="date" [ngModel]="rolForm().fecha" (ngModelChange)="rolForm.update(f => ({ ...f, fecha: $event }))" /></label>
           <app-remote-search-select label="Responsable" placeholder="Buscar responsable" [endpoint]="operariosEndpoint" [extraParams]="activeOperarioParams" queryParam="search" valueField="nombreCompleto" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="rolForm().responsable" (valueChange)="rolForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
           <label><span>Motivo</span><input [ngModel]="rolForm().motivo" (ngModelChange)="rolForm.update(f => ({ ...f, motivo: $event }))" /></label>

@@ -28,7 +28,7 @@ public interface OperarioRepository extends JpaRepository<Operario, String> {
                 or lower(o.legajo) like lower(concat('%', :search, '%'))
                 or lower(o.documentoNumero) like lower(concat('%', :search, '%')))
               and (:estado is null or o.estado = :estado)
-              and (:rol is null or o.rolOperativo = :rol)
+              and (:rol is null or lower(o.rolOperativo) = lower(:rol))
             order by o.apellido asc, o.nombre asc
             """)
     List<Operario> search(@Param("search") String search, @Param("estado") String estado, @Param("rol") String rol);

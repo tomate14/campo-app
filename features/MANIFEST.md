@@ -17,8 +17,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 42
-- Realizadas: 19
+- Total de historias registradas: 43
+- Realizadas: 20
 - Parciales: 0
 - Pendientes: 21
 - Saltadas: 2
@@ -70,6 +70,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 38 | `38_COMPLETA_ganaderia_potreros_mapa_interactivo.md` | Ganaderia | Realizada | Pantalla de potreros con mapa interactivo, dibujo de multiples poligonos, popup de alta y persistencia implementada. |
 | 39 | `39_mobile_primer_login_cambio_password_obligatorio.md` | Seguridad/Mobile | Pendiente | Cambio obligatorio de contraseña en primer login mobile para usuarios creados automaticamente desde operarios. |
 | 40 | `40_COMPLETA_operaciones_calendario_operaciones.md` | Operaciones | Realizada | Calendario semanal operativo para ordenes de trabajo, con filtros, chips de operarios, popup de seguimiento, cambio de estado y registro de actividad. |
+| 41 | `41_COMPLETA_roles_menu_permisos.md` | Seguridad/Frontend | Realizada | Pantalla administrativa para definir opciones de menu visibles por rol, con backend persistido y sidebar filtrado por permisos. |
 
 ## Registro por Dominio
 
@@ -117,10 +118,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 24.
 
 ### Seguridad
-- Realizadas: 26.
+- Realizadas: 26, 41.
 - Pendientes: 39.
 
 ## Ultimas Actualizaciones
+- 2026-06-07: Feature 41 realizada con administracion de visibilidad de menu por rol, endpoint de menu visible y sidebar filtrado.
 - 2026-06-06: Feature 31 realizada con componente generico de select buscador aplicado a animales, potreros, operarios, veterinarios, responsables, plagas, sanidad y alimentacion.
 - 2026-06-06: Feature 40 realizada con Calendario de Operaciones semanal basado en ordenes de trabajo, filtros, chips, popup de detalle y acciones de seguimiento.
 - 2026-06-05: Feature 13 realizada con ordenes de trabajo, actividades, estados, aceptacion/rechazo e historial. Tarea 4 de asignacion de maquinas excluida.
