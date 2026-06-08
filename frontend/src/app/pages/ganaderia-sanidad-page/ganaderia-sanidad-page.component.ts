@@ -116,7 +116,13 @@ export class GanaderiaSanidadPageComponent implements OnInit {
     (this.dashboard()?.alertasVacunas ?? []).filter((item) => item.estado === 'VENCIDA').length,
   );
   protected readonly alertasVacunacion = computed(() => this.dashboard()?.alertasVacunas ?? []);
-  protected readonly alertasVisibles = computed(() => this.alertasVacunacion().slice(0, 5));
+  protected readonly alertasVacunacionPorVacuna = computed(() => this.dashboard()?.alertasVacunasPorVacuna ?? []);
+  protected readonly totalAnimalesConAlertasVacuna = computed(() =>
+    this.alertasVacunacionPorVacuna().reduce((total, item) => total + item.animalesAfectados, 0),
+  );
+  protected readonly totalProximasAVencer = computed(() =>
+    this.alertasVacunacionPorVacuna().reduce((total, item) => total + item.proximasAVencer, 0),
+  );
   protected readonly activeTotal = computed(() => {
     if (this.activeTab() === 'TRATAMIENTOS') {
       return this.tratamientos().length;

@@ -11,6 +11,7 @@ public record SanidadDashboardResponse(
         long tratamientosActivos,
         BigDecimal costoSanitarioMes,
         List<AlertaVacunaResponse> alertasVacunas,
+        List<ResumenAlertaVacunaResponse> alertasVacunasPorVacuna,
         List<DiagnosticoSanitarioResponse> diagnosticosRecientes,
         List<TratamientoMedicamentoResponse> tratamientosRecientes
 ) {
@@ -22,5 +23,18 @@ public record SanidadDashboardResponse(
             LocalDate proximaDosisFecha,
             long diasRestantes,
             String estado
+    ) {}
+
+    public record ResumenAlertaVacunaResponse(
+            String vacunaId,
+            String vacunaNombre,
+            String vacunaCodigo,
+            Boolean obligatoria,
+            long animalesAfectados,
+            long vencidas,
+            long proximasAVencer,
+            LocalDate fechaMasVencida,
+            LocalDate proximaFecha,
+            long diasProximaFecha
     ) {}
 }

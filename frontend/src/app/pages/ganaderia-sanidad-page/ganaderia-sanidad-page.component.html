@@ -80,29 +80,62 @@
           </div>
         </div>
         <button class="section-toggle" type="button" (click)="toggleAlertas()" [attr.aria-expanded]="!alertasCollapsed()" aria-label="Colapsar alertas de vacunación">
-          <span>{{ alertasVacunacion().length }} alertas</span>
+          <span>{{ alertasVacunacionPorVacuna().length }} vacunas</span>
           <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="alertasCollapsed()"><path d="m6 9 6 6 6-6" /></svg>
         </button>
       </div>
 
       <ng-container *ngIf="!alertasCollapsed(); else alertasCollapsedState">
-        <div class="sanitary-card-grid" *ngIf="alertasVacunacion().length; else noAlertas">
-          <article class="sanitary-record-card alert-record-card" *ngFor="let alerta of alertasVisibles()">
-            <div class="sanitary-record-card__top">
-              <div>
-                <h4>{{ alerta.vacunaNombre }}</h4>
-                <p>Animal {{ alerta.animalCaravana }}</p>
-              </div>
-              <span class="catalog-badge" [class.catalog-badge--secondary]="alerta.estado !== 'VENCIDA'" [class.state-chip--danger]="alerta.estado === 'VENCIDA'">{{ alerta.estado }}</span>
+        <div class="vaccination-alert-table-wrap" *ngIf="alertasVacunacionPorVacuna().length; else noAlertas">
+          <div class="vaccination-alert-summary">
+            <div>
+              <span>Animales afectados</span>
+              <strong>{{ totalAnimalesConAlertasVacuna() }}</strong>
             </div>
-            <div class="sanitary-record-card__metrics">
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2" /></svg><span>Animal</span><strong>{{ alerta.animalCaravana }}</strong></div>
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Próxima dosis</span><strong>{{ alerta.proximaDosisFecha }}</strong></div>
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg><span>Días restantes</span><strong>{{ alerta.diasRestantes }} días</strong></div>
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg><span>Estado</span><strong>{{ alerta.estado }}</strong></div>
+            <div class="danger">
+              <span>Vencidas</span>
+              <strong>{{ alertasCriticas() }}</strong>
             </div>
-            <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>
-          </article>
+            <div class="warning">
+              <span>Próximas a vencer</span>
+              <strong>{{ totalProximasAVencer() }}</strong>
+            </div>
+          </div>
+          <table class="vaccination-alert-table">
+            <thead>
+              <tr>
+                <th>Vacuna</th>
+                <th>Tipo</th>
+                <th>Animales</th>
+                <th>Vencidas</th>
+                <th>Próximas</th>
+                <th>Más vencida</th>
+                <th>Próxima fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let alerta of alertasVacunacionPorVacuna()">
+                <td>
+                  <div class="vaccine-table-identity">
+                    <span class="vaccine-table-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></span>
+                    <div>
+                      <strong>{{ alerta.vacunaNombre }}</strong>
+                      <small>{{ alerta.vacunaCodigo || 'Sin código' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="catalog-badge" [class.catalog-badge--secondary]="!alerta.obligatoria">{{ alerta.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
+                <td><strong>{{ alerta.animalesAfectados }}</strong></td>
+                <td><span class="alert-count alert-count--danger">{{ alerta.vencidas }}</span></td>
+                <td><span class="alert-count alert-count--warning">{{ alerta.proximasAVencer }}</span></td>
+                <td>{{ alerta.fechaMasVencida || 'Sin vencidas' }}</td>
+                <td>
+                  <strong>{{ alerta.proximaFecha || 'Sin próximas' }}</strong>
+                  <small class="table-muted" *ngIf="alerta.proximaFecha">{{ alerta.diasProximaFecha }} días</small>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </ng-container>
 
@@ -117,7 +150,7 @@
       </ng-template>
 
       <ng-template #alertasCollapsedState>
-        <div class="section-collapsed-summary">Alertas ocultas. {{ alertasVacunacion().length }} registros disponibles.</div>
+        <div class="section-collapsed-summary">Alertas ocultas. {{ alertasVacunacionPorVacuna().length }} vacunas con seguimiento pendiente.</div>
       </ng-template>
     </section>
 

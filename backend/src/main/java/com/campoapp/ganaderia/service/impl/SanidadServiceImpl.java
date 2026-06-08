@@ -14,7 +14,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -167,7 +171,8 @@ public class SanidadServiceImpl implements SanidadService {
                                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 );
 
-        List<SanidadDashboardResponse.AlertaVacunaResponse> alertas = aplicacionVacunaRepository.findUpcomingAlerts(today.plusDays(15))
+        List<AplicacionVacuna> aplicacionesConAlerta = aplicacionVacunaRepository.findUpcomingAlerts(today.plusDays(15));
+        List<SanidadDashboardResponse.AlertaVacunaResponse> alertas = aplicacionesConAlerta
                 .stream()
                 .limit(10)
                 .map(item -> new SanidadDashboardResponse.AlertaVacunaResponse(
@@ -180,6 +185,7 @@ public class SanidadServiceImpl implements SanidadService {
                         item.getProximaDosisFecha().isBefore(today) ? "VENCIDA" : "PROXIMA"
                 ))
                 .toList();
+        List<SanidadDashboardResponse.ResumenAlertaVacunaResponse> alertasPorVacuna = buildResumenAlertasPorVacuna(aplicacionesConAlerta, today);
 
         List<DiagnosticoSanitarioResponse> diagnosticosRecientes = diagnosticoSanitarioRepository.findFiltered(null, null)
                 .stream()
@@ -200,9 +206,59 @@ public class SanidadServiceImpl implements SanidadService {
                 tratamientoMedicamentoRepository.countActivos(today),
                 costoMes,
                 alertas,
+                alertasPorVacuna,
                 diagnosticosRecientes,
                 tratamientosRecientes
         );
+    }
+
+    private List<SanidadDashboardResponse.ResumenAlertaVacunaResponse> buildResumenAlertasPorVacuna(List<AplicacionVacuna> aplicaciones, LocalDate today) {
+        Map<String, List<AplicacionVacuna>> porVacuna = aplicaciones.stream()
+                .filter(item -> item.getVacuna() != null && item.getProximaDosisFecha() != null)
+                .collect(Collectors.groupingBy(item -> item.getVacuna().getId()));
+
+        return porVacuna.values().stream()
+                .map(items -> {
+                    AplicacionVacuna sample = items.get(0);
+                    long vencidas = items.stream().filter(item -> item.getProximaDosisFecha().isBefore(today)).count();
+                    long proximas = items.size() - vencidas;
+                    LocalDate fechaMasVencida = items.stream()
+                            .map(AplicacionVacuna::getProximaDosisFecha)
+                            .filter(date -> date.isBefore(today))
+                            .min(LocalDate::compareTo)
+                            .orElse(null);
+                    LocalDate proximaFecha = items.stream()
+                            .map(AplicacionVacuna::getProximaDosisFecha)
+                            .filter(date -> !date.isBefore(today))
+                            .min(LocalDate::compareTo)
+                            .orElseGet(() -> items.stream()
+                                    .map(AplicacionVacuna::getProximaDosisFecha)
+                                    .filter(Objects::nonNull)
+                                    .min(LocalDate::compareTo)
+                                    .orElse(null));
+                    long animalesAfectados = items.stream()
+                            .map(item -> item.getAnimal() != null ? item.getAnimal().getId() : null)
+                            .filter(Objects::nonNull)
+                            .distinct()
+                            .count();
+                    return new SanidadDashboardResponse.ResumenAlertaVacunaResponse(
+                            sample.getVacuna().getId(),
+                            sample.getVacuna().getNombre(),
+                            sample.getVacuna().getCodigo(),
+                            sample.getVacuna().getObligatoria(),
+                            animalesAfectados,
+                            vencidas,
+                            proximas,
+                            fechaMasVencida,
+                            proximaFecha,
+                            proximaFecha != null ? ChronoUnit.DAYS.between(today, proximaFecha) : 0
+                    );
+                })
+                .sorted(Comparator
+                        .comparingLong(SanidadDashboardResponse.ResumenAlertaVacunaResponse::vencidas).reversed()
+                        .thenComparing(Comparator.comparingLong(SanidadDashboardResponse.ResumenAlertaVacunaResponse::proximasAVencer).reversed())
+                        .thenComparing(SanidadDashboardResponse.ResumenAlertaVacunaResponse::vacunaNombre))
+                .toList();
     }
 
     @Override

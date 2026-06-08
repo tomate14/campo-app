@@ -262,6 +262,19 @@ export interface AlertaVacuna {
   estado: string
 }
 
+export interface ResumenAlertaVacuna {
+  vacunaId: string
+  vacunaNombre: string
+  vacunaCodigo?: string
+  obligatoria: boolean
+  animalesAfectados: number
+  vencidas: number
+  proximasAVencer: number
+  fechaMasVencida?: string
+  proximaFecha?: string
+  diasProximaFecha: number
+}
+
 export interface SanidadDashboard {
   vacunasCatalogadas: number
   aplicacionesMesActual: number
@@ -269,6 +282,7 @@ export interface SanidadDashboard {
   tratamientosActivos: number
   costoSanitarioMes: number
   alertasVacunas: AlertaVacuna[]
+  alertasVacunasPorVacuna: ResumenAlertaVacuna[]
   diagnosticosRecientes: DiagnosticoSanitario[]
   tratamientosRecientes: TratamientoMedicamento[]
 }
