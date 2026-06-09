@@ -65,7 +65,6 @@ export interface PotreroRequest {
   tipoUso?: PotreroTipoUso | string
   estado?: PotreroEstado | string
   capacidadAnimales?: number
-  cargaAnimalActual?: number
   recursoForrajero?: string
   disponibilidadAgua?: boolean
   tieneSombra?: boolean
@@ -81,6 +80,135 @@ export interface PotreroFilters {
   tipoUso?: string
   superficieMin?: number
   superficieMax?: number
+}
+
+export interface GanaderoDashboard {
+  ultimaActualizacion: string
+  kpis: GanaderoKpi[]
+  distribucionRodeo: GanaderoDistribucionRodeo[]
+  animalesPorPotrero: GanaderoBarraCategoria[]
+  ocupacionPotreros: GanaderoPotreroOcupacion[]
+  calendarioSanitario: GanaderoCalendarioSanitario[]
+  diagnosticosPorSeveridad: GanaderoDiagnosticoSeveridad[]
+  tratamientosActivos: GanaderoTratamientosActivos
+  estadoReproductivo: GanaderoEstadoReproductivo
+  partosEstimadosPorMes: GanaderoSeriePunto[]
+  genealogiaTrazabilidad: GanaderoGenealogiaTrazabilidad
+  consumoAlimentoPorPotrero: GanaderoSerieCategoria[]
+  costoAlimentacion: GanaderoCostoAlimentacion
+  conversionAlimenticia: GanaderoConversionAlimenticia
+  dietasActivas: GanaderoDietaActiva[]
+  alertasOperativas: GanaderoAlertaOperativa[]
+}
+
+export interface GanaderoKpi {
+  codigo: string
+  titulo: string
+  valor: string
+  subtitulo: string
+  tono: string
+  valorNumerico?: number
+  tendencia?: string
+}
+
+export interface GanaderoDistribucionRodeo {
+  categoria: string
+  cantidad: number
+  porcentaje: number
+  color: string
+}
+
+export interface GanaderoBarraCategoria {
+  etiqueta: string
+  valor: number
+  porcentaje: number
+  color: string
+}
+
+export interface GanaderoPotreroOcupacion {
+  nombre: string
+  cargaActual: number
+  capacidad: number
+  porcentaje: number
+  estado: string
+  recursoForrajero?: string
+}
+
+export interface GanaderoCalendarioSanitario {
+  vacuna: string
+  vencidas: number
+  proximas: number
+  programadas: number
+  obligatoria: boolean
+}
+
+export interface GanaderoDiagnosticoSeveridad {
+  severidad: string
+  cantidad: number
+  porcentaje: number
+  color: string
+}
+
+export interface GanaderoTratamientosActivos {
+  animalesEnTratamiento: number
+  diagnosticosAbiertos: number
+  casosCriticos: number
+  costoMes: number
+}
+
+export interface GanaderoEstadoReproductivo {
+  prenadas: number
+  vacias: number
+  enControl: number
+  proximasAParir: number
+  torosActivos: number
+}
+
+export interface GanaderoSeriePunto {
+  etiqueta: string
+  valor: number
+}
+
+export interface GanaderoGenealogiaTrazabilidad {
+  porcentajeCompleta: number
+  sinMadre: number
+  sinPadre: number
+  sinRaza: number
+  sinFechaNacimiento: number
+  sinTrazabilidad: number
+}
+
+export interface GanaderoSerieCategoria {
+  categoria: string
+  puntos: GanaderoSeriePunto[]
+  total: number
+}
+
+export interface GanaderoCostoAlimentacion {
+  valorMes: number
+  variacionMensual: number
+  moneda: string
+}
+
+export interface GanaderoConversionAlimenticia {
+  valor: number
+  unidad: string
+}
+
+export interface GanaderoDietaActiva {
+  nombre: string
+  tipoAnimal: string
+  objetivo?: string
+  materiaSecaKg?: number
+  costoDiario?: number
+}
+
+export interface GanaderoAlertaOperativa {
+  tipo: string
+  titulo: string
+  detalle: string
+  prioridad: string
+  fechaGeneracion: string
 }
 
 export interface MovimientoAnimal {

@@ -202,6 +202,219 @@ ON DUPLICATE KEY UPDATE
     deleted_at = NULL;
 
 -- =============================================================
+-- Datos adicionales para Dashboard Ganadero Ejecutivo.
+-- Cubren potreros, pesajes, dietas, alimentacion y mas eventos
+-- sanitarios/reproductivos para que todos los graficos muestren datos.
+-- =============================================================
+
+INSERT INTO potreros (
+    id, nombre, descripcion, superficie_ha, tipo_uso, estado, capacidad_animales,
+    recurso_forrajero, disponibilidad_agua, tiene_sombra,
+    observaciones, poligono, centroide_latitud, centroide_longitud, created_at, updated_at
+) VALUES
+    ('15000000-0000-0000-0000-000000000001', 'Potrero 12A', 'Pastoreo intensivo para vacas preparto.', 1456.00, 'PASTOREO', 'ACTIVO', 1500, 'CAMPO NATURAL', b'1', b'1', 'Alta carga, requiere seguimiento semanal.', CAST('{"type":"Polygon","coordinates":[[[-60.6820,-36.2100],[-60.6610,-36.2125],[-60.6640,-36.2290],[-60.6860,-36.2250],[-60.6820,-36.2100]]]}' AS JSON), -36.2190, -60.6730, NOW(6), NOW(6)),
+    ('15000000-0000-0000-0000-000000000002', 'Potrero 7B', 'Pastoreo de vacas en ultimo tercio.', 920.00, 'MATERNIDAD', 'ACTIVO', 980, 'PASTURA', b'1', b'1', 'Buena oferta forrajera.', CAST('{"type":"Polygon","coordinates":[[[-60.7020,-36.1910],[-60.6850,-36.1940],[-60.6890,-36.2090],[-60.7080,-36.2050],[-60.7020,-36.1910]]]}' AS JSON), -36.2000, -60.6970, NOW(6), NOW(6)),
+    ('15000000-0000-0000-0000-000000000003', 'Potrero 5C', 'Recria y vacas de bajo riesgo.', 780.00, 'RECRIA', 'ACTIVO', 820, 'VERDEO', b'1', b'0', 'Sin sombra suficiente en sector norte.', CAST('{"type":"Polygon","coordinates":[[[-60.6410,-36.2010],[-60.6230,-36.2040],[-60.6270,-36.2190],[-60.6460,-36.2160],[-60.6410,-36.2010]]]}' AS JSON), -36.2100, -60.6340, NOW(6), NOW(6)),
+    ('15000000-0000-0000-0000-000000000004', 'Potrero 9A', 'Lote de servicio y seguimiento reproductivo.', 640.00, 'PASTOREO', 'DESCANSO', 620, 'ALFALFA', b'1', b'1', 'Descanso parcial por recuperacion de cobertura.', CAST('{"type":"Polygon","coordinates":[[[-60.7180,-36.2240],[-60.6990,-36.2260],[-60.7010,-36.2390],[-60.7220,-36.2370],[-60.7180,-36.2240]]]}' AS JSON), -36.2310, -60.7100, NOW(6), NOW(6)),
+    ('15000000-0000-0000-0000-000000000005', 'Potrero Madres', 'Rodeo de madres elite.', 1180.00, 'MATERNIDAD', 'ACTIVO', 1100, 'PASTURA', b'1', b'1', 'Rodeo estable con alta carga.', CAST('{"type":"Polygon","coordinates":[[[-60.6750,-36.1710],[-60.6540,-36.1730],[-60.6560,-36.1880],[-60.6790,-36.1860],[-60.6750,-36.1710]]]}' AS JSON), -36.1800, -60.6660, NOW(6), NOW(6)),
+    ('15000000-0000-0000-0000-000000000006', 'Potrero Toros', 'Sector de toros activos.', 560.00, 'RESERVA', 'ACTIVO', 180, 'CAMPO NATURAL', b'1', b'1', 'Control de alambrados mensual.', CAST('{"type":"Polygon","coordinates":[[[-60.7300,-36.1810],[-60.7160,-36.1830],[-60.7180,-36.1960],[-60.7340,-36.1940],[-60.7300,-36.1810]]]}' AS JSON), -36.1880, -60.7240, NOW(6), NOW(6)),
+    ('15000000-0000-0000-0000-000000000007', 'Potrero Recria', 'Recria de terneros y novillos.', 890.00, 'RECRIA', 'ACTIVO', 950, 'VERDEO', b'1', b'0', 'Asignar sombra artificial en verano.', CAST('{"type":"Polygon","coordinates":[[[-60.6200,-36.2350],[-60.6040,-36.2380],[-60.6080,-36.2520],[-60.6250,-36.2490],[-60.6200,-36.2350]]]}' AS JSON), -36.2430, -60.6150, NOW(6), NOW(6))
+ON DUPLICATE KEY UPDATE
+    nombre = VALUES(nombre),
+    descripcion = VALUES(descripcion),
+    superficie_ha = VALUES(superficie_ha),
+    tipo_uso = VALUES(tipo_uso),
+    estado = VALUES(estado),
+    capacidad_animales = VALUES(capacidad_animales),
+    recurso_forrajero = VALUES(recurso_forrajero),
+    disponibilidad_agua = VALUES(disponibilidad_agua),
+    tiene_sombra = VALUES(tiene_sombra),
+    observaciones = VALUES(observaciones),
+    poligono = VALUES(poligono),
+    centroide_latitud = VALUES(centroide_latitud),
+    centroide_longitud = VALUES(centroide_longitud),
+    deleted_at = NULL;
+
+INSERT INTO animales (
+    id, caravana, raza, sexo, fecha_nacimiento, fecha_compra, peso_actual_kg,
+    rfid_codigo, qr_codigo, estado, ubicacion_actual, madre_id, padre_id, observaciones
+) VALUES
+    ('10000000-0000-0000-0000-000000000012', '2010', 'Brangus', 'Masculino', '2024-09-10', NULL, 365.00, 'RFID-2010', NULL, 'ACTIVO', 'Potrero Recria', NULL, NULL, 'Novillo de recria.'),
+    ('10000000-0000-0000-0000-000000000013', '2011', 'Hereford', 'Masculino', '2024-08-18', NULL, 352.00, 'RFID-2011', NULL, 'ACTIVO', 'Potrero Recria', NULL, NULL, 'Novillo en seguimiento de ganancia.'),
+    ('10000000-0000-0000-0000-000000000014', '2012', 'Angus Negro', 'Femenino', '2024-10-02', NULL, 318.00, 'RFID-2012', NULL, 'ACTIVO', 'Potrero 5C', NULL, NULL, 'Vaquillona de reposicion.'),
+    ('10000000-0000-0000-0000-000000000015', '2013', 'Braford', 'Femenino', '2025-09-01', NULL, 205.00, 'RFID-2013', NULL, 'ACTIVO', 'Potrero 7B', NULL, NULL, 'Ternera destete temprano.'),
+    ('10000000-0000-0000-0000-000000000016', '2014', 'Angus Colorado', 'Masculino', '2025-10-12', NULL, 218.00, 'RFID-2014', NULL, 'ACTIVO', 'Potrero 5C', NULL, NULL, 'Ternero en recria.'),
+    ('10000000-0000-0000-0000-000000000017', '2015', 'Brangus', 'Femenino', '2023-02-04', '2023-08-01', 462.00, 'RFID-2015', NULL, 'ACTIVO', 'Potrero 9A', NULL, NULL, 'Vaquillona en control reproductivo.'),
+    ('10000000-0000-0000-0000-000000000018', '2016', 'Angus Negro', 'Femenino', '2020-12-08', '2021-07-01', 598.00, 'RFID-2016', NULL, 'ACTIVO', 'Potrero Madres', NULL, NULL, 'Madre en rodeo elite.'),
+    ('10000000-0000-0000-0000-000000000019', '2017', 'Hereford', 'Masculino', '2018-03-15', '2019-01-20', 905.00, 'RFID-2017', NULL, 'ACTIVO', 'Potrero Toros', NULL, NULL, 'Toro activo de respaldo.'),
+    ('10000000-0000-0000-0000-000000000020', '2018', 'Angus Negro', 'Femenino', '2022-04-15', '2022-11-01', 512.00, 'RFID-2018', NULL, 'ACTIVO', NULL, NULL, NULL, 'Animal mock sin ubicacion para KPI.')
+ON DUPLICATE KEY UPDATE
+    raza = VALUES(raza),
+    sexo = VALUES(sexo),
+    fecha_nacimiento = VALUES(fecha_nacimiento),
+    fecha_compra = VALUES(fecha_compra),
+    peso_actual_kg = VALUES(peso_actual_kg),
+    estado = VALUES(estado),
+    ubicacion_actual = VALUES(ubicacion_actual),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+UPDATE animales SET madre_id = '10000000-0000-0000-0000-000000000006', padre_id = '10000000-0000-0000-0000-000000000011' WHERE id IN (
+    '10000000-0000-0000-0000-000000000012',
+    '10000000-0000-0000-0000-000000000013',
+    '10000000-0000-0000-0000-000000000014',
+    '10000000-0000-0000-0000-000000000015',
+    '10000000-0000-0000-0000-000000000016',
+    '10000000-0000-0000-0000-000000000017',
+    '10000000-0000-0000-0000-000000000018'
+);
+
+INSERT INTO pesajes_animales (
+    id, animal_id, fecha, peso_kg, condicion_corporal, metodo, responsable, observaciones
+) VALUES
+    ('70000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000012', DATE_SUB(CURDATE(), INTERVAL 75 DAY), 312.00, 3.2, 'Balanza electronica', 'Juan Perez', 'Pesaje inicial recria.'),
+    ('70000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000012', DATE_SUB(CURDATE(), INTERVAL 15 DAY), 365.00, 3.5, 'Balanza electronica', 'Juan Perez', 'Buena ganancia.'),
+    ('70000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000013', DATE_SUB(CURDATE(), INTERVAL 75 DAY), 306.00, 3.0, 'Balanza electronica', 'Maria Gomez', 'Pesaje inicial.'),
+    ('70000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000013', DATE_SUB(CURDATE(), INTERVAL 15 DAY), 352.00, 3.4, 'Balanza electronica', 'Maria Gomez', 'Ganancia sostenida.'),
+    ('70000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000014', DATE_SUB(CURDATE(), INTERVAL 70 DAY), 280.00, 3.1, 'Cinta bovina', 'Juan Perez', 'Vaquillona en desarrollo.'),
+    ('70000000-0000-0000-0000-000000000006', '10000000-0000-0000-0000-000000000014', DATE_SUB(CURDATE(), INTERVAL 12 DAY), 318.00, 3.3, 'Cinta bovina', 'Juan Perez', 'Desarrollo correcto.'),
+    ('70000000-0000-0000-0000-000000000007', '10000000-0000-0000-0000-000000000015', DATE_SUB(CURDATE(), INTERVAL 65 DAY), 168.00, 2.8, 'Balanza portatil', 'Maria Gomez', 'Destete.'),
+    ('70000000-0000-0000-0000-000000000008', '10000000-0000-0000-0000-000000000015', DATE_SUB(CURDATE(), INTERVAL 10 DAY), 205.00, 3.1, 'Balanza portatil', 'Maria Gomez', 'Recuperacion buena.'),
+    ('70000000-0000-0000-0000-000000000009', '10000000-0000-0000-0000-000000000016', DATE_SUB(CURDATE(), INTERVAL 65 DAY), 176.00, 2.9, 'Balanza portatil', 'Juan Perez', 'Destete.'),
+    ('70000000-0000-0000-0000-000000000010', '10000000-0000-0000-0000-000000000016', DATE_SUB(CURDATE(), INTERVAL 10 DAY), 218.00, 3.2, 'Balanza portatil', 'Juan Perez', 'Muy buena respuesta.')
+ON DUPLICATE KEY UPDATE
+    fecha = VALUES(fecha),
+    peso_kg = VALUES(peso_kg),
+    condicion_corporal = VALUES(condicion_corporal),
+    metodo = VALUES(metodo),
+    responsable = VALUES(responsable),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+INSERT INTO dietas_nutricionales (
+    id, nombre, tipo_animal, objetivo, materia_seca_kg, costo_diario, activa, observaciones
+) VALUES
+    ('71000000-0000-0000-0000-000000000001', 'Dieta recria intensiva', 'Novillos', 'Maximizar ganancia diaria en recria.', 7.80, 1850.00, b'1', 'Base silo de maiz y concentrado proteico.'),
+    ('71000000-0000-0000-0000-000000000002', 'Dieta preparto mineral', 'Vacas preparto', 'Mejorar condicion corporal y balance mineral.', 9.20, 2100.00, b'1', 'Incluye sales anionicas y nucleo mineral.'),
+    ('71000000-0000-0000-0000-000000000003', 'Dieta terneros destete', 'Terneros', 'Adaptacion ruminal y crecimiento temprano.', 4.10, 980.00, b'1', 'Racion inicial con fibra efectiva.'),
+    ('71000000-0000-0000-0000-000000000004', 'Dieta toros servicio', 'Toros', 'Mantener condicion durante servicio.', 10.50, 2350.00, b'1', 'Suplementacion energetica controlada.'),
+    ('71000000-0000-0000-0000-000000000005', 'Dieta mantenimiento madres', 'Vacas', 'Sostener condicion en madres elite.', 8.70, 1650.00, b'1', 'Pastoreo mas suplemento.'),
+    ('71000000-0000-0000-0000-000000000006', 'Dieta verdeo invierno', 'Rodeo general', 'Complementar verdeos con fibra.', 6.50, 1320.00, b'1', 'Uso estacional.')
+ON DUPLICATE KEY UPDATE
+    tipo_animal = VALUES(tipo_animal),
+    objetivo = VALUES(objetivo),
+    materia_seca_kg = VALUES(materia_seca_kg),
+    costo_diario = VALUES(costo_diario),
+    activa = VALUES(activa),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+INSERT INTO dieta_ingredientes (
+    id, dieta_id, ingrediente, proporcion_pct, costo_kg, materia_seca_pct
+) VALUES
+    ('71100000-0000-0000-0000-000000000001', '71000000-0000-0000-0000-000000000001', 'Silo de maiz', 55.00, 95.00, 34.00),
+    ('71100000-0000-0000-0000-000000000002', '71000000-0000-0000-0000-000000000001', 'Expeller de soja', 20.00, 280.00, 88.00),
+    ('71100000-0000-0000-0000-000000000003', '71000000-0000-0000-0000-000000000002', 'Heno de alfalfa', 45.00, 130.00, 86.00),
+    ('71100000-0000-0000-0000-000000000004', '71000000-0000-0000-0000-000000000002', 'Nucleo mineral preparto', 8.00, 620.00, 95.00),
+    ('71100000-0000-0000-0000-000000000005', '71000000-0000-0000-0000-000000000003', 'Balanceado iniciador', 65.00, 340.00, 89.00),
+    ('71100000-0000-0000-0000-000000000006', '71000000-0000-0000-0000-000000000004', 'Maiz partido', 35.00, 180.00, 87.00)
+ON DUPLICATE KEY UPDATE
+    ingrediente = VALUES(ingrediente),
+    proporcion_pct = VALUES(proporcion_pct),
+    costo_kg = VALUES(costo_kg),
+    materia_seca_pct = VALUES(materia_seca_pct),
+    deleted_at = NULL;
+
+INSERT INTO registros_alimentacion (
+    id, animal_id, dieta_id, fecha, alimento, cantidad_kg, costo_total, potrero, responsable, observaciones
+) VALUES
+    ('72000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000012', '71000000-0000-0000-0000-000000000001', DATE_SUB(CURDATE(), INTERVAL 150 DAY), 'Silo maiz + expeller', 1180.00, 290000.00, 'Potrero Recria', 'Juan Perez', 'Suministro mensual lote recria.'),
+    ('72000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000013', '71000000-0000-0000-0000-000000000001', DATE_SUB(CURDATE(), INTERVAL 120 DAY), 'Silo maiz + expeller', 1250.00, 305000.00, 'Potrero Recria', 'Juan Perez', 'Consumo ajustado por carga.'),
+    ('72000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000014', '71000000-0000-0000-0000-000000000003', DATE_SUB(CURDATE(), INTERVAL 90 DAY), 'Balanceado iniciador', 740.00, 210000.00, 'Potrero 5C', 'Maria Gomez', 'Adaptacion de terneras.'),
+    ('72000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000015', '71000000-0000-0000-0000-000000000003', DATE_SUB(CURDATE(), INTERVAL 75 DAY), 'Balanceado iniciador', 620.00, 176000.00, 'Potrero 7B', 'Maria Gomez', 'Destete.'),
+    ('72000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000001', '71000000-0000-0000-0000-000000000002', DATE_SUB(CURDATE(), INTERVAL 60 DAY), 'Preparto mineral', 980.00, 260000.00, 'Potrero 12A', 'Juan Perez', 'Preparto vacas.'),
+    ('72000000-0000-0000-0000-000000000006', '10000000-0000-0000-0000-000000000002', '71000000-0000-0000-0000-000000000002', DATE_SUB(CURDATE(), INTERVAL 45 DAY), 'Preparto mineral', 1120.00, 298000.00, 'Potrero 7B', 'Juan Perez', 'Preparto vacas.'),
+    ('72000000-0000-0000-0000-000000000007', '10000000-0000-0000-0000-000000000018', '71000000-0000-0000-0000-000000000005', DATE_SUB(CURDATE(), INTERVAL 30 DAY), 'Suplemento madres', 1540.00, 352000.00, 'Potrero Madres', 'Maria Gomez', 'Madres elite.'),
+    ('72000000-0000-0000-0000-000000000008', '10000000-0000-0000-0000-000000000007', '71000000-0000-0000-0000-000000000004', DATE_SUB(CURDATE(), INTERVAL 20 DAY), 'Maiz partido + nucleo', 880.00, 245000.00, 'Potrero Toros', 'Juan Perez', 'Toros de servicio.'),
+    ('72000000-0000-0000-0000-000000000009', '10000000-0000-0000-0000-000000000017', '71000000-0000-0000-0000-000000000006', DATE_SUB(CURDATE(), INTERVAL 10 DAY), 'Verdeo + fibra', 970.00, 198000.00, 'Potrero 9A', 'Maria Gomez', 'Verdeo invierno.'),
+    ('72000000-0000-0000-0000-000000000010', '10000000-0000-0000-0000-000000000003', '71000000-0000-0000-0000-000000000005', CURDATE(), 'Suplemento madres', 1320.00, 315000.00, 'Potrero 5C', 'Juan Perez', 'Suministro del mes actual.')
+ON DUPLICATE KEY UPDATE
+    animal_id = VALUES(animal_id),
+    dieta_id = VALUES(dieta_id),
+    fecha = VALUES(fecha),
+    alimento = VALUES(alimento),
+    cantidad_kg = VALUES(cantidad_kg),
+    costo_total = VALUES(costo_total),
+    potrero = VALUES(potrero),
+    responsable = VALUES(responsable),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+INSERT INTO aplicaciones_vacuna (
+    id, animal_id, vacuna_id, fecha_aplicacion, proxima_dosis_fecha, operario, lote_marca, costo_aplicado, observaciones
+) VALUES
+    ('41000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000012', '40000000-0000-0000-0000-000000000001', DATE_SUB(CURDATE(), INTERVAL 190 DAY), DATE_SUB(CURDATE(), INTERVAL 10 DAY), 'Juan Perez', 'AFT-VENC-01', 1850.00, 'Vencida para probar alertas.'),
+    ('41000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000013', '40000000-0000-0000-0000-000000000001', DATE_SUB(CURDATE(), INTERVAL 175 DAY), DATE_ADD(CURDATE(), INTERVAL 5 DAY), 'Juan Perez', 'AFT-PROX-01', 1850.00, 'Proxima a vencer.'),
+    ('41000000-0000-0000-0000-000000000006', '10000000-0000-0000-0000-000000000014', '40000000-0000-0000-0000-000000000002', DATE_SUB(CURDATE(), INTERVAL 370 DAY), DATE_SUB(CURDATE(), INTERVAL 5 DAY), 'Maria Gomez', 'CLO-VENC-01', 980.00, 'Vencida clostridial.'),
+    ('41000000-0000-0000-0000-000000000007', '10000000-0000-0000-0000-000000000015', '40000000-0000-0000-0000-000000000002', DATE_SUB(CURDATE(), INTERVAL 350 DAY), DATE_ADD(CURDATE(), INTERVAL 12 DAY), 'Maria Gomez', 'CLO-PROX-01', 980.00, 'Proxima clostridial.')
+ON DUPLICATE KEY UPDATE
+    fecha_aplicacion = VALUES(fecha_aplicacion),
+    proxima_dosis_fecha = VALUES(proxima_dosis_fecha),
+    operario = VALUES(operario),
+    lote_marca = VALUES(lote_marca),
+    costo_aplicado = VALUES(costo_aplicado),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+INSERT INTO diagnosticos_sanitarios (
+    id, animal_id, fecha_diagnostico, enfermedad, severidad, estado, veterinario, tratamiento_indicado, observaciones
+) VALUES
+    ('43000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000012', DATE_SUB(CURDATE(), INTERVAL 8 DAY), 'Cojera leve', 'BAJA', 'ABIERTO', 'Dr. Martin Silva', 'Reposo y observacion', 'Caso bajo para donut.'),
+    ('43000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000013', DATE_SUB(CURDATE(), INTERVAL 6 DAY), 'Neumonia inicial', 'ALTA', 'ABIERTO', 'Dra. Laura Medina', 'Antibiotico y control 48h', 'Caso alto para dashboard.'),
+    ('43000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000014', DATE_SUB(CURDATE(), INTERVAL 4 DAY), 'Diarrea neonatal', 'CRITICA', 'ABIERTO', 'Dra. Laura Medina', 'Fluidoterapia y seguimiento intensivo', 'Caso critico para alerta operativa.'),
+    ('43000000-0000-0000-0000-000000000006', '10000000-0000-0000-0000-000000000017', DATE_SUB(CURDATE(), INTERVAL 2 DAY), 'Dermatitis', 'MEDIA', 'ABIERTO', 'Dr. Martin Silva', 'Topico antiseptico', 'Caso medio para distribucion.')
+ON DUPLICATE KEY UPDATE
+    fecha_diagnostico = VALUES(fecha_diagnostico),
+    enfermedad = VALUES(enfermedad),
+    severidad = VALUES(severidad),
+    estado = VALUES(estado),
+    veterinario = VALUES(veterinario),
+    tratamiento_indicado = VALUES(tratamiento_indicado),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+INSERT INTO tratamientos_medicamento (
+    id, animal_id, fecha_inicio, fecha_fin, medicamento, dosis, via_aplicacion, responsable, motivo, costo, observaciones
+) VALUES
+    ('42000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000013', DATE_SUB(CURDATE(), INTERVAL 6 DAY), DATE_ADD(CURDATE(), INTERVAL 2 DAY), 'Oxitetraciclina LA', '20 ml', 'Intramuscular', 'Dra. Laura Medina', 'Neumonia inicial', 18500.00, 'Tratamiento activo.'),
+    ('42000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000014', DATE_SUB(CURDATE(), INTERVAL 4 DAY), NULL, 'Suero oral y antibiotico', 'Segun peso', 'Oral', 'Dra. Laura Medina', 'Diarrea neonatal', 24000.00, 'Caso critico activo.'),
+    ('42000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000017', DATE_SUB(CURDATE(), INTERVAL 2 DAY), DATE_ADD(CURDATE(), INTERVAL 5 DAY), 'Antiseptico topico', 'Aplicacion diaria', 'Topica', 'Dr. Martin Silva', 'Dermatitis', 9200.00, 'Tratamiento activo.')
+ON DUPLICATE KEY UPDATE
+    fecha_inicio = VALUES(fecha_inicio),
+    fecha_fin = VALUES(fecha_fin),
+    medicamento = VALUES(medicamento),
+    dosis = VALUES(dosis),
+    responsable = VALUES(responsable),
+    motivo = VALUES(motivo),
+    costo = VALUES(costo),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+INSERT INTO controles_prenez (
+    id, vaca_id, fecha_diagnostico, estado, fecha_estimada_parto, nivel_riesgo_parto, veterinario, observaciones
+) VALUES
+    ('52000000-0000-0000-0000-000000000006', '10000000-0000-0000-0000-000000000017', DATE_SUB(CURDATE(), INTERVAL 20 DAY), 'VACIA', NULL, 'BAJO', 'Dr. Martin Silva', 'Control negativo para estado reproductivo.'),
+    ('52000000-0000-0000-0000-000000000007', '10000000-0000-0000-0000-000000000018', DATE_SUB(CURDATE(), INTERVAL 15 DAY), 'EN_CONTROL', DATE_ADD(CURDATE(), INTERVAL 75 DAY), 'MEDIO', 'Dra. Laura Medina', 'Seguimiento pendiente.')
+ON DUPLICATE KEY UPDATE
+    fecha_diagnostico = VALUES(fecha_diagnostico),
+    estado = VALUES(estado),
+    fecha_estimada_parto = VALUES(fecha_estimada_parto),
+    nivel_riesgo_parto = VALUES(nivel_riesgo_parto),
+    veterinario = VALUES(veterinario),
+    observaciones = VALUES(observaciones),
+    deleted_at = NULL;
+
+-- =============================================================
 -- Mock manual de datos para pruebas de agricultura.
 -- Incluye lotes, ciclo agricola, cosecha, suelo e historial.
 -- =============================================================

@@ -278,10 +278,6 @@
           <input type="number" min="0" [ngModel]="form().capacidadAnimales" (ngModelChange)="updateForm('capacidadAnimales', $event === '' ? undefined : +$event)" name="capacidadAnimales" />
         </label>
         <label>
-          <span>Carga actual</span>
-          <input type="number" min="0" [ngModel]="form().cargaAnimalActual" (ngModelChange)="updateForm('cargaAnimalActual', $event === '' ? undefined : +$event)" name="cargaAnimalActual" />
-        </label>
-        <label>
           <span>Recurso forrajero</span>
           <input [ngModel]="form().recursoForrajero" (ngModelChange)="updateForm('recursoForrajero', $event)" name="recursoForrajero" />
         </label>

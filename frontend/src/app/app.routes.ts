@@ -36,6 +36,7 @@ export const routes: Routes = [
       { path: 'agricola/analytics', component: AnalyticsPageComponent },
       { path: 'agricola/plagas', component: PlagasPageComponent },
       { path: 'reportes/agricola', component: ReportesAgricolaPageComponent },
+      { path: 'reportes/ganaderia', loadComponent: () => import('./pages/reportes-ganaderia-page/reportes-ganaderia-page.component').then((m) => m.ReportesGanaderiaPageComponent) },
       { path: 'ganaderia/trazabilidad', component: GanaderiaTrazabilidadPageComponent },
       { path: 'ganaderia/sanidad', component: GanaderiaSanidadPageComponent },
       { path: 'ganaderia/reproduccion', component: GanaderiaReproduccionPageComponent },

@@ -18,11 +18,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 43
-- Realizadas: 20
+- Realizadas: 21
 - Parciales: 0
-- Pendientes: 21
+- Pendientes: 20
 - Saltadas: 2
-- Ultima actualizacion: 2026-06-06
+- Ultima actualizacion: 2026-06-08
 
 ## Registro por Feature
 
@@ -71,6 +71,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 39 | `39_mobile_primer_login_cambio_password_obligatorio.md` | Seguridad/Mobile | Pendiente | Cambio obligatorio de contraseña en primer login mobile para usuarios creados automaticamente desde operarios. |
 | 40 | `40_COMPLETA_operaciones_calendario_operaciones.md` | Operaciones | Realizada | Calendario semanal operativo para ordenes de trabajo, con filtros, chips de operarios, popup de seguimiento, cambio de estado y registro de actividad. |
 | 41 | `41_COMPLETA_roles_menu_permisos.md` | Seguridad/Frontend | Realizada | Pantalla administrativa para definir opciones de menu visibles por rol, con backend persistido y sidebar filtrado por permisos. |
+| 42 | `42_COMPLETA_dashboard_ganadero_ejecutivo.md` | Ganaderia/Reportes | Realizada | Dashboard Ganadero Ejecutivo implementado con endpoint backend-driven, KPIs, graficos, alertas operativas y analitica del rodeo. |
 
 ## Registro por Dominio
 
@@ -85,7 +86,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 28.
 
 ### Ganaderia
-- Realizadas: 04, 05, 06, 07, 31, 38.
+- Realizadas: 04, 05, 06, 07, 31, 38, 42.
 - Parciales: ninguna.
 - Pendientes: 30, 32, 33, 34, 35.
 
@@ -122,6 +123,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 39.
 
 ## Ultimas Actualizaciones
+- 2026-06-08: Feature 42 realizada con Dashboard Ganadero Ejecutivo backend-driven, endpoint de reportes ganaderos y pantalla Angular premium.
 - 2026-06-07: Feature 41 realizada con administracion de visibilidad de menu por rol, endpoint de menu visible y sidebar filtrado.
 - 2026-06-06: Feature 31 realizada con componente generico de select buscador aplicado a animales, potreros, operarios, veterinarios, responsables, plagas, sanidad y alimentacion.
 - 2026-06-06: Feature 40 realizada con Calendario de Operaciones semanal basado en ordenes de trabajo, filtros, chips, popup de detalle y acciones de seguimiento.

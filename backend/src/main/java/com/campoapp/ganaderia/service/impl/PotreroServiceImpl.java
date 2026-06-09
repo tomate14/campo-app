@@ -4,7 +4,9 @@ import com.campoapp.common.exception.BusinessException;
 import com.campoapp.common.exception.ResourceNotFoundException;
 import com.campoapp.ganaderia.dto.PotreroRequest;
 import com.campoapp.ganaderia.dto.PotreroResponse;
+import com.campoapp.ganaderia.entity.Animal;
 import com.campoapp.ganaderia.entity.Potrero;
+import com.campoapp.ganaderia.repository.AnimalRepository;
 import com.campoapp.ganaderia.repository.PotreroRepository;
 import com.campoapp.ganaderia.service.PotreroService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,24 +30,27 @@ public class PotreroServiceImpl implements PotreroService {
     private static final String DEFAULT_ESTADO = "ACTIVO";
 
     private final PotreroRepository potreroRepository;
+    private final AnimalRepository animalRepository;
     private final ObjectMapper objectMapper;
 
     @Override
     public List<PotreroResponse> listar(String nombre, String estado, String tipoUso, BigDecimal superficieMin, BigDecimal superficieMax) {
+        Map<String, Long> cargas = cargasPorPotrero();
         return potreroRepository.search(blankToNull(nombre), blankToNull(estado), blankToNull(tipoUso), superficieMin, superficieMax)
                 .stream()
-                .map(this::toResponse)
+                .map(potrero -> toResponse(potrero, cargas))
                 .toList();
     }
 
     @Override
     public List<PotreroResponse> listarMapa() {
-        return potreroRepository.findAllActive().stream().map(this::toResponse).toList();
+        Map<String, Long> cargas = cargasPorPotrero();
+        return potreroRepository.findAllActive().stream().map(potrero -> toResponse(potrero, cargas)).toList();
     }
 
     @Override
     public PotreroResponse buscarPorId(String id) {
-        return toResponse(findActiveOrThrow(id));
+        return toResponse(findActiveOrThrow(id), cargasPorPotrero());
     }
 
     @Override
@@ -57,7 +64,6 @@ public class PotreroServiceImpl implements PotreroService {
                 .tipoUso(defaultText(request.tipoUso(), DEFAULT_TIPO_USO))
                 .estado(defaultText(request.estado(), DEFAULT_ESTADO))
                 .capacidadAnimales(nonNegative(request.capacidadAnimales(), "capacidadAnimales"))
-                .cargaAnimalActual(nonNegative(request.cargaAnimalActual(), "cargaAnimalActual"))
                 .recursoForrajero(blankToNull(request.recursoForrajero()))
                 .disponibilidadAgua(request.disponibilidadAgua() == null || request.disponibilidadAgua())
                 .tieneSombra(request.tieneSombra() != null && request.tieneSombra())
@@ -66,7 +72,7 @@ public class PotreroServiceImpl implements PotreroService {
                 .centroideLatitud(request.centroideLatitud())
                 .centroideLongitud(request.centroideLongitud())
                 .build();
-        return toResponse(potreroRepository.save(potrero));
+        return toResponse(potreroRepository.save(potrero), cargasPorPotrero());
     }
 
     @Override
@@ -80,7 +86,6 @@ public class PotreroServiceImpl implements PotreroService {
         potrero.setTipoUso(defaultText(request.tipoUso(), DEFAULT_TIPO_USO));
         potrero.setEstado(defaultText(request.estado(), DEFAULT_ESTADO));
         potrero.setCapacidadAnimales(nonNegative(request.capacidadAnimales(), "capacidadAnimales"));
-        potrero.setCargaAnimalActual(nonNegative(request.cargaAnimalActual(), "cargaAnimalActual"));
         potrero.setRecursoForrajero(blankToNull(request.recursoForrajero()));
         potrero.setDisponibilidadAgua(request.disponibilidadAgua() == null || request.disponibilidadAgua());
         potrero.setTieneSombra(request.tieneSombra() != null && request.tieneSombra());
@@ -88,7 +93,7 @@ public class PotreroServiceImpl implements PotreroService {
         potrero.setPoligono(request.poligono());
         potrero.setCentroideLatitud(request.centroideLatitud());
         potrero.setCentroideLongitud(request.centroideLongitud());
-        return toResponse(potreroRepository.save(potrero));
+        return toResponse(potreroRepository.save(potrero), cargasPorPotrero());
     }
 
     @Override
@@ -175,7 +180,18 @@ public class PotreroServiceImpl implements PotreroService {
         return value == null || value.isBlank() ? fallback : value.trim();
     }
 
-    private PotreroResponse toResponse(Potrero potrero) {
+    private Map<String, Long> cargasPorPotrero() {
+        return animalRepository.findFiltered(null, null, null, "ACTIVO").stream()
+                .filter(animal -> !isBlank(animal.getUbicacionActual()))
+                .collect(Collectors.groupingBy(animal -> animal.getUbicacionActual().trim(), Collectors.counting()));
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
+    private PotreroResponse toResponse(Potrero potrero, Map<String, Long> cargas) {
+        int cargaActual = Math.toIntExact(cargas.getOrDefault(potrero.getNombre(), 0L));
         return new PotreroResponse(
                 potrero.getId(),
                 potrero.getNombre(),
@@ -184,7 +200,7 @@ public class PotreroServiceImpl implements PotreroService {
                 potrero.getTipoUso(),
                 potrero.getEstado(),
                 potrero.getCapacidadAnimales(),
-                potrero.getCargaAnimalActual(),
+                cargaActual,
                 potrero.getRecursoForrajero(),
                 potrero.getDisponibilidadAgua(),
                 potrero.getTieneSombra(),

@@ -32,6 +32,11 @@
         <span *ngIf="!collapsed()">Dashboard agricola</span>
       </a>
 
+      <a *ngIf="isMenuVisible('dashboard-ganadero')" routerLink="/reportes/ganaderia" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Dashboard ganadero' : ''">
+        <svg viewBox="0 0 24 24"><path d="M5 8c0-3 3-5 7-5s7 2 7 5c0 4-3 7-7 7S5 12 5 8Z" /><path d="M8 5L5 3" /><path d="M16 5l3-2" /><path d="M10 15v4h4v-4" /><path d="M16 19h5" /><path d="M18 19v-5" /><path d="M20 19v-8" /></svg>
+        <span *ngIf="!collapsed()">Dashboard ganadero</span>
+      </a>
+
       <a *ngIf="isMenuVisible('operaciones-calendario')" routerLink="/operaciones/calendario" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Calendario' : ''">
         <svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><path d="M3 10h18" /><path d="M5 5h14v16H5z" /><path d="M8 14h3" /><path d="M13 14h3" /><path d="M8 17h3" /></svg>
         <span *ngIf="!collapsed()">Calendario</span>

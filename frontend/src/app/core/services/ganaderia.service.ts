@@ -20,6 +20,7 @@ import type {
   ControlPrenez,
   ControlPrenezRequest,
   GenealogiaAnimal,
+  GanaderoDashboard,
   IndiceGenetico,
   IndiceGeneticoRequest,
   Inseminacion,
@@ -67,6 +68,11 @@ function cleanParams(params?: Record<string, unknown>): Record<string, HttpParam
 @Injectable({ providedIn: 'root' })
 export class GanaderiaService {
   private readonly http = inject(HttpClient);
+
+  getGanaderoDashboard() {
+    return this.http.get<ApiResponse<GanaderoDashboard> | GanaderoDashboard>(`${API_BASE_URL}/reportes/ganaderia/dashboard`)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
 
   getAnimales(params?: { caravana?: string; raza?: string; ubicacion?: string; estado?: string }) {
     return this.http.get<ApiResponse<Animal[]> | Animal[]>(`${API_BASE_URL}/ganaderia/trazabilidad/animales`, { params: cleanParams(params) })

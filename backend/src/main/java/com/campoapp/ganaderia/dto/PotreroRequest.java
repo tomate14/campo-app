@@ -13,7 +13,6 @@ public record PotreroRequest(
         String tipoUso,
         String estado,
         Integer capacidadAnimales,
-        Integer cargaAnimalActual,
         String recursoForrajero,
         Boolean disponibilidadAgua,
         Boolean tieneSombra,
