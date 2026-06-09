@@ -109,5 +109,11 @@ JWT_REFRESH_EXPIRATION_MS    # default 604800000 (7 dÃ­as)
 ## Regla Visual de Tooltips
 - Todos los tooltips nuevos de graficos y visualizaciones deben seguir el patron premium Campo App: card dark SaaS 380x430 aprox., fondo #081225/#0B1730, borde verde suave, border-radius 24px, glow sutil, banda superior con color de serie/cultivo, icono real, titulo grande, subtitulo gris, badge de estado, separador, metricas icono-label-valor y footer con leyenda. Evitar tooltips nativos simples en graficos.
 
+## Regla de Integridad Referencial
+- Todas las relaciones entre entidades del sistema deben resolverse por `id` y claves foraneas, nunca por nombres, textos libres o campos descriptivos.
+- Los nombres solo deben usarse para visualizacion.
+- Caso especifico: la asignacion Animal-Potrero debe modelarse como entidad historica `animales_potreros` con `animal_id` y `potrero_id`; `ubicacionActual` no debe ser fuente de verdad.
+- Los movimientos de animales entre potreros deben cerrar la asignacion activa anterior y crear una nueva asignacion activa por IDs.
+- Esta correccion transversal queda documentada en feature 43.
 
 

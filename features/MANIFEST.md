@@ -17,10 +17,10 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 43
+- Total de historias registradas: 44
 - Realizadas: 21
 - Parciales: 0
-- Pendientes: 20
+- Pendientes: 21
 - Saltadas: 2
 - Ultima actualizacion: 2026-06-08
 
@@ -72,6 +72,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 40 | `40_COMPLETA_operaciones_calendario_operaciones.md` | Operaciones | Realizada | Calendario semanal operativo para ordenes de trabajo, con filtros, chips de operarios, popup de seguimiento, cambio de estado y registro de actividad. |
 | 41 | `41_COMPLETA_roles_menu_permisos.md` | Seguridad/Frontend | Realizada | Pantalla administrativa para definir opciones de menu visibles por rol, con backend persistido y sidebar filtrado por permisos. |
 | 42 | `42_COMPLETA_dashboard_ganadero_ejecutivo.md` | Ganaderia/Reportes | Realizada | Dashboard Ganadero Ejecutivo implementado con endpoint backend-driven, KPIs, graficos, alertas operativas y analitica del rodeo. |
+| 43 | `43_integridad_referencial_transversal_por_id.md` | Arquitectura/Datos | Pendiente | Refactor transversal para que todas las relaciones entre entidades se hagan por IDs y claves foraneas; incluye `animales_potreros` como entidad historica de asignacion animal-potrero. |
 
 ## Registro por Dominio
 
@@ -122,7 +123,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 26, 41.
 - Pendientes: 39.
 
+### Arquitectura/Datos
+- Pendientes: 43.
+
 ## Ultimas Actualizaciones
+- 2026-06-09: Feature 43 creada para corregir integridad referencial transversal por ID y evitar joins por nombres/textos libres.
 - 2026-06-08: Feature 42 realizada con Dashboard Ganadero Ejecutivo backend-driven, endpoint de reportes ganaderos y pantalla Angular premium.
 - 2026-06-07: Feature 41 realizada con administracion de visibilidad de menu por rol, endpoint de menu visible y sidebar filtrado.
 - 2026-06-06: Feature 31 realizada con componente generico de select buscador aplicado a animales, potreros, operarios, veterinarios, responsables, plagas, sanidad y alimentacion.
