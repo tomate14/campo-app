@@ -15,6 +15,8 @@ public record AnimalResponse(
         String rfidCodigo,
         String qrCodigo,
         String estado,
+        String potreroId,
+        String potreroNombre,
         String ubicacionActual,
         String madreId,
         String madreCaravana,

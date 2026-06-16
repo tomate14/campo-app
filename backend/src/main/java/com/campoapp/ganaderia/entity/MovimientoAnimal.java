@@ -28,6 +28,14 @@ public class MovimientoAnimal extends AuditableEntity {
     @Column(name = "ubicacion_destino", length = 150)
     private String ubicacionDestino;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "potrero_origen_id")
+    private Potrero potreroOrigen;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "potrero_destino_id")
+    private Potrero potreroDestino;
+
     @Column(length = 180)
     private String motivo;
 

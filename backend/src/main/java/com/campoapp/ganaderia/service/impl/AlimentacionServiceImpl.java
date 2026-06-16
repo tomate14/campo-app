@@ -16,7 +16,9 @@ import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class AlimentacionServiceImpl implements AlimentacionService {
     private final DietaIngredienteRepository ingredienteRepository;
     private final RegistroAlimentacionRepository registroRepository;
     private final PesajeAnimalRepository pesajeRepository;
+    private final PotreroRepository potreroRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -104,6 +107,7 @@ public class AlimentacionServiceImpl implements AlimentacionService {
     public RegistroAlimentacionResponse registrarAlimentacion(RegistroAlimentacionRequest request) {
         Animal animal = request.animalId() == null || request.animalId().isBlank() ? null : getAnimal(request.animalId());
         DietaNutricional dieta = request.dietaId() == null || request.dietaId().isBlank() ? null : getDieta(request.dietaId());
+        Potrero potrero = resolvePotrero(request.potreroId(), request.potrero());
         RegistroAlimentacion registro = RegistroAlimentacion.builder()
                 .animal(animal)
                 .dieta(dieta)
@@ -111,7 +115,8 @@ public class AlimentacionServiceImpl implements AlimentacionService {
                 .alimento(request.alimento())
                 .cantidadKg(request.cantidadKg())
                 .costoTotal(request.costoTotal())
-                .potrero(request.potrero())
+                .potreroRef(potrero)
+                .potrero(potrero != null ? potrero.getNombre() : request.potrero())
                 .responsable(request.responsable())
                 .observaciones(request.observaciones())
                 .build();
@@ -193,6 +198,7 @@ public class AlimentacionServiceImpl implements AlimentacionService {
     }
 
     private RegistroAlimentacionResponse toRegistroResponse(RegistroAlimentacion registro) {
+        Potrero potrero = registro.getPotreroRef();
         return new RegistroAlimentacionResponse(
                 registro.getId(),
                 registro.getAnimal() != null ? registro.getAnimal().getId() : null,
@@ -200,7 +206,10 @@ public class AlimentacionServiceImpl implements AlimentacionService {
                 registro.getDieta() != null ? registro.getDieta().getId() : null,
                 registro.getDieta() != null ? registro.getDieta().getNombre() : null,
                 registro.getFecha(), registro.getAlimento(), registro.getCantidadKg(), registro.getCostoTotal(),
-                registro.getPotrero(), registro.getResponsable(), registro.getObservaciones(), registro.getCreatedAt()
+                potrero != null ? potrero.getId() : null,
+                potrero != null ? potrero.getNombre() : null,
+                potrero != null ? potrero.getNombre() : registro.getPotrero(),
+                registro.getResponsable(), registro.getObservaciones(), registro.getCreatedAt()
         );
     }
 
@@ -218,5 +227,28 @@ public class AlimentacionServiceImpl implements AlimentacionService {
 
     private String blankToNull(String value) {
         return value == null || value.isBlank() ? null : value;
+    }
+
+    private Potrero resolvePotrero(String potreroId, String legacyName) {
+        if (potreroId != null && !potreroId.isBlank()) {
+            return potreroRepository.findActiveById(potreroId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Potrero no encontrado"));
+        }
+        if (legacyName == null || legacyName.isBlank()) {
+            return null;
+        }
+        return findPotreroByLegacyName(legacyName).orElse(null);
+    }
+
+    private Optional<Potrero> findPotreroByLegacyName(String value) {
+        String normalized = normalizeLocation(value);
+        return potreroRepository.findAllActive().stream()
+                .filter(p -> normalizeLocation(p.getNombre()).equals(normalized)
+                        || ("potrero " + normalizeLocation(p.getNombre())).equals(normalized))
+                .findFirst();
+    }
+
+    private String normalizeLocation(String value) {
+        return value == null ? "" : value.trim().replaceAll("\\s+", " ").toLowerCase(Locale.ROOT);
     }
 }

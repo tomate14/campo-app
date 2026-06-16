@@ -4,17 +4,27 @@ import com.campoapp.common.exception.BusinessException;
 import com.campoapp.common.exception.ResourceNotFoundException;
 import com.campoapp.ganaderia.dto.*;
 import com.campoapp.ganaderia.entity.Animal;
+import com.campoapp.ganaderia.entity.AnimalPotrero;
 import com.campoapp.ganaderia.entity.HistorialMedicoAnimal;
 import com.campoapp.ganaderia.entity.MovimientoAnimal;
+import com.campoapp.ganaderia.entity.Potrero;
 import com.campoapp.ganaderia.repository.AnimalRepository;
+import com.campoapp.ganaderia.repository.AnimalPotreroRepository;
 import com.campoapp.ganaderia.repository.HistorialMedicoAnimalRepository;
 import com.campoapp.ganaderia.repository.MovimientoAnimalRepository;
+import com.campoapp.ganaderia.repository.PotreroRepository;
 import com.campoapp.ganaderia.service.AnimalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,19 +34,27 @@ public class AnimalServiceImpl implements AnimalService {
     private final AnimalRepository animalRepository;
     private final MovimientoAnimalRepository movimientoRepository;
     private final HistorialMedicoAnimalRepository historialRepository;
+    private final PotreroRepository potreroRepository;
+    private final AnimalPotreroRepository animalPotreroRepository;
 
     @Override
     @Transactional(readOnly = true)
     public List<AnimalResponse> listAnimales(String caravana, String raza, String ubicacion, String estado) {
-        return animalRepository.findFiltered(caravana, raza, ubicacion, estado).stream().map(this::toAnimalResponse).toList();
+        List<Animal> animals = animalRepository.findFiltered(caravana, raza, null, estado);
+        Map<String, AnimalPotrero> assignments = activeAssignmentsByAnimalId(animals);
+        return animals.stream()
+                .map(animal -> toAnimalResponse(animal, assignments.get(animal.getId())))
+                .filter(response -> matchesUbicacion(response, ubicacion))
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public AnimalDetalleResponse getAnimal(String id) {
         Animal animal = getActiveAnimal(id);
+        AnimalPotrero assignment = animalPotreroRepository.findActiveByAnimalId(animal.getId()).orElse(null);
         return new AnimalDetalleResponse(
-                toAnimalResponse(animal),
+                toAnimalResponse(animal, assignment),
                 movimientoRepository.findByAnimalId(id).stream().map(this::toMovimientoResponse).toList(),
                 historialRepository.findByAnimalId(id).stream().map(this::toHistorialResponse).toList()
         );
@@ -45,6 +63,7 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public AnimalResponse createAnimal(AnimalRequest request) {
         validateCaravanaForCreate(request.caravana());
+        Potrero potrero = resolvePotreroForRequest(request.potreroId(), request.ubicacionActual(), false);
         Animal animal = Animal.builder()
                 .caravana(request.caravana())
                 .raza(request.raza())
@@ -55,12 +74,14 @@ public class AnimalServiceImpl implements AnimalService {
                 .rfidCodigo(request.rfidCodigo())
                 .qrCodigo(request.qrCodigo())
                 .estado(request.estado() == null || request.estado().isBlank() ? "ACTIVO" : request.estado())
-                .ubicacionActual(request.ubicacionActual())
+                .ubicacionActual(potrero != null ? potrero.getNombre() : request.ubicacionActual())
                 .madre(resolveParent(request.madreId(), "madre"))
                 .padre(resolveParent(request.padreId(), "padre"))
                 .observaciones(request.observaciones())
                 .build();
-        return toAnimalResponse(animalRepository.save(animal));
+        Animal saved = animalRepository.save(animal);
+        AnimalPotrero assignment = potrero == null ? null : assignInitialPotrero(saved, potrero, "Alta de animal", null, null);
+        return toAnimalResponse(saved, assignment);
     }
 
     @Override
@@ -76,12 +97,21 @@ public class AnimalServiceImpl implements AnimalService {
         animal.setRfidCodigo(request.rfidCodigo());
         animal.setQrCodigo(request.qrCodigo());
         animal.setEstado(request.estado() == null || request.estado().isBlank() ? animal.getEstado() : request.estado());
-        animal.setUbicacionActual(request.ubicacionActual());
+        Potrero potrero = resolvePotreroForRequest(request.potreroId(), request.ubicacionActual(), false);
+        if (potrero != null) {
+            animal.setUbicacionActual(potrero.getNombre());
+        } else if (request.ubicacionActual() != null) {
+            animal.setUbicacionActual(request.ubicacionActual());
+        }
         animal.setMadre(resolveParent(request.madreId(), "madre"));
         animal.setPadre(resolveParent(request.padreId(), "padre"));
         animal.setObservaciones(request.observaciones());
         preventSelfParent(animal);
-        return toAnimalResponse(animalRepository.save(animal));
+        Animal saved = animalRepository.save(animal);
+        AnimalPotrero assignment = potrero == null
+                ? animalPotreroRepository.findActiveByAnimalId(saved.getId()).orElse(null)
+                : moveAnimalToPotrero(saved, potrero, LocalDateTime.now(), "Actualizacion de animal", null, null, null);
+        return toAnimalResponse(saved, assignment);
     }
 
     @Override
@@ -94,21 +124,26 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public MovimientoAnimalResponse registrarMovimiento(MovimientoAnimalRequest request) {
         Animal animal = getActiveAnimal(request.animalId());
+        AnimalPotrero activeAssignment = animalPotreroRepository.findActiveByAnimalId(animal.getId()).orElse(null);
+        Potrero potreroOrigen = resolvePotreroOrigen(request.potreroOrigenId(), activeAssignment);
+        Potrero potreroDestino = resolvePotreroForRequest(request.potreroDestinoId(), request.ubicacionDestino(), true);
         MovimientoAnimal movimiento = MovimientoAnimal.builder()
                 .animal(animal)
                 .fecha(request.fecha())
                 .tipoMovimiento(request.tipoMovimiento())
-                .ubicacionOrigen(request.ubicacionOrigen())
-                .ubicacionDestino(request.ubicacionDestino())
+                .potreroOrigen(potreroOrigen)
+                .potreroDestino(potreroDestino)
+                .ubicacionOrigen(potreroOrigen != null ? potreroOrigen.getNombre() : request.ubicacionOrigen())
+                .ubicacionDestino(potreroDestino != null ? potreroDestino.getNombre() : request.ubicacionDestino())
                 .motivo(request.motivo())
                 .responsable(request.responsable())
                 .observaciones(request.observaciones())
                 .build();
-        if (request.ubicacionDestino() != null && !request.ubicacionDestino().isBlank()) {
-            animal.setUbicacionActual(request.ubicacionDestino());
-            animalRepository.save(animal);
+        MovimientoAnimal saved = movimientoRepository.save(movimiento);
+        if (potreroDestino != null) {
+            moveAnimalToPotrero(animal, potreroDestino, request.fecha(), request.motivo(), request.responsable(), request.observaciones(), saved);
         }
-        return toMovimientoResponse(movimientoRepository.save(movimiento));
+        return toMovimientoResponse(saved);
     }
 
     @Override
@@ -143,21 +178,26 @@ public class AnimalServiceImpl implements AnimalService {
     @Transactional(readOnly = true)
     public String exportarSenasaCsv(String estado) {
         List<Animal> animales = animalRepository.findFiltered(null, null, null, estado);
+        Map<String, AnimalPotrero> assignments = activeAssignmentsByAnimalId(animales);
         StringBuilder csv = new StringBuilder("caravana,rfid,qr,raza,sexo,estado,ubicacion_actual,fecha_nacimiento,fecha_compra,peso_actual_kg,madre,padre\n");
-        animales.forEach(animal -> csv.append(String.join(",",
+        animales.forEach(animal -> {
+            AnimalPotrero assignment = assignments.get(animal.getId());
+            String ubicacion = assignment != null ? assignment.getPotrero().getNombre() : animal.getUbicacionActual();
+            csv.append(String.join(",",
                 safe(animal.getCaravana()),
                 safe(animal.getRfidCodigo()),
                 safe(animal.getQrCodigo()),
                 safe(animal.getRaza()),
                 safe(animal.getSexo()),
                 safe(animal.getEstado()),
-                safe(animal.getUbicacionActual()),
+                safe(ubicacion),
                 safe(animal.getFechaNacimiento()),
                 safe(animal.getFechaCompra()),
                 safe(animal.getPesoActualKg()),
                 animal.getMadre() != null ? safe(animal.getMadre().getCaravana()) : "",
                 animal.getPadre() != null ? safe(animal.getPadre().getCaravana()) : ""
-        )).append('\n'));
+            )).append('\n');
+        });
         return csv.toString();
     }
 
@@ -196,6 +236,12 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     private AnimalResponse toAnimalResponse(Animal animal) {
+        return toAnimalResponse(animal, animalPotreroRepository.findActiveByAnimalId(animal.getId()).orElse(null));
+    }
+
+    private AnimalResponse toAnimalResponse(Animal animal, AnimalPotrero assignment) {
+        String potreroId = assignment != null && assignment.getPotrero() != null ? assignment.getPotrero().getId() : null;
+        String potreroNombre = assignment != null && assignment.getPotrero() != null ? assignment.getPotrero().getNombre() : null;
         return new AnimalResponse(
                 animal.getId(),
                 animal.getCaravana(),
@@ -207,7 +253,9 @@ public class AnimalServiceImpl implements AnimalService {
                 animal.getRfidCodigo(),
                 animal.getQrCodigo(),
                 animal.getEstado(),
-                animal.getUbicacionActual(),
+                potreroId,
+                potreroNombre,
+                potreroNombre != null ? potreroNombre : animal.getUbicacionActual(),
                 animal.getMadre() != null ? animal.getMadre().getId() : null,
                 animal.getMadre() != null ? animal.getMadre().getCaravana() : null,
                 animal.getPadre() != null ? animal.getPadre().getId() : null,
@@ -225,8 +273,10 @@ public class AnimalServiceImpl implements AnimalService {
                 movimiento.getAnimal().getCaravana(),
                 movimiento.getFecha(),
                 movimiento.getTipoMovimiento(),
-                movimiento.getUbicacionOrigen(),
-                movimiento.getUbicacionDestino(),
+                movimiento.getPotreroOrigen() != null ? movimiento.getPotreroOrigen().getId() : null,
+                movimiento.getPotreroDestino() != null ? movimiento.getPotreroDestino().getId() : null,
+                movimiento.getPotreroOrigen() != null ? movimiento.getPotreroOrigen().getNombre() : movimiento.getUbicacionOrigen(),
+                movimiento.getPotreroDestino() != null ? movimiento.getPotreroDestino().getNombre() : movimiento.getUbicacionDestino(),
                 movimiento.getMotivo(),
                 movimiento.getResponsable(),
                 movimiento.getObservaciones(),
@@ -250,5 +300,104 @@ public class AnimalServiceImpl implements AnimalService {
 
     private String safe(Object value) {
         return value == null ? "" : String.valueOf(value).replace(",", " ");
+    }
+
+    private Map<String, AnimalPotrero> activeAssignmentsByAnimalId(List<Animal> animals) {
+        List<String> ids = animals.stream().map(Animal::getId).toList();
+        if (ids.isEmpty()) {
+            return Map.of();
+        }
+        return animalPotreroRepository.findActiveByAnimalIds(ids).stream()
+                .collect(Collectors.toMap(ap -> ap.getAnimal().getId(), Function.identity(), (left, right) -> left));
+    }
+
+    private boolean matchesUbicacion(AnimalResponse response, String ubicacion) {
+        if (ubicacion == null || ubicacion.isBlank()) {
+            return true;
+        }
+        String needle = ubicacion.toLowerCase(Locale.ROOT);
+        return containsIgnoreCase(response.potreroNombre(), needle) || containsIgnoreCase(response.ubicacionActual(), needle);
+    }
+
+    private boolean containsIgnoreCase(String value, String needle) {
+        return value != null && value.toLowerCase(Locale.ROOT).contains(needle);
+    }
+
+    private Potrero resolvePotreroOrigen(String potreroOrigenId, AnimalPotrero activeAssignment) {
+        if (potreroOrigenId != null && !potreroOrigenId.isBlank()) {
+            return potreroRepository.findActiveById(potreroOrigenId)
+                    .orElseThrow(() -> new BusinessException("No existe el potrero de origen"));
+        }
+        return activeAssignment == null ? null : activeAssignment.getPotrero();
+    }
+
+    private Potrero resolvePotreroForRequest(String potreroId, String legacyName, boolean requiredWhenLegacyProvided) {
+        if (potreroId != null && !potreroId.isBlank()) {
+            return potreroRepository.findActiveById(potreroId)
+                    .orElseThrow(() -> new BusinessException("No existe el potrero indicado"));
+        }
+        if (legacyName == null || legacyName.isBlank()) {
+            return null;
+        }
+        Optional<Potrero> potrero = findPotreroByLegacyName(legacyName);
+        if (potrero.isPresent()) {
+            return potrero.get();
+        }
+        if (requiredWhenLegacyProvided) {
+            throw new BusinessException("La ubicacion indicada no corresponde a un potrero registrado");
+        }
+        return null;
+    }
+
+    private Optional<Potrero> findPotreroByLegacyName(String value) {
+        String normalized = normalizeLocation(value);
+        return potreroRepository.findAllActive().stream()
+                .filter(p -> normalizeLocation(p.getNombre()).equals(normalized)
+                        || ("potrero " + normalizeLocation(p.getNombre())).equals(normalized))
+                .findFirst();
+    }
+
+    private String normalizeLocation(String value) {
+        return value == null ? "" : value.trim().replaceAll("\\s+", " ").toLowerCase(Locale.ROOT);
+    }
+
+    private AnimalPotrero assignInitialPotrero(Animal animal, Potrero potrero, String motivo, String responsable, String observaciones) {
+        animal.setUbicacionActual(potrero.getNombre());
+        animalRepository.save(animal);
+        return animalPotreroRepository.save(AnimalPotrero.builder()
+                .animal(animal)
+                .potrero(potrero)
+                .fechaDesde(LocalDateTime.now())
+                .activo(true)
+                .motivo(motivo)
+                .responsable(responsable)
+                .observaciones(observaciones)
+                .build());
+    }
+
+    private AnimalPotrero moveAnimalToPotrero(Animal animal, Potrero potrero, LocalDateTime fecha, String motivo, String responsable, String observaciones, MovimientoAnimal movimiento) {
+        AnimalPotrero current = animalPotreroRepository.findActiveByAnimalId(animal.getId()).orElse(null);
+        if (current != null && current.getPotrero() != null && current.getPotrero().getId().equals(potrero.getId())) {
+            animal.setUbicacionActual(potrero.getNombre());
+            animalRepository.save(animal);
+            return current;
+        }
+        if (current != null) {
+            current.setActivo(false);
+            current.setFechaHasta(fecha == null ? LocalDateTime.now() : fecha);
+            animalPotreroRepository.save(current);
+        }
+        animal.setUbicacionActual(potrero.getNombre());
+        animalRepository.save(animal);
+        return animalPotreroRepository.save(AnimalPotrero.builder()
+                .animal(animal)
+                .potrero(potrero)
+                .fechaDesde(fecha == null ? LocalDateTime.now() : fecha)
+                .activo(true)
+                .motivo(motivo)
+                .responsable(responsable)
+                .movimiento(movimiento)
+                .observaciones(observaciones)
+                .build());
     }
 }

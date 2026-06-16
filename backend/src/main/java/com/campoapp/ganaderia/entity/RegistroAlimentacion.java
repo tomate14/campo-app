@@ -34,6 +34,10 @@ public class RegistroAlimentacion extends AuditableEntity {
     @Column(length = 120)
     private String potrero;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "potrero_id")
+    private Potrero potreroRef;
+
     @Column(length = 120)
     private String responsable;
 

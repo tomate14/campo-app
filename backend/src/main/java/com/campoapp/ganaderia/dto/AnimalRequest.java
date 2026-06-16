@@ -15,6 +15,7 @@ public record AnimalRequest(
         String rfidCodigo,
         String qrCodigo,
         String estado,
+        String potreroId,
         String ubicacionActual,
         String madreId,
         String padreId,

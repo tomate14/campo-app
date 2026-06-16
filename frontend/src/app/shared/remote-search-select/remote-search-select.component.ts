@@ -117,7 +117,9 @@ export class RemoteSearchSelectComponent implements OnInit, OnChanges, OnDestroy
 
   protected load(term: string) {
     if (this.options.length) {
-      this.items.set(this.filterItems(this.options, term))
+      const items = this.filterItems(this.options, term)
+      this.items.set(items)
+      this.syncLabelFromItems(items)
       return
     }
 
@@ -130,7 +132,9 @@ export class RemoteSearchSelectComponent implements OnInit, OnChanges, OnDestroy
     const params = this.buildParams(term)
     this.http.get<unknown>(this.endpoint, { params }).subscribe({
       next: (response) => {
-        this.items.set(this.filterItems(unwrapResponse(response), term))
+        const items = this.filterItems(unwrapResponse(response), term)
+        this.items.set(items)
+        this.syncLabelFromItems(items)
         this.loading.set(false)
       },
       error: () => {
@@ -180,6 +184,17 @@ export class RemoteSearchSelectComponent implements OnInit, OnChanges, OnDestroy
     }
     const match = this.options.find((item) => String(this.fieldValue(item, this.valueField) ?? '') === current)
     this.query.set(match ? this.itemLabel(match) : current)
+  }
+
+  private syncLabelFromItems(items: RemoteItem[]) {
+    const current = this.value ? String(this.value) : ''
+    if (!current || this.query() !== current) {
+      return
+    }
+    const match = items.find((item) => String(this.fieldValue(item, this.valueField) ?? '') === current)
+    if (match) {
+      this.query.set(this.itemLabel(match))
+    }
   }
 
   private fieldValue(item: RemoteItem, field: string) {

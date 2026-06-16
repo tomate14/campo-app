@@ -10,6 +10,8 @@ public record MovimientoAnimalRequest(
         @NotBlank String animalId,
         @NotNull LocalDateTime fecha,
         @NotNull MovimientoAnimal.TipoMovimiento tipoMovimiento,
+        String potreroOrigenId,
+        String potreroDestinoId,
         String ubicacionOrigen,
         String ubicacionDestino,
         String motivo,

@@ -485,9 +485,9 @@ Operario "0..1" --> "*" OrdenTrabajoActividad : operario_id
 OrdenTrabajo "1" --> "*" OrdenTrabajoHistorial : orden_trabajo_id
 ```
 
-## Integridad referencial pendiente por feature 43
+## Integridad referencial implementada por feature 43
 
-La feature 43 debe corregir los vinculos que hoy estan guardados como texto y llevarlos a relaciones por ID. El caso mas importante detectado es la ubicacion de animales en potreros.
+La feature 43 corrige el vinculo operativo entre animales y potreros para que la ubicacion actual salga de una relacion por ID y no de un nombre textual.
 
 ```mermaid
 classDiagram
@@ -527,11 +527,10 @@ Potrero "0..1" --> "*" MovimientoAnimal : potrero_origen_id
 Potrero "1" --> "*" MovimientoAnimal : potrero_destino_id
 ```
 
-Reglas esperadas por feature 43:
+Reglas implementadas por feature 43:
 
 - Toda relacion entre entidades debe resolverse por FK/ID, no por nombre textual.
 - Un animal debe estar asignado a un potrero mediante una tabla relacional como `animal_potrero`.
 - Un movimiento de animal debe cerrar la asignacion activa anterior y crear una nueva asignacion activa en destino.
 - Los reportes y dashboards deben agrupar por `potrero_id` y luego mostrar `potrero.nombre`.
-- El mismo criterio aplica a responsables, veterinarios, operarios, maquinaria, lotes, potreros e insumos.
-
+- El mismo criterio queda como regla transversal para responsables, veterinarios, operarios, maquinaria, lotes, potreros e insumos.
