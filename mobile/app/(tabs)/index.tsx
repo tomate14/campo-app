@@ -12,27 +12,25 @@ const menuSections = [
   {
     title: 'AGRICULTURA',
     items: [
-      { label: 'Lotes', icon: '🌱', active: true, route: '/lotes' },
-      { label: 'Ciclo agrícola', icon: '📈', route: '/agricola/nueva-siembra' },
-      { label: 'Analytics', icon: '📊' },
-      { label: 'Plagas', icon: '🐛', route: '/agricola/plagas' },
-      { label: 'Clima', icon: '🌦' },
+      { label: 'Lotes', icon: '◇', active: true, route: '/lotes' },
+      { label: 'Ciclo agrícola', icon: '▥', route: '/agricola/nueva-siembra' },
+      { label: 'Clima', icon: '☁' },
     ],
   },
   {
     title: 'GANADERÍA',
     items: [
-      { label: 'Trazabilidad', icon: '🐄' },
-      { label: 'Sanidad', icon: '🛡' },
-      { label: 'Reproducción', icon: '🧬' },
-      { label: 'Alimentación', icon: '🌾' },
+      { label: 'Trazabilidad', icon: '♢' },
+      { label: 'Sanidad', icon: '◈' },
+      { label: 'Reproducción', icon: '⌘' },
+      { label: 'Alimentación', icon: '⌁' },
     ],
   },
   {
     title: 'MAQUINARIA',
     items: [
-      { label: 'Inventario', icon: '🚜' },
-      { label: 'Mantenimiento', icon: '🔧' },
+      { label: 'Inventario', icon: '▤' },
+      { label: 'Mantenimiento', icon: '⌕' },
     ],
   },
 ]
@@ -40,13 +38,13 @@ const menuSections = [
 export default function HomeScreen() {
   const router = useRouter()
   const { data: lotes, isLoading } = useLotes()
-  const [collapsed, setCollapsed] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(true)
   const lotesCount = isLoading ? '...' : String(lotes?.length ?? 0)
 
   const goTo = (route?: string) => {
-    if (route) {
-      router.push(route as never)
-    }
+    if (!route) return
+    router.push(route as never)
+    setDrawerOpen(false)
   }
 
   const logout = async () => {
@@ -56,12 +54,16 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.screen}>
-      <View style={[styles.backgroundPanel, collapsed && styles.backgroundPanelCollapsed]}>
+      <View style={[styles.backgroundPanel, drawerOpen && styles.backgroundPanelWithDrawer]}>
         <View style={styles.appHeader}>
-          <Pressable style={styles.menuButton} onPress={() => setCollapsed(false)}><Text style={styles.menuButtonText}>☰</Text></Pressable>
+          <Pressable style={styles.menuButton} onPress={() => setDrawerOpen(true)}>
+            <Text style={styles.menuButtonText}>☰</Text>
+          </Pressable>
           <View style={styles.headerActions}>
             <Text style={styles.bell}>◌</Text>
-            <View style={styles.avatar}><Text style={styles.avatarText}>JS</Text></View>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>JS</Text>
+            </View>
           </View>
         </View>
 
@@ -72,7 +74,7 @@ export default function HomeScreen() {
           <View style={styles.dashboardCard}>
             <Text style={styles.cardLabel}>Clima actual</Text>
             <View style={styles.weatherRow}>
-              <Text style={styles.weatherIcon}>🌧</Text>
+              <Text style={styles.weatherIcon}>☔</Text>
               <Text style={styles.weatherTemp}>18°C</Text>
             </View>
             <Text style={styles.cardMuted}>Lluvia · 20%</Text>
@@ -97,42 +99,48 @@ export default function HomeScreen() {
         </ScrollView>
       </View>
 
-      {!collapsed && <View style={styles.depthOverlay} />}
+      {drawerOpen && <Pressable style={styles.depthOverlay} onPress={() => setDrawerOpen(false)} />}
 
-      <View style={[styles.drawer, collapsed && styles.drawerCollapsed]}>
-        <View style={styles.drawerHeader}>
-          <View style={styles.logoMark}><Text style={styles.logoIcon}>↟</Text></View>
-          {!collapsed && <View style={styles.brandCopy}>
-            <Text style={styles.brandTitle}>Campo <Text style={styles.brandAccent}>App</Text></Text>
-            <Text style={styles.brandSubtitle}>AgroERP</Text>
-          </View>}
-          <Pressable style={styles.closeButton} onPress={() => setCollapsed((value) => !value)}><Text style={styles.closeText}>{collapsed ? '›' : '‹'}</Text></Pressable>
-        </View>
-
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuScroll}>
-          {menuSections.map((section, index) => (
-            <View key={section.title} style={[styles.menuSection, index > 0 && styles.menuSectionBorder]}>
-              {!collapsed && <Text style={styles.sectionTitle}>{section.title}</Text>}
-              {section.items.map((item) => (
-                <Pressable
-                  key={item.label}
-                  onPress={() => goTo(item.route)}
-                  style={[styles.menuItem, item.active && styles.menuItemActive]}
-                >
-                  <Text style={[styles.menuIcon, item.active && styles.menuIconActive]}>{item.icon}</Text>
-                  {!collapsed && <Text style={[styles.menuLabel, item.active && styles.menuLabelActive]}>{item.label}</Text>}
-                </Pressable>
-              ))}
+      {drawerOpen && (
+        <View style={styles.drawer}>
+          <View style={styles.drawerHeader}>
+            <View style={styles.logoMark}>
+              <Text style={styles.logoIcon}>⌁</Text>
             </View>
-          ))}
-        </ScrollView>
+            <View style={styles.brandCopy}>
+              <Text style={styles.brandTitle}>
+                Campo <Text style={styles.brandAccent}>App</Text>
+              </Text>
+              <Text style={styles.brandSubtitle}>AgroERP</Text>
+            </View>
+          </View>
 
-        <View style={styles.drawerFooter}>
-          <Pressable style={styles.footerButton} onPress={() => setCollapsed((value) => !value)}><Text style={styles.footerIcon}>{collapsed ? '›' : '‹'}</Text>{!collapsed && <Text style={styles.footerText}>Colapsar</Text>}</Pressable>
-          <Pressable style={styles.footerButton}><Text style={styles.footerIcon}>?</Text>{!collapsed && <Text style={styles.footerText}>Centro de ayuda</Text>}</Pressable>
-          <Pressable style={styles.footerButton} onPress={logout}><Text style={styles.footerIcon}>→</Text>{!collapsed && <Text style={styles.footerText}>Salir</Text>}</Pressable>
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.menuScroll}>
+            {menuSections.map((section, index) => (
+              <View key={section.title} style={[styles.menuSection, index > 0 && styles.menuSectionBorder]}>
+                <Text style={styles.sectionTitle}>{section.title}</Text>
+                {section.items.map((item) => (
+                  <Pressable
+                    key={item.label}
+                    onPress={() => goTo(item.route)}
+                    style={[styles.menuItem, item.active && styles.menuItemActive]}
+                  >
+                    <Text style={[styles.menuIcon, item.active && styles.menuIconActive]}>{item.icon}</Text>
+                    <Text style={[styles.menuLabel, item.active && styles.menuLabelActive]}>{item.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            ))}
+          </ScrollView>
+
+          <View style={styles.drawerFooter}>
+            <Pressable style={styles.footerButton} onPress={logout}>
+              <Text style={styles.footerIcon}>→</Text>
+              <Text style={styles.footerText}>Salir</Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
+      )}
     </SafeAreaView>
   )
 }
@@ -149,11 +157,11 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    paddingLeft: '54%',
+    paddingLeft: 0,
     backgroundColor: c.background,
   },
-  backgroundPanelCollapsed: {
-    paddingLeft: 94,
+  backgroundPanelWithDrawer: {
+    paddingLeft: '54%',
   },
   appHeader: {
     height: 76,
@@ -163,14 +171,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   menuButton: {
-    width: 34,
-    height: 34,
+    width: 38,
+    height: 38,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgba(11, 23, 48, 0.72)',
+    borderWidth: 1,
+    borderColor: 'rgba(110, 168, 255, 0.14)',
   },
   menuButtonText: {
     color: '#B8C7DE',
-    fontSize: 20,
+    fontSize: 18,
   },
   headerActions: {
     flexDirection: 'row',
@@ -276,7 +288,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    backgroundColor: 'rgba(2, 8, 23, 0.28)',
+    backgroundColor: 'rgba(2, 8, 23, 0.38)',
   },
   drawer: {
     width: '65%',
@@ -295,15 +307,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 16, height: 0 },
     elevation: 24,
   },
-  drawerCollapsed: {
-    width: 86,
-    paddingHorizontal: 12,
-  },
   drawerHeader: {
     height: 78,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(110, 168, 255, 0.1)',
   },
@@ -342,21 +350,6 @@ const styles = StyleSheet.create({
     color: c.mutedForeground,
     fontSize: 11,
   },
-  closeButton: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(110, 168, 255, 0.06)',
-    borderWidth: 1,
-    borderColor: 'rgba(110, 168, 255, 0.18)',
-  },
-  closeText: {
-    color: c.secondary,
-    fontSize: 22,
-    lineHeight: 22,
-  },
   menuScroll: {
     paddingTop: 18,
     paddingBottom: 20,
@@ -379,7 +372,7 @@ const styles = StyleSheet.create({
     minHeight: 46,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     gap: 12,
     paddingHorizontal: 12,
     borderRadius: 15,
@@ -416,7 +409,7 @@ const styles = StyleSheet.create({
     minHeight: 44,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     gap: 10,
     paddingHorizontal: 12,
     borderRadius: 14,
