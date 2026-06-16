@@ -18,11 +18,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 44
-- Realizadas: 21
+- Realizadas: 22
 - Parciales: 0
-- Pendientes: 21
+- Pendientes: 20
 - Saltadas: 2
-- Ultima actualizacion: 2026-06-08
+- Ultima actualizacion: 2026-06-16
 
 ## Registro por Feature
 
@@ -72,7 +72,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 40 | `40_COMPLETA_operaciones_calendario_operaciones.md` | Operaciones | Realizada | Calendario semanal operativo para ordenes de trabajo, con filtros, chips de operarios, popup de seguimiento, cambio de estado y registro de actividad. |
 | 41 | `41_COMPLETA_roles_menu_permisos.md` | Seguridad/Frontend | Realizada | Pantalla administrativa para definir opciones de menu visibles por rol, con backend persistido y sidebar filtrado por permisos. |
 | 42 | `42_COMPLETA_dashboard_ganadero_ejecutivo.md` | Ganaderia/Reportes | Realizada | Dashboard Ganadero Ejecutivo implementado con endpoint backend-driven, KPIs, graficos, alertas operativas y analitica del rodeo. |
-| 43 | `43_integridad_referencial_transversal_por_id.md` | Arquitectura/Datos | Pendiente | Refactor transversal para que todas las relaciones entre entidades se hagan por IDs y claves foraneas; incluye `animales_potreros` como entidad historica de asignacion animal-potrero. |
+| 43 | `43_COMPLETA_integridad_referencial_transversal_por_id.md` | Arquitectura/Datos | Realizada | Integridad referencial animal-potrero implementada con `animales_potreros`, movimientos por `potrero_id`, dashboard ganadero por IDs y alimentacion por FK de potrero. |
 
 ## Registro por Dominio
 
@@ -124,9 +124,10 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 39.
 
 ### Arquitectura/Datos
-- Pendientes: 43.
+- Realizadas: 43.
 
 ## Ultimas Actualizaciones
+- 2026-06-16: Feature 43 realizada con `animales_potreros`, movimientos por IDs, dashboard ganadero sin agrupacion por texto y selectores de potrero enviando IDs.
 - 2026-06-09: Feature 43 creada para corregir integridad referencial transversal por ID y evitar joins por nombres/textos libres.
 - 2026-06-08: Feature 42 realizada con Dashboard Ganadero Ejecutivo backend-driven, endpoint de reportes ganaderos y pantalla Angular premium.
 - 2026-06-07: Feature 41 realizada con administracion de visibilidad de menu por rol, endpoint de menu visible y sidebar filtrado.

@@ -150,4 +150,14 @@ Aplicar el mismo criterio a:
   - Verificar dashboard ganadero sin prefijos incorrectos ni agrupaciones por texto.
 
 ## Estado
-Pendiente.
+Realizada.
+
+## Implementacion realizada
+- Se agrego la tabla historica `animales_potreros` con `animal_id`, `potrero_id`, vigencia y estado activo.
+- Se migran datos legacy desde `animales.ubicacion_actual`, contemplando coincidencias exactas y prefijos `Potrero {nombre}`.
+- `MovimientoAnimal` incorpora `potrero_origen_id` y `potrero_destino_id`.
+- El alta/edicion de animales acepta `potreroId` y deriva `ubicacionActual` solo como alias visual.
+- El movimiento de animales cierra la asignacion activa anterior y crea la nueva asignacion activa por ID.
+- El dashboard ganadero agrupa `Animales por Potrero` y `Ocupacion de Potreros` por `potrero_id`.
+- Alimentacion incorpora `potrero_id` en registros de suministro y deja `potrero` como alias legacy.
+- Los selectores frontend de potrero en trazabilidad y alimentacion envian IDs.

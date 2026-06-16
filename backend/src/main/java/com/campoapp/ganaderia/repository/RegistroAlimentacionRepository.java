@@ -13,6 +13,7 @@ public interface RegistroAlimentacionRepository extends JpaRepository<RegistroAl
             SELECT r FROM RegistroAlimentacion r
             LEFT JOIN FETCH r.animal
             LEFT JOIN FETCH r.dieta
+            LEFT JOIN FETCH r.potreroRef
             WHERE r.deletedAt IS NULL
               AND (:animalId IS NULL OR r.animal.id = :animalId)
               AND (:desde IS NULL OR r.fecha >= :desde)

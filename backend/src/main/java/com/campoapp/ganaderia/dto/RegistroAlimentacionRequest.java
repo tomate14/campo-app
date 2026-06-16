@@ -13,6 +13,7 @@ public record RegistroAlimentacionRequest(
         @NotBlank String alimento,
         @NotNull BigDecimal cantidadKg,
         BigDecimal costoTotal,
+        String potreroId,
         String potrero,
         String responsable,
         String observaciones

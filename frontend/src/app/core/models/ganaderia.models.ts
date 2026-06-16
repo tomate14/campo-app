@@ -9,6 +9,8 @@ export interface Animal {
   rfidCodigo?: string
   qrCodigo?: string
   estado: string
+  potreroId?: string
+  potreroNombre?: string
   ubicacionActual?: string
   madreId?: string
   madreCaravana?: string
@@ -29,6 +31,7 @@ export interface AnimalRequest {
   rfidCodigo?: string
   qrCodigo?: string
   estado?: string
+  potreroId?: string
   ubicacionActual?: string
   madreId?: string
   padreId?: string
@@ -217,6 +220,8 @@ export interface MovimientoAnimal {
   animalCaravana: string
   fecha: string
   tipoMovimiento: 'INGRESO' | 'EGRESO' | 'TRANSFERENCIA' | 'SANIDAD' | 'CONTROL'
+  potreroOrigenId?: string
+  potreroDestinoId?: string
   ubicacionOrigen?: string
   ubicacionDestino?: string
   motivo?: string
@@ -229,6 +234,8 @@ export interface MovimientoAnimalRequest {
   animalId: string
   fecha: string
   tipoMovimiento: 'INGRESO' | 'EGRESO' | 'TRANSFERENCIA' | 'SANIDAD' | 'CONTROL'
+  potreroOrigenId?: string
+  potreroDestinoId?: string
   ubicacionOrigen?: string
   ubicacionDestino?: string
   motivo?: string
@@ -632,6 +639,8 @@ export interface RegistroAlimentacion {
   alimento: string
   cantidadKg: number
   costoTotal?: number
+  potreroId?: string
+  potreroNombre?: string
   potrero?: string
   responsable?: string
   observaciones?: string
@@ -645,6 +654,7 @@ export interface RegistroAlimentacionRequest {
   alimento: string
   cantidadKg: number
   costoTotal?: number
+  potreroId?: string
   potrero?: string
   responsable?: string
   observaciones?: string

@@ -14,6 +14,8 @@ public record RegistroAlimentacionResponse(
         String alimento,
         BigDecimal cantidadKg,
         BigDecimal costoTotal,
+        String potreroId,
+        String potreroNombre,
         String potrero,
         String responsable,
         String observaciones,

@@ -10,6 +10,8 @@ public record MovimientoAnimalResponse(
         String animalCaravana,
         LocalDateTime fecha,
         MovimientoAnimal.TipoMovimiento tipoMovimiento,
+        String potreroOrigenId,
+        String potreroDestinoId,
         String ubicacionOrigen,
         String ubicacionDestino,
         String motivo,

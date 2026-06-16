@@ -38,6 +38,7 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
     );
 
     private final AnimalRepository animalRepository;
+    private final AnimalPotreroRepository animalPotreroRepository;
     private final PotreroRepository potreroRepository;
     private final PesajeAnimalRepository pesajeRepository;
     private final RegistroAlimentacionRepository registroAlimentacionRepository;
@@ -60,7 +61,8 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
         List<Potrero> activePotreros = potreroRepository.findAllActive().stream()
                 .filter(p -> !"INACTIVO".equalsIgnoreCase(nullSafe(p.getEstado())))
                 .toList();
-        Map<String, Long> animalCountByPotrero = animalCountByPotrero(activeAnimals);
+        List<AnimalPotrero> activeAssignments = activeAnimalPotreroAssignments(activeAnimals);
+        Map<String, Long> animalCountByPotrero = animalCountByPotrero(activeAssignments);
         List<PesajeAnimal> recentWeights = pesajeRepository.findFiltered(null, today.minusDays(90), today);
         List<RegistroAlimentacion> feedRecords = registroAlimentacionRepository.findFiltered(null, today.minusMonths(5).withDayOfMonth(1), today);
         List<DietaNutricional> diets = dietaRepository.findByDeletedAtIsNullOrderByUpdatedAtDesc();
@@ -88,7 +90,10 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
                 + vaccineAlerts.stream().filter(a -> a.getProximaDosisFecha() != null && a.getProximaDosisFecha().isBefore(today)).count();
         BigDecimal averageOccupancy = averageOccupancy(activePotreros, animalCountByPotrero);
         long activeDiets = diets.stream().filter(d -> Boolean.TRUE.equals(d.getActiva())).count();
-        long withoutLocation = activeAnimals.stream().filter(a -> isBlank(a.getUbicacionActual())).count();
+        long withoutLocation = activeAnimals.size() - activeAssignments.stream()
+                .map(assignment -> assignment.getAnimal().getId())
+                .collect(Collectors.toSet())
+                .size();
 
         BigDecimal feedCostMonth = sum(feedRecords.stream()
                 .filter(r -> !r.getFecha().isBefore(monthStart))
@@ -115,14 +120,14 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
                         kpi("SIN_UBICACION", "Animales sin ubicacion", String.valueOf(withoutLocation), "Requieren asignacion", "orange", BigDecimal.valueOf(withoutLocation), "+0%")
                 ),
                 distribucionRodeo(activeAnimals),
-                animalesPorPotrero(activeAnimals),
+                animalesPorPotrero(activeAssignments),
                 ocupacionPotreros(activePotreros, animalCountByPotrero),
                 calendarioSanitario(allVaccineApplications, today),
                 diagnosticosPorSeveridad(diagnostics),
                 tratamientosActivos(treatments, diagnostics, today, monthStart),
                 estadoReproductivo(pregnancyControls, activeAnimals, today),
                 partosEstimadosPorMes(pregnancyControls, births, today),
-                genealogiaTrazabilidad(activeAnimals),
+                genealogiaTrazabilidad(activeAnimals, activeAssignments),
                 consumoAlimentoPorPotrero(feedRecords, today),
                 new ReporteGanaderoDashboardResponse.CostoAlimentacion(feedCostMonth, variation(feedCostMonth, feedCostPreviousMonth), "USD"),
                 new ReporteGanaderoDashboardResponse.ConversionAlimenticia(conversionAlimenticia(feedRecords, recentWeights), "kg alimento / kg ganado"),
@@ -163,10 +168,10 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
         return "Otros";
     }
 
-    private List<ReporteGanaderoDashboardResponse.BarraCategoria> animalesPorPotrero(List<Animal> animals) {
-        Map<String, Long> grouped = animals.stream()
-                .filter(a -> !isBlank(a.getUbicacionActual()))
-                .collect(Collectors.groupingBy(a -> a.getUbicacionActual().trim(), Collectors.counting()));
+    private List<ReporteGanaderoDashboardResponse.BarraCategoria> animalesPorPotrero(List<AnimalPotrero> assignments) {
+        Map<String, Long> grouped = assignments.stream()
+                .filter(assignment -> assignment.getPotrero() != null)
+                .collect(Collectors.groupingBy(assignment -> assignment.getPotrero().getNombre(), Collectors.counting()));
         long max = Math.max(1L, grouped.values().stream().mapToLong(Long::longValue).max().orElse(1L));
         return grouped.entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
@@ -177,13 +182,13 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
 
     private List<ReporteGanaderoDashboardResponse.PotreroOcupacion> ocupacionPotreros(List<Potrero> potreros, Map<String, Long> animalCountByPotrero) {
         return potreros.stream()
-                .sorted(Comparator.comparing((Potrero p) -> occupancyRatio(p, animalCountByPotrero.getOrDefault(p.getNombre(), 0L))).reversed())
+                .sorted(Comparator.comparing((Potrero p) -> occupancyRatio(p, animalCountByPotrero.getOrDefault(p.getId(), 0L))).reversed())
                 .limit(6)
                 .map(p -> new ReporteGanaderoDashboardResponse.PotreroOcupacion(
                         p.getNombre(),
-                        safeLongToInt(animalCountByPotrero.getOrDefault(p.getNombre(), 0L)),
+                        safeLongToInt(animalCountByPotrero.getOrDefault(p.getId(), 0L)),
                         safeInt(p.getCapacidadAnimales()),
-                        occupancyRatio(p, animalCountByPotrero.getOrDefault(p.getNombre(), 0L)),
+                        occupancyRatio(p, animalCountByPotrero.getOrDefault(p.getId(), 0L)),
                         p.getEstado(),
                         p.getRecursoForrajero()
                 ))
@@ -268,15 +273,20 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
                 .toList();
     }
 
-    private ReporteGanaderoDashboardResponse.GenealogiaTrazabilidad genealogiaTrazabilidad(List<Animal> animals) {
+    private ReporteGanaderoDashboardResponse.GenealogiaTrazabilidad genealogiaTrazabilidad(List<Animal> animals, List<AnimalPotrero> assignments) {
         long total = Math.max(1, animals.size());
+        Set<String> animalsWithLocation = assignments.stream()
+                .map(AnimalPotrero::getAnimal)
+                .filter(Objects::nonNull)
+                .map(Animal::getId)
+                .collect(Collectors.toSet());
         long sinMadre = animals.stream().filter(a -> a.getMadre() == null).count();
         long sinPadre = animals.stream().filter(a -> a.getPadre() == null).count();
         long sinRaza = animals.stream().filter(a -> isBlank(a.getRaza())).count();
         long sinFecha = animals.stream().filter(a -> a.getFechaNacimiento() == null).count();
-        long sinTrazabilidad = animals.stream().filter(a -> isBlank(a.getUbicacionActual()) || isBlank(a.getCaravana())).count();
+        long sinTrazabilidad = animals.stream().filter(a -> !animalsWithLocation.contains(a.getId()) || isBlank(a.getCaravana())).count();
         long completas = animals.stream()
-                .filter(a -> a.getMadre() != null && a.getPadre() != null && !isBlank(a.getRaza()) && a.getFechaNacimiento() != null && !isBlank(a.getUbicacionActual()))
+                .filter(a -> a.getMadre() != null && a.getPadre() != null && !isBlank(a.getRaza()) && a.getFechaNacimiento() != null && animalsWithLocation.contains(a.getId()))
                 .count();
         return new ReporteGanaderoDashboardResponse.GenealogiaTrazabilidad(pct(completas, total), sinMadre, sinPadre, sinRaza, sinFecha, sinTrazabilidad);
     }
@@ -284,8 +294,8 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
     private List<ReporteGanaderoDashboardResponse.SerieCategoria> consumoAlimentoPorPotrero(List<RegistroAlimentacion> records, LocalDate today) {
         YearMonth start = YearMonth.from(today.minusMonths(5));
         Map<String, List<RegistroAlimentacion>> byPotrero = records.stream()
-                .filter(r -> !isBlank(r.getPotrero()))
-                .collect(Collectors.groupingBy(r -> r.getPotrero().trim()));
+                .filter(r -> r.getPotreroRef() != null || !isBlank(r.getPotrero()))
+                .collect(Collectors.groupingBy(this::potreroKeyForFeedRecord));
         return byPotrero.entrySet().stream()
                 .sorted(Comparator.comparing((Map.Entry<String, List<RegistroAlimentacion>> e) -> sum(e.getValue().stream().map(RegistroAlimentacion::getCantidadKg).filter(Objects::nonNull).toList())).reversed())
                 .limit(6)
@@ -297,7 +307,7 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
                             .mapToObj(start::plusMonths)
                             .map(month -> new ReporteGanaderoDashboardResponse.SeriePunto(capitalize(month.getMonth().name().substring(0, 3).toLowerCase(Locale.ROOT)), scale(byMonth.getOrDefault(month, BigDecimal.ZERO), 2)))
                             .toList();
-                    return new ReporteGanaderoDashboardResponse.SerieCategoria(entry.getKey(), points, sum(entry.getValue().stream().map(RegistroAlimentacion::getCantidadKg).filter(Objects::nonNull).toList()));
+                    return new ReporteGanaderoDashboardResponse.SerieCategoria(potreroLabelForFeedRecords(entry.getValue()), points, sum(entry.getValue().stream().map(RegistroAlimentacion::getCantidadKg).filter(Objects::nonNull).toList()));
                 })
                 .toList();
     }
@@ -323,9 +333,9 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
                         LocalDateTime.now()
                 )));
         potreros.stream()
-                .filter(p -> occupancyRatio(p, animalCountByPotrero.getOrDefault(p.getNombre(), 0L)).compareTo(BigDecimal.valueOf(100)) >= 0)
+                .filter(p -> occupancyRatio(p, animalCountByPotrero.getOrDefault(p.getId(), 0L)).compareTo(BigDecimal.valueOf(100)) >= 0)
                 .limit(2)
-                .forEach(p -> alerts.add(new ReporteGanaderoDashboardResponse.AlertaOperativa("Potreros", p.getNombre() + " excede carga recomendada", safeLongToInt(animalCountByPotrero.getOrDefault(p.getNombre(), 0L)) + " / " + safeInt(p.getCapacidadAnimales()), "ALTA", LocalDateTime.now())));
+                .forEach(p -> alerts.add(new ReporteGanaderoDashboardResponse.AlertaOperativa("Potreros", p.getNombre() + " excede carga recomendada", safeLongToInt(animalCountByPotrero.getOrDefault(p.getId(), 0L)) + " / " + safeInt(p.getCapacidadAnimales()), "ALTA", LocalDateTime.now())));
         controls.stream()
                 .filter(c -> c.getFechaEstimadaParto() != null && !c.getFechaEstimadaParto().isBefore(today) && !c.getFechaEstimadaParto().isAfter(today.plusDays(7)))
                 .limit(2)
@@ -387,7 +397,7 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
     private BigDecimal averageOccupancy(List<Potrero> potreros, Map<String, Long> animalCountByPotrero) {
         return average(potreros.stream()
                 .filter(p -> safeInt(p.getCapacidadAnimales()) > 0)
-                .map(p -> occupancyRatio(p, animalCountByPotrero.getOrDefault(p.getNombre(), 0L)))
+                .map(p -> occupancyRatio(p, animalCountByPotrero.getOrDefault(p.getId(), 0L)))
                 .toList());
     }
 
@@ -401,10 +411,18 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
                 .divide(BigDecimal.valueOf(capacity), 2, RoundingMode.HALF_UP);
     }
 
-    private Map<String, Long> animalCountByPotrero(List<Animal> animals) {
-        return animals.stream()
-                .filter(animal -> !isBlank(animal.getUbicacionActual()))
-                .collect(Collectors.groupingBy(animal -> animal.getUbicacionActual().trim(), Collectors.counting()));
+    private Map<String, Long> animalCountByPotrero(List<AnimalPotrero> assignments) {
+        return assignments.stream()
+                .filter(assignment -> assignment.getPotrero() != null)
+                .collect(Collectors.groupingBy(assignment -> assignment.getPotrero().getId(), Collectors.counting()));
+    }
+
+    private List<AnimalPotrero> activeAnimalPotreroAssignments(List<Animal> animals) {
+        List<String> animalIds = animals.stream().map(Animal::getId).toList();
+        if (animalIds.isEmpty()) {
+            return List.of();
+        }
+        return animalPotreroRepository.findActiveByAnimalIds(animalIds);
     }
 
     private BigDecimal variation(BigDecimal current, BigDecimal previous) {
@@ -482,5 +500,20 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
             case "BAJA" -> 1;
             default -> 0;
         };
+    }
+
+    private String potreroKeyForFeedRecord(RegistroAlimentacion record) {
+        if (record.getPotreroRef() != null) {
+            return record.getPotreroRef().getId();
+        }
+        return record.getPotrero().trim();
+    }
+
+    private String potreroLabelForFeedRecords(List<RegistroAlimentacion> records) {
+        return records.stream()
+                .filter(record -> record.getPotreroRef() != null)
+                .map(record -> record.getPotreroRef().getNombre())
+                .findFirst()
+                .orElse(records.isEmpty() ? "Sin potrero" : records.get(0).getPotrero());
     }
 }

@@ -74,6 +74,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     pesoActualKg: undefined,
     rfidCodigo: '',
     estado: 'ACTIVO',
+    potreroId: '',
     ubicacionActual: '',
     madreId: '',
     padreId: '',
@@ -84,6 +85,8 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     animalId: '',
     fecha: new Date().toISOString().slice(0, 16),
     tipoMovimiento: 'TRANSFERENCIA',
+    potreroOrigenId: '',
+    potreroDestinoId: '',
     ubicacionOrigen: '',
     ubicacionDestino: '',
     motivo: '',
@@ -107,7 +110,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       total: items.length,
       activos: items.filter((animal) => animal.estado === 'ACTIVO').length,
       conRfid: items.filter((animal) => !!animal.rfidCodigo).length,
-      ubicaciones: new Set(items.map((animal) => animal.ubicacionActual).filter(Boolean)).size,
+      ubicaciones: new Set(items.map((animal) => this.animalPotreroLabel(animal)).filter(Boolean)).size,
       enMovimiento: movimientos,
       riesgoSanitario: items.filter((animal) => this.riesgoAnimal(animal) !== 'Bajo').length,
     };
@@ -119,13 +122,13 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     Array.from(new Set(this.animales().map((animal) => animal.raza).filter(Boolean))).sort(),
   );
   protected readonly ubicaciones = computed(() =>
-    Array.from(new Set(this.animales().map((animal) => animal.ubicacionActual).filter(Boolean) as string[])).sort(),
+    Array.from(new Set(this.animales().map((animal) => this.animalPotreroLabel(animal)).filter(Boolean) as string[])).sort(),
   );
   protected readonly filteredAnimales = computed(() => {
     const query = this.filters().search.trim().toLowerCase();
     return this.animales().filter((animal) => {
       if (!query) return true;
-      return [animal.caravana, animal.raza, animal.sexo, animal.estado, animal.ubicacionActual, animal.rfidCodigo]
+      return [animal.caravana, animal.raza, animal.sexo, animal.estado, this.animalPotreroLabel(animal), animal.rfidCodigo]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(query));
     });
@@ -213,6 +216,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       pesoActualKg: undefined,
       rfidCodigo: '',
       estado: 'ACTIVO',
+      potreroId: '',
       ubicacionActual: '',
       madreId: '',
       padreId: '',
@@ -245,7 +249,9 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       animalId,
       fecha: new Date().toISOString().slice(0, 16),
       tipoMovimiento: 'TRANSFERENCIA',
-      ubicacionOrigen: this.selected()?.animal.ubicacionActual ?? '',
+      potreroOrigenId: this.selected()?.animal.potreroId ?? '',
+      potreroDestinoId: '',
+      ubicacionOrigen: this.selected()?.animal.potreroNombre ?? this.selected()?.animal.ubicacionActual ?? '',
       ubicacionDestino: '',
       motivo: '',
       responsable: '',
@@ -260,7 +266,9 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       animalId: animal.id,
       fecha: new Date().toISOString().slice(0, 16),
       tipoMovimiento: 'TRANSFERENCIA',
-      ubicacionOrigen: animal.ubicacionActual ?? '',
+      potreroOrigenId: animal.potreroId ?? '',
+      potreroDestinoId: '',
+      ubicacionOrigen: animal.potreroNombre ?? animal.ubicacionActual ?? '',
       ubicacionDestino: '',
       motivo: '',
       responsable: '',
@@ -394,6 +402,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       fechaCompra: form.fechaCompra || undefined,
       rfidCodigo: form.rfidCodigo || undefined,
       qrCodigo: undefined,
+      potreroId: form.potreroId || undefined,
       ubicacionActual: form.ubicacionActual || undefined,
       observaciones: form.observaciones || undefined,
     };
@@ -417,7 +426,12 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
   }
 
   protected parentOptionLabel(animal: Animal) {
-    return `${animal.caravana} · ${animal.raza}${animal.ubicacionActual ? ` · ${animal.ubicacionActual}` : ''}`;
+    const potrero = this.animalPotreroLabel(animal);
+    return `${animal.caravana} · ${animal.raza}${potrero ? ` · ${potrero}` : ''}`;
+  }
+
+  private animalPotreroLabel(animal: Animal) {
+    return animal.potreroNombre || animal.ubicacionActual;
   }
 
   protected riesgoAnimal(animal: Animal) {
