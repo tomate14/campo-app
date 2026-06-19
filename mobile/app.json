@@ -1,38 +1,44 @@
 {
   "expo": {
-    "name":    "Campo App",
-    "slug":    "campo-app",
+    "name": "Campo App",
+    "slug": "campo-app",
     "version": "0.2.0",
-    "scheme":  "campo",
+    "scheme": "campo",
     "orientation": "portrait",
-    "icon":    "./assets/images/icon.png",
+    "icon": "./assets/images/icon.png",
     "splash": {
-      "image":           "./assets/images/splash.png",
-      "resizeMode":      "contain",
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
       "backgroundColor": "#F8FAFC"
     },
     "ios": {
-      "supportsTablet":        true,
-      "bundleIdentifier":      "com.campoapp.mobile",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.campoapp.mobile",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Para mostrar la ubicación de los lotes en el mapa"
+        "NSLocationWhenInUseUsageDescription": "Campo App usa tu ubicacion para centrar el mapa y registrar operaciones sobre los lotes."
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage":  "./assets/images/adaptive-icon.png",
-        "backgroundColor":  "#F8FAFC"
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#F8FAFC"
       },
-      "package":            "com.campoapp.mobile",
-      "permissions":        ["ACCESS_FINE_LOCATION", "CAMERA"]
+      "package": "com.campoapp.mobile",
+      "permissions": ["ACCESS_FINE_LOCATION", "CAMERA"]
     },
     "web": {
       "bundler": "metro",
-      "output":  "static"
+      "output": "static"
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Campo App usa tu ubicacion para centrar el mapa y registrar operaciones sobre los lotes."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

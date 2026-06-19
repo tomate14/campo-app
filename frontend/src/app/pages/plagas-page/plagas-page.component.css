@@ -102,6 +102,8 @@
 .history-table tbody tr:hover { background: rgba(159, 232, 112, .035); }
 .history-kind { display: inline-flex; align-items: center; border: 1px solid rgba(159, 232, 112, .18); border-radius: 999px; padding: 6px 9px; color: #9fe870; background: rgba(159, 232, 112, .08); font-size: 11px; font-weight: 800; }
 .history-kind--follow { border-color: rgba(110, 168, 255, .2); color: #9dc8ff; background: rgba(110, 168, 255, .09); }
+.history-kind--detection { border-color: rgba(255, 184, 77, .24); color: #ffd166; background: rgba(255, 184, 77, .1); }
+.history-kind--harvest { border-color: rgba(154, 125, 255, .24); color: #c8bbff; background: rgba(154, 125, 255, .1); }
 .error-box, .premium-empty-box, .empty-box { padding: 16px; border-radius: 16px; background: rgba(127, 29, 29, .18); color: #fecaca; border: 1px solid rgba(248, 113, 113, .25); }
 .premium-empty-box, .empty-box { background: rgba(7, 15, 31, .36); color: #9bb0cc; border-color: rgba(148, 163, 184, .14); }
 

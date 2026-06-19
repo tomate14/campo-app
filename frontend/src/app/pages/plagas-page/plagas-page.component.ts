@@ -16,8 +16,11 @@ import type {
   DeteccionPlaga,
   DeteccionPlagaRequest,
   EstadoDeteccionPlaga,
+  EventoSiembra,
+  HistoricoCultivo,
   Lote,
   PlagasDashboard,
+  RegistroCosecha,
   ResultadoSeguimientoPlaga,
   SeguimientoPlaga,
   SeguimientoPlagaRequest,
@@ -28,7 +31,7 @@ import type {
 type ActiveTab = 'DETECCIONES' | 'APLICACIONES' | 'SEGUIMIENTOS' | 'CATALOGO';
 type ModalType = 'DETECCION' | 'APLICACION' | 'SEGUIMIENTO' | 'HISTORICO' | 'CATALOGO' | null;
 type HistorialPlagaEvento = {
-  tipo: 'APLICACION' | 'SEGUIMIENTO';
+  tipo: string;
   fecha: string;
   titulo: string;
   detalle: string;
@@ -61,6 +64,9 @@ export class PlagasPageComponent {
   protected readonly modal = signal<ModalType>(null);
   protected readonly selectedDeteccion = signal<DeteccionPlaga | null>(null);
   protected readonly selectedPin = signal<DeteccionPlaga | null>(null);
+  protected readonly historialEventos = signal<HistorialPlagaEvento[]>([]);
+  protected readonly historialLoading = signal(false);
+  protected readonly historialLote = signal<Lote | null>(null);
 
   protected readonly severidades: SeveridadPlaga[] = ['BAJA', 'MEDIA', 'ALTA', 'CRITICA'];
   protected readonly estados: EstadoDeteccionPlaga[] = ['ABIERTA', 'EN_TRATAMIENTO', 'CONTROLADA', 'CERRADA'];
@@ -134,34 +140,6 @@ export class PlagasPageComponent {
       return hasCoords && sameLote && sameCultivo && sameSeveridad && sameEstado;
     });
   });
-  protected readonly historialEventos = computed<HistorialPlagaEvento[]>(() => {
-    const deteccion = this.selectedDeteccion();
-    if (!deteccion) {
-      return [];
-    }
-    const aplicaciones = this.aplicaciones()
-      .filter((item) => item.deteccionId === deteccion.id)
-      .map((item): HistorialPlagaEvento => ({
-        tipo: 'APLICACION',
-        fecha: item.fechaAplicacion,
-        titulo: item.producto,
-        detalle: `${item.dosis} ${item.unidadDosis}${item.superficieTratadaHa ? ` · ${item.superficieTratadaHa} ha` : ''}`,
-        responsable: item.operarioResponsable,
-        estado: 'Aplicación',
-      }));
-    const seguimientos = this.seguimientos()
-      .filter((item) => item.deteccionId === deteccion.id)
-      .map((item): HistorialPlagaEvento => ({
-        tipo: 'SEGUIMIENTO',
-        fecha: item.fecha,
-        titulo: item.resultado,
-        detalle: item.observaciones || `Severidad ${item.severidad}`,
-        responsable: item.responsable,
-        estado: item.severidad,
-      }));
-    return [...aplicaciones, ...seguimientos].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-  });
-
   protected readonly totalItems = computed(() => this.currentItems().length);
   protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalItems() / this.pageSize)));
   protected readonly currentItems = computed<Array<DeteccionPlaga | AplicacionFitosanitaria | SeguimientoPlaga | CatalogoPlaga>>(() => {
@@ -231,6 +209,11 @@ export class PlagasPageComponent {
 
   protected openModal(type: ModalType, deteccion?: DeteccionPlaga) {
     this.selectedDeteccion.set(deteccion ?? null);
+    if (type !== 'HISTORICO') {
+      this.historialEventos.set([]);
+      this.historialLote.set(null);
+      this.historialLoading.set(false);
+    }
     if (type === 'DETECCION') {
       const lote = this.selectedLoteForForm();
       this.deteccionForm.set({ loteId: lote?.id ?? '', catalogoPlagaId: this.catalogo()[0]?.id ?? '', cultivo: lote?.cultivo, severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
@@ -241,12 +224,18 @@ export class PlagasPageComponent {
     if (type === 'SEGUIMIENTO') {
       this.seguimientoForm.set({ resultado: 'SIN_CAMBIOS', severidad: deteccion?.severidad ?? 'MEDIA', fecha: this.nowLocalDateTime() });
     }
+    if (type === 'HISTORICO' && deteccion) {
+      this.loadHistorialLote(deteccion);
+    }
     this.modal.set(type);
   }
 
   protected closeModal() {
     this.modal.set(null);
     this.selectedDeteccion.set(null);
+    this.historialEventos.set([]);
+    this.historialLote.set(null);
+    this.historialLoading.set(false);
   }
 
   protected onMapClick(event: any) {
@@ -320,6 +309,112 @@ export class PlagasPageComponent {
       longitud: lng,
       origenGeolocalizacion: 'WEB_MAPA',
     }));
+  }
+
+  private loadHistorialLote(deteccion: DeteccionPlaga) {
+    const lote = this.lotes().find((item) => item.id === deteccion.loteId) ?? null;
+    this.historialLote.set(lote);
+    this.historialLoading.set(true);
+    this.historialEventos.set([]);
+
+    forkJoin({
+      siembra: this.agricolaService.getEventosByLote(deteccion.loteId),
+      cosechas: this.agricolaService.getCosechasByLote(deteccion.loteId),
+      cultivos: this.agricolaService.getHistorialByLote(deteccion.loteId),
+    }).subscribe({
+      next: ({ siembra, cosechas, cultivos }) => {
+        this.historialEventos.set(this.buildHistorialLote(deteccion.loteId, siembra, cosechas, cultivos));
+        this.historialLoading.set(false);
+      },
+      error: () => {
+        this.historialEventos.set(this.buildHistorialLote(deteccion.loteId, [], [], []));
+        this.historialLoading.set(false);
+        this.errorMessage.set('No se pudo cargar el historial completo del lote.');
+      },
+    });
+  }
+
+  private buildHistorialLote(
+    loteId: string,
+    siembra: EventoSiembra[],
+    cosechas: RegistroCosecha[],
+    cultivos: HistoricoCultivo[],
+  ): HistorialPlagaEvento[] {
+    const detecciones = this.detecciones().filter((item) => item.loteId === loteId);
+    const detectionIds = new Set(detecciones.map((item) => item.id));
+    const deteccionEvents = detecciones.map((item): HistorialPlagaEvento => ({
+      tipo: 'DETECCION',
+      fecha: item.fechaDeteccion,
+      titulo: item.plagaNombre,
+      detalle: `${item.severidad}${item.areaAfectadaHa ? ` · ${item.areaAfectadaHa} ha` : ''}`,
+      responsable: item.responsable,
+      estado: item.estado,
+    }));
+    const aplicacionEvents = this.aplicaciones()
+      .filter((item) => item.loteId === loteId)
+      .map((item): HistorialPlagaEvento => ({
+        tipo: 'APLICACION',
+        fecha: item.fechaAplicacion,
+        titulo: item.producto,
+        detalle: `${item.dosis} ${item.unidadDosis}${item.superficieTratadaHa ? ` · ${item.superficieTratadaHa} ha` : ''}`,
+        responsable: item.operarioResponsable,
+        estado: item.principioActivo || 'Aplicada',
+      }));
+    const seguimientoEvents = this.seguimientos()
+      .filter((item) => detectionIds.has(item.deteccionId))
+      .map((item): HistorialPlagaEvento => ({
+        tipo: 'SEGUIMIENTO',
+        fecha: item.fecha,
+        titulo: item.plagaNombre,
+        detalle: item.observaciones || item.resultado,
+        responsable: item.responsable,
+        estado: item.severidad,
+      }));
+    const siembraEvents = siembra.map((item): HistorialPlagaEvento => ({
+      tipo: item.tipoEvento === 'SIEMBRA' ? 'SIEMBRA' : 'EVENTO',
+      fecha: item.fecha,
+      titulo: item.estadoFenologico || item.tipoEvento,
+      detalle: item.descripcion || item.loteNombre,
+      estado: item.tipoEvento,
+    }));
+    const cosechaEvents = cosechas.map((item): HistorialPlagaEvento => ({
+      tipo: 'COSECHA',
+      fecha: item.fecha,
+      titulo: `${item.rendimientoKgHa} kg/ha`,
+      detalle: `${item.toneladasTotal} tn${item.humedad ? ` · Humedad ${item.humedad}%` : ''}`,
+      estado: item.calidadGrano,
+    }));
+    const cultivoEvents = cultivos.flatMap((item): HistorialPlagaEvento[] => {
+      const events: HistorialPlagaEvento[] = [];
+      if (item.fechaSiembra) {
+        events.push({
+          tipo: 'HISTORIAL',
+          fecha: item.fechaSiembra,
+          titulo: `Siembra ${item.cultivo}`,
+          detalle: item.temporada,
+          estado: item.observaciones,
+        });
+      }
+      if (item.fechaCosecha) {
+        events.push({
+          tipo: 'HISTORIAL',
+          fecha: item.fechaCosecha,
+          titulo: `Cosecha ${item.cultivo}`,
+          detalle: item.rendimientoKgHa ? `${item.rendimientoKgHa} kg/ha` : item.temporada,
+          estado: item.observaciones,
+        });
+      }
+      return events;
+    });
+
+    return [
+      ...deteccionEvents,
+      ...aplicacionEvents,
+      ...seguimientoEvents,
+      ...siembraEvents,
+      ...cosechaEvents,
+      ...cultivoEvents,
+    ].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
   }
 
   private nowLocalDateTime() {

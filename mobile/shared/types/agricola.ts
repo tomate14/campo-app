@@ -3,6 +3,7 @@ export type CalidadGrano = 'PREMIUM' | 'ESTANDAR' | 'DESCUENTO'
 export type TipoPlaga = 'PLAGA' | 'ENFERMEDAD' | 'MALEZA'
 export type SeveridadPlaga = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 export type EstadoDeteccionPlaga = 'ABIERTA' | 'EN_TRATAMIENTO' | 'CONTROLADA' | 'CERRADA'
+export type ResultadoSeguimientoPlaga = 'SIN_CAMBIOS' | 'MEJORA' | 'EMPEORA' | 'CONTROLADA'
 
 export interface Lote {
   id: string
@@ -178,13 +179,25 @@ export interface DeteccionPlaga {
   loteNombre: string
   catalogoPlagaId: string
   plagaNombre: string
+  tipo?: string
   fechaDeteccion: string
+  cultivo?: string
   severidad: SeveridadPlaga
+  areaAfectadaHa?: number
+  porcentajeAfectado?: number
   estado: EstadoDeteccionPlaga
   latitud?: number
   longitud?: number
+  precisionMetros?: number
+  origenGeolocalizacion?: 'MOBILE_GPS' | 'WEB_MAPA' | 'MANUAL'
+  fotoUrl?: string
+  fotoNombre?: string
+  fotoContentType?: string
+  fotoTamanioBytes?: number
   descripcion?: string
   responsable?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface DeteccionPlagaRequest {
@@ -204,4 +217,40 @@ export interface DeteccionPlagaRequest {
   fotoNombre?: string
   descripcion?: string
   responsable?: string
+}
+
+export interface AplicacionFitosanitaria {
+  id: string
+  deteccionId: string
+  loteId: string
+  loteNombre: string
+  fechaAplicacion: string
+  producto: string
+  principioActivo?: string
+  dosis: number
+  unidadDosis: string
+  volumenCaldoLHa?: number
+  superficieTratadaHa?: number
+  periodoCarenciaDias?: number
+  periodoReingresoHoras?: number
+  fechaReingresoSeguro?: string
+  fechaCosechaSegura?: string
+  maquinariaId?: string
+  operarioResponsable: string
+  condicionesClimaticas?: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface SeguimientoPlaga {
+  id: string
+  deteccionId: string
+  plagaNombre: string
+  loteNombre: string
+  fecha: string
+  resultado: ResultadoSeguimientoPlaga
+  severidad: SeveridadPlaga
+  observaciones?: string
+  responsable?: string
+  createdAt: string
 }

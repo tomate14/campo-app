@@ -157,21 +157,22 @@
 
       <ng-container *ngIf="modal() === 'HISTORICO'">
         <div class="modal-head">
-          <h3>Hist&oacute;rico de la detecci&oacute;n</h3>
-          <p>{{ selectedDeteccion()?.plagaNombre }} &middot; {{ selectedDeteccion()?.loteNombre }}</p>
+          <h3>Hist&oacute;rico del lote</h3>
+          <p>{{ historialLote()?.nombre || selectedDeteccion()?.loteNombre }} &middot; eventos productivos y sanitarios</p>
         </div>
-        <div class="history-summary" *ngIf="selectedDeteccion() as deteccion">
-          <span class="badge" [class]="severityClass(deteccion.severidad)">{{ deteccion.severidad }}</span>
-          <strong>{{ deteccion.estado }}</strong>
-          <small>{{ deteccion.fechaDeteccion | date:'dd/MM/yyyy HH:mm' }}</small>
+        <div class="history-summary">
+          <span class="badge" *ngIf="historialLote() as lote">{{ lote.cultivo }}</span>
+          <strong>{{ historialEventos().length }} evento(s)</strong>
+          <small *ngIf="selectedDeteccion() as deteccion">Origen: {{ deteccion.plagaNombre }}</small>
         </div>
         <div class="history-table-wrap">
-          <table class="history-table" *ngIf="historialEventos().length; else emptyHistory">
+          <div class="empty-box" *ngIf="historialLoading()">Cargando historial del lote...</div>
+          <table class="history-table" *ngIf="!historialLoading() && historialEventos().length; else emptyHistory">
             <thead><tr><th>Fecha</th><th>Tipo</th><th>Registro</th><th>Detalle</th><th>Responsable</th><th>Estado</th></tr></thead>
             <tbody>
               <tr *ngFor="let evento of historialEventos()">
                 <td>{{ evento.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
-                <td><span class="history-kind" [class.history-kind--follow]="evento.tipo === 'SEGUIMIENTO'">{{ evento.tipo === 'APLICACION' ? 'Aplicaci&oacute;n' : 'Seguimiento' }}</span></td>
+                <td><span class="history-kind" [class.history-kind--follow]="evento.tipo === 'SEGUIMIENTO'" [class.history-kind--harvest]="evento.tipo === 'COSECHA'" [class.history-kind--detection]="evento.tipo === 'DETECCION'">{{ evento.tipo }}</span></td>
                 <td>{{ evento.titulo }}</td>
                 <td>{{ evento.detalle }}</td>
                 <td>{{ evento.responsable || 'Sin dato' }}</td>
@@ -179,7 +180,7 @@
               </tr>
             </tbody>
           </table>
-          <ng-template #emptyHistory><div class="empty-box">Todav&iacute;a no hay aplicaciones ni seguimientos para esta detecci&oacute;n.</div></ng-template>
+          <ng-template #emptyHistory><div class="empty-box" *ngIf="!historialLoading()">Todav&iacute;a no hay eventos asociados a este lote.</div></ng-template>
         </div>
         <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cerrar</button></div>
       </ng-container>

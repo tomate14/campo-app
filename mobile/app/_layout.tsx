@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler'
 import { Stack } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, Platform, View, useColorScheme } from 'react-native'
