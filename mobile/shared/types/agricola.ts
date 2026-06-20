@@ -242,6 +242,22 @@ export interface AplicacionFitosanitaria {
   createdAt: string
 }
 
+export interface AplicacionFitosanitariaRequest {
+  fechaAplicacion?: string
+  producto: string
+  principioActivo?: string
+  dosis: number
+  unidadDosis: string
+  volumenCaldoLHa?: number
+  superficieTratadaHa?: number
+  periodoCarenciaDias?: number
+  periodoReingresoHoras?: number
+  maquinariaId?: string
+  operarioResponsable: string
+  condicionesClimaticas?: string
+  observaciones?: string
+}
+
 export interface SeguimientoPlaga {
   id: string
   deteccionId: string
@@ -253,4 +269,12 @@ export interface SeguimientoPlaga {
   observaciones?: string
   responsable?: string
   createdAt: string
+}
+
+export interface SeguimientoPlagaRequest {
+  fecha?: string
+  resultado: ResultadoSeguimientoPlaga
+  severidad: SeveridadPlaga
+  observaciones?: string
+  responsable?: string
 }

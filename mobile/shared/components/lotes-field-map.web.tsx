@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef } from 'react'
+import type { MutableRefObject } from 'react'
 import maplibregl from 'maplibre-gl'
-import type { GeoJSONSourceSpecification, LngLatBoundsLike, Map as MapLibreMap, StyleSpecification } from 'maplibre-gl'
-import type { FeatureCollection, Point, Polygon } from 'geojson'
+import 'maplibre-gl/dist/maplibre-gl.css'
+import type { GeoJSONSourceSpecification, LngLatBoundsLike, Map as MapLibreMap, Marker, StyleSpecification } from 'maplibre-gl'
+import type { FeatureCollection, Polygon } from 'geojson'
 import type { LotesFieldMapProps, MapMode, MapPoint, MapRegion } from './lotes-field-map.types'
 
 function buildStyle(mode: MapMode): StyleSpecification {
@@ -41,9 +43,9 @@ export default function LotesFieldMap({
 }: LotesFieldMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
+  const detectionMarkersRef = useRef<Marker[]>([])
   const detectionsRef = useRef(detections)
   const sourceData = useMemo(() => toFeatureCollection(mapItems), [mapItems])
-  const detectionData = useMemo(() => toDetectionFeatureCollection(detections), [detections])
 
   useEffect(() => {
     detectionsRef.current = detections
@@ -65,7 +67,6 @@ export default function LotesFieldMap({
 
     map.on('load', () => {
       map.addSource('lotes', { type: 'geojson', data: sourceData } satisfies GeoJSONSourceSpecification)
-      map.addSource('detections', { type: 'geojson', data: detectionData } satisfies GeoJSONSourceSpecification)
       map.addLayer({
         id: 'lotes-fill',
         type: 'fill',
@@ -101,51 +102,20 @@ export default function LotesFieldMap({
           'text-halo-width': 1.5,
         },
       })
-      map.addLayer({
-        id: 'detections-circle',
-        type: 'circle',
-        source: 'detections',
-        paint: {
-          'circle-color': ['get', 'color'],
-          'circle-radius': 9,
-          'circle-opacity': 0.95,
-          'circle-stroke-color': '#081225',
-          'circle-stroke-width': 3,
-        },
-      })
-      map.addLayer({
-        id: 'detections-halo',
-        type: 'circle',
-        source: 'detections',
-        paint: {
-          'circle-color': ['get', 'color'],
-          'circle-radius': 17,
-          'circle-opacity': 0.16,
-        },
-      }, 'detections-circle')
-
       map.on('click', 'lotes-fill', (event) => {
-        const detectionsAtPoint = map.queryRenderedFeatures(event.point, { layers: ['detections-circle'] })
-        if (detectionsAtPoint.length) return
         const feature = event.features?.[0]
         const id = feature?.properties?.id
         if (typeof id === 'string') onLotePress(id)
       })
-      map.on('click', 'detections-circle', (event) => {
-        event.preventDefault()
-        const feature = event.features?.[0]
-        const id = feature?.properties?.id
-        const item = detectionsRef.current.find((detection) => detection.deteccion.id === id)
-        if (item) onDetectionPress(item.deteccion)
-      })
       map.on('mouseenter', 'lotes-fill', () => { map.getCanvas().style.cursor = 'pointer' })
       map.on('mouseleave', 'lotes-fill', () => { map.getCanvas().style.cursor = '' })
-      map.on('mouseenter', 'detections-circle', () => { map.getCanvas().style.cursor = 'pointer' })
-      map.on('mouseleave', 'detections-circle', () => { map.getCanvas().style.cursor = '' })
+      syncDetectionMarkers(map, detectionsRef.current, onDetectionPress, detectionMarkersRef)
       fitToRegion(map, initialRegion)
     })
 
     return () => {
+      detectionMarkersRef.current.forEach((marker) => marker.remove())
+      detectionMarkersRef.current = []
       map.remove()
       mapRef.current = null
     }
@@ -156,10 +126,9 @@ export default function LotesFieldMap({
     if (!map || !map.isStyleLoaded()) return
     const source = map.getSource('lotes') as maplibregl.GeoJSONSource | undefined
     source?.setData(sourceData)
-    const detectionSource = map.getSource('detections') as maplibregl.GeoJSONSource | undefined
-    detectionSource?.setData(detectionData)
+    syncDetectionMarkers(map, detections, onDetectionPress, detectionMarkersRef)
     fitToRegion(map, initialRegion)
-  }, [sourceData, detectionData, initialRegion])
+  }, [sourceData, detections, initialRegion])
 
   useEffect(() => {
     const map = mapRef.current
@@ -228,33 +197,133 @@ function toFeatureCollection(mapItems: LotesFieldMapProps['mapItems']): FeatureC
   }
 }
 
-function toDetectionFeatureCollection(detections: LotesFieldMapProps['detections']): FeatureCollection<Point> {
-  return {
-    type: 'FeatureCollection',
-    features: detections.map((item) => ({
-      type: 'Feature',
-      properties: {
-        id: item.deteccion.id,
-        nombre: item.deteccion.plagaNombre,
-        lote: item.deteccion.loteNombre,
-        severidad: item.deteccion.severidad,
-        estado: item.deteccion.estado,
-        color: item.color,
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: [item.coordinate.longitude, item.coordinate.latitude],
-      },
-    })),
-  }
-}
-
 function closeRing(points: MapPoint[]): MapPoint[] {
   if (!points.length) return []
   const first = points[0]
   const last = points[points.length - 1]
   if (first.latitude === last.latitude && first.longitude === last.longitude) return points
   return [...points, first]
+}
+
+function syncDetectionMarkers(
+  map: MapLibreMap,
+  detections: LotesFieldMapProps['detections'],
+  onDetectionPress: LotesFieldMapProps['onDetectionPress'],
+  markersRef: MutableRefObject<Marker[]>
+) {
+  markersRef.current.forEach((marker) => marker.remove())
+  markersRef.current = detections.map((item) => {
+    const element = createDetectionPinElement(item.color, item.deteccion.tipo, item.detecciones.length)
+    element.addEventListener('click', (event) => {
+      event.stopPropagation()
+      onDetectionPress(item.detecciones)
+    })
+    return new maplibregl.Marker({ element, anchor: 'bottom' })
+      .setLngLat([item.coordinate.longitude, item.coordinate.latitude])
+      .addTo(map)
+  })
+}
+
+function createDetectionPinElement(color: string, tipo?: string, count = 1) {
+  const wrap = document.createElement('div')
+  wrap.style.width = '52px'
+  wrap.style.height = '64px'
+  wrap.style.position = 'relative'
+  wrap.style.zIndex = '1200'
+  wrap.style.display = 'flex'
+  wrap.style.flexDirection = 'column'
+  wrap.style.alignItems = 'center'
+  wrap.style.cursor = 'pointer'
+  wrap.style.pointerEvents = 'auto'
+  wrap.style.filter = `drop-shadow(0 12px 24px ${toRgba(color, 0.36)})`
+
+  const glow = document.createElement('div')
+  glow.style.position = 'absolute'
+  glow.style.top = '2px'
+  glow.style.width = '52px'
+  glow.style.height = '52px'
+  glow.style.borderRadius = '999px'
+  glow.style.background = color
+  glow.style.opacity = '0.18'
+  glow.style.transform = 'scale(1.18)'
+  glow.style.filter = 'blur(2px)'
+
+  const head = document.createElement('div')
+  head.style.width = '52px'
+  head.style.height = '52px'
+  head.style.borderRadius = '999px'
+  head.style.display = 'flex'
+  head.style.alignItems = 'center'
+  head.style.justifyContent = 'center'
+  head.style.position = 'relative'
+  head.style.background = 'rgba(11, 23, 48, 0.94)'
+  head.style.border = `2px solid ${color}`
+  head.style.boxShadow = `0 0 28px ${toRgba(color, 0.32)}, inset 0 1px 0 rgba(255,255,255,0.12)`
+  head.innerHTML = iconSvgForType(tipo)
+  if (count > 1) {
+    const badge = document.createElement('div')
+    badge.textContent = String(count)
+    badge.style.position = 'absolute'
+    badge.style.top = '-6px'
+    badge.style.right = '-6px'
+    badge.style.minWidth = '21px'
+    badge.style.height = '21px'
+    badge.style.padding = '0 5px'
+    badge.style.borderRadius = '999px'
+    badge.style.display = 'flex'
+    badge.style.alignItems = 'center'
+    badge.style.justifyContent = 'center'
+    badge.style.background = '#0B1730'
+    badge.style.border = `1px solid ${color}`
+    badge.style.color = '#FFFFFF'
+    badge.style.fontSize = '10px'
+    badge.style.fontWeight = '900'
+    badge.style.boxSizing = 'border-box'
+    head.appendChild(badge)
+  }
+
+  const tip = document.createElement('div')
+  tip.style.width = '0'
+  tip.style.height = '0'
+  tip.style.marginTop = '-7px'
+  tip.style.borderLeft = '10px solid transparent'
+  tip.style.borderRight = '10px solid transparent'
+  tip.style.borderTop = `16px solid ${color}`
+
+  const tipInner = document.createElement('div')
+  tipInner.style.position = 'absolute'
+  tipInner.style.bottom = '4px'
+  tipInner.style.width = '0'
+  tipInner.style.height = '0'
+  tipInner.style.borderLeft = '7px solid transparent'
+  tipInner.style.borderRight = '7px solid transparent'
+  tipInner.style.borderTop = '11px solid rgba(11, 23, 48, 0.96)'
+
+  wrap.append(glow, head, tip, tipInner)
+  return wrap
+}
+
+function iconSvgForType(tipo?: string) {
+  const common = 'width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"'
+  const normalized = tipo?.toUpperCase()
+  if (normalized === 'PLAGA') {
+    return `<svg ${common}><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.8 3.8-4"/><path d="M17.47 9C19.4 8.8 21 7.1 21 5"/><path d="M18 13h4"/><path d="M21 21c0-2.1-1.7-3.8-3.8-4"/></svg>`
+  }
+  if (normalized === 'MALEZA') {
+    return `<svg ${common}><path d="M17 14v6"/><path d="M7 14v6"/><path d="M12 20V8"/><path d="M12 8C8 8 6 6 6 3c3 0 6 2 6 5Z"/><path d="M12 8c4 0 6-2 6-5-3 0-6 2-6 5Z"/><path d="M7 14c-3 0-5-2-5-5 3 0 5 2 5 5Z"/><path d="M17 14c3 0 5-2 5-5-3 0-5 2-5 5Z"/></svg>`
+  }
+  if (normalized === 'ENFERMEDAD') {
+    return `<svg ${common}><path d="M20 13c0 5-3.5 7.5-8 8.7C7.5 20.5 4 18 4 13V5l8-3 8 3v8Z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>`
+  }
+  return `<svg ${common}><circle cx="12" cy="12" r="8"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/></svg>`
+}
+
+function toRgba(hex: string, alpha: number) {
+  const value = hex.replace('#', '')
+  const r = parseInt(value.slice(0, 2), 16)
+  const g = parseInt(value.slice(2, 4), 16)
+  const b = parseInt(value.slice(4, 6), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
 function fitToRegion(map: MapLibreMap, region: MapRegion) {

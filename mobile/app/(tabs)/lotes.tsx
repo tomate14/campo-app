@@ -6,21 +6,18 @@ import { DrawerActions, useNavigation } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query'
 import * as Location from 'expo-location'
 import {
-  Activity,
-  BarChart3,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ClipboardList,
   ClipboardPlus,
-  CloudSun,
   Crosshair,
-  Droplets,
-  Fence,
   History,
   Layers,
   Leaf,
   List,
   LocateFixed,
-  Map,
+  Map as MapIcon,
   MapPinned,
   Menu,
   Mountain,
@@ -29,7 +26,6 @@ import {
   SlidersHorizontal,
   SprayCan,
   Sprout,
-  TriangleAlert,
   X,
   type LucideIcon,
 } from 'lucide-react-native'
@@ -62,12 +58,11 @@ const defaultRegion: MapRegion = {
 
 const actions = [
   { label: 'Registrar evento', layer: 'Eventos', Icon: ClipboardPlus, color: '#9FE870', route: '/agricola/nueva-siembra' },
-  { label: 'Registrar aplicación', layer: 'Aplicaciones', Icon: SprayCan, color: '#6EA8FF', route: '/agricola/nueva-siembra' },
-  { label: 'Registrar seguimiento', layer: 'Seguimientos', Icon: Sprout, color: '#39D0D8', route: '/agricola/historial/0' },
-  { label: 'Ver histórico', layer: 'Eventos', Icon: History, color: '#FFB84D', route: '/agricola/historial/0' },
-  { label: 'Nueva detección', layer: 'Detecciones', Icon: Crosshair, color: '#9A7DFF', route: '/agricola/plagas', primary: true },
+  { label: 'Registrar aplicación', layer: 'Aplicaciones', Icon: SprayCan, color: '#6EA8FF', route: '/agricola/plagas', mode: 'aplicacion' },
+  { label: 'Registrar seguimiento', layer: 'Seguimientos', Icon: Sprout, color: '#39D0D8', route: '/agricola/plagas', mode: 'seguimiento' },
+  { label: 'Ver histórico', layer: 'Eventos', Icon: History, color: '#FFB84D', route: '/agricola/plagas', mode: 'historico' },
+  { label: 'Nueva detección', layer: 'Detecciones', Icon: Crosshair, color: '#9A7DFF', route: '/agricola/plagas', mode: 'deteccion', primary: true },
 ]
-
 type ViewMode = 'MAPA' | 'LISTADO'
 type LayerState = Record<string, boolean>
 type LoteHistoryEvent = {
@@ -83,26 +78,17 @@ type LoteHistoryEvent = {
 
 const mapModes: Array<{ label: string; description: string; value: MapMode; Icon: LucideIcon }> = [
   { label: 'Satélite', description: 'Imágenes satelitales.', value: 'satellite', Icon: Satellite },
-  { label: 'Mapa', description: 'Mapa vectorial.', value: 'standard', Icon: Map },
+  { label: 'Mapa', description: 'Mapa vectorial.', value: 'standard', Icon: MapIcon },
   { label: 'Híbrido', description: 'Satélite + etiquetas.', value: 'hybrid', Icon: MapPinned },
   { label: 'Terreno', description: 'Relieve y elevaciones.', value: 'terrain', Icon: Mountain },
 ]
 
 const operationalLayers: Array<{ label: string; Icon: LucideIcon }> = [
   { label: 'Límites de lotes', Icon: MapPinned },
-  { label: 'Potreros', Icon: Fence },
   { label: 'Eventos', Icon: ClipboardList },
   { label: 'Aplicaciones', Icon: SprayCan },
   { label: 'Seguimientos', Icon: Leaf },
   { label: 'Detecciones', Icon: Crosshair },
-]
-
-const analyticalLayers: Array<{ label: string; Icon: LucideIcon }> = [
-  { label: 'NDVI', Icon: Activity },
-  { label: 'Humedad', Icon: Droplets },
-  { label: 'Clima', Icon: CloudSun },
-  { label: 'Alertas', Icon: TriangleAlert },
-  { label: 'Rendimiento', Icon: BarChart3 },
 ]
 
 export default function LotesScreen() {
@@ -118,22 +104,15 @@ export default function LotesScreen() {
   const [mapCommand, setMapCommand] = useState<MapCommand | null>(null)
   const [layersOpen, setLayersOpen] = useState(false)
   const [mapMode, setMapMode] = useState<MapMode>('satellite')
-  const [selectedDetection, setSelectedDetection] = useState<DeteccionPlaga | null>(null)
+  const [selectedDetections, setSelectedDetections] = useState<DeteccionPlaga[]>([])
+  const [selectedDetectionIndex, setSelectedDetectionIndex] = useState(0)
   const [selectedLote, setSelectedLote] = useState<Lote | null>(null)
   const [operational, setOperational] = useState<LayerState>({
     'Límites de lotes': true,
-    Potreros: false,
     Eventos: true,
     Aplicaciones: true,
     Seguimientos: true,
     Detecciones: true,
-  })
-  const [analytical, setAnalytical] = useState<LayerState>({
-    NDVI: false,
-    Humedad: false,
-    Clima: false,
-    Alertas: true,
-    Rendimiento: false,
   })
 
   useEffect(() => {
@@ -169,8 +148,8 @@ export default function LotesScreen() {
     [allMapItems, operational]
   )
   const detectionItems = useMemo(
-    () => (operational.Detecciones ? buildDetectionItems(detecciones) : []),
-    [detecciones, operational.Detecciones]
+    () => (operational.Detecciones ? buildDetectionItems(detecciones, allMapItems) : []),
+    [detecciones, allMapItems, operational.Detecciones]
   )
   const visibleActions = useMemo(
     () => actions.filter((action) => operational[action.layer] !== false),
@@ -207,28 +186,33 @@ export default function LotesScreen() {
   )
   const historyLoading = loadingSiembra || loadingCosechas || loadingHistoricoCultivos
 
-  const goTo = (route: string) => {
-    if (route.endsWith('/0')) {
-      const firstLote = lotes[0]
-      if (!firstLote) return
-      router.push(route.replace('/0', `/${firstLote.id}`) as never)
+  const goTo = (action: { route: string; mode?: string }, extraParams?: Record<string, string>) => {
+    if (action.route === '/agricola/plagas') {
+      router.push({
+        pathname: '/agricola/plagas',
+        params: {
+          ...(action.mode ? { mode: action.mode } : {}),
+          ...(selectedLote?.id ? { loteId: selectedLote.id } : {}),
+          ...extraParams,
+        },
+      } as never)
       return
     }
-    router.push(route as never)
+    router.push(action.route as never)
   }
 
   const sendMapCommand = (type: MapCommand['type']) => {
     setMapCommand({ id: Date.now(), type })
   }
 
-  const toggleLayer = (section: 'operational' | 'analytical', label: string) => {
-    const updater = section === 'operational' ? setOperational : setAnalytical
-    updater((current) => ({ ...current, [label]: !current[label] }))
+  const toggleLayer = (label: string) => {
+    setOperational((current) => ({ ...current, [label]: !current[label] }))
   }
 
   useEffect(() => {
     if (!operational.Detecciones) {
-      setSelectedDetection(null)
+      setSelectedDetections([])
+      setSelectedDetectionIndex(0)
     }
     if (!operational['Límites de lotes']) {
       setSelectedLote(null)
@@ -258,13 +242,15 @@ export default function LotesScreen() {
           onLotePress={(id) => {
             const lote = lotes.find((item) => item.id === id)
             if (lote) {
-              setSelectedDetection(null)
+              setSelectedDetections([])
+              setSelectedDetectionIndex(0)
               setSelectedLote(lote)
             }
           }}
-          onDetectionPress={(detection) => {
+          onDetectionPress={(detectionGroup) => {
             setSelectedLote(null)
-            setSelectedDetection(detection)
+            setSelectedDetections(detectionGroup)
+            setSelectedDetectionIndex(0)
           }}
         />
 
@@ -288,7 +274,7 @@ export default function LotesScreen() {
         </View>
 
         <View style={styles.quickCard}>
-          <View style={styles.quickIcon}><Map size={17} color="#9FE870" strokeWidth={2} /></View>
+          <View style={styles.quickIcon}><MapIcon size={17} color="#9FE870" strokeWidth={2} /></View>
           <View>
             <Text style={styles.quickValue}>{lotes.length} lotes</Text>
             <Text style={styles.quickLabel}>{Math.round(totalArea).toLocaleString('es-AR')} ha</Text>
@@ -307,7 +293,7 @@ export default function LotesScreen() {
                   action.primary && styles.actionBubblePrimary,
                   { borderColor: `${action.color}55`, shadowColor: action.color },
                 ]}
-                onPress={() => goTo(action.route)}
+                onPress={() => goTo(action)}
               >
                 <View style={[styles.actionIconCircle, { backgroundColor: action.color }]}>
                   <ActionIcon size={20} color="#07101F" strokeWidth={2.4} />
@@ -351,11 +337,23 @@ export default function LotesScreen() {
           </View>
         )}
 
-        {selectedDetection && (
+        {selectedDetections[selectedDetectionIndex] && (
           <DetectionPreview
-            detection={selectedDetection}
-            onClose={() => setSelectedDetection(null)}
-            onAction={(route) => goTo(route)}
+            detection={selectedDetections[selectedDetectionIndex]}
+            total={selectedDetections.length}
+            currentIndex={selectedDetectionIndex}
+            onPrevious={() => setSelectedDetectionIndex((current) => Math.max(current - 1, 0))}
+            onNext={() => setSelectedDetectionIndex((current) => Math.min(current + 1, selectedDetections.length - 1))}
+            onClose={() => {
+              setSelectedDetections([])
+              setSelectedDetectionIndex(0)
+            }}
+            onAction={(mode) => {
+              const selectedDetection = selectedDetections[selectedDetectionIndex]
+              if (selectedDetection) {
+                goTo({ route: '/agricola/plagas', mode }, { deteccionId: selectedDetection.id, loteId: selectedDetection.loteId })
+              }
+            }}
           />
         )}
 
@@ -389,7 +387,7 @@ export default function LotesScreen() {
         <View style={styles.segmentedWrap}>
           <View style={styles.segmented}>
             <Pressable style={[styles.segment, mode === 'MAPA' && styles.segmentActive]} onPress={() => setMode('MAPA')}>
-              <Map size={19} color={mode === 'MAPA' ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
+              <MapIcon size={19} color={mode === 'MAPA' ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
               <Text style={[styles.segmentText, mode === 'MAPA' && styles.segmentTextActive]}>Mapa</Text>
             </Pressable>
             <Pressable style={[styles.segment, mode === 'LISTADO' && styles.segmentActive]} onPress={() => setMode('LISTADO')}>
@@ -446,25 +444,9 @@ export default function LotesScreen() {
                   </View>
                   <Switch
                     value={Boolean(operational[label])}
-                    onValueChange={() => toggleLayer('operational', label)}
+                    onValueChange={() => toggleLayer(label)}
                     trackColor={{ false: 'rgba(255,255,255,0.15)', true: 'rgba(159,232,112,0.34)' }}
                     thumbColor={operational[label] ? '#9FE870' : '#A6B0CF'}
-                  />
-                </View>
-              ))}
-
-              <Text style={styles.sheetSectionTitle}>Capas analíticas</Text>
-              {analyticalLayers.map(({ label, Icon }) => (
-                <View key={label} style={styles.layerRow}>
-                  <View style={styles.layerCopy}>
-                    <Icon size={18} color="#6EA8FF" strokeWidth={2} />
-                    <Text style={styles.layerLabel}>{label}</Text>
-                  </View>
-                  <Switch
-                    value={Boolean(analytical[label])}
-                    onValueChange={() => toggleLayer('analytical', label)}
-                    trackColor={{ false: 'rgba(255,255,255,0.15)', true: 'rgba(159,232,112,0.34)' }}
-                    thumbColor={analytical[label] ? '#9FE870' : '#A6B0CF'}
                   />
                 </View>
               ))}
@@ -478,12 +460,20 @@ export default function LotesScreen() {
 
 function DetectionPreview({
   detection,
+  total,
+  currentIndex,
+  onPrevious,
+  onNext,
   onClose,
   onAction,
 }: {
   detection: DeteccionPlaga
+  total: number
+  currentIndex: number
+  onPrevious: () => void
+  onNext: () => void
   onClose: () => void
-  onAction: (route: string) => void
+  onAction: (mode: string) => void
 }) {
   const severityColor = severityColorFor(detection.severidad)
   const area = detection.areaAfectadaHa !== undefined && detection.areaAfectadaHa !== null
@@ -496,9 +486,30 @@ function DetectionPreview({
         <View style={[styles.severityBadge, { borderColor: `${severityColor}80`, backgroundColor: `${severityColor}18` }]}>
           <Text style={[styles.severityBadgeText, { color: severityColor }]}>{detection.severidad}</Text>
         </View>
-        <Pressable style={styles.previewClose} onPress={onClose}>
-          <X size={15} color="#DCE8F8" strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.previewHeadActions}>
+          {total > 1 && (
+            <View style={styles.previewNavigation}>
+              <Pressable
+                style={[styles.previewNavButton, currentIndex === 0 && styles.previewNavButtonDisabled]}
+                disabled={currentIndex === 0}
+                onPress={onPrevious}
+              >
+                <ChevronLeft size={16} color={currentIndex === 0 ? '#5C6A88' : '#FFFFFF'} strokeWidth={2.2} />
+              </Pressable>
+              <Text style={styles.previewNavText}>{currentIndex + 1} / {total}</Text>
+              <Pressable
+                style={[styles.previewNavButton, currentIndex >= total - 1 && styles.previewNavButtonDisabled]}
+                disabled={currentIndex >= total - 1}
+                onPress={onNext}
+              >
+                <ChevronRight size={16} color={currentIndex >= total - 1 ? '#5C6A88' : '#FFFFFF'} strokeWidth={2.2} />
+              </Pressable>
+            </View>
+          )}
+          <Pressable style={styles.previewClose} onPress={onClose}>
+            <X size={15} color="#DCE8F8" strokeWidth={2.2} />
+          </Pressable>
+        </View>
       </View>
 
       <Text style={styles.previewTitle}>{detection.plagaNombre}</Text>
@@ -520,13 +531,13 @@ function DetectionPreview({
       </View>
 
       <View style={styles.previewActions}>
-        <Pressable style={styles.previewAction} onPress={() => onAction('/agricola/plagas')}>
+        <Pressable style={styles.previewAction} onPress={() => onAction('aplicacion')}>
           <Text style={styles.previewActionText}>Aplicación</Text>
         </Pressable>
-        <Pressable style={styles.previewAction} onPress={() => onAction('/agricola/plagas')}>
+        <Pressable style={styles.previewAction} onPress={() => onAction('seguimiento')}>
           <Text style={styles.previewActionText}>Seguimiento</Text>
         </Pressable>
-        <Pressable style={styles.previewAction} onPress={() => onAction('/agricola/plagas')}>
+        <Pressable style={styles.previewAction} onPress={() => onAction('historico')}>
           <Text style={styles.previewActionText}>Histórico</Text>
         </Pressable>
       </View>
@@ -610,20 +621,54 @@ function buildMapItems(lotes: Lote[], detecciones: DeteccionPlaga[]): LoteMapIte
     .filter((item): item is LoteMapItem => Boolean(item))
 }
 
-function buildDetectionItems(detecciones: DeteccionPlaga[]): DeteccionMapItem[] {
-  return detecciones
-    .map((deteccion) => {
-      const latitude = Number(deteccion.latitud)
-      const longitude = Number(deteccion.longitud)
-      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null
+function buildDetectionItems(detecciones: DeteccionPlaga[], mapItems: LoteMapItem[]): DeteccionMapItem[] {
+  const loteCenters = new Map(mapItems.map((item) => [item.lote.id, item.center]))
+  const groups = new Map<string, { coordinate: MapPoint; detecciones: DeteccionPlaga[] }>()
 
-      return {
-        deteccion,
-        color: severityColorFor(deteccion.severidad),
-        coordinate: { latitude, longitude },
-      }
-    })
-    .filter((item): item is DeteccionMapItem => Boolean(item))
+  detecciones.forEach((deteccion) => {
+    const coordinate = detectionCoordinate(deteccion) ?? loteCenters.get(deteccion.loteId)
+    if (!coordinate) return
+    const key = `${coordinate.latitude.toFixed(7)},${coordinate.longitude.toFixed(7)}`
+    const current = groups.get(key)
+
+    if (current) {
+      current.detecciones.push(deteccion)
+      return
+    }
+
+    groups.set(key, { coordinate, detecciones: [deteccion] })
+  })
+
+  return Array.from(groups.values()).map((group) => {
+    const deteccion = group.detecciones[0]
+    return {
+      deteccion,
+      detecciones: group.detecciones,
+      color: detectionColorForType(deteccion.tipo),
+      coordinate: group.coordinate,
+    }
+  })
+}
+
+function detectionCoordinate(deteccion: DeteccionPlaga): MapPoint | null {
+  const raw = deteccion as DeteccionPlaga & {
+    latitude?: number | string
+    longitude?: number | string
+    lat?: number | string
+    lng?: number | string
+  }
+  const latitude = Number(deteccion.latitud ?? raw.latitude ?? raw.lat)
+  const longitude = Number(deteccion.longitud ?? raw.longitude ?? raw.lng)
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null
+  return { latitude, longitude }
+}
+
+function detectionColorForType(tipo?: string): string {
+  const normalized = tipo?.toUpperCase()
+  if (normalized === 'PLAGA') return '#FF6B6B'
+  if (normalized === 'MALEZA') return '#9A7DFF'
+  if (normalized === 'ENFERMEDAD') return '#FFB84D'
+  return '#6EA8FF'
 }
 
 function loteHealthColor(loteId: string, detecciones: DeteccionPlaga[]): string | null {
@@ -1109,6 +1154,8 @@ const styles = StyleSheet.create({
     left: 14,
     right: 14,
     bottom: 104,
+    zIndex: 5000,
+    elevation: 5000,
     padding: 16,
     borderRadius: 22,
     backgroundColor: 'rgba(8, 18, 37, 0.96)',
@@ -1124,6 +1171,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
+  },
+  previewHeadActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  previewNavigation: {
+    height: 32,
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 6,
+    backgroundColor: 'rgba(11, 23, 48, 0.78)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+  },
+  previewNavButton: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(159,232,112,0.12)',
+  },
+  previewNavButtonDisabled: {
+    opacity: 0.35,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+  },
+  previewNavText: {
+    minWidth: 32,
+    color: '#DCE8F8',
+    fontSize: 11,
+    lineHeight: 13,
+    fontWeight: '800',
+    textAlign: 'center',
   },
   severityBadge: {
     height: 35,
@@ -1201,6 +1284,8 @@ const styles = StyleSheet.create({
     left: 12,
     right: 12,
     bottom: 104,
+    zIndex: 5000,
+    elevation: 5000,
     maxHeight: '56%',
     padding: 16,
     borderRadius: 24,

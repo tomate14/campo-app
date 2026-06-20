@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler'
-import { Stack } from 'expo-router'
+import { Stack, useRootNavigationState } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, Platform, View, useColorScheme } from 'react-native'
+import { ActivityIndicator, Platform, StyleSheet, View, useColorScheme } from 'react-native'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useRouter, useSegments } from 'expo-router'
 import { Colors } from '../constants/colors'
@@ -16,6 +16,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme()
   const router = useRouter()
   const segments = useSegments()
+  const rootNavigationState = useRootNavigationState()
   const [isBootstrapping, setIsBootstrapping] = useState(true)
   const colors = Colors[colorScheme ?? 'light']
 
@@ -31,6 +32,10 @@ export default function RootLayout() {
   }, [])
 
   useEffect(() => {
+    if (!rootNavigationState?.key) {
+      return
+    }
+
     let cancelled = false
 
     async function syncNavigation() {
@@ -55,26 +60,35 @@ export default function RootLayout() {
     return () => {
       cancelled = true
     }
-  }, [router, segments])
-
-  if (isBootstrapping) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    )
-  }
+  }, [router, rootNavigationState?.key, segments])
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="lotes/nuevo" options={{ presentation: 'modal', headerShown: true, title: 'Nuevo lote' }} />
-        <Stack.Screen name="lotes/[id]" options={{ headerShown: false }} />
-        <Stack.Screen name="agricola/nueva-siembra" options={{ presentation: 'modal', headerShown: true, title: 'Registrar evento' }} />
-        <Stack.Screen name="agricola/registro-cosecha" options={{ presentation: 'modal', headerShown: true, title: 'Registrar cosecha' }} />
-      </Stack>
+      <>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="lotes/nuevo" options={{ presentation: 'modal', headerShown: true, title: 'Nuevo lote' }} />
+          <Stack.Screen name="lotes/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="agricola/nueva-siembra" options={{ presentation: 'modal', headerShown: false }} />
+          <Stack.Screen name="agricola/registro-cosecha" options={{ presentation: 'modal', headerShown: true, title: 'Registrar cosecha' }} />
+          <Stack.Screen name="agricola/plagas" options={{ presentation: 'modal', headerShown: false }} />
+        </Stack>
+
+        {isBootstrapping && (
+          <View style={[styles.bootstrapOverlay, { backgroundColor: colors.background }]}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        )}
+      </>
     </QueryClientProvider>
   )
 }
+
+const styles = StyleSheet.create({
+  bootstrapOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})

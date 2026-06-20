@@ -38,6 +38,12 @@ type HistorialPlagaEvento = {
   responsable?: string;
   estado?: string;
 };
+type DeteccionPinGroup = {
+  key: string;
+  latitud: number;
+  longitud: number;
+  detecciones: DeteccionPlaga[];
+};
 
 @Component({
   selector: 'app-plagas-page',
@@ -63,7 +69,8 @@ export class PlagasPageComponent {
   protected readonly pageSize = 3;
   protected readonly modal = signal<ModalType>(null);
   protected readonly selectedDeteccion = signal<DeteccionPlaga | null>(null);
-  protected readonly selectedPin = signal<DeteccionPlaga | null>(null);
+  protected readonly selectedPinGroup = signal<DeteccionPinGroup | null>(null);
+  protected readonly selectedPinIndex = signal(0);
   protected readonly historialEventos = signal<HistorialPlagaEvento[]>([]);
   protected readonly historialLoading = signal(false);
   protected readonly historialLote = signal<Lote | null>(null);
@@ -129,17 +136,39 @@ export class PlagasPageComponent {
     ? 'Seleccioná un punto para registrar una detección web. Los pins muestran alertas ya cargadas.'
     : 'Vista global de los lotes filtrados. Seleccioná un lote específico para registrar una detección.'
   );
-  protected readonly pins = computed(() => {
+  protected readonly pins = computed<DeteccionPinGroup[]>(() => {
     const filters = this.filters();
-    return this.detecciones().filter((item) => {
+    const groups = new Map<string, DeteccionPinGroup>();
+
+    this.detecciones().forEach((item) => {
       const hasCoords = item.latitud !== undefined && item.longitud !== undefined;
       const sameLote = !filters.loteId || item.loteId === filters.loteId;
       const sameCultivo = !filters.cultivo || item.cultivo?.toLowerCase().includes(filters.cultivo.toLowerCase()) || false;
       const sameSeveridad = !filters.severidad || item.severidad === filters.severidad;
       const sameEstado = !filters.estado || item.estado === filters.estado;
-      return hasCoords && sameLote && sameCultivo && sameSeveridad && sameEstado;
+      if (!hasCoords || !sameLote || !sameCultivo || !sameSeveridad || !sameEstado) return;
+
+      const latitud = Number(item.latitud);
+      const longitud = Number(item.longitud);
+      if (!Number.isFinite(latitud) || !Number.isFinite(longitud)) return;
+
+      const key = `${latitud.toFixed(7)},${longitud.toFixed(7)}`;
+      const current = groups.get(key);
+      if (current) {
+        current.detecciones.push(item);
+        return;
+      }
+
+      groups.set(key, { key, latitud, longitud, detecciones: [item] });
     });
+
+    return Array.from(groups.values());
   });
+  protected readonly selectedPin = computed(() => {
+    const group = this.selectedPinGroup();
+    return group?.detecciones[this.selectedPinIndex()] ?? null;
+  });
+  protected readonly selectedPinTotal = computed(() => this.selectedPinGroup()?.detecciones.length ?? 0);
   protected readonly totalItems = computed(() => this.currentItems().length);
   protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalItems() / this.pageSize)));
   protected readonly currentItems = computed<Array<DeteccionPlaga | AplicacionFitosanitaria | SeguimientoPlaga | CatalogoPlaga>>(() => {
@@ -192,7 +221,7 @@ export class PlagasPageComponent {
     this.agricolaService.getDeteccionesPlaga(filters).subscribe({
       next: (items) => {
         this.detecciones.set(items);
-        this.selectedPin.set(null);
+        this.closePinCard();
       },
       error: () => this.errorMessage.set('No se pudieron aplicar los filtros.'),
     });
@@ -286,6 +315,33 @@ export class PlagasPageComponent {
 
   protected pinColor(value?: SeveridadPlaga) {
     return value === 'CRITICA' ? '#ff6b6b' : value === 'ALTA' ? '#ff8a4c' : value === 'MEDIA' ? '#ffb84d' : '#9fe870';
+  }
+
+  protected pinTypeColor(value?: TipoPlaga | string) {
+    const normalized = value?.toUpperCase();
+    if (normalized === 'PLAGA') return '#FF6B6B';
+    if (normalized === 'MALEZA') return '#9A7DFF';
+    if (normalized === 'ENFERMEDAD') return '#FFB84D';
+    return '#6EA8FF';
+  }
+
+  protected openPinCard(group: DeteccionPinGroup) {
+    this.selectedPinGroup.set(group);
+    this.selectedPinIndex.set(0);
+  }
+
+  protected closePinCard() {
+    this.selectedPinGroup.set(null);
+    this.selectedPinIndex.set(0);
+  }
+
+  protected previousPinDetection() {
+    this.selectedPinIndex.update((value) => Math.max(value - 1, 0));
+  }
+
+  protected nextPinDetection() {
+    const total = this.selectedPinGroup()?.detecciones.length ?? 0;
+    this.selectedPinIndex.update((value) => Math.min(value + 1, Math.max(total - 1, 0)));
   }
 
   private afterSave() {

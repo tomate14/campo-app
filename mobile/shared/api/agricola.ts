@@ -1,7 +1,7 @@
 import { apiClient as api } from './client'
 import type {
   ApiResponse, GeoJsonImportRequest, Lote, LoteFilters, LoteReporte, LoteRequest,
-  AplicacionFitosanitaria, CatalogoPlaga, DeteccionPlaga, DeteccionPlagaRequest, SeguimientoPlaga,
+  AplicacionFitosanitaria, AplicacionFitosanitariaRequest, CatalogoPlaga, DeteccionPlaga, DeteccionPlagaRequest, SeguimientoPlaga, SeguimientoPlagaRequest,
   EventoSiembra, EventoSiembraRequest, TipoEvento,
   RegistroCosecha, RegistroCosechaRequest,
   PropiedadSuelo, PropiedadSueloRequest,
@@ -107,13 +107,23 @@ export const getCatalogoPlagas = () =>
   api.get<ApiResponse<CatalogoPlaga[]>>('/agricola/plagas/catalogo').then(r => r.data.data)
 
 export const getDeteccionesPlaga = () =>
-  api.get<ApiResponse<DeteccionPlaga[]>>('/agricola/plagas/detecciones').then(r => r.data.data)
+  api.get<ApiResponse<DeteccionPlaga[]> | DeteccionPlaga[]>('/agricola/plagas/detecciones').then(r => unwrapListResponse(r.data))
 
 export const createDeteccionPlaga = (data: DeteccionPlagaRequest) =>
   api.post<ApiResponse<DeteccionPlaga>>('/agricola/plagas/detecciones', data).then(r => r.data.data)
+
+export const createAplicacionFitosanitaria = (deteccionId: string, data: AplicacionFitosanitariaRequest) =>
+  api.post<ApiResponse<AplicacionFitosanitaria>>(`/agricola/plagas/detecciones/${deteccionId}/aplicaciones`, data).then(r => r.data.data)
+
+export const createSeguimientoPlaga = (deteccionId: string, data: SeguimientoPlagaRequest) =>
+  api.post<ApiResponse<SeguimientoPlaga>>(`/agricola/plagas/detecciones/${deteccionId}/seguimientos`, data).then(r => r.data.data)
 
 export const getAplicacionesFitosanitarias = () =>
   api.get<ApiResponse<AplicacionFitosanitaria[]>>('/agricola/plagas/aplicaciones').then(r => r.data.data)
 
 export const getSeguimientosPlaga = () =>
   api.get<ApiResponse<SeguimientoPlaga[]>>('/agricola/plagas/seguimientos').then(r => r.data.data)
+
+function unwrapListResponse<T>(response: ApiResponse<T[]> | T[]): T[] {
+  return Array.isArray(response) ? response : response.data
+}

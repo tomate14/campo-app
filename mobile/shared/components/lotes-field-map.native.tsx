@@ -2,7 +2,9 @@ import { useEffect, useRef } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import MapView, { Marker, Polygon } from 'react-native-maps'
 import type { LatLng, Region } from 'react-native-maps'
-import { Crosshair } from 'lucide-react-native'
+import { Bug, Crosshair, ShieldAlert, Trees } from 'lucide-react-native'
+import type { LucideIcon } from 'lucide-react-native'
+import type { DeteccionPlaga } from '../types/agricola'
 import type { LotesFieldMapProps, MapMode, MapPoint, MapRegion } from './lotes-field-map.types'
 
 export default function LotesFieldMap({
@@ -79,21 +81,57 @@ export default function LotesFieldMap({
       {detections.map((item) => (
         <Marker
           key={item.deteccion.id}
+          identifier={item.deteccion.id}
           coordinate={toNativePoint(item.coordinate)}
+          anchor={{ x: 0.5, y: 1 }}
+          zIndex={20}
+          tracksViewChanges
           onPress={(event) => {
             event.stopPropagation()
-            onDetectionPress(item.deteccion)
+            onDetectionPress(item.detecciones)
           }}
         >
-          <View style={[styles.detectionMarker, { borderColor: item.color, shadowColor: item.color }]}>
-            <View style={[styles.detectionMarkerInner, { backgroundColor: item.color }]}>
-              <Crosshair size={15} color="#07101F" strokeWidth={2.4} />
-            </View>
-          </View>
+          <DetectionPin deteccion={item.deteccion} color={item.color} count={item.detecciones.length} />
         </Marker>
       ))}
     </MapView>
   )
+}
+
+function DetectionPin({
+  deteccion,
+  color,
+  count,
+}: {
+  deteccion: DeteccionPlaga
+  color: string
+  count: number
+}) {
+  const Icon = iconForType(deteccion.tipo)
+
+  return (
+    <View style={styles.pinWrap}>
+      <View style={[styles.pinGlow, { backgroundColor: color }]} />
+      <View style={[styles.pinHead, { borderColor: color, shadowColor: color }]}>
+        <Icon size={25} color="#FFFFFF" strokeWidth={2.25} />
+        {count > 1 && (
+          <View style={[styles.pinCount, { borderColor: color }]}>
+            <Text style={styles.pinCountText}>{count}</Text>
+          </View>
+        )}
+      </View>
+      <View style={[styles.pinTip, { borderTopColor: color }]} />
+      <View style={[styles.pinTipInner, { borderTopColor: 'rgba(11,23,48,0.96)' }]} />
+    </View>
+  )
+}
+
+function iconForType(tipo?: string): LucideIcon {
+  const normalized = tipo?.toUpperCase()
+  if (normalized === 'PLAGA') return Bug
+  if (normalized === 'MALEZA') return Trees
+  if (normalized === 'ENFERMEDAD') return ShieldAlert
+  return Crosshair
 }
 
 function toNativeMapType(mode: MapMode) {
@@ -157,23 +195,70 @@ const styles = StyleSheet.create({
     marginTop: 1,
     textAlign: 'center',
   },
-  detectionMarker: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+  pinWrap: {
+    width: 52,
+    height: 64,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  pinGlow: {
+    position: 'absolute',
+    top: 2,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    opacity: 0.22,
+    transform: [{ scale: 1.15 }],
+  },
+  pinHead: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(8, 18, 37, 0.9)',
+    backgroundColor: 'rgba(11, 23, 48, 0.94)',
     borderWidth: 2,
-    shadowOpacity: 0.38,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.34,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
   },
-  detectionMarkerInner: {
-    width: 22,
-    height: 22,
+  pinCount: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    minWidth: 21,
+    height: 21,
+    paddingHorizontal: 5,
     borderRadius: 11,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#0B1730',
+    borderWidth: 1,
+  },
+  pinCountText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '900',
+  },
+  pinTip: {
+    width: 0,
+    height: 0,
+    marginTop: -7,
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderTopWidth: 16,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+  },
+  pinTipInner: {
+    position: 'absolute',
+    bottom: 4,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 7,
+    borderRightWidth: 7,
+    borderTopWidth: 11,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
   },
 })

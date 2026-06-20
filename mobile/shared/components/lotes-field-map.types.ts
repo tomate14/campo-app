@@ -19,6 +19,7 @@ export type LoteMapItem = {
 
 export type DeteccionMapItem = {
   deteccion: DeteccionPlaga
+  detecciones: DeteccionPlaga[]
   color: string
   coordinate: MapPoint
 }
@@ -39,5 +40,5 @@ export type LotesFieldMapProps = {
   command: MapCommand | null
   mapMode: MapMode
   onLotePress: (id: string) => void
-  onDetectionPress: (deteccion: DeteccionPlaga) => void
+  onDetectionPress: (detecciones: DeteccionPlaga[]) => void
 }
