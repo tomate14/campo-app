@@ -8,6 +8,8 @@ import com.campoapp.agricultura.repository.plagas.*;
 import com.campoapp.agricultura.service.PlagasService;
 import com.campoapp.common.exception.BusinessException;
 import com.campoapp.common.exception.ResourceNotFoundException;
+import com.campoapp.operarios.entity.Operario;
+import com.campoapp.operarios.repository.OperarioRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class PlagasServiceImpl implements PlagasService {
     private final AplicacionFitosanitariaRepository aplicacionRepository;
     private final SeguimientoPlagaRepository seguimientoRepository;
     private final LoteRepository loteRepository;
+    private final OperarioRepository operarioRepository;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -67,6 +70,7 @@ public class PlagasServiceImpl implements PlagasService {
         CatalogoPlaga catalogo = findCatalogo(request.catalogoPlagaId());
         validateCoordinates(request.latitud(), request.longitud());
         validatePhoto(request.fotoContentType(), request.fotoTamanioBytes());
+        String responsableId = resolveOperarioId(request.responsableId(), request.responsable(), false);
 
         DeteccionPlaga deteccion = DeteccionPlaga.builder()
                 .lote(lote)
@@ -86,7 +90,7 @@ public class PlagasServiceImpl implements PlagasService {
                 .fotoContentType(request.fotoContentType())
                 .fotoTamanioBytes(request.fotoTamanioBytes())
                 .descripcion(request.descripcion())
-                .responsable(request.responsable())
+                .responsable(responsableId)
                 .build();
         return toDeteccionResponse(deteccionRepository.save(deteccion));
     }
@@ -106,13 +110,14 @@ public class PlagasServiceImpl implements PlagasService {
     @Transactional
     public SeguimientoPlagaResponse crearSeguimiento(String deteccionId, SeguimientoPlagaRequest request) {
         DeteccionPlaga deteccion = findDeteccion(deteccionId);
+        String responsableId = resolveOperarioId(request.responsableId(), request.responsable(), false);
         SeguimientoPlaga seguimiento = SeguimientoPlaga.builder()
                 .deteccion(deteccion)
                 .fecha(request.fecha() != null ? request.fecha() : LocalDateTime.now())
                 .resultado(request.resultado())
                 .severidad(request.severidad())
                 .observaciones(request.observaciones())
-                .responsable(request.responsable())
+                .responsable(responsableId)
                 .build();
         deteccion.setSeveridad(request.severidad());
         if (request.resultado() == ResultadoSeguimientoPlaga.CONTROLADA) {
@@ -126,6 +131,7 @@ public class PlagasServiceImpl implements PlagasService {
     public AplicacionFitosanitariaResponse crearAplicacion(String deteccionId, AplicacionFitosanitariaRequest request) {
         DeteccionPlaga deteccion = findDeteccion(deteccionId);
         LocalDateTime fecha = request.fechaAplicacion() != null ? request.fechaAplicacion() : LocalDateTime.now();
+        String operarioResponsableId = resolveOperarioId(request.operarioResponsableId(), request.operarioResponsable(), true);
         AplicacionFitosanitaria aplicacion = AplicacionFitosanitaria.builder()
                 .deteccion(deteccion)
                 .lote(deteccion.getLote())
@@ -141,7 +147,7 @@ public class PlagasServiceImpl implements PlagasService {
                 .fechaReingresoSeguro(request.periodoReingresoHoras() != null ? fecha.plusHours(request.periodoReingresoHoras()) : null)
                 .fechaCosechaSegura(request.periodoCarenciaDias() != null ? fecha.toLocalDate().plusDays(request.periodoCarenciaDias()) : null)
                 .maquinariaId(request.maquinariaId())
-                .operarioResponsable(request.operarioResponsable())
+                .operarioResponsable(operarioResponsableId)
                 .condicionesClimaticas(request.condicionesClimaticas())
                 .observaciones(request.observaciones())
                 .build();
@@ -208,6 +214,34 @@ public class PlagasServiceImpl implements PlagasService {
                 .orElseThrow(() -> new ResourceNotFoundException("Deteccion de plaga no encontrada con id: " + id));
     }
 
+    private String resolveOperarioId(String explicitId, String legacyValue, boolean required) {
+        String value = blankToNull(explicitId) != null ? explicitId : legacyValue;
+        value = blankToNull(value);
+        if (value == null) {
+            if (required) {
+                throw new BusinessException("El operario responsable es requerido");
+            }
+            return null;
+        }
+        final String operarioId = value;
+        operarioRepository.findActiveById(operarioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Operario no encontrado con id: " + operarioId));
+        return operarioId;
+    }
+
+    private String operarioNombre(String operarioId) {
+        if (blankToNull(operarioId) == null) {
+            return null;
+        }
+        return operarioRepository.findActiveById(operarioId)
+                .map(this::fullName)
+                .orElse(operarioId);
+    }
+
+    private String fullName(Operario operario) {
+        return (operario.getNombre() + " " + operario.getApellido()).trim();
+    }
+
     private void validateCoordinates(BigDecimal latitud, BigDecimal longitud) {
         if (latitud == null && longitud == null) {
             return;
@@ -266,15 +300,15 @@ public class PlagasServiceImpl implements PlagasService {
     }
 
     private DeteccionPlagaResponse toDeteccionResponse(DeteccionPlaga item) {
-        return new DeteccionPlagaResponse(item.getId(), item.getLote().getId(), item.getLote().getNombre(), item.getCatalogoPlaga().getId(), item.getCatalogoPlaga().getNombreComun(), item.getCatalogoPlaga().getTipo().name(), item.getFechaDeteccion(), item.getCultivo(), item.getSeveridad(), item.getAreaAfectadaHa(), item.getPorcentajeAfectado(), item.getEstado(), item.getLatitud(), item.getLongitud(), item.getPrecisionMetros(), item.getOrigenGeolocalizacion(), item.getFotoUrl(), item.getFotoNombre(), item.getFotoContentType(), item.getFotoTamanioBytes(), item.getDescripcion(), item.getResponsable(), item.getCreatedAt(), item.getUpdatedAt());
+        return new DeteccionPlagaResponse(item.getId(), item.getLote().getId(), item.getLote().getNombre(), item.getCatalogoPlaga().getId(), item.getCatalogoPlaga().getNombreComun(), item.getCatalogoPlaga().getTipo().name(), item.getFechaDeteccion(), item.getCultivo(), item.getSeveridad(), item.getAreaAfectadaHa(), item.getPorcentajeAfectado(), item.getEstado(), item.getLatitud(), item.getLongitud(), item.getPrecisionMetros(), item.getOrigenGeolocalizacion(), item.getFotoUrl(), item.getFotoNombre(), item.getFotoContentType(), item.getFotoTamanioBytes(), item.getDescripcion(), item.getResponsable(), operarioNombre(item.getResponsable()), item.getCreatedAt(), item.getUpdatedAt());
     }
 
     private AplicacionFitosanitariaResponse toAplicacionResponse(AplicacionFitosanitaria item) {
-        return new AplicacionFitosanitariaResponse(item.getId(), item.getDeteccion().getId(), item.getLote().getId(), item.getLote().getNombre(), item.getFechaAplicacion(), item.getProducto(), item.getPrincipioActivo(), item.getDosis(), item.getUnidadDosis(), item.getVolumenCaldoLHa(), item.getSuperficieTratadaHa(), item.getPeriodoCarenciaDias(), item.getPeriodoReingresoHoras(), item.getFechaReingresoSeguro(), item.getFechaCosechaSegura(), item.getMaquinariaId(), item.getOperarioResponsable(), item.getCondicionesClimaticas(), item.getObservaciones(), item.getCreatedAt());
+        return new AplicacionFitosanitariaResponse(item.getId(), item.getDeteccion().getId(), item.getLote().getId(), item.getLote().getNombre(), item.getFechaAplicacion(), item.getProducto(), item.getPrincipioActivo(), item.getDosis(), item.getUnidadDosis(), item.getVolumenCaldoLHa(), item.getSuperficieTratadaHa(), item.getPeriodoCarenciaDias(), item.getPeriodoReingresoHoras(), item.getFechaReingresoSeguro(), item.getFechaCosechaSegura(), item.getMaquinariaId(), item.getOperarioResponsable(), operarioNombre(item.getOperarioResponsable()), item.getCondicionesClimaticas(), item.getObservaciones(), item.getCreatedAt());
     }
 
     private SeguimientoPlagaResponse toSeguimientoResponse(SeguimientoPlaga item) {
         DeteccionPlaga deteccion = item.getDeteccion();
-        return new SeguimientoPlagaResponse(item.getId(), deteccion.getId(), deteccion.getCatalogoPlaga().getNombreComun(), deteccion.getLote().getNombre(), item.getFecha(), item.getResultado(), item.getSeveridad(), item.getObservaciones(), item.getResponsable(), item.getCreatedAt());
+        return new SeguimientoPlagaResponse(item.getId(), deteccion.getId(), deteccion.getCatalogoPlaga().getNombreComun(), deteccion.getLote().getNombre(), item.getFecha(), item.getResultado(), item.getSeveridad(), item.getObservaciones(), item.getResponsable(), operarioNombre(item.getResponsable()), item.getCreatedAt());
     }
 }

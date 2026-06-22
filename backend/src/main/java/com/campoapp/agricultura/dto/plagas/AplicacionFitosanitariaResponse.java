@@ -21,6 +21,7 @@ public record AplicacionFitosanitariaResponse(
         LocalDateTime fechaReingresoSeguro,
         LocalDate fechaCosechaSegura,
         String maquinariaId,
+        String operarioResponsableId,
         String operarioResponsable,
         String condicionesClimaticas,
         String observaciones,

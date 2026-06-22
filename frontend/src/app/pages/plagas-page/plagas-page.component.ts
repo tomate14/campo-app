@@ -84,7 +84,7 @@ export class PlagasPageComponent {
 
   protected readonly filters = signal<{ loteId?: string; cultivo?: string; severidad?: SeveridadPlaga; estado?: EstadoDeteccionPlaga }>({});
   protected readonly deteccionForm = signal<DeteccionPlagaRequest>({ loteId: '', catalogoPlagaId: '', severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
-  protected readonly aplicacionForm = signal<AplicacionFitosanitariaRequest>({ producto: '', dosis: 0, unidadDosis: 'l/ha', operarioResponsable: '', fechaAplicacion: this.nowLocalDateTime() });
+  protected readonly aplicacionForm = signal<AplicacionFitosanitariaRequest>({ producto: '', dosis: 0, unidadDosis: 'l/ha', operarioResponsableId: '', operarioResponsable: '', fechaAplicacion: this.nowLocalDateTime() });
   protected readonly seguimientoForm = signal<SeguimientoPlagaRequest>({ resultado: 'SIN_CAMBIOS', severidad: 'MEDIA', fecha: this.nowLocalDateTime() });
   protected readonly catalogoForm = signal<CatalogoPlagaRequest>({ nombreComun: '', tipo: 'PLAGA', activo: true });
 
@@ -248,7 +248,7 @@ export class PlagasPageComponent {
       this.deteccionForm.set({ loteId: lote?.id ?? '', catalogoPlagaId: this.catalogo()[0]?.id ?? '', cultivo: lote?.cultivo, severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
     }
     if (type === 'APLICACION') {
-      this.aplicacionForm.set({ producto: '', dosis: 0, unidadDosis: 'l/ha', operarioResponsable: '', fechaAplicacion: this.nowLocalDateTime() });
+      this.aplicacionForm.set({ producto: '', dosis: 0, unidadDosis: 'l/ha', operarioResponsableId: '', operarioResponsable: '', fechaAplicacion: this.nowLocalDateTime() });
     }
     if (type === 'SEGUIMIENTO') {
       this.seguimientoForm.set({ resultado: 'SIN_CAMBIOS', severidad: deteccion?.severidad ?? 'MEDIA', fecha: this.nowLocalDateTime() });

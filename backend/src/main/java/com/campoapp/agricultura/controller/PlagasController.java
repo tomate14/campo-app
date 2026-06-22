@@ -71,7 +71,7 @@ public class PlagasController {
                 base.loteId(), base.catalogoPlagaId(), base.fechaDeteccion(), base.cultivo(), base.severidad(),
                 base.areaAfectadaHa(), base.porcentajeAfectado(), base.estado(), base.latitud(), base.longitud(),
                 base.precisionMetros(), base.origenGeolocalizacion(), "/uploads/plagas/" + foto.getOriginalFilename(),
-                foto.getOriginalFilename(), foto.getContentType(), foto.getSize(), base.descripcion(), base.responsable());
+                foto.getOriginalFilename(), foto.getContentType(), foto.getSize(), base.descripcion(), base.responsableId(), base.responsable());
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(plagasService.crearDeteccion(request)));
     }
 

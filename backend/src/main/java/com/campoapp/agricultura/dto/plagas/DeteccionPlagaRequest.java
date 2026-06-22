@@ -27,5 +27,6 @@ public record DeteccionPlagaRequest(
         String fotoContentType,
         Long fotoTamanioBytes,
         String descripcion,
+        String responsableId,
         String responsable
 ) {}

@@ -37,6 +37,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ReporteAgricolaDashboardServiceImpl implements ReporteAgricolaDashboardService {
     private static final List<EstadoDeteccionPlaga> ESTADOS_ACTIVOS = List.of(EstadoDeteccionPlaga.ABIERTA, EstadoDeteccionPlaga.EN_TRATAMIENTO);
+    private static final int PRECIPITACION_DIAS_FALLBACK = 14;
 
     private final LoteRepository loteRepository;
     private final RegistroCosechaRepository cosechaRepository;
@@ -148,11 +149,17 @@ public class ReporteAgricolaDashboardServiceImpl implements ReporteAgricolaDashb
     private PrecipitacionData precipitacionesAcumuladas(List<Lote> lotes) {
         BigDecimal total = BigDecimal.ZERO;
         int lotesConsiderados = 0;
+        LocalDate hastaFallback = LocalDate.now().minusDays(1);
+        LocalDate desdeFallback = hastaFallback.minusDays(PRECIPITACION_DIAS_FALLBACK - 1L);
+
         for (Lote lote : lotes) {
             LocalDate desde = lote.getFechaSiembra();
-            LocalDate hasta = lote.getFechaCosechaEstimada() != null ? lote.getFechaCosechaEstimada() : LocalDate.now();
-            if (hasta != null && hasta.isAfter(LocalDate.now())) hasta = LocalDate.now();
-            if (desde == null || hasta == null || hasta.isBefore(desde)) continue;
+            LocalDate hasta = lote.getFechaCosechaEstimada() != null ? lote.getFechaCosechaEstimada() : hastaFallback;
+            if (hasta.isAfter(hastaFallback)) hasta = hastaFallback;
+            if (desde == null || hasta.isBefore(desde)) {
+                desde = desdeFallback;
+                hasta = hastaFallback;
+            }
             if (precipitacionDiariaRepository.contarRegistros(lote.getId(), desde, hasta) == 0) continue;
             total = total.add(precipitacionDiariaRepository.sumarPrecipitaciones(lote.getId(), desde, hasta));
             lotesConsiderados++;

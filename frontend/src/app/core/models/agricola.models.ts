@@ -314,6 +314,7 @@ export interface DeteccionPlaga {
   fotoContentType?: string
   fotoTamanioBytes?: number
   descripcion?: string
+  responsableId?: string
   responsable?: string
   createdAt: string
   updatedAt: string
@@ -337,6 +338,7 @@ export interface DeteccionPlagaRequest {
   fotoContentType?: string
   fotoTamanioBytes?: number
   descripcion?: string
+  responsableId?: string
   responsable?: string
 }
 
@@ -357,6 +359,7 @@ export interface AplicacionFitosanitaria {
   fechaReingresoSeguro?: string
   fechaCosechaSegura?: string
   maquinariaId?: string
+  operarioResponsableId?: string
   operarioResponsable: string
   condicionesClimaticas?: string
   observaciones?: string
@@ -374,6 +377,7 @@ export interface AplicacionFitosanitariaRequest {
   periodoCarenciaDias?: number
   periodoReingresoHoras?: number
   maquinariaId?: string
+  operarioResponsableId?: string
   operarioResponsable: string
   condicionesClimaticas?: string
   observaciones?: string
@@ -388,6 +392,7 @@ export interface SeguimientoPlaga {
   resultado: ResultadoSeguimientoPlaga
   severidad: SeveridadPlaga
   observaciones?: string
+  responsableId?: string
   responsable?: string
   createdAt: string
 }
@@ -397,6 +402,7 @@ export interface SeguimientoPlagaRequest {
   resultado: ResultadoSeguimientoPlaga
   severidad: SeveridadPlaga
   observaciones?: string
+  responsableId?: string
   responsable?: string
 }
 

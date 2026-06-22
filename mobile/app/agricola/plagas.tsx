@@ -140,6 +140,7 @@ export default function PlagasMobilePage() {
     producto: '',
     dosis: 0,
     unidadDosis: 'l/ha',
+    operarioResponsableId: '',
     operarioResponsable: '',
   })
   const [seguimientoForm, setSeguimientoForm] = useState<SeguimientoPlagaRequest>({
@@ -238,7 +239,7 @@ export default function PlagasMobilePage() {
   }
 
   async function saveDeteccion() {
-    if (!deteccionForm.loteId || !deteccionForm.catalogoPlagaId || !deteccionForm.responsable) {
+    if (!deteccionForm.loteId || !deteccionForm.catalogoPlagaId || !deteccionForm.responsableId) {
       Alert.alert('Nueva detección', 'Seleccioná lote, plaga y responsable antes de guardar.')
       return
     }
@@ -256,7 +257,7 @@ export default function PlagasMobilePage() {
   }
 
   async function saveAplicacion() {
-    if (!selectedDetectionId || !aplicacionForm.producto || !aplicacionForm.operarioResponsable) {
+    if (!selectedDetectionId || !aplicacionForm.producto || !aplicacionForm.operarioResponsableId) {
       Alert.alert('Registrar aplicación', 'Seleccioná detección, producto y responsable antes de guardar.')
       return
     }
@@ -273,7 +274,7 @@ export default function PlagasMobilePage() {
   }
 
   async function saveSeguimiento() {
-    if (!selectedDetectionId || !seguimientoForm.responsable) {
+    if (!selectedDetectionId || !seguimientoForm.responsableId) {
       Alert.alert('Registrar seguimiento', 'Seleccioná detección y responsable antes de guardar.')
       return
     }
@@ -449,7 +450,7 @@ function DetectionForm({
           <Text style={styles.coordButtonText}>GPS</Text>
         </Pressable>
       </View>
-      <ResponsibleSelect label="Responsable" value={form.responsable ?? ''} operarios={operarios} onChange={(value) => setForm(current => ({ ...current, responsable: value }))} />
+      <ResponsibleSelect label="Responsable" value={form.responsableId ?? ''} operarios={operarios} onChange={(value) => setForm(current => ({ ...current, responsableId: value }))} />
       <Textarea label="Descripción" value={form.descripcion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, descripcion: value.slice(0, 500) }))} />
       <PrimaryButton icon={<Plus color="#081225" size={22} />} label={saving ? 'Guardando...' : 'Registrar detección'} disabled={saving} onPress={onSave} />
     </>
@@ -491,7 +492,7 @@ function ApplicationForm({
         <Field label="Carencia días" keyboardType="numeric" value={form.periodoCarenciaDias?.toString() ?? ''} onChangeText={(value) => setForm(current => ({ ...current, periodoCarenciaDias: cleanNumber(value) }))} />
       </View>
       <Field label="Reingreso horas" keyboardType="numeric" value={form.periodoReingresoHoras?.toString() ?? ''} onChangeText={(value) => setForm(current => ({ ...current, periodoReingresoHoras: cleanNumber(value) }))} />
-      <ResponsibleSelect label="Responsable" value={form.operarioResponsable} operarios={operarios} onChange={(value) => setForm(current => ({ ...current, operarioResponsable: value }))} />
+      <ResponsibleSelect label="Responsable" value={form.operarioResponsableId ?? ''} operarios={operarios} onChange={(value) => setForm(current => ({ ...current, operarioResponsableId: value }))} />
       <Textarea label="Observaciones" value={form.observaciones ?? ''} onChangeText={(value) => setForm(current => ({ ...current, observaciones: value.slice(0, 500) }))} />
       <PrimaryButton icon={<SprayCan color="#081225" size={22} />} label={saving ? 'Guardando...' : 'Registrar aplicación'} disabled={saving} onPress={onSave} />
     </>
@@ -524,7 +525,7 @@ function FollowUpForm({
       <Field label="Fecha actual" icon={<CalendarDays color="#6EA8FF" size={18} />} value={form.fecha ?? ''} onChangeText={(value) => setForm(current => ({ ...current, fecha: value }))} />
       <ChipGroup label="Resultado" value={form.resultado} options={resultOptions} onChange={(value) => setForm(current => ({ ...current, resultado: value as ResultadoSeguimientoPlaga }))} />
       <ChipGroup label="Severidad" value={form.severidad} options={severityOptions} onChange={(value) => setForm(current => ({ ...current, severidad: value as SeveridadPlaga }))} />
-      <ResponsibleSelect label="Responsable" value={form.responsable ?? ''} operarios={operarios} onChange={(value) => setForm(current => ({ ...current, responsable: value }))} />
+      <ResponsibleSelect label="Responsable" value={form.responsableId ?? ''} operarios={operarios} onChange={(value) => setForm(current => ({ ...current, responsableId: value }))} />
       <Textarea label="Observaciones" value={form.observaciones ?? ''} onChangeText={(value) => setForm(current => ({ ...current, observaciones: value.slice(0, 500) }))} />
       <PrimaryButton icon={<ClipboardList color="#081225" size={22} />} label={saving ? 'Guardando...' : 'Registrar seguimiento'} disabled={saving} onPress={onSave} />
     </>
@@ -654,10 +655,10 @@ function ResponsibleSelect({ label, value, operarios, onChange }: { label: strin
       </View>
       <ScrollView style={styles.peopleList} contentContainerStyle={styles.peopleListContent} nestedScrollEnabled showsVerticalScrollIndicator={false}>
         {filtered.map(item => {
-          const active = item.nombreCompleto === value
+          const active = item.id === value
           return (
             <Pressable key={item.id} style={[styles.personItem, active && styles.personItemActive]} onPress={() => {
-              onChange(item.nombreCompleto)
+              onChange(item.id)
               setQuery(item.nombreCompleto)
             }}>
               <View style={styles.personIcon}>

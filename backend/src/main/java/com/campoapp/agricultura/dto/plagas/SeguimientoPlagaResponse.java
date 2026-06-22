@@ -13,6 +13,7 @@ public record SeguimientoPlagaResponse(
         ResultadoSeguimientoPlaga resultado,
         SeveridadPlaga severidad,
         String observaciones,
+        String responsableId,
         String responsable,
         LocalDateTime createdAt
 ) {}

@@ -29,6 +29,7 @@ public record DeteccionPlagaResponse(
         String fotoContentType,
         Long fotoTamanioBytes,
         String descripcion,
+        String responsableId,
         String responsable,
         LocalDateTime createdAt,
         LocalDateTime updatedAt

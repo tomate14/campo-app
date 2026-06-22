@@ -10,5 +10,6 @@ public record SeguimientoPlagaRequest(
         @NotNull ResultadoSeguimientoPlaga resultado,
         @NotNull SeveridadPlaga severidad,
         String observaciones,
+        String responsableId,
         String responsable
 ) {}

@@ -16,7 +16,8 @@ public record AplicacionFitosanitariaRequest(
         Integer periodoCarenciaDias,
         Integer periodoReingresoHoras,
         String maquinariaId,
-        @NotBlank String operarioResponsable,
+        String operarioResponsableId,
+        String operarioResponsable,
         String condicionesClimaticas,
         String observaciones
 ) {}

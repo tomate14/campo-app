@@ -1,9 +1,9 @@
-﻿<div class="maintenance-page">
+<div class="maintenance-page">
   <header class="page-head">
     <div>
-      <p class="eyebrow">Campo App Â· Maquinaria</p>
+      <p class="eyebrow">Campo App · Maquinaria</p>
       <h2>Mantenimiento preventivo</h2>
-      <p>PlanificaciÃ³n, alertas, intervenciones, repuestos y costos tÃ©cnicos del parque de maquinaria.</p>
+      <p>Planificación, alertas, intervenciones, repuestos y costos técnicos del parque de maquinaria.</p>
     </div>
     <div class="head-actions">
       <button class="btn-secondary maintenance-action" type="button" (click)="openModal('PLAN')">
@@ -16,7 +16,7 @@
       </button>
       <button class="btn-primary maintenance-action" type="button" (click)="openModal('INTERVENCION')">
         <svg viewBox="0 0 24 24"><path d="m14 7 3 3" /><path d="M5 19 16 8l-3-3L2 16v3h3Z" /><path d="M12 19h9" /></svg>
-        IntervenciÃ³n
+        Intervención
       </button>
     </div>
   </header>
@@ -50,10 +50,10 @@
 
     <section class="filters-card card">
       <label>
-        <span>MÃ¡quina</span>
+        <span>Máquina</span>
         <select [ngModel]="filters().maquinariaId" (ngModelChange)="filters.update(f => ({ ...f, maquinariaId: $event }))">
           <option value="">Todas</option>
-          <option *ngFor="let machine of maquinas()" [value]="machine.id">{{ machine.codigo }} Â· {{ machine.modelo }}</option>
+          <option *ngFor="let machine of maquinas()" [value]="machine.id">{{ machine.codigo }} · {{ machine.modelo }}</option>
         </select>
       </label>
       <label>
@@ -228,10 +228,10 @@
           <label><span>Modelo</span><input [ngModel]="planForm().modelo" (ngModelChange)="planForm.update(f => ({ ...f, modelo: $event }))" /></label>
           <label><span>Nombre</span><input [ngModel]="planForm().nombre" (ngModelChange)="planForm.update(f => ({ ...f, nombre: $event }))" /></label>
           <label><span>Intervalo horas</span><input type="number" [ngModel]="planForm().intervaloHoras" (ngModelChange)="planForm.update(f => ({ ...f, intervaloHoras: $event }))" /></label>
-          <label><span>Intervalo dÃ­as</span><input type="number" [ngModel]="planForm().intervaloDias" (ngModelChange)="planForm.update(f => ({ ...f, intervaloDias: $event }))" /></label>
+          <label><span>Intervalo días</span><input type="number" [ngModel]="planForm().intervaloDias" (ngModelChange)="planForm.update(f => ({ ...f, intervaloDias: $event }))" /></label>
           <label><span>Prioridad</span><select [ngModel]="planForm().prioridad" (ngModelChange)="planForm.update(f => ({ ...f, prioridad: $event }))"><option>BAJA</option><option>MEDIA</option><option>ALTA</option></select></label>
         </div>
-        <label class="textarea-field"><span>DescripciÃ³n</span><textarea [ngModel]="planForm().descripcion" (ngModelChange)="planForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+        <label class="textarea-field"><span>Descripción</span><textarea [ngModel]="planForm().descripcion" (ngModelChange)="planForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
         <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitPlan()">Guardar</button></div>
       </ng-container>
 
@@ -241,22 +241,22 @@
           <app-remote-search-select label="Maquina" placeholder="Buscar maquina" [endpoint]="endpoints.maquinas" queryParam="search" valueField="id" labelField="codigo" [subtitleFields]="['marca','modelo','estado']" [searchFields]="['codigo','marca','modelo','estado','tipo']" [value]="programacionForm().maquinariaId" (valueChange)="programacionForm.update(f => ({ ...f, maquinariaId: $event }))"></app-remote-search-select>
           <label><span>Plan</span><select [ngModel]="programacionForm().planId" (ngModelChange)="programacionForm.update(f => ({ ...f, planId: $event }))"><option value="">Sin plan</option><option *ngFor="let plan of resumen()?.planes ?? []" [value]="plan.id">{{ plan.nombre }}</option></select></label>
           <label><span>Fecha</span><input type="date" [ngModel]="programacionForm().fechaProgramada" (ngModelChange)="programacionForm.update(f => ({ ...f, fechaProgramada: $event }))" /></label>
-          <label><span>HorÃ³metro objetivo</span><input type="number" [ngModel]="programacionForm().horometroObjetivo" (ngModelChange)="programacionForm.update(f => ({ ...f, horometroObjetivo: $event }))" /></label>
-          <app-remote-search-select label="Responsable" placeholder="Buscar responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="nombreCompleto" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="programacionForm().responsable" (valueChange)="programacionForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
+          <label><span>Horómetro objetivo</span><input type="number" [ngModel]="programacionForm().horometroObjetivo" (ngModelChange)="programacionForm.update(f => ({ ...f, horometroObjetivo: $event }))" /></label>
+          <app-remote-search-select label="Responsable" placeholder="Buscar responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="programacionForm().responsable" (valueChange)="programacionForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
         </div>
         <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="programacionForm().observaciones" (ngModelChange)="programacionForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
         <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitProgramacion()">Guardar</button></div>
       </ng-container>
 
       <ng-container *ngIf="modal() === 'INTERVENCION'">
-        <div class="modal-head"><h3>Registrar intervenciÃ³n</h3></div>
+        <div class="modal-head"><h3>Registrar intervención</h3></div>
         <div class="form-grid">
           <app-remote-search-select label="Maquina" placeholder="Buscar maquina" [endpoint]="endpoints.maquinas" queryParam="search" valueField="id" labelField="codigo" [subtitleFields]="['marca','modelo','estado']" [searchFields]="['codigo','marca','modelo','estado','tipo']" [value]="intervencionForm().maquinariaId" (valueChange)="intervencionForm.update(f => ({ ...f, maquinariaId: $event }))"></app-remote-search-select>
           <label><span>Plan</span><select [ngModel]="intervencionForm().planId" (ngModelChange)="intervencionForm.update(f => ({ ...f, planId: $event }))"><option value="">Sin plan</option><option *ngFor="let plan of resumen()?.planes ?? []" [value]="plan.id">{{ plan.nombre }}</option></select></label>
           <label><span>Fecha</span><input type="date" [ngModel]="intervencionForm().fecha" (ngModelChange)="intervencionForm.update(f => ({ ...f, fecha: $event }))" /></label>
           <label><span>Tipo</span><select [ngModel]="intervencionForm().tipo" (ngModelChange)="intervencionForm.update(f => ({ ...f, tipo: $event }))"><option>PREVENTIVO</option><option>CORRECTIVO</option><option>INSPECCION</option></select></label>
-          <app-remote-search-select label="Operario" placeholder="Buscar operario" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="nombreCompleto" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="intervencionForm().operario" (valueChange)="intervencionForm.update(f => ({ ...f, operario: $event }))"></app-remote-search-select>
-          <label><span>Horas mÃ¡quina</span><input type="number" [ngModel]="intervencionForm().horasMaquina" (ngModelChange)="intervencionForm.update(f => ({ ...f, horasMaquina: $event }))" /></label>
+          <app-remote-search-select label="Operario" placeholder="Buscar operario" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="intervencionForm().operario" (valueChange)="intervencionForm.update(f => ({ ...f, operario: $event }))"></app-remote-search-select>
+          <label><span>Horas máquina</span><input type="number" [ngModel]="intervencionForm().horasMaquina" (ngModelChange)="intervencionForm.update(f => ({ ...f, horasMaquina: $event }))" /></label>
           <label><span>Mano de obra</span><input type="number" [ngModel]="intervencionForm().manoObraCosto" (ngModelChange)="intervencionForm.update(f => ({ ...f, manoObraCosto: $event }))" /></label>
           <label><span>Costo repuestos</span><input type="number" [ngModel]="intervencionForm().repuestosCosto" (ngModelChange)="intervencionForm.update(f => ({ ...f, repuestosCosto: $event }))" /></label>
           <label><span>Estado resultante</span><select [ngModel]="intervencionForm().estadoResultante" (ngModelChange)="intervencionForm.update(f => ({ ...f, estadoResultante: $event }))"><option>DISPONIBLE</option><option>EN_REPARACION</option><option>MANTENIMIENTO</option><option>INACTIVA</option></select></label>
@@ -265,15 +265,15 @@
         <div class="repuesto-box">
           <h4>Repuestos utilizados</h4>
           <div class="repuesto-row">
-            <input placeholder="CÃ³digo" [ngModel]="repuestoDraft().codigo" (ngModelChange)="repuestoDraft.update(r => ({ ...r, codigo: $event }))" />
-            <input placeholder="DescripciÃ³n" [ngModel]="repuestoDraft().descripcion" (ngModelChange)="repuestoDraft.update(r => ({ ...r, descripcion: $event }))" />
+            <input placeholder="Código" [ngModel]="repuestoDraft().codigo" (ngModelChange)="repuestoDraft.update(r => ({ ...r, codigo: $event }))" />
+            <input placeholder="Descripción" [ngModel]="repuestoDraft().descripcion" (ngModelChange)="repuestoDraft.update(r => ({ ...r, descripcion: $event }))" />
             <input type="number" placeholder="Cantidad" [ngModel]="repuestoDraft().cantidad" (ngModelChange)="repuestoDraft.update(r => ({ ...r, cantidad: $event }))" />
             <input type="number" placeholder="Costo unit." [ngModel]="repuestoDraft().costoUnitario" (ngModelChange)="repuestoDraft.update(r => ({ ...r, costoUnitario: $event }))" />
             <button class="btn-secondary" type="button" (click)="addRepuesto()">Agregar</button>
           </div>
           <div class="repuesto-list" *ngIf="intervencionForm().repuestos?.length">
             <div *ngFor="let item of intervencionForm().repuestos; let i = index">
-              <span>{{ item.descripcion }} Â· {{ item.cantidad }}</span>
+              <span>{{ item.descripcion }} · {{ item.cantidad }}</span>
               <button type="button" (click)="removeRepuesto(i)">Quitar</button>
             </div>
           </div>
