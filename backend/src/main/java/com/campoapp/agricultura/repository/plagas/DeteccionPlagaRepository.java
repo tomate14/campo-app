@@ -3,6 +3,8 @@ package com.campoapp.agricultura.repository.plagas;
 import com.campoapp.agricultura.entity.plagas.DeteccionPlaga;
 import com.campoapp.agricultura.entity.plagas.EstadoDeteccionPlaga;
 import com.campoapp.agricultura.entity.plagas.SeveridadPlaga;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,6 +28,32 @@ public interface DeteccionPlagaRepository extends JpaRepository<DeteccionPlaga, 
                                 @Param("estado") EstadoDeteccionPlaga estado,
                                 @Param("severidad") SeveridadPlaga severidad,
                                 @Param("cultivo") String cultivo);
+
+    @Query(value = """
+            SELECT d FROM DeteccionPlaga d
+            JOIN FETCH d.lote l
+            JOIN FETCH d.catalogoPlaga c
+            WHERE d.deletedAt IS NULL
+              AND (:loteId IS NULL OR l.id = :loteId)
+              AND (:estado IS NULL OR d.estado = :estado)
+              AND (:severidad IS NULL OR d.severidad = :severidad)
+              AND (:cultivo IS NULL OR d.cultivo = :cultivo)
+            ORDER BY d.fechaDeteccion DESC
+            """,
+            countQuery = """
+            SELECT COUNT(d) FROM DeteccionPlaga d
+            JOIN d.lote l
+            WHERE d.deletedAt IS NULL
+              AND (:loteId IS NULL OR l.id = :loteId)
+              AND (:estado IS NULL OR d.estado = :estado)
+              AND (:severidad IS NULL OR d.severidad = :severidad)
+              AND (:cultivo IS NULL OR d.cultivo = :cultivo)
+            """)
+    Page<DeteccionPlaga> searchPage(@Param("loteId") String loteId,
+                                    @Param("estado") EstadoDeteccionPlaga estado,
+                                    @Param("severidad") SeveridadPlaga severidad,
+                                    @Param("cultivo") String cultivo,
+                                    Pageable pageable);
 
     @Query("SELECT d FROM DeteccionPlaga d JOIN FETCH d.lote JOIN FETCH d.catalogoPlaga WHERE d.id = :id AND d.deletedAt IS NULL")
     Optional<DeteccionPlaga> findActiveById(@Param("id") String id);

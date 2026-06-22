@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,16 @@ public class PlagasController {
         return ResponseEntity.ok(ApiResponse.ok(plagasService.listarCatalogo(tipo)));
     }
 
+    @GetMapping("/catalogo/page")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    @Operation(summary = "Listar catalogo paginado")
+    public ResponseEntity<ApiResponse<Page<CatalogoPlagaResponse>>> catalogoPaginado(
+            @RequestParam(required = false) TipoPlaga tipo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(ApiResponse.ok(plagasService.listarCatalogoPaginado(tipo, page, size)));
+    }
+
     @PostMapping("/catalogo")
     @PreAuthorize("hasAuthority('create:lotes')")
     @Operation(summary = "Crear item de catalogo de plagas")
@@ -51,6 +62,19 @@ public class PlagasController {
             @RequestParam(required = false) SeveridadPlaga severidad,
             @RequestParam(required = false) String cultivo) {
         return ResponseEntity.ok(ApiResponse.ok(plagasService.listarDetecciones(loteId, estado, severidad, cultivo)));
+    }
+
+    @GetMapping("/detecciones/page")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    @Operation(summary = "Listar detecciones paginadas")
+    public ResponseEntity<ApiResponse<Page<DeteccionPlagaResponse>>> deteccionesPaginadas(
+            @RequestParam(required = false) String loteId,
+            @RequestParam(required = false) EstadoDeteccionPlaga estado,
+            @RequestParam(required = false) SeveridadPlaga severidad,
+            @RequestParam(required = false) String cultivo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(ApiResponse.ok(plagasService.listarDeteccionesPaginadas(loteId, estado, severidad, cultivo, page, size)));
     }
 
     @PostMapping("/detecciones")
@@ -105,10 +129,26 @@ public class PlagasController {
         return ResponseEntity.ok(ApiResponse.ok(plagasService.listarAplicaciones()));
     }
 
+    @GetMapping("/aplicaciones/page")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    public ResponseEntity<ApiResponse<Page<AplicacionFitosanitariaResponse>>> aplicacionesPaginadas(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(ApiResponse.ok(plagasService.listarAplicacionesPaginadas(page, size)));
+    }
+
     @GetMapping("/seguimientos")
     @PreAuthorize("hasAuthority('read:lotes')")
     public ResponseEntity<ApiResponse<List<SeguimientoPlagaResponse>>> seguimientos() {
         return ResponseEntity.ok(ApiResponse.ok(plagasService.listarSeguimientos()));
+    }
+
+    @GetMapping("/seguimientos/page")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    public ResponseEntity<ApiResponse<Page<SeguimientoPlagaResponse>>> seguimientosPaginados(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(ApiResponse.ok(plagasService.listarSeguimientosPaginados(page, size)));
     }
 
     @GetMapping("/dashboard")

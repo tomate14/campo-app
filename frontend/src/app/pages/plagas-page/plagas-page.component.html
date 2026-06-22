@@ -100,32 +100,76 @@
         <span>{{ totalItems() }} registro(s)</span>
       </div>
 
-      <div class="card-grid">
-        <article class="premium-card" [ngClass]="severityClass($any(item).severidad)" *ngFor="let item of pageItems()">
-          <ng-container [ngSwitch]="activeTab()">
-            <ng-container *ngSwitchCase="'DETECCIONES'">
-              <div class="premium-card__head"><div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"/></svg></div><div><h3>{{ $any(item).plagaNombre }}</h3><p>{{ $any(item).loteNombre }} &middot; {{ $any(item).cultivo || 'Sin cultivo' }}</p></div></div><span class="badge" [class]="severityClass($any(item).severidad)">{{ $any(item).severidad }}</span></div>
-              <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M7 3v4"/><path d="M17 3v4"/><path d="M4 8h16"/><path d="M5 5h14v16H5z"/></svg><span>Fecha</span><strong>{{ $any(item).fechaDeteccion | date:'dd/MM/yyyy' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z"/></svg><span>&Aacute;rea afectada</span><strong>{{ $any(item).areaAfectadaHa || 0 }} ha</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Responsable</span><strong>{{ $any(item).responsable || 'Sin dato' }}</strong></div></div>
-              <div class="card-actions-inline card-actions-inline--three"><button class="card-action" type="button" (click)="openModal('APLICACION', $any(item))">Registrar aplicaci&oacute;n</button><button class="card-action card-action--ghost" type="button" (click)="openModal('SEGUIMIENTO', $any(item))">Seguimiento</button><button class="card-action card-action--ghost" type="button" (click)="openModal('HISTORICO', $any(item))">Hist&oacute;rico</button></div>
-            </ng-container>
-            <ng-container *ngSwitchCase="'APLICACIONES'">
-              <div class="premium-card__head"><div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="m14 7 3 3"/><path d="M5 19 16 8l-3-3L2 16v3h3Z"/></svg></div><div><h3>{{ $any(item).producto }}</h3><p>{{ $any(item).principioActivo || $any(item).loteNombre }}</p></div></div><span class="badge">Aplicada</span></div>
-              <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M7 3v4"/><path d="M17 3v4"/><path d="M4 8h16"/><path d="M5 5h14v16H5z"/></svg><span>Fecha</span><strong>{{ $any(item).fechaAplicacion | date:'dd/MM/yyyy' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M8 3h8"/><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3"/></svg><span>Dosis</span><strong>{{ $any(item).dosis }} {{ $any(item).unidadDosis }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Operario</span><strong>{{ $any(item).operarioResponsable }}</strong></div></div>
-            </ng-container>
-            <ng-container *ngSwitchCase="'SEGUIMIENTOS'">
-              <div class="premium-card__head"><div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-4"/></svg></div><div><h3>{{ $any(item).plagaNombre }}</h3><p>{{ $any(item).loteNombre }}</p></div></div><span class="badge" [class]="severityClass($any(item).severidad)">{{ $any(item).resultado }}</span></div>
-              <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M7 3v4"/><path d="M17 3v4"/><path d="M4 8h16"/><path d="M5 5h14v16H5z"/></svg><span>Fecha</span><strong>{{ $any(item).fecha | date:'dd/MM/yyyy' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m10 3-8 18h20L14 3z"/></svg><span>Severidad</span><strong>{{ $any(item).severidad }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Responsable</span><strong>{{ $any(item).responsable || 'Sin dato' }}</strong></div></div>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-              <div class="premium-card__head"><div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8"/><path d="M8 12h8"/></svg></div><div><h3>{{ $any(item).nombreComun }}</h3><p>{{ $any(item).nombreCientifico || $any(item).cultivosAfectados || 'Sin descripci&oacute;n' }}</p></div></div><span class="badge">{{ $any(item).tipo }}</span></div>
-              <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"/></svg><span>Cultivos</span><strong>{{ $any(item).cultivosAfectados || '-' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m10 3-8 18h20L14 3z"/></svg><span>Umbral</span><strong>{{ $any(item).umbralAccion || '-' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span>Estado</span><strong>{{ $any(item).activo ? 'Activo' : 'Inactivo' }}</strong></div></div>
-            </ng-container>
-          </ng-container>
-        </article>
-        <div class="empty-box premium-empty-box" *ngIf="!pageItems().length">Sin registros para mostrar.</div>
+      <div class="records-table-wrap" [ngSwitch]="activeTab()">
+        <div class="empty-box" *ngIf="tableLoading()">Cargando registros...</div>
+
+        <table class="records-table" *ngSwitchCase="'DETECCIONES'">
+          <thead><tr><th>Plaga</th><th>Lote</th><th>Cultivo</th><th>Fecha</th><th>Severidad</th><th>Estado</th><th>&Aacute;rea</th><th>Responsable</th><th>Acciones</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let item of detecciones()">
+              <td><strong>{{ item.plagaNombre }}</strong><small>{{ item.tipo }}</small></td>
+              <td>{{ item.loteNombre }}</td>
+              <td>{{ item.cultivo || '-' }}</td>
+              <td>{{ item.fechaDeteccion | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td><span class="badge" [class]="severityClass(item.severidad)">{{ item.severidad }}</span></td>
+              <td>{{ item.estado }}</td>
+              <td>{{ item.areaAfectadaHa || 0 }} ha</td>
+              <td>{{ item.responsable || 'Sin dato' }}</td>
+              <td><div class="table-actions"><button type="button" (click)="openModal('APLICACION', item)">Aplicaci&oacute;n</button><button type="button" (click)="openModal('SEGUIMIENTO', item)">Seguimiento</button><button type="button" (click)="openModal('HISTORICO', item)">Hist&oacute;rico</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="records-table" *ngSwitchCase="'APLICACIONES'">
+          <thead><tr><th>Producto</th><th>Lote</th><th>Fecha</th><th>Principio activo</th><th>Dosis</th><th>Superficie</th><th>Carencia</th><th>Responsable</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let item of aplicaciones()">
+              <td><strong>{{ item.producto }}</strong><small>{{ item.observaciones || 'Aplicaci&oacute;n registrada' }}</small></td>
+              <td>{{ item.loteNombre }}</td>
+              <td>{{ item.fechaAplicacion | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ item.principioActivo || '-' }}</td>
+              <td>{{ item.dosis }} {{ item.unidadDosis }}</td>
+              <td>{{ item.superficieTratadaHa || 0 }} ha</td>
+              <td>{{ item.periodoCarenciaDias || 0 }} d&iacute;as</td>
+              <td>{{ item.operarioResponsable || 'Sin dato' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="records-table" *ngSwitchCase="'SEGUIMIENTOS'">
+          <thead><tr><th>Plaga</th><th>Lote</th><th>Fecha</th><th>Resultado</th><th>Severidad</th><th>Responsable</th><th>Observaciones</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let item of seguimientos()">
+              <td><strong>{{ item.plagaNombre }}</strong><small>Seguimiento</small></td>
+              <td>{{ item.loteNombre }}</td>
+              <td>{{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ item.resultado }}</td>
+              <td><span class="badge" [class]="severityClass(item.severidad)">{{ item.severidad }}</span></td>
+              <td>{{ item.responsable || 'Sin dato' }}</td>
+              <td>{{ item.observaciones || '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="records-table" *ngSwitchDefault>
+          <thead><tr><th>Nombre com&uacute;n</th><th>Tipo</th><th>Nombre cient&iacute;fico</th><th>Cultivos</th><th>Umbral</th><th>Estado</th><th>Descripci&oacute;n</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let item of catalogo()">
+              <td><strong>{{ item.nombreComun }}</strong><small>Cat&aacute;logo</small></td>
+              <td><span class="badge">{{ item.tipo }}</span></td>
+              <td>{{ item.nombreCientifico || '-' }}</td>
+              <td>{{ item.cultivosAfectados || '-' }}</td>
+              <td>{{ item.umbralAccion || '-' }}</td>
+              <td>{{ item.activo ? 'Activo' : 'Inactivo' }}</td>
+              <td>{{ item.descripcion || item.sintomas || '-' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-box premium-empty-box" *ngIf="!tableLoading() && !pageItems().length">Sin registros para mostrar.</div>
       </div>
 
-      <footer class="pagination"><span>Mostrando {{ totalItems() ? ((currentPage() - 1) * pageSize) + 1 : 0 }} a {{ currentPage() * pageSize > totalItems() ? totalItems() : currentPage() * pageSize }} de {{ totalItems() }}</span><div><button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button><button type="button" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage() === i + 1" (click)="setPage(i + 1)">{{ i + 1 }}</button><button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button></div></footer>
+      <footer class="pagination"><span>Mostrando {{ pageFrom() }} a {{ pageTo() }} de {{ totalItems() }}</span><div><button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button><button type="button" *ngFor="let page of visiblePages()" [class.active]="currentPage() === page" (click)="setPage(page)">{{ page }}</button><button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button></div></footer>
     </section>
   </ng-container>
 
@@ -136,7 +180,7 @@
         <div class="modal-head"><h3>Nueva detecci&oacute;n</h3><p>Registr&aacute; ubicaci&oacute;n, severidad y datos t&eacute;cnicos.</p></div>
         <div class="form-grid">
           <label><span>Lote</span><select [ngModel]="deteccionForm().loteId" (ngModelChange)="deteccionForm.update(f => ({ ...f, loteId: $event }))"><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
-          <label><span>Plaga</span><select [ngModel]="deteccionForm().catalogoPlagaId" (ngModelChange)="deteccionForm.update(f => ({ ...f, catalogoPlagaId: $event }))"><option *ngFor="let item of catalogo()" [value]="item.id">{{ item.nombreComun }}</option></select></label>
+          <label><span>Plaga</span><select [ngModel]="deteccionForm().catalogoPlagaId" (ngModelChange)="deteccionForm.update(f => ({ ...f, catalogoPlagaId: $event }))"><option *ngFor="let item of catalogoOpciones()" [value]="item.id">{{ item.nombreComun }}</option></select></label>
           <label><span>Fecha</span><input type="datetime-local" [ngModel]="deteccionForm().fechaDeteccion" (ngModelChange)="deteccionForm.update(f => ({ ...f, fechaDeteccion: $event }))" /></label>
           <label><span>Cultivo</span><input [ngModel]="deteccionForm().cultivo" (ngModelChange)="deteccionForm.update(f => ({ ...f, cultivo: $event }))" /></label>
           <label><span>Severidad</span><select [ngModel]="deteccionForm().severidad" (ngModelChange)="deteccionForm.update(f => ({ ...f, severidad: $event }))"><option *ngFor="let item of severidades" [value]="item">{{ item }}</option></select></label>

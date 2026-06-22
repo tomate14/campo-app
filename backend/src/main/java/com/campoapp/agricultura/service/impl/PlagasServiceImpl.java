@@ -13,6 +13,8 @@ import com.campoapp.operarios.repository.OperarioRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,11 @@ public class PlagasServiceImpl implements PlagasService {
     }
 
     @Override
+    public Page<CatalogoPlagaResponse> listarCatalogoPaginado(TipoPlaga tipo, int page, int size) {
+        return catalogoRepository.searchPage(tipo, pageRequest(page, size)).map(this::toCatalogoResponse);
+    }
+
+    @Override
     @Transactional
     public CatalogoPlagaResponse crearCatalogo(CatalogoPlagaRequest request) {
         CatalogoPlaga item = CatalogoPlaga.builder()
@@ -56,6 +63,11 @@ public class PlagasServiceImpl implements PlagasService {
     @Override
     public List<DeteccionPlagaResponse> listarDetecciones(String loteId, EstadoDeteccionPlaga estado, SeveridadPlaga severidad, String cultivo) {
         return deteccionRepository.search(loteId, estado, severidad, cultivo).stream().map(this::toDeteccionResponse).toList();
+    }
+
+    @Override
+    public Page<DeteccionPlagaResponse> listarDeteccionesPaginadas(String loteId, EstadoDeteccionPlaga estado, SeveridadPlaga severidad, String cultivo, int page, int size) {
+        return deteccionRepository.searchPage(loteId, estado, severidad, cultivo, pageRequest(page, size)).map(this::toDeteccionResponse);
     }
 
     @Override
@@ -161,8 +173,18 @@ public class PlagasServiceImpl implements PlagasService {
     }
 
     @Override
+    public Page<AplicacionFitosanitariaResponse> listarAplicacionesPaginadas(int page, int size) {
+        return aplicacionRepository.findAllActive(pageRequest(page, size)).map(this::toAplicacionResponse);
+    }
+
+    @Override
     public List<SeguimientoPlagaResponse> listarSeguimientos() {
         return seguimientoRepository.findAllActive().stream().map(this::toSeguimientoResponse).toList();
+    }
+
+    @Override
+    public Page<SeguimientoPlagaResponse> listarSeguimientosPaginados(int page, int size) {
+        return seguimientoRepository.findAllActive(pageRequest(page, size)).map(this::toSeguimientoResponse);
     }
 
     @Override
@@ -212,6 +234,12 @@ public class PlagasServiceImpl implements PlagasService {
     private DeteccionPlaga findDeteccion(String id) {
         return deteccionRepository.findActiveById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Deteccion de plaga no encontrada con id: " + id));
+    }
+
+    private PageRequest pageRequest(int page, int size) {
+        int normalizedPage = Math.max(0, page);
+        int normalizedSize = Math.min(Math.max(1, size), 100);
+        return PageRequest.of(normalizedPage, normalizedSize);
     }
 
     private String resolveOperarioId(String explicitId, String legacyValue, boolean required) {

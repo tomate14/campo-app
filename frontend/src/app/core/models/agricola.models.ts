@@ -182,6 +182,18 @@ export interface ApiResponse<T> {
   metadata?: Record<string, unknown>
 }
 
+export interface PageResponse<T> {
+  content: T[]
+  totalElements: number
+  totalPages: number
+  size: number
+  number: number
+  numberOfElements: number
+  first: boolean
+  last: boolean
+  empty: boolean
+}
+
 export interface AnalyticsFiltros {
   loteId?: string
   cultivo?: string

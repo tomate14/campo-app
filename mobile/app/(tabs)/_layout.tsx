@@ -6,6 +6,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import {
   CalendarDays,
   CloudSun,
+  Fence,
   Home,
   LogOut,
   Map,
@@ -42,16 +43,17 @@ const sections: DrawerSection[] = [
     title: 'AGRICULTURA',
     items: [
       { label: 'Lotes', route: '/(tabs)/lotes', Icon: Map },
-      { label: 'Ciclo agrícola', route: '/agricola/nueva-siembra', Icon: Sprout },
+      { label: 'Ciclo agricola', route: '/agricola/nueva-siembra', Icon: Sprout },
       { label: 'Clima', Icon: CloudSun },
     ],
   },
   {
-    title: 'GANADERÍA',
+    title: 'GANADERIA',
     items: [
       { label: 'Trazabilidad', Icon: ScanLine },
       { label: 'Sanidad', Icon: ShieldPlus },
-      { label: 'Alimentación', Icon: Wheat },
+      { label: 'Alimentacion', Icon: Wheat },
+      { label: 'Potreros', route: '/(tabs)/potreros', Icon: Fence },
     ],
   },
   {
@@ -140,6 +142,7 @@ export default function DrawerLayout() {
     >
       <Drawer.Screen name="index" options={{ title: 'Inicio' }} />
       <Drawer.Screen name="lotes" options={{ title: 'Lotes' }} />
+      <Drawer.Screen name="potreros" options={{ title: 'Potreros' }} />
     </Drawer>
   )
 }

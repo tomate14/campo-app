@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NgxMapLibreGLModule } from '@maplibre/ngx-maplibre-gl';
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
-import { forkJoin } from 'rxjs';
+import { forkJoin, type Observable } from 'rxjs';
 import { AgricolaService } from '../../core/services/agricola.service';
 import { API_BASE_URL } from '../../core/services/api.config';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
@@ -19,6 +19,7 @@ import type {
   EventoSiembra,
   HistoricoCultivo,
   Lote,
+  PageResponse,
   PlagasDashboard,
   RegistroCosecha,
   ResultadoSeguimientoPlaga,
@@ -61,12 +62,21 @@ export class PlagasPageComponent {
   protected readonly dashboard = signal<PlagasDashboard | null>(null);
   protected readonly lotes = signal<Lote[]>([]);
   protected readonly catalogo = signal<CatalogoPlaga[]>([]);
+  protected readonly catalogoOpciones = signal<CatalogoPlaga[]>([]);
   protected readonly detecciones = signal<DeteccionPlaga[]>([]);
+  protected readonly mapDetecciones = signal<DeteccionPlaga[]>([]);
   protected readonly aplicaciones = signal<AplicacionFitosanitaria[]>([]);
   protected readonly seguimientos = signal<SeguimientoPlaga[]>([]);
   protected readonly activeTab = signal<ActiveTab>('DETECCIONES');
   protected readonly currentPage = signal(1);
-  protected readonly pageSize = 3;
+  protected readonly pageSize = 10;
+  protected readonly tableLoading = signal(false);
+  protected readonly pageTotals = signal<Record<ActiveTab, number>>({
+    DETECCIONES: 0,
+    APLICACIONES: 0,
+    SEGUIMIENTOS: 0,
+    CATALOGO: 0,
+  });
   protected readonly modal = signal<ModalType>(null);
   protected readonly selectedDeteccion = signal<DeteccionPlaga | null>(null);
   protected readonly selectedPinGroup = signal<DeteccionPinGroup | null>(null);
@@ -140,7 +150,7 @@ export class PlagasPageComponent {
     const filters = this.filters();
     const groups = new Map<string, DeteccionPinGroup>();
 
-    this.detecciones().forEach((item) => {
+    this.mapDetecciones().forEach((item) => {
       const hasCoords = item.latitud !== undefined && item.longitud !== undefined;
       const sameLote = !filters.loteId || item.loteId === filters.loteId;
       const sameCultivo = !filters.cultivo || item.cultivo?.toLowerCase().includes(filters.cultivo.toLowerCase()) || false;
@@ -169,7 +179,7 @@ export class PlagasPageComponent {
     return group?.detecciones[this.selectedPinIndex()] ?? null;
   });
   protected readonly selectedPinTotal = computed(() => this.selectedPinGroup()?.detecciones.length ?? 0);
-  protected readonly totalItems = computed(() => this.currentItems().length);
+  protected readonly totalItems = computed(() => this.pageTotals()[this.activeTab()]);
   protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalItems() / this.pageSize)));
   protected readonly currentItems = computed<Array<DeteccionPlaga | AplicacionFitosanitaria | SeguimientoPlaga | CatalogoPlaga>>(() => {
     switch (this.activeTab()) {
@@ -179,10 +189,7 @@ export class PlagasPageComponent {
       default: return this.detecciones();
     }
   });
-  protected readonly pageItems = computed<Array<DeteccionPlaga | AplicacionFitosanitaria | SeguimientoPlaga | CatalogoPlaga>>(() => {
-    const start = (this.currentPage() - 1) * this.pageSize;
-    return this.currentItems().slice(start, start + this.pageSize);
-  });
+  protected readonly pageItems = computed<Array<DeteccionPlaga | AplicacionFitosanitaria | SeguimientoPlaga | CatalogoPlaga>>(() => this.currentItems());
 
   constructor() {
     this.loadAll();
@@ -194,18 +201,28 @@ export class PlagasPageComponent {
     forkJoin({
       dashboard: this.agricolaService.getPlagasDashboard(),
       lotes: this.agricolaService.getLotes(),
-      catalogo: this.agricolaService.getCatalogoPlagas(),
-      detecciones: this.agricolaService.getDeteccionesPlaga(this.filters()),
-      aplicaciones: this.agricolaService.getAplicacionesFitosanitarias(),
-      seguimientos: this.agricolaService.getSeguimientosPlaga(),
+      catalogo: this.agricolaService.getCatalogoPlagasPage({ page: 0, size: this.pageSize }),
+      catalogoCompleto: this.agricolaService.getCatalogoPlagas(),
+      detecciones: this.agricolaService.getDeteccionesPlagaPage({ ...this.filters(), page: 0, size: this.pageSize }),
+      mapaDetecciones: this.agricolaService.getDeteccionesPlaga(this.filters()),
+      aplicaciones: this.agricolaService.getAplicacionesFitosanitariasPage({ page: 0, size: this.pageSize }),
+      seguimientos: this.agricolaService.getSeguimientosPlagaPage({ page: 0, size: this.pageSize }),
     }).subscribe({
       next: (data) => {
         this.dashboard.set(data.dashboard);
         this.lotes.set(data.lotes);
-        this.catalogo.set(data.catalogo);
-        this.detecciones.set(data.detecciones);
-        this.aplicaciones.set(data.aplicaciones);
-        this.seguimientos.set(data.seguimientos);
+        this.catalogo.set(data.catalogo.content);
+        this.catalogoOpciones.set(data.catalogoCompleto);
+        this.detecciones.set(data.detecciones.content);
+        this.mapDetecciones.set(data.mapaDetecciones);
+        this.aplicaciones.set(data.aplicaciones.content);
+        this.seguimientos.set(data.seguimientos.content);
+        this.pageTotals.set({
+          DETECCIONES: data.detecciones.totalElements,
+          APLICACIONES: data.aplicaciones.totalElements,
+          SEGUIMIENTOS: data.seguimientos.totalElements,
+          CATALOGO: data.catalogo.totalElements,
+        });
         this.loading.set(false);
       },
       error: () => {
@@ -218,10 +235,18 @@ export class PlagasPageComponent {
   protected applyFilters() {
     this.currentPage.set(1);
     const filters = this.filters();
-    this.agricolaService.getDeteccionesPlaga(filters).subscribe({
-      next: (items) => {
-        this.detecciones.set(items);
+    forkJoin({
+      mapaDetecciones: this.agricolaService.getDeteccionesPlaga(filters),
+      page: this.agricolaService.getDeteccionesPlagaPage({ ...filters, page: 0, size: this.pageSize }),
+    }).subscribe({
+      next: ({ mapaDetecciones, page }) => {
+        this.mapDetecciones.set(mapaDetecciones);
+        this.detecciones.set(page.content);
+        this.pageTotals.update((totals) => ({ ...totals, DETECCIONES: page.totalElements }));
         this.closePinCard();
+        if (this.activeTab() !== 'DETECCIONES') {
+          this.setTab('DETECCIONES');
+        }
       },
       error: () => this.errorMessage.set('No se pudieron aplicar los filtros.'),
     });
@@ -230,10 +255,29 @@ export class PlagasPageComponent {
   protected setTab(tab: ActiveTab) {
     this.activeTab.set(tab);
     this.currentPage.set(1);
+    this.loadTablePage(tab, 1);
   }
 
   protected setPage(page: number) {
-    this.currentPage.set(Math.min(Math.max(page, 1), this.totalPages()));
+    const normalized = Math.min(Math.max(page, 1), this.totalPages());
+    this.currentPage.set(normalized);
+    this.loadTablePage(this.activeTab(), normalized);
+  }
+
+  protected visiblePages(): number[] {
+    const total = this.totalPages();
+    const current = this.currentPage();
+    const start = Math.max(1, Math.min(current - 2, total - 4));
+    const end = Math.min(total, start + 4);
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+  }
+
+  protected pageFrom(): number {
+    return this.totalItems() ? ((this.currentPage() - 1) * this.pageSize) + 1 : 0;
+  }
+
+  protected pageTo(): number {
+    return Math.min(this.currentPage() * this.pageSize, this.totalItems());
   }
 
   protected openModal(type: ModalType, deteccion?: DeteccionPlaga) {
@@ -245,7 +289,7 @@ export class PlagasPageComponent {
     }
     if (type === 'DETECCION') {
       const lote = this.selectedLoteForForm();
-      this.deteccionForm.set({ loteId: lote?.id ?? '', catalogoPlagaId: this.catalogo()[0]?.id ?? '', cultivo: lote?.cultivo, severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
+      this.deteccionForm.set({ loteId: lote?.id ?? '', catalogoPlagaId: this.catalogoOpciones()[0]?.id ?? '', cultivo: lote?.cultivo, severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
     }
     if (type === 'APLICACION') {
       this.aplicacionForm.set({ producto: '', dosis: 0, unidadDosis: 'l/ha', operarioResponsableId: '', operarioResponsable: '', fechaAplicacion: this.nowLocalDateTime() });
@@ -348,6 +392,33 @@ export class PlagasPageComponent {
     this.saving.set(false);
     this.closeModal();
     this.loadAll();
+  }
+
+  private loadTablePage(tab: ActiveTab, page: number) {
+    this.tableLoading.set(true);
+    const requestPage = Math.max(0, page - 1);
+    const request$: Observable<PageResponse<DeteccionPlaga | AplicacionFitosanitaria | SeguimientoPlaga | CatalogoPlaga>> = tab === 'APLICACIONES'
+      ? this.agricolaService.getAplicacionesFitosanitariasPage({ page: requestPage, size: this.pageSize }) as Observable<PageResponse<DeteccionPlaga | AplicacionFitosanitaria | SeguimientoPlaga | CatalogoPlaga>>
+      : tab === 'SEGUIMIENTOS'
+        ? this.agricolaService.getSeguimientosPlagaPage({ page: requestPage, size: this.pageSize }) as Observable<PageResponse<DeteccionPlaga | AplicacionFitosanitaria | SeguimientoPlaga | CatalogoPlaga>>
+        : tab === 'CATALOGO'
+          ? this.agricolaService.getCatalogoPlagasPage({ page: requestPage, size: this.pageSize }) as Observable<PageResponse<DeteccionPlaga | AplicacionFitosanitaria | SeguimientoPlaga | CatalogoPlaga>>
+          : this.agricolaService.getDeteccionesPlagaPage({ ...this.filters(), page: requestPage, size: this.pageSize }) as Observable<PageResponse<DeteccionPlaga | AplicacionFitosanitaria | SeguimientoPlaga | CatalogoPlaga>>;
+
+    request$.subscribe({
+      next: (pageData) => {
+        if (tab === 'APLICACIONES') this.aplicaciones.set(pageData.content as AplicacionFitosanitaria[]);
+        if (tab === 'SEGUIMIENTOS') this.seguimientos.set(pageData.content as SeguimientoPlaga[]);
+        if (tab === 'CATALOGO') this.catalogo.set(pageData.content as CatalogoPlaga[]);
+        if (tab === 'DETECCIONES') this.detecciones.set(pageData.content as DeteccionPlaga[]);
+        this.pageTotals.update((totals) => ({ ...totals, [tab]: pageData.totalElements }));
+        this.tableLoading.set(false);
+      },
+      error: () => {
+        this.tableLoading.set(false);
+        this.errorMessage.set('No se pudo cargar la pagina solicitada.');
+      },
+    });
   }
 
   private failSave(message: string) {

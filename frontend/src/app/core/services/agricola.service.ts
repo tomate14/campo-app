@@ -21,6 +21,7 @@ import type {
   LoteReporte,
   Lote,
   LoteRequest,
+  PageResponse,
   PropiedadSuelo,
   PropiedadSueloRequest,
   RegistroCosecha,
@@ -206,12 +207,20 @@ export class AgricolaService {
     return this.http.get<ApiResponse<CatalogoPlaga[]> | CatalogoPlaga[]>(`${API_BASE_URL}/agricola/plagas/catalogo`, { params: tipo ? { tipo } : undefined }).pipe(map((response) => unwrapApiResponse(response)));
   }
 
+  getCatalogoPlagasPage(params?: { tipo?: TipoPlaga; page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<CatalogoPlaga>> | PageResponse<CatalogoPlaga>>(`${API_BASE_URL}/agricola/plagas/catalogo/page`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
   createCatalogoPlaga(data: CatalogoPlagaRequest) {
     return this.http.post<ApiResponse<CatalogoPlaga> | CatalogoPlaga>(`${API_BASE_URL}/agricola/plagas/catalogo`, data).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   getDeteccionesPlaga(params?: { loteId?: string; estado?: EstadoDeteccionPlaga; severidad?: SeveridadPlaga; cultivo?: string }) {
     return this.http.get<ApiResponse<DeteccionPlaga[]> | DeteccionPlaga[]>(`${API_BASE_URL}/agricola/plagas/detecciones`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getDeteccionesPlagaPage(params?: { loteId?: string; estado?: EstadoDeteccionPlaga; severidad?: SeveridadPlaga; cultivo?: string; page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<DeteccionPlaga>> | PageResponse<DeteccionPlaga>>(`${API_BASE_URL}/agricola/plagas/detecciones/page`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   createDeteccionPlaga(data: DeteccionPlagaRequest) {
@@ -234,8 +243,16 @@ export class AgricolaService {
     return this.http.get<ApiResponse<AplicacionFitosanitaria[]> | AplicacionFitosanitaria[]>(`${API_BASE_URL}/agricola/plagas/aplicaciones`).pipe(map((response) => unwrapApiResponse(response)));
   }
 
+  getAplicacionesFitosanitariasPage(params?: { page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<AplicacionFitosanitaria>> | PageResponse<AplicacionFitosanitaria>>(`${API_BASE_URL}/agricola/plagas/aplicaciones/page`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
   getSeguimientosPlaga() {
     return this.http.get<ApiResponse<SeguimientoPlaga[]> | SeguimientoPlaga[]>(`${API_BASE_URL}/agricola/plagas/seguimientos`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getSeguimientosPlagaPage(params?: { page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<SeguimientoPlaga>> | PageResponse<SeguimientoPlaga>>(`${API_BASE_URL}/agricola/plagas/seguimientos/page`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   getMapaPlagasLote(loteId: string) {

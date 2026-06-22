@@ -158,6 +158,76 @@
 .tabs button.active::after { background: #9fe870; box-shadow: 0 0 22px rgba(159, 232, 112, .58); }
 .tabs svg, .metric-list svg, .premium-card__icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .tabs-bar > span { color: #c7d4e8; font-size: 13px; }
+.records-table-wrap {
+  position: relative;
+  min-height: 260px;
+  overflow-x: auto;
+  padding: 16px;
+}
+.records-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+  overflow: hidden;
+  border: 1px solid rgba(110, 168, 255, .12);
+  border-radius: 18px;
+  background: rgba(7, 15, 31, .28);
+}
+.records-table th,
+.records-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, .075);
+  text-align: left;
+  vertical-align: middle;
+  font-size: 13px;
+}
+.records-table th {
+  color: #91a4c0;
+  font-weight: 500;
+  background: linear-gradient(180deg, rgba(8, 18, 37, .9), rgba(8, 18, 37, .58));
+}
+.records-table td {
+  color: #dbe8fb;
+}
+.records-table tbody tr {
+  transition: background .18s ease, box-shadow .18s ease;
+}
+.records-table tbody tr:hover {
+  background: rgba(159, 232, 112, .035);
+  box-shadow: inset 2px 0 0 rgba(159, 232, 112, .48);
+}
+.records-table strong {
+  display: block;
+  color: #f8fbff;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.records-table small {
+  display: block;
+  margin-top: 4px;
+  color: #8fa1bd;
+  font-size: 11px;
+}
+.table-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.table-actions button {
+  min-height: 34px;
+  border: 1px solid rgba(159, 232, 112, .22);
+  border-radius: 10px;
+  padding: 0 11px;
+  background: rgba(159, 232, 112, .08);
+  color: #9fe870;
+  font-size: 12px;
+  font-weight: 700;
+}
+.table-actions button:hover {
+  border-color: rgba(159, 232, 112, .52);
+  box-shadow: 0 0 18px rgba(159, 232, 112, .12);
+}
 .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 20px 16px 22px; }
 .premium-card { position: relative; min-height: 330px; padding: 20px 18px; display: flex; flex-direction: column; overflow: hidden; }
 .premium-card::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: #9fe870; box-shadow: 0 0 18px rgba(159, 232, 112, .5); }
