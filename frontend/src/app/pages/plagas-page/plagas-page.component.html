@@ -39,6 +39,7 @@
         <div class="map-controls">
           <button type="button" [class.active]="mapMode() === 'mapa'" (click)="mapMode.set('mapa')">Mapa</button>
           <button type="button" [class.active]="mapMode() === 'satelite'" (click)="mapMode.set('satelite')">Sat&eacute;lite</button>
+          <button type="button" *ngIf="selectedLote()" (click)="openHistorialLoteSeleccionado()">Hist&oacute;rico lote</button>
         </div>
       </div>
       <div class="map-frame">
@@ -47,7 +48,7 @@
           <mgl-layer id="plagas-lote-fill" type="fill" source="plagas-lote-source" [paint]="{ 'fill-color': ['get', 'color'], 'fill-opacity': 0.24 }"></mgl-layer>
           <mgl-layer id="plagas-lote-line" type="line" source="plagas-lote-source" [paint]="{ 'line-color': ['get', 'color'], 'line-width': 2.4, 'line-opacity': 0.92 }"></mgl-layer>
           <mgl-marker *ngFor="let pin of pins()" [lngLat]="[pin.longitud, pin.latitud]">
-            <button class="map-pin" type="button" [style.--pin-color]="pinTypeColor(pin.detecciones[0].tipo)" (click)="$event.stopPropagation(); openPinCard(pin)">
+            <button class="map-pin" type="button" [style.--pin-color]="pinColor(pin.detecciones[0].severidad)" (click)="$event.stopPropagation(); openPinCard(pin)">
               <span class="map-pin__glow"></span>
               <span class="map-pin__head">
                 <svg *ngIf="pin.detecciones[0].tipo === 'PLAGA'" viewBox="0 0 24 24"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.8 3.8-4"/><path d="M17.47 9C19.4 8.8 21 7.1 21 5"/><path d="M18 13h4"/><path d="M21 21c0-2.1-1.7-3.8-3.8-4"/></svg>
@@ -225,8 +226,8 @@
 
       <ng-container *ngIf="modal() === 'HISTORICO'">
         <div class="modal-head">
-          <h3>Hist&oacute;rico del lote</h3>
-          <p>{{ historialLote()?.nombre || selectedDeteccion()?.loteNombre }} &middot; eventos productivos y sanitarios</p>
+          <h3>{{ historialModalTitle() }}</h3>
+          <p>{{ historialModalSubtitle() }}</p>
         </div>
         <div class="history-summary">
           <span class="badge" *ngIf="historialLote() as lote">{{ lote.cultivo }}</span>

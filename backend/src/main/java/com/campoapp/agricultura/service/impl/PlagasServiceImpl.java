@@ -135,6 +135,7 @@ public class PlagasServiceImpl implements PlagasService {
         if (request.resultado() == ResultadoSeguimientoPlaga.CONTROLADA) {
             deteccion.setEstado(EstadoDeteccionPlaga.CONTROLADA);
         }
+        deteccionRepository.save(deteccion);
         return toSeguimientoResponse(seguimientoRepository.save(seguimiento));
     }
 

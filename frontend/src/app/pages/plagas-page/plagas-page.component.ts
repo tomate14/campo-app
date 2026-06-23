@@ -84,6 +84,7 @@ export class PlagasPageComponent {
   protected readonly historialEventos = signal<HistorialPlagaEvento[]>([]);
   protected readonly historialLoading = signal(false);
   protected readonly historialLote = signal<Lote | null>(null);
+  protected readonly historialScope = signal<'DETECCION' | 'LOTE'>('LOTE');
 
   protected readonly severidades: SeveridadPlaga[] = ['BAJA', 'MEDIA', 'ALTA', 'CRITICA'];
   protected readonly estados: EstadoDeteccionPlaga[] = ['ABIERTA', 'EN_TRATAMIENTO', 'CONTROLADA', 'CERRADA'];
@@ -298,7 +299,7 @@ export class PlagasPageComponent {
       this.seguimientoForm.set({ resultado: 'SIN_CAMBIOS', severidad: deteccion?.severidad ?? 'MEDIA', fecha: this.nowLocalDateTime() });
     }
     if (type === 'HISTORICO' && deteccion) {
-      this.loadHistorialLote(deteccion);
+      this.loadHistorialDeteccion(deteccion);
     }
     this.modal.set(type);
   }
@@ -308,6 +309,7 @@ export class PlagasPageComponent {
     this.selectedDeteccion.set(null);
     this.historialEventos.set([]);
     this.historialLote.set(null);
+    this.historialScope.set('LOTE');
     this.historialLoading.set(false);
   }
 
@@ -353,20 +355,32 @@ export class PlagasPageComponent {
     this.agricolaService.createCatalogoPlaga(this.catalogoForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo guardar el catálogo.') });
   }
 
+  protected openHistorialLoteSeleccionado() {
+    const lote = this.selectedLote();
+    if (!lote) return;
+    this.selectedDeteccion.set(null);
+    this.modal.set('HISTORICO');
+    this.loadHistorialLoteById(lote.id);
+  }
+
+  protected historialModalTitle() {
+    return this.historialScope() === 'DETECCION' ? 'Historico de la deteccion' : 'Historico del lote';
+  }
+
+  protected historialModalSubtitle() {
+    const deteccion = this.selectedDeteccion();
+    if (this.historialScope() === 'DETECCION' && deteccion) {
+      return `${deteccion.plagaNombre} · ${deteccion.loteNombre}`;
+    }
+    return `${this.historialLote()?.nombre || deteccion?.loteNombre || 'Lote'} · eventos productivos y sanitarios`;
+  }
+
   protected severityClass(value?: SeveridadPlaga) {
     return `severity-${(value ?? 'MEDIA').toLowerCase()}`;
   }
 
   protected pinColor(value?: SeveridadPlaga) {
     return value === 'CRITICA' ? '#ff6b6b' : value === 'ALTA' ? '#ff8a4c' : value === 'MEDIA' ? '#ffb84d' : '#9fe870';
-  }
-
-  protected pinTypeColor(value?: TipoPlaga | string) {
-    const normalized = value?.toUpperCase();
-    if (normalized === 'PLAGA') return '#FF6B6B';
-    if (normalized === 'MALEZA') return '#9A7DFF';
-    if (normalized === 'ENFERMEDAD') return '#FFB84D';
-    return '#6EA8FF';
   }
 
   protected openPinCard(group: DeteccionPinGroup) {
@@ -439,26 +453,94 @@ export class PlagasPageComponent {
   }
 
   private loadHistorialLote(deteccion: DeteccionPlaga) {
-    const lote = this.lotes().find((item) => item.id === deteccion.loteId) ?? null;
+    this.loadHistorialLoteById(deteccion.loteId);
+  }
+
+  private loadHistorialLoteById(loteId: string) {
+    const lote = this.lotes().find((item) => item.id === loteId) ?? null;
     this.historialLote.set(lote);
+    this.historialScope.set('LOTE');
     this.historialLoading.set(true);
     this.historialEventos.set([]);
 
     forkJoin({
-      siembra: this.agricolaService.getEventosByLote(deteccion.loteId),
-      cosechas: this.agricolaService.getCosechasByLote(deteccion.loteId),
-      cultivos: this.agricolaService.getHistorialByLote(deteccion.loteId),
+      siembra: this.agricolaService.getEventosByLote(loteId),
+      cosechas: this.agricolaService.getCosechasByLote(loteId),
+      cultivos: this.agricolaService.getHistorialByLote(loteId),
+      aplicaciones: this.agricolaService.getAplicacionesFitosanitarias(),
+      seguimientos: this.agricolaService.getSeguimientosPlaga(),
     }).subscribe({
-      next: ({ siembra, cosechas, cultivos }) => {
-        this.historialEventos.set(this.buildHistorialLote(deteccion.loteId, siembra, cosechas, cultivos));
+      next: ({ siembra, cosechas, cultivos, aplicaciones, seguimientos }) => {
+        this.historialEventos.set(this.buildHistorialLote(loteId, siembra, cosechas, cultivos, aplicaciones, seguimientos));
         this.historialLoading.set(false);
       },
       error: () => {
-        this.historialEventos.set(this.buildHistorialLote(deteccion.loteId, [], [], []));
+        this.historialEventos.set(this.buildHistorialLote(loteId, [], [], [], [], []));
         this.historialLoading.set(false);
         this.errorMessage.set('No se pudo cargar el historial completo del lote.');
       },
     });
+  }
+
+  private loadHistorialDeteccion(deteccion: DeteccionPlaga) {
+    const lote = this.lotes().find((item) => item.id === deteccion.loteId) ?? null;
+    this.historialLote.set(lote);
+    this.historialScope.set('DETECCION');
+    this.historialLoading.set(true);
+    this.historialEventos.set([]);
+
+    forkJoin({
+      aplicaciones: this.agricolaService.getAplicacionesFitosanitarias(),
+      seguimientos: this.agricolaService.getSeguimientosPlaga(),
+    }).subscribe({
+      next: ({ aplicaciones, seguimientos }) => {
+        this.historialEventos.set(this.buildHistorialDeteccion(deteccion, aplicaciones, seguimientos));
+        this.historialLoading.set(false);
+      },
+      error: () => {
+        this.historialEventos.set(this.buildHistorialDeteccion(deteccion, [], []));
+        this.historialLoading.set(false);
+        this.errorMessage.set('No se pudo cargar el historial de la deteccion.');
+      },
+    });
+  }
+
+  private buildHistorialDeteccion(
+    deteccion: DeteccionPlaga,
+    aplicaciones: AplicacionFitosanitaria[],
+    seguimientos: SeguimientoPlaga[],
+  ): HistorialPlagaEvento[] {
+    const deteccionEvent: HistorialPlagaEvento = {
+      tipo: 'DETECCION',
+      fecha: deteccion.fechaDeteccion,
+      titulo: deteccion.plagaNombre,
+      detalle: `${deteccion.severidad}${deteccion.areaAfectadaHa ? ` · ${deteccion.areaAfectadaHa} ha` : ''}`,
+      responsable: deteccion.responsable,
+      estado: deteccion.estado,
+    };
+    const aplicacionEvents = aplicaciones
+      .filter((item) => item.deteccionId === deteccion.id)
+      .map((item): HistorialPlagaEvento => ({
+        tipo: 'APLICACION',
+        fecha: item.fechaAplicacion,
+        titulo: item.producto,
+        detalle: `${item.dosis} ${item.unidadDosis}${item.superficieTratadaHa ? ` · ${item.superficieTratadaHa} ha` : ''}`,
+        responsable: item.operarioResponsable,
+        estado: item.principioActivo || 'Aplicada',
+      }));
+    const seguimientoEvents = seguimientos
+      .filter((item) => item.deteccionId === deteccion.id)
+      .map((item): HistorialPlagaEvento => ({
+        tipo: 'SEGUIMIENTO',
+        fecha: item.fecha,
+        titulo: item.plagaNombre,
+        detalle: item.observaciones || item.resultado,
+        responsable: item.responsable,
+        estado: item.severidad,
+      }));
+
+    return [deteccionEvent, ...aplicacionEvents, ...seguimientoEvents]
+      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
   }
 
   private buildHistorialLote(
@@ -466,8 +548,10 @@ export class PlagasPageComponent {
     siembra: EventoSiembra[],
     cosechas: RegistroCosecha[],
     cultivos: HistoricoCultivo[],
+    aplicaciones: AplicacionFitosanitaria[],
+    seguimientos: SeguimientoPlaga[],
   ): HistorialPlagaEvento[] {
-    const detecciones = this.detecciones().filter((item) => item.loteId === loteId);
+    const detecciones = this.mapDetecciones().filter((item) => item.loteId === loteId);
     const detectionIds = new Set(detecciones.map((item) => item.id));
     const deteccionEvents = detecciones.map((item): HistorialPlagaEvento => ({
       tipo: 'DETECCION',
@@ -477,7 +561,7 @@ export class PlagasPageComponent {
       responsable: item.responsable,
       estado: item.estado,
     }));
-    const aplicacionEvents = this.aplicaciones()
+    const aplicacionEvents = aplicaciones
       .filter((item) => item.loteId === loteId)
       .map((item): HistorialPlagaEvento => ({
         tipo: 'APLICACION',
@@ -487,7 +571,7 @@ export class PlagasPageComponent {
         responsable: item.operarioResponsable,
         estado: item.principioActivo || 'Aplicada',
       }));
-    const seguimientoEvents = this.seguimientos()
+    const seguimientoEvents = seguimientos
       .filter((item) => detectionIds.has(item.deteccionId))
       .map((item): HistorialPlagaEvento => ({
         tipo: 'SEGUIMIENTO',

@@ -15,7 +15,6 @@ import {
   History,
   Layers,
   Leaf,
-  List,
   LocateFixed,
   Map as MapIcon,
   MapPinned,
@@ -63,7 +62,6 @@ const actions = [
   { label: 'Ver histórico', layer: 'Eventos', Icon: History, color: '#FFB84D', route: '/agricola/plagas', mode: 'historico' },
   { label: 'Nueva detección', layer: 'Detecciones', Icon: Crosshair, color: '#9A7DFF', route: '/agricola/plagas', mode: 'deteccion', primary: true },
 ]
-type ViewMode = 'MAPA' | 'LISTADO'
 type LayerState = Record<string, boolean>
 type LoteHistoryEvent = {
   id: string
@@ -98,7 +96,6 @@ export default function LotesScreen() {
   const { data: detecciones = [] } = useDeteccionesPlaga()
   const { data: aplicaciones = [] } = useAplicacionesFitosanitarias()
   const { data: seguimientos = [] } = useSeguimientosPlaga()
-  const [mode, setMode] = useState<ViewMode>('MAPA')
   const [locationStatus, setLocationStatus] = useState<'idle' | 'granted' | 'denied'>('idle')
   const [coords, setCoords] = useState<Location.LocationObjectCoords | null>(null)
   const [mapCommand, setMapCommand] = useState<MapCommand | null>(null)
@@ -321,15 +318,6 @@ export default function LotesScreen() {
           <Text style={styles.locationText}>Mi ubicación</Text>
         </Pressable>
 
-        <Pressable style={[styles.locationButton, locationStatus === 'granted' && styles.mapControlActive]} onPress={() => sendMapCommand('user')}>
-          <LocateFixed size={18} color="#FFFFFF" strokeWidth={2} />
-        </Pressable>
-
-        <View style={styles.zoomControls}>
-          <Pressable style={styles.zoomControl} onPress={() => sendMapCommand('zoom-in')}><Text style={styles.zoomText}>+</Text></Pressable>
-          <Pressable style={styles.zoomControl} onPress={() => sendMapCommand('zoom-out')}><Text style={styles.zoomText}>-</Text></Pressable>
-        </View>
-
         {locationStatus === 'denied' && (
           <View style={styles.permissionCard}>
             <Text style={styles.permissionTitle}>Ubicación desactivada</Text>
@@ -365,37 +353,6 @@ export default function LotesScreen() {
             onClose={() => setSelectedLote(null)}
           />
         )}
-
-        {mode === 'LISTADO' && (
-          <View style={styles.listPanel}>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listContent}>
-              {lotes.map((lote) => (
-                <Pressable key={lote.id} style={styles.loteRow} onPress={() => router.push(`/lotes/${lote.id}` as never)}>
-                  <View style={styles.rowDot} />
-                  <View style={styles.rowCopy}>
-                    <Text style={styles.rowTitle}>{lote.nombre}</Text>
-                    <Text style={styles.rowSub}>{lote.cultivo} · {lote.temporada}</Text>
-                  </View>
-                  <Text style={styles.rowArea}>{lote.area} ha</Text>
-                </Pressable>
-              ))}
-              {!lotes.length && <Text style={styles.emptyText}>No hay lotes registrados.</Text>}
-            </ScrollView>
-          </View>
-        )}
-
-        <View style={styles.segmentedWrap}>
-          <View style={styles.segmented}>
-            <Pressable style={[styles.segment, mode === 'MAPA' && styles.segmentActive]} onPress={() => setMode('MAPA')}>
-              <MapIcon size={19} color={mode === 'MAPA' ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
-              <Text style={[styles.segmentText, mode === 'MAPA' && styles.segmentTextActive]}>Mapa</Text>
-            </Pressable>
-            <Pressable style={[styles.segment, mode === 'LISTADO' && styles.segmentActive]} onPress={() => setMode('LISTADO')}>
-              <List size={19} color={mode === 'LISTADO' ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
-              <Text style={[styles.segmentText, mode === 'LISTADO' && styles.segmentTextActive]}>Listado</Text>
-            </Pressable>
-          </View>
-        </View>
 
         <Modal visible={layersOpen} transparent animationType="slide" onRequestClose={() => setLayersOpen(false)}>
           <Pressable style={styles.sheetBackdrop} onPress={() => setLayersOpen(false)} />
@@ -644,7 +601,7 @@ function buildDetectionItems(detecciones: DeteccionPlaga[], mapItems: LoteMapIte
     return {
       deteccion,
       detecciones: group.detecciones,
-      color: detectionColorForType(deteccion.tipo),
+      color: severityColorFor(deteccion.severidad),
       coordinate: group.coordinate,
     }
   })
@@ -661,14 +618,6 @@ function detectionCoordinate(deteccion: DeteccionPlaga): MapPoint | null {
   const longitude = Number(deteccion.longitud ?? raw.longitude ?? raw.lng)
   if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null
   return { latitude, longitude }
-}
-
-function detectionColorForType(tipo?: string): string {
-  const normalized = tipo?.toUpperCase()
-  if (normalized === 'PLAGA') return '#FF6B6B'
-  if (normalized === 'MALEZA') return '#9A7DFF'
-  if (normalized === 'ENFERMEDAD') return '#FFB84D'
-  return '#6EA8FF'
 }
 
 function loteHealthColor(loteId: string, detecciones: DeteccionPlaga[]): string | null {
@@ -1003,6 +952,8 @@ const styles = StyleSheet.create({
     left: 18,
     top: '38%',
     gap: 10,
+    zIndex: 9000,
+    elevation: 9000,
   },
   actionBubble: {
     minHeight: 44,
@@ -1013,6 +964,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 12 },
+    zIndex: 9001,
+    elevation: 9001,
+    overflow: 'visible',
   },
   actionBubblePrimary: {
     shadowOpacity: 0.38,
@@ -1026,6 +980,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: 'rgba(255,255,255,0.18)',
+    zIndex: 3,
+    elevation: 3,
   },
   actionTextPill: {
     minWidth: 68,
@@ -1038,7 +994,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(8, 18, 37, 0.88)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.08)',
-    marginLeft: -4,
+    marginLeft: -12,
+    paddingLeft: 17,
+    zIndex: 1,
+    elevation: 1,
   },
   actionLabel: {
     color: '#FFFFFF',
@@ -1069,14 +1028,10 @@ const styles = StyleSheet.create({
     opacity: 0.92,
     transform: [{ scale: 0.96 }],
   },
-  mapControlActive: {
-    borderColor: 'rgba(159,232,112,0.4)',
-    backgroundColor: 'rgba(159,232,112,0.12)',
-  },
   locationPill: {
     position: 'absolute',
     left: 20,
-    bottom: 112,
+    bottom: 24,
     height: 43,
     minWidth: 116,
     borderRadius: 999,
@@ -1091,40 +1046,6 @@ const styles = StyleSheet.create({
   locationText: {
     color: '#A6B0CF',
     fontSize: 11,
-    fontWeight: '400',
-  },
-  locationButton: {
-    position: 'absolute',
-    right: 20,
-    bottom: 112,
-    width: 43,
-    height: 43,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(8, 18, 37, 0.88)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-  },
-  zoomControls: {
-    position: 'absolute',
-    right: 18,
-    bottom: 166,
-    gap: 8,
-  },
-  zoomControl: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(8, 18, 37, 0.82)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  zoomText: {
-    color: '#FFFFFF',
-    fontSize: 18,
     fontWeight: '400',
   },
   permissionCard: {
@@ -1153,9 +1074,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 14,
     right: 14,
-    bottom: 104,
-    zIndex: 5000,
-    elevation: 5000,
+    bottom: 14,
+    zIndex: 10000,
+    elevation: 10000,
     padding: 16,
     borderRadius: 22,
     backgroundColor: 'rgba(8, 18, 37, 0.96)',
@@ -1283,10 +1204,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 12,
     right: 12,
-    bottom: 104,
-    zIndex: 5000,
-    elevation: 5000,
-    maxHeight: '56%',
+    bottom: 14,
+    zIndex: 10000,
+    elevation: 10000,
+    maxHeight: '72%',
     padding: 16,
     borderRadius: 24,
     backgroundColor: 'rgba(8, 18, 37, 0.96)',
@@ -1418,96 +1339,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.06)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.08)',
-  },
-  listPanel: {
-    position: 'absolute',
-    left: 14,
-    right: 14,
-    bottom: 92,
-    maxHeight: '42%',
-    borderRadius: 24,
-    backgroundColor: 'rgba(8, 18, 37, 0.92)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  listContent: {
-    padding: 12,
-    gap: 10,
-  },
-  loteRow: {
-    minHeight: 62,
-    borderRadius: 18,
-    paddingHorizontal: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(11, 23, 48, 0.72)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
-  },
-  rowDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#9FE870',
-    marginRight: 12,
-  },
-  rowCopy: {
-    flex: 1,
-  },
-  rowTitle: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '800',
-  },
-  rowSub: {
-    color: '#A6B0CF',
-    fontSize: 11,
-    marginTop: 3,
-  },
-  rowArea: {
-    color: '#9FE870',
-    fontSize: 13,
-    fontWeight: '900',
-  },
-  emptyText: {
-    color: '#A6B0CF',
-    textAlign: 'center',
-    paddingVertical: 28,
-  },
-  segmentedWrap: {
-    position: 'absolute',
-    left: 18,
-    right: 18,
-    bottom: 18,
-    alignItems: 'center',
-  },
-  segmented: {
-    width: '100%',
-    height: 80,
-    padding: 8,
-    borderRadius: 26,
-    flexDirection: 'row',
-    backgroundColor: 'rgba(8, 18, 37, 0.92)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-  },
-  segment: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 999,
-    gap: 3,
-  },
-  segmentActive: {
-    backgroundColor: 'rgba(159,232,112,0.08)',
-  },
-  segmentText: {
-    color: '#A6B0CF',
-    fontSize: 10,
-    fontWeight: '800',
-  },
-  segmentTextActive: {
-    color: '#9FE870',
   },
   sheetBackdrop: {
     flex: 1,

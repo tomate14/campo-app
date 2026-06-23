@@ -61,6 +61,7 @@ import type {
 import type { Operario } from '../../shared/types/operarios'
 
 type Mode = 'deteccion' | 'aplicacion' | 'seguimiento' | 'historico'
+type HistoryScope = 'deteccion' | 'lote'
 type HistoryItem = {
   id: string
   type: string
@@ -125,6 +126,7 @@ export default function PlagasMobilePage() {
   const [operarios, setOperarios] = useState<Operario[]>([])
   const [selectedDetectionId, setSelectedDetectionId] = useState('')
   const [selectedHistoryLoteId, setSelectedHistoryLoteId] = useState('')
+  const [historyScope, setHistoryScope] = useState<HistoryScope>(params.deteccionId ? 'deteccion' : 'lote')
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([])
 
   const [deteccionForm, setDeteccionForm] = useState<DeteccionPlagaRequest>({
@@ -155,20 +157,26 @@ export default function PlagasMobilePage() {
 
   useEffect(() => {
     setMode(normalizeMode(params.mode))
-    if (params.deteccionId) {
-      setSelectedDetectionId(params.deteccionId)
-    }
+    setSelectedDetectionId(params.deteccionId ?? '')
     if (params.loteId) {
       setSelectedHistoryLoteId(params.loteId)
       setDeteccionForm(current => ({ ...current, loteId: params.loteId ?? current.loteId }))
     }
+    if (normalizeMode(params.mode) === 'historico') {
+      setHistoryScope(params.deteccionId ? 'deteccion' : 'lote')
+    }
   }, [params.mode, params.deteccionId, params.loteId])
 
   useEffect(() => {
-    if (mode === 'historico' && selectedHistoryLoteId) {
+    if (mode !== 'historico') return
+    if (historyScope === 'deteccion' && selectedDetectionId) {
+      loadDetectionHistory(selectedDetectionId)
+      return
+    }
+    if (selectedHistoryLoteId) {
       loadHistory(selectedHistoryLoteId)
     }
-  }, [mode, selectedHistoryLoteId])
+  }, [mode, historyScope, selectedDetectionId, selectedHistoryLoteId])
 
   async function loadInitialData() {
     try {
@@ -182,14 +190,13 @@ export default function PlagasMobilePage() {
       ])
       const firstLote = lotesData[0]
       const firstPlaga = catalogoData[0]
-      const firstDetection = deteccionesData[0]
       setLotes(lotesData)
       setCatalogo(catalogoData)
       setDetecciones(deteccionesData)
       setAplicaciones(aplicacionesData)
       setSeguimientos(seguimientosData)
       setOperarios(operariosData)
-      setSelectedDetectionId(params.deteccionId ?? firstDetection?.id ?? '')
+      setSelectedDetectionId(params.deteccionId ?? '')
       setSelectedHistoryLoteId(params.loteId ?? firstLote?.id ?? '')
       setDeteccionForm(current => ({
         ...current,
@@ -213,9 +220,6 @@ export default function PlagasMobilePage() {
     setDetecciones(deteccionesData)
     setAplicaciones(aplicacionesData)
     setSeguimientos(seguimientosData)
-    if (!selectedDetectionId && deteccionesData[0]) {
-      setSelectedDetectionId(deteccionesData[0].id)
-    }
   }
 
   async function captureLocation() {
@@ -265,7 +269,7 @@ export default function PlagasMobilePage() {
     try {
       await createAplicacionFitosanitaria(selectedDetectionId, aplicacionForm)
       await refreshOperationalData()
-      Alert.alert('Registrar aplicación', 'Aplicación registrada correctamente.')
+      Alert.alert('Registrar aplicación', 'Aplicación registrada correctamente.', [{ text: 'OK', onPress: () => router.replace('/(tabs)/lotes') }])
     } catch {
       Alert.alert('Registrar aplicación', 'No se pudo guardar la aplicación.')
     } finally {
@@ -282,7 +286,7 @@ export default function PlagasMobilePage() {
     try {
       await createSeguimientoPlaga(selectedDetectionId, seguimientoForm)
       await refreshOperationalData()
-      Alert.alert('Registrar seguimiento', 'Seguimiento registrado correctamente.')
+      Alert.alert('Registrar seguimiento', 'Seguimiento registrado correctamente.', [{ text: 'OK', onPress: () => router.replace('/(tabs)/lotes') }])
     } catch {
       Alert.alert('Registrar seguimiento', 'No se pudo guardar el seguimiento.')
     } finally {
@@ -316,6 +320,27 @@ export default function PlagasMobilePage() {
     }
   }
 
+  async function loadDetectionHistory(deteccionId: string) {
+    setHistoryLoading(true)
+    try {
+      const deteccion = detecciones.find(item => item.id === deteccionId)
+      if (!deteccion) {
+        setHistoryItems([])
+        return
+      }
+      const items: HistoryItem[] = [
+        toDeteccionHistory(deteccion),
+        ...aplicaciones.filter(item => item.deteccionId === deteccionId).map(toAplicacionHistory),
+        ...seguimientos.filter(item => item.deteccionId === deteccionId).map(toSeguimientoHistory),
+      ].sort((a, b) => new Date(b.date ?? '').getTime() - new Date(a.date ?? '').getTime())
+      setHistoryItems(items)
+    } catch {
+      Alert.alert('Historico', 'No se pudo cargar el historico de la deteccion.')
+    } finally {
+      setHistoryLoading(false)
+    }
+  }
+
   if (loading) {
     return (
       <SafeAreaView style={styles.safe}>
@@ -342,7 +367,12 @@ export default function PlagasMobilePage() {
 
         <View style={styles.tabs}>
           {tabs.map(({ mode: itemMode, label, Icon }) => (
-            <Pressable key={itemMode} style={[styles.tab, mode === itemMode && styles.tabActive]} onPress={() => setMode(itemMode)}>
+            <Pressable key={itemMode} style={[styles.tab, mode === itemMode && styles.tabActive]} onPress={() => {
+              if (itemMode === 'historico' && !params.deteccionId) {
+                setHistoryScope('lote')
+              }
+              setMode(itemMode)
+            }}>
               <Icon color={mode === itemMode ? '#9FE870' : '#A6B0CF'} size={18} strokeWidth={2} />
               <Text style={[styles.tabText, mode === itemMode && styles.tabTextActive]}>{label}</Text>
             </Pressable>
@@ -367,6 +397,7 @@ export default function PlagasMobilePage() {
             <ApplicationForm
               detecciones={detecciones}
               form={aplicacionForm}
+              lockedDetectionId={params.deteccionId}
               operarios={operarios}
               saving={saving}
               selectedDetectionId={selectedDetectionId}
@@ -380,6 +411,7 @@ export default function PlagasMobilePage() {
             <FollowUpForm
               detecciones={detecciones}
               form={seguimientoForm}
+              lockedDetectionId={params.deteccionId}
               operarios={operarios}
               saving={saving}
               selectedDetectionId={selectedDetectionId}
@@ -393,10 +425,15 @@ export default function PlagasMobilePage() {
             <HistoryView
               historyItems={historyItems}
               historyLoading={historyLoading}
+              historyScope={historyScope}
               lotes={lotes}
+              detecciones={detecciones}
+              selectedDetectionId={selectedDetectionId}
               selectedHistoryLoteId={selectedHistoryLoteId}
+              setHistoryScope={setHistoryScope}
+              setSelectedDetectionId={setSelectedDetectionId}
               setSelectedHistoryLoteId={setSelectedHistoryLoteId}
-              onRefresh={() => selectedHistoryLoteId && loadHistory(selectedHistoryLoteId)}
+              onRefresh={() => historyScope === 'deteccion' ? selectedDetectionId && loadDetectionHistory(selectedDetectionId) : selectedHistoryLoteId && loadHistory(selectedHistoryLoteId)}
             />
           )}
         </View>
@@ -460,6 +497,7 @@ function DetectionForm({
 function ApplicationForm({
   detecciones,
   form,
+  lockedDetectionId,
   operarios,
   saving,
   selectedDetectionId,
@@ -469,6 +507,7 @@ function ApplicationForm({
 }: {
   detecciones: DeteccionPlaga[]
   form: AplicacionFitosanitariaRequest
+  lockedDetectionId?: string
   operarios: Operario[]
   saving: boolean
   selectedDetectionId: string
@@ -479,17 +518,25 @@ function ApplicationForm({
   return (
     <>
       <SectionTitle icon={<SprayCan color="#6EA8FF" size={18} />} title="Registrar aplicación" subtitle="Tratamiento fitosanitario asociado a una detección." />
-      <OptionPicker label="Detección" items={detecciones.map(item => ({ id: item.id, label: item.plagaNombre, sublabel: item.loteNombre }))} value={selectedDetectionId} onChange={setSelectedDetectionId} />
+      <OptionPicker label="Detección" items={(lockedDetectionId ? detecciones.filter(item => item.id === lockedDetectionId) : detecciones).map(item => ({ id: item.id, label: item.plagaNombre, sublabel: item.loteNombre }))} value={selectedDetectionId} onChange={setSelectedDetectionId} />
       <Field label="Fecha actual" icon={<CalendarDays color="#6EA8FF" size={18} />} value={form.fechaAplicacion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, fechaAplicacion: value }))} />
       <Field label="Producto" value={form.producto} onChangeText={(value) => setForm(current => ({ ...current, producto: value }))} />
       <Field label="Principio activo" value={form.principioActivo ?? ''} onChangeText={(value) => setForm(current => ({ ...current, principioActivo: value }))} />
       <View style={styles.gridTwo}>
-        <Field label="Dosis" keyboardType="numeric" value={form.dosis ? String(form.dosis) : ''} onChangeText={(value) => setForm(current => ({ ...current, dosis: cleanNumber(value) ?? 0 }))} />
-        <Field label="Unidad" value={form.unidadDosis} onChangeText={(value) => setForm(current => ({ ...current, unidadDosis: value }))} />
+        <View style={styles.gridField}>
+          <Field label="Dosis" keyboardType="numeric" value={form.dosis ? String(form.dosis) : ''} onChangeText={(value) => setForm(current => ({ ...current, dosis: cleanNumber(value) ?? 0 }))} />
+        </View>
+        <View style={styles.gridField}>
+          <Field label="Unidad" value={form.unidadDosis} onChangeText={(value) => setForm(current => ({ ...current, unidadDosis: value }))} />
+        </View>
       </View>
       <View style={styles.gridTwo}>
-        <Field label="Superficie ha" keyboardType="numeric" value={form.superficieTratadaHa?.toString() ?? ''} onChangeText={(value) => setForm(current => ({ ...current, superficieTratadaHa: cleanNumber(value) }))} />
-        <Field label="Carencia días" keyboardType="numeric" value={form.periodoCarenciaDias?.toString() ?? ''} onChangeText={(value) => setForm(current => ({ ...current, periodoCarenciaDias: cleanNumber(value) }))} />
+        <View style={styles.gridField}>
+          <Field label="Superficie ha" keyboardType="numeric" value={form.superficieTratadaHa?.toString() ?? ''} onChangeText={(value) => setForm(current => ({ ...current, superficieTratadaHa: cleanNumber(value) }))} />
+        </View>
+        <View style={styles.gridField}>
+          <Field label="Carencia días" keyboardType="numeric" value={form.periodoCarenciaDias?.toString() ?? ''} onChangeText={(value) => setForm(current => ({ ...current, periodoCarenciaDias: cleanNumber(value) }))} />
+        </View>
       </View>
       <Field label="Reingreso horas" keyboardType="numeric" value={form.periodoReingresoHoras?.toString() ?? ''} onChangeText={(value) => setForm(current => ({ ...current, periodoReingresoHoras: cleanNumber(value) }))} />
       <ResponsibleSelect label="Responsable" value={form.operarioResponsableId ?? ''} operarios={operarios} onChange={(value) => setForm(current => ({ ...current, operarioResponsableId: value }))} />
@@ -502,6 +549,7 @@ function ApplicationForm({
 function FollowUpForm({
   detecciones,
   form,
+  lockedDetectionId,
   operarios,
   saving,
   selectedDetectionId,
@@ -511,6 +559,7 @@ function FollowUpForm({
 }: {
   detecciones: DeteccionPlaga[]
   form: SeguimientoPlagaRequest
+  lockedDetectionId?: string
   operarios: Operario[]
   saving: boolean
   selectedDetectionId: string
@@ -521,7 +570,7 @@ function FollowUpForm({
   return (
     <>
       <SectionTitle icon={<Leaf color="#39D0D8" size={18} />} title="Registrar seguimiento" subtitle="Evolución posterior a la detección o tratamiento." />
-      <OptionPicker label="Detección" items={detecciones.map(item => ({ id: item.id, label: item.plagaNombre, sublabel: item.loteNombre }))} value={selectedDetectionId} onChange={setSelectedDetectionId} />
+      <OptionPicker label="Detección" items={(lockedDetectionId ? detecciones.filter(item => item.id === lockedDetectionId) : detecciones).map(item => ({ id: item.id, label: item.plagaNombre, sublabel: item.loteNombre }))} value={selectedDetectionId} onChange={setSelectedDetectionId} />
       <Field label="Fecha actual" icon={<CalendarDays color="#6EA8FF" size={18} />} value={form.fecha ?? ''} onChangeText={(value) => setForm(current => ({ ...current, fecha: value }))} />
       <ChipGroup label="Resultado" value={form.resultado} options={resultOptions} onChange={(value) => setForm(current => ({ ...current, resultado: value as ResultadoSeguimientoPlaga }))} />
       <ChipGroup label="Severidad" value={form.severidad} options={severityOptions} onChange={(value) => setForm(current => ({ ...current, severidad: value as SeveridadPlaga }))} />
@@ -535,32 +584,60 @@ function FollowUpForm({
 function HistoryView({
   historyItems,
   historyLoading,
+  historyScope,
   lotes,
+  detecciones,
+  selectedDetectionId,
   selectedHistoryLoteId,
+  setHistoryScope,
+  setSelectedDetectionId,
   setSelectedHistoryLoteId,
   onRefresh,
 }: {
   historyItems: HistoryItem[]
   historyLoading: boolean
+  historyScope: HistoryScope
   lotes: Lote[]
+  detecciones: DeteccionPlaga[]
+  selectedDetectionId: string
   selectedHistoryLoteId: string
+  setHistoryScope: (value: HistoryScope) => void
+  setSelectedDetectionId: (value: string) => void
   setSelectedHistoryLoteId: (value: string) => void
   onRefresh: () => void
 }) {
+  const selectedDetection = detecciones.find(item => item.id === selectedDetectionId)
+
   return (
     <>
-      <SectionTitle icon={<History color="#FFB84D" size={18} />} title="Histórico del lote" subtitle="Eventos, detecciones, aplicaciones, seguimientos, siembras y cosechas." />
-      <OptionPicker label="Lote" items={lotes.map(lote => ({ id: lote.id, label: lote.nombre, sublabel: lote.cultivo }))} value={selectedHistoryLoteId} onChange={setSelectedHistoryLoteId} />
+      <SectionTitle
+        icon={<History color="#FFB84D" size={18} />}
+        title={historyScope === 'deteccion' ? 'Historico de la deteccion' : 'Historico del lote'}
+        subtitle={historyScope === 'deteccion' ? 'Aplicaciones y seguimientos sobre la plaga seleccionada.' : 'Detecciones, aplicaciones, seguimientos, siembras y cosechas.'}
+      />
+      <View style={styles.chipRow}>
+        <Pressable style={[styles.statusChip, historyScope === 'deteccion' && styles.statusChipActive]} onPress={() => setHistoryScope('deteccion')}>
+          <Text style={[styles.statusChipText, historyScope === 'deteccion' && styles.statusChipTextActive]}>Deteccion</Text>
+        </Pressable>
+        <Pressable style={[styles.statusChip, historyScope === 'lote' && styles.statusChipActive]} onPress={() => setHistoryScope('lote')}>
+          <Text style={[styles.statusChipText, historyScope === 'lote' && styles.statusChipTextActive]}>Lote</Text>
+        </Pressable>
+      </View>
+      {historyScope === 'deteccion' ? (
+        <OptionPicker label="Deteccion" items={detecciones.map(item => ({ id: item.id, label: item.plagaNombre, sublabel: item.loteNombre }))} value={selectedDetectionId} onChange={setSelectedDetectionId} />
+      ) : (
+        <OptionPicker label="Lote" items={lotes.map(lote => ({ id: lote.id, label: lote.nombre, sublabel: lote.cultivo }))} value={selectedHistoryLoteId} onChange={setSelectedHistoryLoteId} />
+      )}
       <Pressable style={styles.secondaryAction} onPress={onRefresh}>
         <History color="#9FE870" size={18} />
-        <Text style={styles.secondaryActionText}>Actualizar histórico</Text>
+        <Text style={styles.secondaryActionText}>Actualizar historico</Text>
       </Pressable>
       {historyLoading ? (
         <ActivityIndicator color="#9FE870" />
       ) : historyItems.length === 0 ? (
         <View style={styles.emptyState}>
           <Text style={styles.emptyTitle}>Sin registros</Text>
-          <Text style={styles.emptyText}>No hay eventos asociados a {selectedLoteName(lotes, selectedHistoryLoteId)}.</Text>
+          <Text style={styles.emptyText}>No hay eventos asociados a {historyScope === 'deteccion' ? selectedDetection?.plagaNombre ?? 'esta deteccion' : selectedLoteName(lotes, selectedHistoryLoteId)}.</Text>
         </View>
       ) : (
         <View style={styles.timeline}>
@@ -580,7 +657,6 @@ function HistoryView({
     </>
   )
 }
-
 function SectionTitle({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle: string }) {
   return (
     <View style={styles.sectionTitle}>
@@ -822,7 +898,8 @@ const styles = StyleSheet.create({
   statusChipActive: { backgroundColor: 'rgba(159,232,112,.12)', borderColor: '#9FE870' },
   statusChipText: { color: '#A6B0CF', fontSize: 11, fontWeight: '600' },
   statusChipTextActive: { color: '#9FE870' },
-  gridTwo: { flexDirection: 'row', gap: 10 },
+  gridTwo: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
+  gridField: { flex: 1, minWidth: 0 },
   inputShell: { minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: 18, paddingHorizontal: 12, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)' },
   input: { flex: 1, color: '#FFFFFF', fontSize: 14, paddingVertical: 0 },
   textarea: { minHeight: 104, borderRadius: 20, padding: 14, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)', color: '#FFFFFF', fontSize: 14 },
