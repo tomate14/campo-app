@@ -1,6 +1,8 @@
 package com.campoapp.ganaderia.repository;
 
 import com.campoapp.ganaderia.entity.TratamientoMedicamento;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,6 +19,16 @@ public interface TratamientoMedicamentoRepository extends JpaRepository<Tratamie
             order by t.fechaInicio desc, t.createdAt desc
             """)
     List<TratamientoMedicamento> findFiltered(String animalId, LocalDate desde, LocalDate hasta);
+
+    @Query("""
+            select t from TratamientoMedicamento t
+            where t.deletedAt is null
+              and (:animalId is null or t.animal.id = :animalId)
+              and (:desde is null or t.fechaInicio >= :desde)
+              and (:hasta is null or t.fechaInicio <= :hasta)
+            order by t.fechaInicio desc, t.createdAt desc
+            """)
+    Page<TratamientoMedicamento> findFilteredPage(String animalId, LocalDate desde, LocalDate hasta, Pageable pageable);
 
     @Query("""
             select count(t) from TratamientoMedicamento t

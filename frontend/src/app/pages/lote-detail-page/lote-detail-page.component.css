@@ -1,14 +1,5 @@
 .page { display: flex; flex-direction: column; gap: 18px; }
 .page-head h2 { margin: 12px 0 0; font-size: 32px; }
 .page-head p { margin: 6px 0 0; color: var(--muted); }
-.tabs, .actions, .row, .chips { display: flex; gap: 10px; flex-wrap: wrap; }
-.tabs .active { border-color: var(--primary); color: #d9f99d; }
-.stack { display: flex; flex-direction: column; gap: 16px; }
-.form, .item-card, .recommendation-card { padding: 18px; display: flex; flex-direction: column; gap: 12px; }
-.map-card { padding: 0; height: 520px; overflow: hidden; }
-.badge { padding: 6px 10px; border-radius: 999px; background: rgba(77, 124, 15, 0.16); color: #d9f99d; }
-.report-grid, .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
-.metric-card { padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: rgba(15, 23, 42, 0.45); }
-.label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-.value { margin-top: 6px; color: var(--foreground); font-weight: 700; font-size: 20px; }
+.map-card { padding: 0; height: min(72vh, 680px); overflow: hidden; }
 p { margin: 0; color: var(--muted); }

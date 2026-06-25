@@ -500,6 +500,141 @@
   gap: 10px;
 }
 
+.sanitary-table-wrap {
+  overflow: auto;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(13, 27, 52, 0.78), rgba(8, 18, 37, 0.78)),
+    radial-gradient(circle at top left, rgba(159, 232, 112, 0.05), transparent 34%);
+}
+
+.sanitary-data-table {
+  width: 100%;
+  min-width: 1040px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sanitary-data-table th,
+.sanitary-data-table td {
+  padding: 13px 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.09);
+  color: #c7d4e8;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.sanitary-data-table th {
+  color: #7f91ac;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(7, 15, 31, 0.54);
+}
+
+.sanitary-data-table tbody tr {
+  transition: background .18s ease, box-shadow .18s ease;
+}
+
+.sanitary-data-table tbody tr:hover {
+  background: rgba(159, 232, 112, 0.045);
+  box-shadow: inset 3px 0 0 rgba(159, 232, 112, 0.66);
+}
+
+.sanitary-data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.sanitary-data-table td > strong,
+.sanitary-table-identity strong {
+  color: #f8fbff;
+  font-weight: 700;
+}
+
+.sanitary-table-identity {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 11px;
+  align-items: center;
+  min-width: 230px;
+}
+
+.sanitary-table-identity small {
+  display: block;
+  max-width: 260px;
+  margin-top: 3px;
+  overflow: hidden;
+  color: #8ea0bb;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sanitary-table-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #9fe870;
+  border: 1px solid rgba(159, 232, 112, 0.16);
+  background: rgba(159, 232, 112, 0.08);
+  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);
+}
+
+.sanitary-table-icon--blue {
+  color: #6ea8ff;
+  border-color: rgba(110, 168, 255, 0.2);
+  background: rgba(110, 168, 255, 0.1);
+  box-shadow: 0 0 18px rgba(110, 168, 255, 0.08);
+}
+
+.sanitary-table-icon--warning {
+  color: #ffb84d;
+  border-color: rgba(255, 184, 77, 0.22);
+  background: rgba(255, 184, 77, 0.1);
+  box-shadow: 0 0 18px rgba(255, 184, 77, 0.08);
+}
+
+.sanitary-table-icon svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.severity-pill {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(110, 168, 255, 0.18);
+  background: rgba(110, 168, 255, 0.1);
+  color: #b8cff5;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.severity-pill--high {
+  border-color: rgba(255, 184, 77, 0.24);
+  background: rgba(255, 184, 77, 0.12);
+  color: #ffe1a8;
+}
+
+.severity-pill--critical {
+  border-color: rgba(255, 107, 107, 0.24);
+  background: rgba(255, 107, 107, 0.12);
+  color: #ffd0d0;
+}
+
 .sanitary-record-card {
   min-height: 390px;
   display: flex;

@@ -44,7 +44,7 @@ const sections: DrawerSection[] = [
     items: [
       { label: 'Lotes', route: '/(tabs)/lotes', Icon: Map },
       { label: 'Ciclo agricola', route: '/agricola/nueva-siembra', Icon: Sprout },
-      { label: 'Clima', Icon: CloudSun },
+      { label: 'Clima', route: '/clima', Icon: CloudSun },
     ],
   },
   {

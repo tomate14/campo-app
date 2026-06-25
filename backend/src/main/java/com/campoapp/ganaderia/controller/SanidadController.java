@@ -5,6 +5,7 @@ import com.campoapp.ganaderia.dto.*;
 import com.campoapp.ganaderia.service.SanidadService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,19 @@ public class SanidadController {
         return ResponseEntity.ok(ApiResponse.ok(sanidadService.listAplicaciones(animalId, vacunaId, desde, hasta)));
     }
 
+    @GetMapping("/aplicaciones/page")
+    @PreAuthorize("hasAuthority('read:animales')")
+    public ResponseEntity<ApiResponse<Page<AplicacionVacunaResponse>>> listAplicacionesPaginadas(
+            @RequestParam(required = false) String animalId,
+            @RequestParam(required = false) String vacunaId,
+            @RequestParam(required = false) LocalDate desde,
+            @RequestParam(required = false) LocalDate hasta,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(sanidadService.listAplicacionesPaginadas(animalId, vacunaId, desde, hasta, page, size)));
+    }
+
     @PostMapping("/aplicaciones")
     @PreAuthorize("hasAuthority('update:animales')")
     public ResponseEntity<ApiResponse<AplicacionVacunaResponse>> createAplicacion(@Valid @RequestBody AplicacionVacunaRequest request) {
@@ -66,6 +80,18 @@ public class SanidadController {
         return ResponseEntity.ok(ApiResponse.ok(sanidadService.listTratamientos(animalId, desde, hasta)));
     }
 
+    @GetMapping("/tratamientos/page")
+    @PreAuthorize("hasAuthority('read:animales')")
+    public ResponseEntity<ApiResponse<Page<TratamientoMedicamentoResponse>>> listTratamientosPaginados(
+            @RequestParam(required = false) String animalId,
+            @RequestParam(required = false) LocalDate desde,
+            @RequestParam(required = false) LocalDate hasta,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(sanidadService.listTratamientosPaginados(animalId, desde, hasta, page, size)));
+    }
+
     @PostMapping("/tratamientos")
     @PreAuthorize("hasAuthority('update:animales')")
     public ResponseEntity<ApiResponse<TratamientoMedicamentoResponse>> createTratamiento(@Valid @RequestBody TratamientoMedicamentoRequest request) {
@@ -79,6 +105,17 @@ public class SanidadController {
             @RequestParam(required = false) String estado
     ) {
         return ResponseEntity.ok(ApiResponse.ok(sanidadService.listDiagnosticos(animalId, estado)));
+    }
+
+    @GetMapping("/diagnosticos/page")
+    @PreAuthorize("hasAuthority('read:animales')")
+    public ResponseEntity<ApiResponse<Page<DiagnosticoSanitarioResponse>>> listDiagnosticosPaginados(
+            @RequestParam(required = false) String animalId,
+            @RequestParam(required = false) String estado,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(sanidadService.listDiagnosticosPaginados(animalId, estado, page, size)));
     }
 
     @PostMapping("/diagnosticos")

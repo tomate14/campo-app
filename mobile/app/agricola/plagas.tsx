@@ -176,7 +176,7 @@ export default function PlagasMobilePage() {
     if (selectedHistoryLoteId) {
       loadHistory(selectedHistoryLoteId)
     }
-  }, [mode, historyScope, selectedDetectionId, selectedHistoryLoteId])
+  }, [mode, historyScope, selectedDetectionId, selectedHistoryLoteId, detecciones, aplicaciones, seguimientos])
 
   async function loadInitialData() {
     try {

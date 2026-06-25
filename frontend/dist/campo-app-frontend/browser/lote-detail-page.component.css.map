@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/pages/lote-detail-page/lote-detail-page.component.css"],
+  "sourcesContent": [".page { display: flex; flex-direction: column; gap: 18px; }\n.page-head h2 { margin: 12px 0 0; font-size: 32px; }\n.page-head p { margin: 6px 0 0; color: var(--muted); }\n.map-card { padding: 0; height: min(72vh, 680px); overflow: hidden; }\np { margin: 0; color: var(--muted); }\n"],
+  "mappings": ";AAAA,CAAC;AAAO,WAAS;AAAM,kBAAgB;AAAQ,OAAK;AAAM;AAC1D,CAAC,UAAU;AAAK,UAAQ,KAAK,EAAE;AAAG,aAAW;AAAM;AACnD,CADC,UACU;AAAI,UAAQ,IAAI,EAAE;AAAG,SAAO,IAAI;AAAU;AACrD,CAAC;AAAW,WAAS;AAAG,UAAQ,IAAI,IAAI,EAAE;AAAQ,YAAU;AAAQ;AACpE;AAAI,UAAQ;AAAG,SAAO,IAAI;AAAU;",
+  "names": []
+}

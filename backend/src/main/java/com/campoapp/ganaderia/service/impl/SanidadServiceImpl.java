@@ -7,6 +7,8 @@ import com.campoapp.ganaderia.entity.*;
 import com.campoapp.ganaderia.repository.*;
 import com.campoapp.ganaderia.service.SanidadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,6 +78,13 @@ public class SanidadServiceImpl implements SanidadService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<AplicacionVacunaResponse> listAplicacionesPaginadas(String animalId, String vacunaId, LocalDate desde, LocalDate hasta, int page, int size) {
+        return aplicacionVacunaRepository.findFilteredPage(blankToNull(animalId), blankToNull(vacunaId), desde, hasta, pageRequest(page, size))
+                .map(this::toAplicacionResponse);
+    }
+
+    @Override
     public AplicacionVacunaResponse registrarAplicacion(AplicacionVacunaRequest request) {
         Animal animal = getAnimal(request.animalId());
         VacunaCatalogo vacuna = getVacuna(request.vacunaId());
@@ -109,6 +118,13 @@ public class SanidadServiceImpl implements SanidadService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<TratamientoMedicamentoResponse> listTratamientosPaginados(String animalId, LocalDate desde, LocalDate hasta, int page, int size) {
+        return tratamientoMedicamentoRepository.findFilteredPage(blankToNull(animalId), desde, hasta, pageRequest(page, size))
+                .map(this::toTratamientoResponse);
+    }
+
+    @Override
     public TratamientoMedicamentoResponse registrarTratamiento(TratamientoMedicamentoRequest request) {
         Animal animal = getAnimal(request.animalId());
         TratamientoMedicamento tratamiento = TratamientoMedicamento.builder()
@@ -133,6 +149,13 @@ public class SanidadServiceImpl implements SanidadService {
                 .stream()
                 .map(this::toDiagnosticoResponse)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<DiagnosticoSanitarioResponse> listDiagnosticosPaginados(String animalId, String estado, int page, int size) {
+        return diagnosticoSanitarioRepository.findFilteredPage(blankToNull(animalId), blankToNull(estado), pageRequest(page, size))
+                .map(this::toDiagnosticoResponse);
     }
 
     @Override
@@ -315,6 +338,12 @@ public class SanidadServiceImpl implements SanidadService {
 
     private String blankToNull(String value) {
         return value == null || value.isBlank() ? null : value;
+    }
+
+    private PageRequest pageRequest(int page, int size) {
+        int normalizedPage = Math.max(page, 0);
+        int normalizedSize = Math.min(Math.max(size, 1), 100);
+        return PageRequest.of(normalizedPage, normalizedSize);
     }
 
     private VacunaCatalogoResponse toVacunaResponse(VacunaCatalogo vacuna) {

@@ -38,6 +38,18 @@ export interface AnimalRequest {
   observaciones?: string
 }
 
+export interface PageResponse<T> {
+  content: T[]
+  totalElements: number
+  totalPages: number
+  size: number
+  number: number
+  numberOfElements: number
+  first: boolean
+  last: boolean
+  empty: boolean
+}
+
 export type PotreroTipoUso = 'PASTOREO' | 'RESERVA' | 'RECRIA' | 'MATERNIDAD' | 'ENCIERRE' | 'OTRO'
 export type PotreroEstado = 'ACTIVO' | 'INACTIVO' | 'DESCANSO' | 'MANTENIMIENTO'
 

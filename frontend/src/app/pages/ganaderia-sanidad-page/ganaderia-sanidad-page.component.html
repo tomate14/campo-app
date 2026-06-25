@@ -58,7 +58,7 @@
       </label>
     </div>
     <div class="card-actions">
-      <button class="btn-primary" type="button" (click)="refreshTables()">Aplicar filtros</button>
+      <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>
       <button class="btn-secondary" type="button" (click)="openTratamientoModal()">Nuevo tratamiento</button>
       <button class="btn-secondary" type="button" (click)="openDiagnosticoModal()">Nuevo diagnostico</button>
     </div>
@@ -241,48 +241,109 @@
       </div>
 
       <ng-container *ngIf="!registrosCollapsed(); else registrosCollapsedState">
-      <div class="sanitary-card-grid" *ngIf="activeTab() === 'APLICACIONES'">
-        <article class="sanitary-record-card" *ngFor="let aplicacion of paginatedAplicaciones()">
-          <div class="sanitary-record-card__top"><div><h4>{{ aplicacion.vacunaNombre }}</h4><p>Aplicada por: {{ aplicacion.operario || 'Sin operario' }}</p></div><span class="catalog-badge" [class.catalog-badge--secondary]="!aplicacion.vacunaObligatoria">{{ aplicacion.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }}</span></div>
-          <div class="sanitary-record-card__metrics">
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Fecha aplicación</span><strong>{{ aplicacion.fechaAplicacion }}</strong></div>
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg><span>Dosis aplicada</span><strong>{{ aplicacion.observaciones || 'Según vacuna' }}</strong></div>
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M4 7v10M7 7v10M10 7v10M14 7v10M17 7v10M20 7v10" /></svg><span>Lote / Serie</span><strong>{{ aplicacion.loteMarca || 'Sin lote' }}</strong></div>
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg><span>Vencimiento</span><strong>{{ aplicacion.proximaDosisFecha || 'Sin fecha' }}</strong></div>
-          </div>
-          <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>
-        </article>
-        <div class="empty-box premium-empty-box" *ngIf="!aplicaciones().length">Sin aplicaciones con este filtro.</div>
-      </div>
+        <div class="sanitary-table-wrap" *ngIf="activeTab() === 'APLICACIONES'">
+          <table class="sanitary-data-table" *ngIf="aplicaciones().length; else noAplicaciones">
+            <thead>
+              <tr>
+                <th>Vacuna</th>
+                <th>Animal</th>
+                <th>Fecha</th>
+                <th>Proxima dosis</th>
+                <th>Responsable</th>
+                <th>Lote / Serie</th>
+                <th>Costo</th>
+                <th>Tipo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let aplicacion of aplicaciones()">
+                <td>
+                  <div class="sanitary-table-identity">
+                    <span class="sanitary-table-icon sanitary-table-icon--green"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></span>
+                    <div><strong>{{ aplicacion.vacunaNombre }}</strong><small>{{ aplicacion.observaciones || 'Sin observaciones' }}</small></div>
+                  </div>
+                </td>
+                <td><strong>{{ aplicacion.animalCaravana }}</strong></td>
+                <td>{{ aplicacion.fechaAplicacion }}</td>
+                <td>{{ aplicacion.proximaDosisFecha || 'Sin fecha' }}</td>
+                <td>{{ aplicacion.operario || 'Sin responsable' }}</td>
+                <td>{{ aplicacion.loteMarca || 'Sin lote' }}</td>
+                <td>${{ aplicacion.costoAplicado ?? 0 }}</td>
+                <td><span class="catalog-badge" [class.catalog-badge--secondary]="!aplicacion.vacunaObligatoria">{{ aplicacion.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <div class="sanitary-card-grid" *ngIf="activeTab() === 'TRATAMIENTOS'">
-        <article class="sanitary-record-card" *ngFor="let tratamiento of paginatedTratamientos()">
-          <div class="sanitary-record-card__top"><div><h4>{{ tratamiento.medicamento }}</h4><p>Animal: {{ tratamiento.animalCaravana }}</p></div><span class="catalog-badge catalog-badge--secondary">{{ tratamiento.responsable || 'Sin responsable' }}</span></div>
-          <div class="sanitary-record-card__metrics">
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Fecha inicio</span><strong>{{ tratamiento.fechaInicio }}</strong></div>
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg><span>Dosis</span><strong>{{ tratamiento.dosis || 'Sin dosis' }}</strong></div>
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /></svg><span>Motivo</span><strong>{{ tratamiento.motivo || 'Sin motivo' }}</strong></div>
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5v14" /></svg><span>Costo</span><strong>${{ tratamiento.costo ?? 0 }}</strong></div>
-          </div>
-          <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>
-        </article>
-        <div class="empty-box premium-empty-box" *ngIf="!tratamientos().length">Sin tratamientos registrados.</div>
-      </div>
+        <div class="sanitary-table-wrap" *ngIf="activeTab() === 'TRATAMIENTOS'">
+          <table class="sanitary-data-table" *ngIf="tratamientos().length; else noTratamientos">
+            <thead>
+              <tr>
+                <th>Medicamento</th>
+                <th>Animal</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Dosis</th>
+                <th>Via</th>
+                <th>Responsable</th>
+                <th>Costo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let tratamiento of tratamientos()">
+                <td>
+                  <div class="sanitary-table-identity">
+                    <span class="sanitary-table-icon sanitary-table-icon--blue"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg></span>
+                    <div><strong>{{ tratamiento.medicamento }}</strong><small>{{ tratamiento.motivo || 'Sin motivo' }}</small></div>
+                  </div>
+                </td>
+                <td><strong>{{ tratamiento.animalCaravana }}</strong></td>
+                <td>{{ tratamiento.fechaInicio }}</td>
+                <td>{{ tratamiento.fechaFin || 'Activo' }}</td>
+                <td>{{ tratamiento.dosis || 'Sin dosis' }}</td>
+                <td>{{ tratamiento.viaAplicacion || 'Sin via' }}</td>
+                <td>{{ tratamiento.responsable || 'Sin responsable' }}</td>
+                <td>${{ tratamiento.costo ?? 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <div class="sanitary-card-grid" *ngIf="activeTab() === 'DIAGNOSTICOS'">
-        <article class="sanitary-record-card" *ngFor="let diagnostico of paginatedDiagnosticos()">
-          <div class="sanitary-record-card__top"><div><h4>{{ diagnostico.enfermedad }}</h4><p>{{ diagnostico.animalCaravana }} · {{ diagnostico.veterinario || 'Sin veterinario' }}</p></div><span class="catalog-badge" [class.state-chip--danger]="diagnostico.estado === 'ABIERTO' && diagnostico.severidad === 'CRITICA'">{{ diagnostico.estado }}</span></div>
-          <div class="sanitary-record-card__metrics">
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Fecha diagnóstico</span><strong>{{ diagnostico.fechaDiagnostico }}</strong></div>
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 3 3.5 18h17L12 3Z" /><path d="M12 9v4m0 3h.01" /></svg><span>Severidad</span><strong>{{ diagnostico.severidad }}</strong></div>
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg><span>Tratamiento</span><strong>{{ diagnostico.tratamientoIndicado || 'Sin indicar' }}</strong></div>
-            <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11Z" /><circle cx="12" cy="10" r="2" /></svg><span>Animal</span><strong>{{ diagnostico.animalCaravana }}</strong></div>
-          </div>
-          <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>
-        </article>
-        <div class="empty-box premium-empty-box" *ngIf="!diagnosticos().length">Sin diagnósticos registrados.</div>
-      </div>
+        <div class="sanitary-table-wrap" *ngIf="activeTab() === 'DIAGNOSTICOS'">
+          <table class="sanitary-data-table" *ngIf="diagnosticos().length; else noDiagnosticos">
+            <thead>
+              <tr>
+                <th>Diagnostico</th>
+                <th>Animal</th>
+                <th>Fecha</th>
+                <th>Severidad</th>
+                <th>Estado</th>
+                <th>Veterinario</th>
+                <th>Tratamiento indicado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let diagnostico of diagnosticos()">
+                <td>
+                  <div class="sanitary-table-identity">
+                    <span class="sanitary-table-icon sanitary-table-icon--warning"><svg viewBox="0 0 24 24"><path d="M12 4v7" /><path d="M8 8c0 2 1.8 4 4 4s4-2 4-4" /><path d="M7 14c0 3 2 6 5 6s5-3 5-6" /></svg></span>
+                    <div><strong>{{ diagnostico.enfermedad }}</strong><small>{{ diagnostico.observaciones || 'Sin observaciones' }}</small></div>
+                  </div>
+                </td>
+                <td><strong>{{ diagnostico.animalCaravana }}</strong></td>
+                <td>{{ diagnostico.fechaDiagnostico }}</td>
+                <td><span class="severity-pill" [class.severity-pill--critical]="diagnostico.severidad === 'CRITICA'" [class.severity-pill--high]="diagnostico.severidad === 'ALTA'">{{ diagnostico.severidad }}</span></td>
+                <td><span class="catalog-badge" [class.state-chip--danger]="diagnostico.estado === 'ABIERTO' && diagnostico.severidad === 'CRITICA'">{{ diagnostico.estado }}</span></td>
+                <td>{{ diagnostico.veterinario || 'Sin veterinario' }}</td>
+                <td>{{ diagnostico.tratamientoIndicado || 'Sin indicar' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
+        <ng-template #noAplicaciones><div class="empty-box premium-empty-box">Sin aplicaciones con este filtro.</div></ng-template>
+        <ng-template #noTratamientos><div class="empty-box premium-empty-box">Sin tratamientos registrados.</div></ng-template>
+        <ng-template #noDiagnosticos><div class="empty-box premium-empty-box">Sin diagnosticos registrados.</div></ng-template>
       <div class="sanitary-tabs-footer"><div class="sanitary-footer-date"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Última actualización: 21/05/2026 19:45</span></div></div>
       </ng-container>
 

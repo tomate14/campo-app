@@ -1,321 +1,486 @@
-import React from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
-  View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, ActivityIndicator, useColorScheme,
-  RefreshControl, Image,
+  ActivityIndicator,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { Colors } from '../../constants/colors'
 import {
-  useClimaActual, usePronostico, useHistoricoClima, useAlertasClima,
-  useRecomendaciones, useMarcarAlertaLeida, useSincronizarClima,
+  ArrowLeft,
+  ChevronDown,
+  ChevronRight,
+  Cloud,
+  CloudRain,
+  CloudSun,
+  CloudLightning,
+  Droplets,
+  Gauge,
+  RefreshCw,
+  Sprout,
+  Sun,
+  Wind,
+  type LucideIcon,
+} from 'lucide-react-native'
+import {
+  useClimaActual,
+  usePronostico,
+  useRecomendaciones,
+  useSincronizarClima,
 } from '../../shared/hooks/useClima'
-import type { SeveridadAlerta, TipoAlerta } from '../../shared/types/clima'
+import { useLotes } from '../../shared/hooks/useLotes'
+import type { Lote } from '../../shared/types/agricola'
+import type { Pronostico } from '../../shared/types/clima'
 
-const OWM_ICON = (code: string) => `https://openweathermap.org/img/wn/${code}@2x.png`
-
-const SEVERIDAD_BG: Record<SeveridadAlerta, string> = {
-  BAJA:    '#EFF6FF',
-  MEDIA:   '#FEFCE8',
-  ALTA:    '#FFF7ED',
-  CRITICA: '#FEF2F2',
-}
-const SEVERIDAD_BORDER: Record<SeveridadAlerta, string> = {
-  BAJA:    '#BFDBFE',
-  MEDIA:   '#FDE68A',
-  ALTA:    '#FED7AA',
-  CRITICA: '#FECACA',
-}
-
-const TIPO_LABEL: Record<TipoAlerta, string> = {
-  HELADA:          '🧊 Helada',
-  LLUVIA_EXCESIVA: '🌧 Lluvia excesiva',
-  SEQUIA:          '☀️ Sequía',
-  VIENTO_FUERTE:   '💨 Viento fuerte',
-  GRANIZO:         '⛈ Granizo',
-  TORMENTA:        '⚡ Tormenta',
-}
-
-const PRIORIDAD_COLOR: Record<string, string> = {
-  BAJA: '#4ADE80',
-  MEDIA: '#FACC15',
-  ALTA: '#F87171',
+const COLORS = {
+  bg: '#081225',
+  card: '#0B1730',
+  green: '#9FE870',
+  blue: '#6EA8FF',
+  orange: '#FFB84D',
+  white: '#FFFFFF',
+  muted: '#A6B0CF',
+  border: 'rgba(255,255,255,.08)',
 }
 
 export default function ClimaLoteScreen() {
   const { loteId, loteNombre } = useLocalSearchParams<{ loteId: string; loteNombre?: string }>()
+  return <ClimaContent initialLoteId={loteId} initialLoteNombre={loteNombre} />
+}
+
+export function ClimaContent({
+  initialLoteId,
+  initialLoteNombre,
+  showLotePicker = false,
+}: {
+  initialLoteId?: string
+  initialLoteNombre?: string
+  showLotePicker?: boolean
+}) {
   const router = useRouter()
-  const scheme = useColorScheme() ?? 'light'
-  const c = Colors[scheme]
+  const { data: lotes = [], isLoading: loadingLotes } = useLotes()
+  const [selectedLoteId, setSelectedLoteId] = useState(initialLoteId ?? '')
 
-  const { data: actual, isLoading, refetch } = useClimaActual(loteId)
-  const { data: pronostico = [] } = usePronostico(loteId)
-  const { data: historico = [] } = useHistoricoClima(loteId, 7)
-  const { data: alertas = [] } = useAlertasClima(loteId)
-  const { data: recomendaciones } = useRecomendaciones(loteId)
-  const marcarLeida = useMarcarAlertaLeida(loteId)
-  const sincronizar = useSincronizarClima(loteId)
+  useEffect(() => {
+    if (initialLoteId) {
+      setSelectedLoteId(initialLoteId)
+      return
+    }
+    if (!selectedLoteId && lotes[0]) {
+      setSelectedLoteId(lotes[0].id)
+    }
+  }, [initialLoteId, lotes, selectedLoteId])
 
-  const vientoDir = (deg?: number) => {
-    if (deg == null) return ''
-    const dirs = ['N','NE','E','SE','S','SO','O','NO']
-    return dirs[Math.round(deg / 45) % 8]
+  const selectedLote = lotes.find(lote => lote.id === selectedLoteId)
+  const selectedLoteName = selectedLote?.nombre ?? initialLoteNombre
+  const { data: actual, isLoading, refetch: refetchActual } = useClimaActual(selectedLoteId)
+  const { data: pronostico = [], refetch: refetchPronostico } = usePronostico(selectedLoteId)
+  const { data: recomendaciones, refetch: refetchRecomendaciones } = useRecomendaciones(selectedLoteId)
+  const sincronizar = useSincronizarClima(selectedLoteId)
+
+  const forecast = useMemo(() => pronostico.slice(0, 7), [pronostico])
+  const today = forecast[0]
+  const WeatherMainIcon = weatherIconFor(actual?.condicionCodigo ?? today?.condicionCodigo, actual?.descripcion ?? today?.descripcion)
+  const recommendation = recomendaciones?.recomendaciones?.[0]
+
+  const onRefresh = async () => {
+    await Promise.all([refetchActual(), refetchPronostico(), refetchRecomendaciones()])
   }
 
-  const s = StyleSheet.create({
-    container: { flex: 1, backgroundColor: c.background },
-    header: {
-      flexDirection: 'row', alignItems: 'center', gap: 12,
-      paddingHorizontal: 16, paddingTop: 56, paddingBottom: 16,
-      backgroundColor: c.card, borderBottomWidth: 1, borderBottomColor: c.border,
-    },
-    backBtn: {
-      width: 36, height: 36, borderRadius: 10,
-      backgroundColor: c.background, alignItems: 'center', justifyContent: 'center',
-    },
-    backText: { fontSize: 18, color: c.foreground },
-    headerText: { flex: 1 },
-    title: { fontSize: 18, fontWeight: '700', color: c.foreground },
-    subtitle: { fontSize: 13, color: c.muted },
-    syncBtn: {
-      backgroundColor: c.primary, borderRadius: 10,
-      paddingHorizontal: 12, paddingVertical: 8,
-    },
-    syncText: { color: c.primaryForeground, fontSize: 13, fontWeight: '600' },
-    content: { padding: 16, gap: 16 },
-    section: { gap: 10 },
-    sectionTitle: { fontSize: 16, fontWeight: '700', color: c.foreground },
-    currentCard: {
-      backgroundColor: c.card, borderRadius: 16,
-      borderWidth: 1, borderColor: c.cardBorder, padding: 16,
-    },
-    tempRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-    tempText: { fontSize: 52, fontWeight: '800', color: c.foreground },
-    descText: { fontSize: 15, color: c.mutedForeground, textTransform: 'capitalize', marginTop: 2 },
-    localText: { fontSize: 12, color: c.muted, marginTop: 2 },
-    metricsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 12 },
-    metric: { flex: 1, minWidth: '30%', backgroundColor: c.background, borderRadius: 10, padding: 8 },
-    metricLabel: { fontSize: 11, color: c.muted },
-    metricValue: { fontSize: 13, fontWeight: '700', color: c.foreground, marginTop: 2 },
-    tsText: { fontSize: 11, color: c.muted, marginTop: 8 },
-    forecastScroll: { flexDirection: 'row', gap: 10, paddingBottom: 4 },
-    forecastCard: {
-      width: 90, backgroundColor: c.card, borderRadius: 12,
-      borderWidth: 1, borderColor: c.cardBorder,
-      padding: 10, alignItems: 'center',
-    },
-    historyCard: {
-      width: 120, backgroundColor: c.card, borderRadius: 12,
-      borderWidth: 1, borderColor: c.cardBorder,
-      padding: 10,
-    },
-    forecastDate: { fontSize: 11, color: c.muted, textAlign: 'center' },
-    forecastTempMax: { fontSize: 15, fontWeight: '700', color: c.foreground },
-    forecastTempMin: { fontSize: 13, color: c.muted },
-    forecastPop: { fontSize: 11, color: c.primary, marginTop: 2 },
-    alertCard: {
-      borderRadius: 12, borderWidth: 1, padding: 12,
-    },
-    alertTipo: { fontSize: 12, fontWeight: '700' },
-    alertMsg: { fontSize: 12, marginTop: 4, color: c.foreground },
-    alertLeerBtn: { alignSelf: 'flex-end', marginTop: 6 },
-    alertLeerText: { fontSize: 12, color: c.primary, textDecorationLine: 'underline' },
-    recCard: {
-      backgroundColor: c.card, borderRadius: 12,
-      borderWidth: 1, borderColor: c.cardBorder, padding: 12,
-    },
-    recHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-    recDot: { width: 8, height: 8, borderRadius: 4 },
-    recCat: { fontSize: 11, fontWeight: '700', color: c.muted, textTransform: 'uppercase' },
-    recMsg: { fontSize: 13, color: c.foreground, marginTop: 4 },
-    emptyBox: {
-      borderRadius: 12, borderWidth: 1, borderColor: c.border,
-      borderStyle: 'dashed', padding: 20, alignItems: 'center',
-    },
-    emptyText: { fontSize: 14, color: c.muted },
-    center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  })
-
   return (
-    <View style={s.container}>
-      <View style={s.header}>
-        <TouchableOpacity style={s.backBtn} onPress={() => router.back()} activeOpacity={0.7}>
-          <Text style={s.backText}>←</Text>
-        </TouchableOpacity>
-        <View style={s.headerText}>
-          <Text style={s.title}>Clima</Text>
-          {loteNombre && <Text style={s.subtitle}>{loteNombre}</Text>}
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.header}>
+        <Pressable style={styles.backButton} onPress={() => router.back()}>
+          <ArrowLeft size={22} color={COLORS.green} strokeWidth={2.2} />
+        </Pressable>
+        <View style={styles.headerCopy}>
+          <Text style={styles.headerTitle}>Clima</Text>
+          <View style={styles.farmRow}>
+            <Text style={styles.headerSubtitle}>Establecimiento Santa Clara</Text>
+            <ChevronDown size={14} color={COLORS.green} strokeWidth={2} />
+          </View>
+          {selectedLoteName ? <Text style={styles.loteLabel}>{selectedLoteName}</Text> : null}
         </View>
-        <TouchableOpacity
-          style={s.syncBtn}
+        <Pressable
+          style={[styles.refreshButton, sincronizar.isPending && styles.refreshButtonLoading]}
           onPress={() => sincronizar.mutate()}
           disabled={sincronizar.isPending}
-          activeOpacity={0.85}
         >
-          <Text style={s.syncText}>{sincronizar.isPending ? '...' : '↻ Sync'}</Text>
-        </TouchableOpacity>
+          <RefreshCw size={20} color={COLORS.white} strokeWidth={2.2} />
+        </Pressable>
       </View>
 
-      {isLoading ? (
-        <View style={s.center}>
-          <ActivityIndicator color={c.primary} size="large" />
+      {showLotePicker && (
+        <LotePicker lotes={lotes} selectedLoteId={selectedLoteId} onSelect={setSelectedLoteId} />
+      )}
+
+      {isLoading || loadingLotes ? (
+        <View style={styles.loading}>
+          <ActivityIndicator color={COLORS.green} />
+          <Text style={styles.loadingText}>Cargando clima del lote...</Text>
         </View>
       ) : (
         <ScrollView
-          contentContainerStyle={s.content}
-          refreshControl={<RefreshControl refreshing={false} onRefresh={refetch} tintColor={c.primary} />}
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} tintColor={COLORS.green} />}
         >
-          {/* Condición actual */}
-          <View style={s.section}>
-            <Text style={s.sectionTitle}>Condición actual</Text>
-            {!actual ? (
-              <View style={s.emptyBox}>
-                <Text style={s.emptyText}>Sin datos — sincronizá primero</Text>
+          <View style={styles.heroCard}>
+            <View style={styles.heroLeft}>
+              <View style={styles.weatherIconShell}>
+                <WeatherMainIcon size={58} color={COLORS.green} strokeWidth={1.9} />
               </View>
-            ) : (
-              <View style={s.currentCard}>
-                <View style={s.tempRow}>
-                  {actual.iconoCodigo && (
-                    <Image source={{ uri: OWM_ICON(actual.iconoCodigo) }} style={{ width: 64, height: 64 }} />
-                  )}
-                  <View>
-                    <Text style={s.tempText}>
-                      {actual.temperatura != null ? `${actual.temperatura}°` : '—'}
-                    </Text>
-                    <Text style={s.descText}>{actual.descripcion ?? '—'}</Text>
-                    {actual.nombreLocalidad && <Text style={s.localText}>{actual.nombreLocalidad}</Text>}
-                  </View>
-                </View>
-                <View style={s.metricsGrid}>
-                  {actual.sensacionTermica != null && (
-                    <View style={s.metric}>
-                      <Text style={s.metricLabel}>Sensación</Text>
-                      <Text style={s.metricValue}>{actual.sensacionTermica}°C</Text>
-                    </View>
-                  )}
-                  {actual.humedadPct != null && (
-                    <View style={s.metric}>
-                      <Text style={s.metricLabel}>Humedad</Text>
-                      <Text style={s.metricValue}>{actual.humedadPct}%</Text>
-                    </View>
-                  )}
-                  {actual.velocidadViento != null && (
-                    <View style={s.metric}>
-                      <Text style={s.metricLabel}>Viento</Text>
-                      <Text style={s.metricValue}>{actual.velocidadViento} m/s {vientoDir(actual.direccionViento)}</Text>
-                    </View>
-                  )}
-                  {actual.presionHpa != null && (
-                    <View style={s.metric}>
-                      <Text style={s.metricLabel}>Presión</Text>
-                      <Text style={s.metricValue}>{actual.presionHpa} hPa</Text>
-                    </View>
-                  )}
-                  {actual.tempMin != null && (
-                    <View style={s.metric}>
-                      <Text style={s.metricLabel}>Mín / Máx</Text>
-                      <Text style={s.metricValue}>{actual.tempMin}° / {actual.tempMax}°</Text>
-                    </View>
-                  )}
-                </View>
-                <Text style={s.tsText}>
-                  Actualizado: {new Date(actual.timestampUtc + 'Z').toLocaleString('es-AR')}
-                </Text>
+              <Text style={styles.currentTemp}>{formatTemp(actual?.temperatura)}</Text>
+              <Text style={styles.description}>{actual?.descripcion ?? today?.descripcion ?? 'Sin datos actuales'}</Text>
+              <View style={styles.tempRange}>
+                <Text style={styles.maxTemp}>Max {formatTemp(actual?.tempMax ?? today?.tempMax)}</Text>
+                <Text style={styles.minTemp}>Min {formatTemp(actual?.tempMin ?? today?.tempMin)}</Text>
               </View>
-            )}
+            </View>
+
+            <View style={styles.heroRight}>
+              <Metric icon={Droplets} label="Humedad" value={formatPercent(actual?.humedadPct ?? today?.humedadPct)} color={COLORS.blue} />
+              <Metric icon={Wind} label="Viento" value={`${formatWind(actual?.velocidadViento ?? today?.velocidadViento)} ${windDir(actual?.direccionViento ?? today?.direccionVientoDominante)}`} color={COLORS.green} />
+              <Metric icon={CloudRain} label="Prob. lluvia" value={formatPercent(today?.probabilidadLluvia)} color={COLORS.blue} />
+              <Metric icon={Gauge} label="Presión" value={actual?.presionHpa != null ? `${Math.round(Number(actual.presionHpa))} hPa` : '-'} color={COLORS.orange} />
+            </View>
           </View>
 
-          {/* Pronóstico */}
-          {pronostico.length > 0 && (
-            <View style={s.section}>
-              <Text style={s.sectionTitle}>Pronóstico</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.forecastScroll}>
-                {pronostico.map(p => (
-                  <View key={p.id} style={s.forecastCard}>
-                    <Text style={s.forecastDate}>
-                      {new Date(p.fecha).toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric' })}
-                    </Text>
-                    {p.iconoCodigo && (
-                      <Image source={{ uri: OWM_ICON(p.iconoCodigo) }} style={{ width: 40, height: 40 }} />
-                    )}
-                    <Text style={s.forecastTempMax}>{p.tempMax != null ? `${p.tempMax}°` : '—'}</Text>
-                    <Text style={s.forecastTempMin}>{p.tempMin != null ? `${p.tempMin}°` : '—'}</Text>
-                    {p.probabilidadLluvia != null && p.probabilidadLluvia > 0 && (
-                      <Text style={s.forecastPop}>{Math.round(p.probabilidadLluvia)}%</Text>
-                    )}
-                  </View>
-                ))}
-              </ScrollView>
-            </View>
-          )}
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Próximos 7 días</Text>
+          </View>
 
-          {historico.length > 0 && (
-            <View style={s.section}>
-              <Text style={s.sectionTitle}>Historico reciente</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.forecastScroll}>
-                {historico.map(h => (
-                  <View key={h.id} style={s.historyCard}>
-                    <Text style={s.forecastDate}>
-                      {new Date(h.timestampUtc + 'Z').toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })}
-                    </Text>
-                    <Text style={s.forecastTempMax}>{h.temperatura != null ? `${h.temperatura}°` : '—'}</Text>
-                    <Text style={s.forecastTempMin}>{h.humedadPct != null ? `${h.humedadPct}% hum.` : '—'}</Text>
-                    <Text style={s.forecastPop}>{h.descripcion ?? 'Sin descripcion'}</Text>
-                  </View>
-                ))}
-              </ScrollView>
-            </View>
-          )}
-
-          {/* Alertas */}
-          <View style={s.section}>
-            <Text style={s.sectionTitle}>
-              Alertas {alertas.length > 0 ? `(${alertas.length})` : ''}
-            </Text>
-            {alertas.length === 0 ? (
-              <View style={s.emptyBox}>
-                <Text style={s.emptyText}>Sin alertas activas</Text>
+          <View style={styles.forecastCard}>
+            {forecast.length === 0 ? (
+              <View style={styles.emptyBox}>
+                <Text style={styles.emptyTitle}>Sin pronóstico disponible</Text>
+                <Text style={styles.emptyText}>Actualizá el clima para consultar el pronóstico del lote.</Text>
               </View>
             ) : (
-              alertas.map(a => (
-                <View
-                  key={a.id}
-                  style={[s.alertCard, {
-                    backgroundColor: SEVERIDAD_BG[a.severidad],
-                    borderColor: SEVERIDAD_BORDER[a.severidad],
-                  }]}
-                >
-                  <Text style={s.alertTipo}>{TIPO_LABEL[a.tipoAlerta]}</Text>
-                  <Text style={s.alertMsg}>{a.mensaje}</Text>
-                  <TouchableOpacity
-                    style={s.alertLeerBtn}
-                    onPress={() => marcarLeida.mutate(a.id)}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={s.alertLeerText}>Marcar como leída</Text>
-                  </TouchableOpacity>
-                </View>
+              forecast.map((item, index) => (
+                <ForecastRow key={item.id ?? item.fecha} item={item} index={index} />
               ))
             )}
           </View>
 
-          {/* Recomendaciones */}
-          {recomendaciones && recomendaciones.recomendaciones.length > 0 && (
-            <View style={s.section}>
-              <Text style={s.sectionTitle}>Recomendaciones</Text>
-              {recomendaciones.recomendaciones.map((r, i) => (
-                <View key={i} style={s.recCard}>
-                  <View style={s.recHeader}>
-                    <View style={[s.recDot, { backgroundColor: PRIORIDAD_COLOR[r.prioridad] ?? c.muted }]} />
-                    <Text style={s.recCat}>{r.categoria}</Text>
-                  </View>
-                  <Text style={s.recMsg}>{r.mensaje}</Text>
-                </View>
-              ))}
+          <Pressable style={styles.recommendationCard}>
+            <View style={styles.recommendationIcon}>
+              <Sprout size={22} color={COLORS.green} strokeWidth={2.2} />
             </View>
-          )}
+            <View style={styles.recommendationCopy}>
+              <Text style={styles.recommendationTitle}>{recomendaciones?.condicionGeneral ?? 'Condiciones operativas'}</Text>
+              <Text style={styles.recommendationText}>
+                {recommendation?.mensaje ?? 'Sin recomendaciones climáticas activas para este lote.'}
+              </Text>
+            </View>
+            <ChevronRight size={20} color={COLORS.green} strokeWidth={2.2} />
+          </Pressable>
         </ScrollView>
       )}
+    </SafeAreaView>
+  )
+}
+
+function Metric({ icon: Icon, label, value, color }: { icon: LucideIcon; label: string; value: string; color: string }) {
+  return (
+    <View style={styles.metricRow}>
+      <View style={[styles.metricIcon, { borderColor: `${color}33`, backgroundColor: `${color}12` }]}>
+        <Icon size={18} color={color} strokeWidth={2} />
+      </View>
+      <View style={styles.metricCopy}>
+        <Text style={styles.metricLabel}>{label}</Text>
+        <Text style={styles.metricValue}>{value}</Text>
+      </View>
     </View>
   )
 }
+
+function LotePicker({ lotes, selectedLoteId, onSelect }: { lotes: Lote[]; selectedLoteId: string; onSelect: (id: string) => void }) {
+  if (!lotes.length) return null
+
+  return (
+    <View style={styles.lotePickerWrap}>
+      <Text style={styles.pickerLabel}>Lote</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.lotePicker}>
+        {lotes.map(lote => {
+          const active = lote.id === selectedLoteId
+          return (
+            <Pressable key={lote.id} style={[styles.loteChip, active && styles.loteChipActive]} onPress={() => onSelect(lote.id)}>
+              <Text style={[styles.loteChipText, active && styles.loteChipTextActive]}>{lote.nombre}</Text>
+              {lote.cultivo ? <Text style={styles.loteChipSub}>{lote.cultivo}</Text> : null}
+            </Pressable>
+          )
+        })}
+      </ScrollView>
+    </View>
+  )
+}
+
+function ForecastRow({ item, index }: { item: Pronostico; index: number }) {
+  const Icon = weatherIconFor(item.condicionCodigo, item.descripcion)
+  const date = parseDate(item.fecha)
+
+  return (
+    <View style={[styles.forecastRow, index === 0 && styles.forecastRowFirst]}>
+      <View style={styles.dayCell}>
+        <Text style={styles.dayName}>{index === 0 ? 'Hoy' : formatWeekday(date)}</Text>
+        <Text style={styles.dayDate}>{formatShortDate(date)}</Text>
+      </View>
+      <View style={styles.forecastIcon}>
+        <Icon size={26} color={COLORS.green} strokeWidth={1.9} />
+      </View>
+      <View style={styles.tempCell}>
+        <Text>
+          <Text style={styles.rowMax}>{formatTemp(item.tempMax)}</Text>
+          <Text style={styles.tempSlash}> / </Text>
+          <Text style={styles.rowMin}>{formatTemp(item.tempMin)}</Text>
+        </Text>
+      </View>
+      <View style={styles.rainCell}>
+        <Droplets size={14} color={COLORS.blue} strokeWidth={2} />
+        <Text style={styles.rainText}>{formatPercent(item.probabilidadLluvia)}</Text>
+      </View>
+      <View style={styles.windCell}>
+        <Wind size={14} color={COLORS.muted} strokeWidth={2} />
+        <Text style={styles.windText}>{formatWind(item.velocidadViento)}</Text>
+        <Text style={styles.windDir}>{windDir(item.direccionVientoDominante)}</Text>
+      </View>
+      <ChevronDown size={18} color={COLORS.muted} strokeWidth={2} />
+    </View>
+  )
+}
+
+function weatherIconFor(code?: number | null, description?: string | null): LucideIcon {
+  const normalized = `${description ?? ''}`.toLowerCase()
+  if (code != null) {
+    if ([0, 1].includes(code)) return Sun
+    if ([2, 3, 45, 48].includes(code)) return CloudSun
+    if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return CloudRain
+    if (code >= 95) return CloudLightning
+  }
+  if (normalized.includes('torment')) return CloudLightning
+  if (normalized.includes('lluv') || normalized.includes('rain')) return CloudRain
+  if (normalized.includes('nube') || normalized.includes('cloud')) return Cloud
+  return CloudSun
+}
+
+function formatTemp(value?: number | null) {
+  if (value == null) return '-'
+  return `${Math.round(Number(value))}°`
+}
+
+function formatPercent(value?: number | null) {
+  if (value == null) return '-'
+  return `${Math.round(Number(value))}%`
+}
+
+function formatWind(value?: number | null) {
+  if (value == null) return '-'
+  return `${Math.round(Number(value) * 3.6)} km/h`
+}
+
+function windDir(deg?: number | null) {
+  if (deg == null) return ''
+  const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO']
+  return dirs[Math.round(Number(deg) / 45) % 8]
+}
+
+function parseDate(value: string) {
+  const [year, month, day] = value.split('-').map(Number)
+  return new Date(year, (month ?? 1) - 1, day ?? 1)
+}
+
+function formatWeekday(date: Date) {
+  return date.toLocaleDateString('es-AR', { weekday: 'short' }).replace('.', '')
+}
+
+function formatShortDate(date: Date) {
+  return date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })
+}
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: COLORS.bg },
+  header: {
+    minHeight: 74,
+    paddingHorizontal: 18,
+    paddingTop: 8,
+    paddingBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  backButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(11,23,48,.78)',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  headerCopy: { flex: 1 },
+  headerTitle: { color: COLORS.white, fontSize: 24, lineHeight: 28, fontWeight: '900', letterSpacing: -0.4 },
+  farmRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 3 },
+  headerSubtitle: { color: COLORS.muted, fontSize: 13, lineHeight: 17 },
+  loteLabel: { color: COLORS.green, fontSize: 11, lineHeight: 15, marginTop: 2, fontWeight: '700' },
+  refreshButton: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(11,23,48,.82)',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    shadowColor: COLORS.green,
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
+  },
+  refreshButtonLoading: { opacity: 0.55 },
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 },
+  loadingText: { color: COLORS.muted, fontSize: 13 },
+  lotePickerWrap: { paddingHorizontal: 16, paddingBottom: 8, gap: 8 },
+  pickerLabel: { color: COLORS.muted, fontSize: 11, fontWeight: '800', letterSpacing: 0.8, textTransform: 'uppercase' },
+  lotePicker: { gap: 8, paddingRight: 16 },
+  loteChip: {
+    minHeight: 48,
+    minWidth: 118,
+    justifyContent: 'center',
+    borderRadius: 999,
+    paddingHorizontal: 15,
+    backgroundColor: COLORS.card,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  loteChipActive: {
+    backgroundColor: 'rgba(159,232,112,.12)',
+    borderColor: COLORS.green,
+  },
+  loteChipText: { color: COLORS.white, fontSize: 13, fontWeight: '800' },
+  loteChipTextActive: { color: COLORS.green },
+  loteChipSub: { color: COLORS.muted, fontSize: 10, marginTop: 2 },
+  content: { padding: 16, paddingBottom: 28, gap: 18 },
+  heroCard: {
+    minHeight: 260,
+    borderRadius: 28,
+    padding: 18,
+    flexDirection: 'row',
+    gap: 16,
+    backgroundColor: COLORS.card,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    shadowColor: COLORS.green,
+    shadowOpacity: 0.08,
+    shadowRadius: 28,
+  },
+  heroLeft: { flex: 0.95, justifyContent: 'center' },
+  weatherIconShell: {
+    width: 90,
+    height: 90,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(159,232,112,.09)',
+    borderWidth: 1,
+    borderColor: 'rgba(159,232,112,.20)',
+    marginBottom: 12,
+  },
+  currentTemp: { color: COLORS.white, fontSize: 58, lineHeight: 64, fontWeight: '900', letterSpacing: -2.2 },
+  description: { color: COLORS.muted, fontSize: 15, lineHeight: 20, textTransform: 'capitalize', marginTop: 2 },
+  tempRange: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 14 },
+  maxTemp: { color: COLORS.orange, fontSize: 13, fontWeight: '800' },
+  minTemp: { color: COLORS.blue, fontSize: 13, fontWeight: '800' },
+  heroRight: {
+    flex: 1.05,
+    borderLeftWidth: 1,
+    borderLeftColor: COLORS.border,
+    paddingLeft: 14,
+    justifyContent: 'center',
+  },
+  metricRow: {
+    minHeight: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,.06)',
+  },
+  metricIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+  },
+  metricCopy: { flex: 1 },
+  metricLabel: { color: COLORS.muted, fontSize: 11, lineHeight: 14 },
+  metricValue: { color: COLORS.white, fontSize: 13, lineHeight: 17, fontWeight: '800', marginTop: 1 },
+  sectionHeader: { marginTop: 2 },
+  sectionTitle: { color: COLORS.white, fontSize: 20, lineHeight: 26, fontWeight: '900', letterSpacing: -0.25 },
+  forecastCard: {
+    borderRadius: 24,
+    overflow: 'hidden',
+    backgroundColor: COLORS.card,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  forecastRow: {
+    minHeight: 78,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 14,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,.06)',
+  },
+  forecastRowFirst: { borderTopWidth: 0 },
+  dayCell: { width: 48 },
+  dayName: { color: COLORS.white, fontSize: 14, lineHeight: 18, fontWeight: '900' },
+  dayDate: { color: COLORS.muted, fontSize: 11, lineHeight: 15, marginTop: 2 },
+  forecastIcon: { width: 34, alignItems: 'center' },
+  tempCell: { flex: 1.05 },
+  rowMax: { color: COLORS.orange, fontSize: 14, fontWeight: '900' },
+  tempSlash: { color: COLORS.muted, fontSize: 13 },
+  rowMin: { color: COLORS.blue, fontSize: 14, fontWeight: '900' },
+  rainCell: { width: 44, flexDirection: 'row', alignItems: 'center', gap: 4 },
+  rainText: { color: COLORS.white, fontSize: 12, fontWeight: '800' },
+  windCell: { width: 74, gap: 2 },
+  windText: { color: COLORS.white, fontSize: 11, fontWeight: '800' },
+  windDir: { color: COLORS.muted, fontSize: 10, lineHeight: 12 },
+  emptyBox: { padding: 20, gap: 4 },
+  emptyTitle: { color: COLORS.white, fontSize: 15, fontWeight: '900' },
+  emptyText: { color: COLORS.muted, fontSize: 12, lineHeight: 17 },
+  recommendationCard: {
+    minHeight: 104,
+    borderRadius: 24,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: COLORS.card,
+    borderWidth: 1,
+    borderColor: 'rgba(159,232,112,.38)',
+    shadowColor: COLORS.green,
+    shadowOpacity: 0.14,
+    shadowRadius: 26,
+  },
+  recommendationIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(159,232,112,.10)',
+    borderWidth: 1,
+    borderColor: 'rgba(159,232,112,.30)',
+  },
+  recommendationCopy: { flex: 1 },
+  recommendationTitle: { color: COLORS.white, fontSize: 16, lineHeight: 20, fontWeight: '900' },
+  recommendationText: { color: COLORS.muted, fontSize: 13, lineHeight: 18, marginTop: 4 },
+})

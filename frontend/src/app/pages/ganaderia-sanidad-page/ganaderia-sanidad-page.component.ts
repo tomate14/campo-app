@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { API_BASE_URL } from '../../core/services/api.config';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
@@ -10,6 +11,7 @@ import type {
   AplicacionVacunaRequest,
   DiagnosticoSanitario,
   DiagnosticoSanitarioRequest,
+  PageResponse,
   SanidadDashboard,
   TratamientoMedicamento,
   TratamientoMedicamentoRequest,
@@ -39,6 +41,9 @@ export class GanaderiaSanidadPageComponent implements OnInit {
   protected readonly aplicaciones = signal<AplicacionVacuna[]>([]);
   protected readonly tratamientos = signal<TratamientoMedicamento[]>([]);
   protected readonly diagnosticos = signal<DiagnosticoSanitario[]>([]);
+  protected readonly aplicacionesPage = signal<PageResponse<AplicacionVacuna> | null>(null);
+  protected readonly tratamientosPage = signal<PageResponse<TratamientoMedicamento> | null>(null);
+  protected readonly diagnosticosPage = signal<PageResponse<DiagnosticoSanitario> | null>(null);
 
   protected readonly filters = signal({ animalId: '', estadoDiagnostico: '', obligatoria: '' });
   protected readonly vacunaModalOpen = signal(false);
@@ -125,33 +130,30 @@ export class GanaderiaSanidadPageComponent implements OnInit {
   );
   protected readonly activeTotal = computed(() => {
     if (this.activeTab() === 'TRATAMIENTOS') {
-      return this.tratamientos().length;
+      return this.tratamientosPage()?.totalElements ?? 0;
     }
     if (this.activeTab() === 'DIAGNOSTICOS') {
-      return this.diagnosticos().length;
+      return this.diagnosticosPage()?.totalElements ?? 0;
     }
-    return this.aplicaciones().length;
+    return this.aplicacionesPage()?.totalElements ?? 0;
   });
-  protected readonly tabTotalPages = computed(() => Math.max(1, Math.ceil(this.activeTotal() / this.tabPageSize)));
+  protected readonly tabTotalPages = computed(() => {
+    if (this.activeTab() === 'TRATAMIENTOS') {
+      return Math.max(1, this.tratamientosPage()?.totalPages ?? 1);
+    }
+    if (this.activeTab() === 'DIAGNOSTICOS') {
+      return Math.max(1, this.diagnosticosPage()?.totalPages ?? 1);
+    }
+    return Math.max(1, this.aplicacionesPage()?.totalPages ?? 1);
+  });
   protected readonly tabPageNumbers = computed(() => Array.from({ length: this.tabTotalPages() }, (_, index) => index + 1));
-  protected readonly paginatedAplicaciones = computed(() => {
-    const start = (this.tabPage() - 1) * this.tabPageSize;
-    return this.aplicaciones().slice(start, start + this.tabPageSize);
-  });
-  protected readonly paginatedTratamientos = computed(() => {
-    const start = (this.tabPage() - 1) * this.tabPageSize;
-    return this.tratamientos().slice(start, start + this.tabPageSize);
-  });
-  protected readonly paginatedDiagnosticos = computed(() => {
-    const start = (this.tabPage() - 1) * this.tabPageSize;
-    return this.diagnosticos().slice(start, start + this.tabPageSize);
-  });
   protected readonly tabRangeLabel = computed(() => {
     if (!this.activeTotal()) {
       return '0 de 0';
     }
-    const start = (this.tabPage() - 1) * this.tabPageSize + 1;
-    const end = Math.min(this.tabPage() * this.tabPageSize, this.activeTotal());
+    const activePage = this.activePage();
+    const start = (activePage?.number ?? this.tabPage() - 1) * (activePage?.size ?? this.tabPageSize) + 1;
+    const end = start + (activePage?.numberOfElements ?? 0) - 1;
     return `${start}-${end} de ${this.activeTotal()}`;
   });
   protected readonly catalogTotalPages = computed(() => Math.max(1, Math.ceil(this.vacunas().length / this.catalogPageSize)));
@@ -203,32 +205,29 @@ export class GanaderiaSanidadPageComponent implements OnInit {
 
   protected refreshTables() {
     const obligatoriaValue = this.filters().obligatoria === '' ? undefined : this.filters().obligatoria === 'true';
-    this.ganaderiaService.getVacunas(obligatoriaValue).subscribe({
-      next: (vacunas) => {
+    const page = this.tabPage() - 1;
+    const size = this.tabPageSize;
+    forkJoin({
+      vacunas: this.ganaderiaService.getVacunas(obligatoriaValue),
+      aplicaciones: this.ganaderiaService.getAplicacionesPage({ animalId: this.filters().animalId || undefined, page, size }),
+      tratamientos: this.ganaderiaService.getTratamientosPage({ animalId: this.filters().animalId || undefined, page, size }),
+      diagnosticos: this.ganaderiaService.getDiagnosticosPage({
+        animalId: this.filters().animalId || undefined,
+        estado: this.filters().estadoDiagnostico || undefined,
+        page,
+        size,
+      }),
+    }).subscribe({
+      next: ({ vacunas, aplicaciones, tratamientos, diagnosticos }) => {
         this.vacunas.set(vacunas);
+        this.aplicacionesPage.set(aplicaciones);
+        this.tratamientosPage.set(tratamientos);
+        this.diagnosticosPage.set(diagnosticos);
+        this.aplicaciones.set(aplicaciones.content);
+        this.tratamientos.set(tratamientos.content);
+        this.diagnosticos.set(diagnosticos.content);
         this.catalogPage.set(1);
-        this.ganaderiaService.getAplicaciones({ animalId: this.filters().animalId || undefined }).subscribe({
-          next: (aplicaciones) => {
-            this.aplicaciones.set(aplicaciones);
-            this.ganaderiaService.getTratamientos({ animalId: this.filters().animalId || undefined }).subscribe({
-              next: (tratamientos) => {
-                this.tratamientos.set(tratamientos);
-                this.ganaderiaService.getDiagnosticos({
-                  animalId: this.filters().animalId || undefined,
-                  estado: this.filters().estadoDiagnostico || undefined,
-                }).subscribe({
-                  next: (diagnosticos) => {
-                    this.diagnosticos.set(diagnosticos);
-                    this.loading.set(false);
-                  },
-                  error: () => this.failLoad(),
-                });
-              },
-              error: () => this.failLoad(),
-            });
-          },
-          error: () => this.failLoad(),
-        });
+        this.loading.set(false);
       },
       error: () => this.failLoad(),
     });
@@ -238,13 +237,20 @@ export class GanaderiaSanidadPageComponent implements OnInit {
     this.filters.update((current) => ({ ...current, [key]: value }));
   }
 
+  protected applyFilters() {
+    this.tabPage.set(1);
+    this.refreshTables();
+  }
+
   protected setActiveTab(tab: SanidadTab) {
     this.activeTab.set(tab);
     this.tabPage.set(1);
+    this.refreshTables();
   }
 
   protected setTabPage(page: number) {
     this.tabPage.set(Math.min(Math.max(page, 1), this.tabTotalPages()));
+    this.refreshTables();
   }
 
   protected previousTabPage() {
@@ -277,6 +283,16 @@ export class GanaderiaSanidadPageComponent implements OnInit {
 
   protected toggleRegistros() {
     this.registrosCollapsed.update((collapsed) => !collapsed);
+  }
+
+  private activePage(): PageResponse<AplicacionVacuna | TratamientoMedicamento | DiagnosticoSanitario> | null {
+    if (this.activeTab() === 'TRATAMIENTOS') {
+      return this.tratamientosPage();
+    }
+    if (this.activeTab() === 'DIAGNOSTICOS') {
+      return this.diagnosticosPage();
+    }
+    return this.aplicacionesPage();
   }
 
   protected openVacunaModal() {

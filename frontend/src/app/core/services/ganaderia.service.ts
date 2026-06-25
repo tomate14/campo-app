@@ -31,6 +31,7 @@ import type {
   MovimientoAnimalRequest,
   Parto,
   PartoRequest,
+  PageResponse,
   Potrero,
   PotreroFilters,
   PotreroRequest,
@@ -164,6 +165,11 @@ export class GanaderiaService {
       .pipe(map((response) => unwrapApiResponse(response)));
   }
 
+  getAplicacionesPage(params?: { animalId?: string; vacunaId?: string; desde?: string; hasta?: string; page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<AplicacionVacuna>> | PageResponse<AplicacionVacuna>>(`${API_BASE_URL}/ganaderia/sanidad/aplicaciones/page`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
   createAplicacion(data: AplicacionVacunaRequest) {
     return this.http.post<ApiResponse<AplicacionVacuna> | AplicacionVacuna>(`${API_BASE_URL}/ganaderia/sanidad/aplicaciones`, data)
       .pipe(map((response) => unwrapApiResponse(response)));
@@ -174,6 +180,11 @@ export class GanaderiaService {
       .pipe(map((response) => unwrapApiResponse(response)));
   }
 
+  getTratamientosPage(params?: { animalId?: string; desde?: string; hasta?: string; page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<TratamientoMedicamento>> | PageResponse<TratamientoMedicamento>>(`${API_BASE_URL}/ganaderia/sanidad/tratamientos/page`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
   createTratamiento(data: TratamientoMedicamentoRequest) {
     return this.http.post<ApiResponse<TratamientoMedicamento> | TratamientoMedicamento>(`${API_BASE_URL}/ganaderia/sanidad/tratamientos`, data)
       .pipe(map((response) => unwrapApiResponse(response)));
@@ -181,6 +192,11 @@ export class GanaderiaService {
 
   getDiagnosticos(params?: { animalId?: string; estado?: string }) {
     return this.http.get<ApiResponse<DiagnosticoSanitario[]> | DiagnosticoSanitario[]>(`${API_BASE_URL}/ganaderia/sanidad/diagnosticos`, { params: cleanParams(params) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getDiagnosticosPage(params?: { animalId?: string; estado?: string; page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<DiagnosticoSanitario>> | PageResponse<DiagnosticoSanitario>>(`${API_BASE_URL}/ganaderia/sanidad/diagnosticos/page`, { params: cleanParams(params) })
       .pipe(map((response) => unwrapApiResponse(response)));
   }
 

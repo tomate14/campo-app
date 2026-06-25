@@ -11,6 +11,7 @@ import {
   ChevronRight,
   ClipboardList,
   ClipboardPlus,
+  CloudSun,
   Crosshair,
   History,
   Layers,
@@ -350,6 +351,7 @@ export default function LotesScreen() {
             lote={selectedLote}
             events={loteHistory}
             loading={historyLoading}
+            onWeather={() => router.push({ pathname: '/clima/[loteId]', params: { loteId: selectedLote.id, loteNombre: selectedLote.nombre } })}
             onClose={() => setSelectedLote(null)}
           />
         )}
@@ -506,11 +508,13 @@ function LoteHistoryPanel({
   lote,
   events,
   loading,
+  onWeather,
   onClose,
 }: {
   lote: Lote
   events: LoteHistoryEvent[]
   loading: boolean
+  onWeather: () => void
   onClose: () => void
 }) {
   return (
@@ -521,9 +525,14 @@ function LoteHistoryPanel({
           <Text style={styles.historyTitle}>{lote.nombre}</Text>
           <Text style={styles.historySubtitle}>{lote.cultivo} · {lote.area} ha</Text>
         </View>
-        <Pressable style={styles.previewClose} onPress={onClose}>
-          <X size={15} color="#DCE8F8" strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.historyActions}>
+          <Pressable style={[styles.previewClose, styles.weatherButton]} onPress={onWeather}>
+            <CloudSun size={16} color="#9FE870" strokeWidth={2.2} />
+          </Pressable>
+          <Pressable style={styles.previewClose} onPress={onClose}>
+            <X size={15} color="#DCE8F8" strokeWidth={2.2} />
+          </Pressable>
+        </View>
       </View>
 
       {loading && <Text style={styles.historyLoading}>Cargando eventos del lote...</Text>}
@@ -912,6 +921,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
   },
+  weatherButton: {
+    borderColor: 'rgba(159,232,112,0.32)',
+    backgroundColor: 'rgba(159,232,112,0.10)',
+  },
   quickCard: {
     position: 'absolute',
     top: 86,
@@ -1224,6 +1237,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 12,
     marginBottom: 12,
+  },
+  historyActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   historyEyebrow: {
     color: '#9FE870',
