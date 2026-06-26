@@ -9,6 +9,7 @@ import type {
   Animal,
   AnimalDetalle,
   AnimalRequest,
+  CatalogoRazaBovina,
   AlimentacionDashboard,
   AlimentacionResumen,
   DiagnosticoSanitario,
@@ -82,6 +83,11 @@ export class GanaderiaService {
 
   getAnimal(id: string) {
     return this.http.get<ApiResponse<AnimalDetalle> | AnimalDetalle>(`${API_BASE_URL}/ganaderia/trazabilidad/animales/${id}`)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getRazasBovinas(search?: string) {
+    return this.http.get<ApiResponse<CatalogoRazaBovina[]> | CatalogoRazaBovina[]>(`${API_BASE_URL}/ganaderia/trazabilidad/razas-bovinas`, { params: cleanParams({ search }) })
       .pipe(map((response) => unwrapApiResponse(response)));
   }
 

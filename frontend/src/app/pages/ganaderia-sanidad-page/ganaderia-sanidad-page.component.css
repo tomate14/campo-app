@@ -763,6 +763,81 @@
 }
 
 .sanidad-stack { display: flex; flex-direction: column; gap: 18px; }
+.sanidad-top-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.sanidad-top-row > .card {
+  min-width: 0;
+}
+.sanidad-top-row .sanitary-tabs-bar {
+  gap: 12px;
+}
+.sanidad-top-row .catalog-head h3 {
+  font-size: 22px;
+}
+.sanidad-top-row .catalog-head p {
+  font-size: 13px;
+}
+.sanidad-top-row .vaccination-alert-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.sanidad-top-row .vaccination-alert-summary > div {
+  padding: 12px 14px;
+}
+.sanidad-top-row .vaccination-alert-table {
+  min-width: 760px;
+}
+.sanidad-top-row .vaccination-alert-table th,
+.sanidad-top-row .vaccination-alert-table td {
+  padding: 12px 14px;
+  font-size: 12px;
+}
+.catalog-table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 20px;
+  background: rgba(8, 18, 37, 0.68);
+}
+.catalog-data-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.catalog-data-table th,
+.catalog-data-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  color: #dce7f8;
+  font-size: 12px;
+  vertical-align: middle;
+}
+.catalog-data-table th {
+  color: #8ea0bb;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(11, 23, 48, 0.78);
+}
+.catalog-data-table tr:last-child td {
+  border-bottom: 0;
+}
+.catalog-data-table tbody tr {
+  transition: background .18s ease, box-shadow .18s ease;
+}
+.catalog-data-table tbody tr:hover {
+  background: rgba(159, 232, 112, 0.04);
+  box-shadow: inset 2px 0 0 rgba(159, 232, 112, 0.65);
+}
+.catalog-data-table td > strong,
+.catalog-data-table .vaccine-table-identity strong {
+  color: #f8fbff;
+}
 .top-panel { padding: 18px; }
 .catalog-head__icon svg,
 .catalog-info-card__icon svg {
@@ -857,6 +932,11 @@
 .catalog-record-card { min-height: 360px; }
 @media (max-width: 1420px) {
   .sanitary-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 1320px) {
+  .sanidad-top-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Unified premium metric cards */

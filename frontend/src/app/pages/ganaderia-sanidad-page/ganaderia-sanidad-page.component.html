@@ -68,6 +68,7 @@
   <div class="card empty-box" *ngIf="loading()">Cargando sanidad...</div>
 
   <div class="sanidad-stack" *ngIf="!loading()">
+    <div class="sanidad-top-row">
     <section class="card top-panel vaccination-alert-panel">
       <div class="sanitary-tabs-bar catalog-tabs-bar">
         <div class="catalog-head catalog-head--inline">
@@ -177,41 +178,47 @@
       </div>
 
       <ng-container *ngIf="!catalogCollapsed(); else catalogCollapsedState">
-        <div class="sanitary-card-grid">
-          <article class="sanitary-record-card catalog-record-card" *ngFor="let vacuna of paginatedVacunas()">
-            <div class="sanitary-record-card__top">
-              <div>
-                <h4>{{ vacuna.nombre }}</h4>
-                <p>{{ vacuna.codigo }} · {{ vacuna.laboratorio || 'Sin laboratorio' }}</p>
-              </div>
-              <span class="catalog-badge" [class.catalog-badge--secondary]="!vacuna.obligatoria">{{ vacuna.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span>
-            </div>
-            <div class="sanitary-record-card__metrics">
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg><span>Dosis</span><strong>{{ vacuna.dosisRecomendada || 'Sin dato' }}</strong></div>
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg><span>Frecuencia</span><strong>{{ vacuna.frecuenciaDias ? (vacuna.frecuenciaDias + ' días') : 'Sin dato' }}</strong></div>
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4z" /><path d="M8 7V4h8v3" /></svg><span>Stock</span><strong>{{ vacuna.stockDisponible ?? 'Sin dato' }}</strong></div>
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" /></svg><span>Costo ref.</span><strong>${{ vacuna.costoReferencia ?? 0 }}</strong></div>
-            </div>
-            <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>
-          </article>
-          <div class="empty-box premium-empty-box" *ngIf="!vacunas().length">Sin vacunas disponibles.</div>
+        <div class="catalog-table-wrap" *ngIf="paginatedVacunas().length; else noVacunasCatalogo">
+          <table class="catalog-data-table">
+            <thead>
+              <tr>
+                <th>Vacuna</th>
+                <th>Tipo</th>
+                <th>Dosis</th>
+                <th>Frecuencia</th>
+                <th>Stock</th>
+                <th>Costo ref.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let vacuna of paginatedVacunas()">
+                <td>
+                  <div class="vaccine-table-identity">
+                    <span class="vaccine-table-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></span>
+                    <div>
+                      <strong>{{ vacuna.nombre }}</strong>
+                      <small>{{ vacuna.codigo }} · {{ vacuna.laboratorio || 'Sin laboratorio' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="catalog-badge" [class.catalog-badge--secondary]="!vacuna.obligatoria">{{ vacuna.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
+                <td>{{ vacuna.dosisRecomendada || 'Sin dato' }}</td>
+                <td>{{ vacuna.frecuenciaDias ? (vacuna.frecuenciaDias + ' días') : 'Sin dato' }}</td>
+                <td>{{ vacuna.stockDisponible ?? 'Sin dato' }}</td>
+                <td>${{ vacuna.costoReferencia ?? 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-        <article class="catalog-info-card catalog-info-card--compact">
-          <div class="catalog-info-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 7h.01" /></svg>
-          </div>
-          <div>
-            <strong>Referencia de costos</strong>
-            <p>Los costos son de referencia y pueden variar según el proveedor.</p>
-          </div>
-        </article>
+        <ng-template #noVacunasCatalogo><div class="empty-box premium-empty-box">Sin vacunas disponibles.</div></ng-template>
       </ng-container>
 
       <ng-template #catalogCollapsedState>
         <div class="section-collapsed-summary">Catálogo oculto. {{ vacunas().length }} vacunas disponibles.</div>
       </ng-template>
     </section>
+
+    </div>
 
     <section class="card right-panel right-panel--premium sanitary-tabs-panel">
       <div class="sanitary-tabs-bar">
@@ -379,7 +386,7 @@
       <ng-container *ngIf="aplicacionModalOpen()">
         <div class="modal-head"><h3>Registrar aplicacion</h3></div>
         <div class="form-grid">
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="aplicacionForm().animalId" (valueChange)="aplicacionForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="aplicacionForm().animalId" (valueChange)="aplicacionForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
           <app-remote-search-select label="Vacuna" placeholder="Buscar vacuna" [options]="vacunas()" valueField="id" labelField="nombre" [subtitleFields]="['codigo','laboratorio']" [searchFields]="['nombre','codigo','laboratorio']" [value]="aplicacionForm().vacunaId" (valueChange)="aplicacionForm.update(f => ({ ...f, vacunaId: $event }))"></app-remote-search-select>
           <label><span>Fecha aplicacion</span><input type="date" [ngModel]="aplicacionForm().fechaAplicacion" (ngModelChange)="aplicacionForm.update(f => ({ ...f, fechaAplicacion: $event }))" /></label>
           <label><span>Proxima dosis</span><input type="date" [ngModel]="aplicacionForm().proximaDosisFecha" (ngModelChange)="aplicacionForm.update(f => ({ ...f, proximaDosisFecha: $event }))" /></label>
@@ -397,7 +404,7 @@
       <ng-container *ngIf="tratamientoModalOpen()">
         <div class="modal-head"><h3>Registrar tratamiento</h3></div>
         <div class="form-grid">
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="tratamientoForm().animalId" (valueChange)="tratamientoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="tratamientoForm().animalId" (valueChange)="tratamientoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
           <label><span>Medicamento</span><input [ngModel]="tratamientoForm().medicamento" (ngModelChange)="tratamientoForm.update(f => ({ ...f, medicamento: $event }))" /></label>
           <label><span>Fecha inicio</span><input type="date" [ngModel]="tratamientoForm().fechaInicio" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaInicio: $event }))" /></label>
           <label><span>Fecha fin</span><input type="date" [ngModel]="tratamientoForm().fechaFin" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaFin: $event }))" /></label>
@@ -417,7 +424,7 @@
       <ng-container *ngIf="diagnosticoModalOpen()">
         <div class="modal-head"><h3>Registrar diagnostico</h3></div>
         <div class="form-grid">
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="diagnosticoForm().animalId" (valueChange)="diagnosticoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="diagnosticoForm().animalId" (valueChange)="diagnosticoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
           <label><span>Enfermedad</span><input [ngModel]="diagnosticoForm().enfermedad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, enfermedad: $event }))" /></label>
           <label><span>Fecha diagnostico</span><input type="date" [ngModel]="diagnosticoForm().fechaDiagnostico" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
           <label><span>Severidad</span><select [ngModel]="diagnosticoForm().severidad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, severidad: $event }))"><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>

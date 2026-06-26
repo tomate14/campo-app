@@ -182,7 +182,7 @@ public class ReproduccionServiceImpl implements ReproduccionService {
     @Transactional(readOnly = true)
     public GenealogiaAnimalResponse getGenealogia(String animalId) {
         Animal animal = getAnimal(animalId);
-        List<Animal> animales = animalRepository.findFiltered(null, null, null, "ACTIVO");
+        List<Animal> animales = animalRepository.findFiltered(null, null, "ACTIVO");
         List<GenealogiaAnimalResponse.NodoGenealogia> ancestros = new ArrayList<>();
         collectAncestors(animal.getMadre(), "MADRE", 1, ancestros);
         collectAncestors(animal.getPadre(), "PADRE", 1, ancestros);
@@ -215,7 +215,7 @@ public class ReproduccionServiceImpl implements ReproduccionService {
     }
 
     private List<RecomendacionCruzamientoResponse> buildRecomendaciones() {
-        List<Animal> animales = animalRepository.findFiltered(null, null, null, "ACTIVO");
+        List<Animal> animales = animalRepository.findFiltered(null, null, "ACTIVO");
         List<Animal> hembras = animales.stream().filter(this::isFemale).toList();
         List<Animal> machos = animales.stream().filter(this::isMale).toList();
         Map<String, BigDecimal> scoreByAnimal = new HashMap<>();

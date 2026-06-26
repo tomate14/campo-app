@@ -5,11 +5,13 @@ import com.campoapp.common.exception.ResourceNotFoundException;
 import com.campoapp.ganaderia.dto.*;
 import com.campoapp.ganaderia.entity.Animal;
 import com.campoapp.ganaderia.entity.AnimalPotrero;
+import com.campoapp.ganaderia.entity.CatalogoRazaBovina;
 import com.campoapp.ganaderia.entity.HistorialMedicoAnimal;
 import com.campoapp.ganaderia.entity.MovimientoAnimal;
 import com.campoapp.ganaderia.entity.Potrero;
 import com.campoapp.ganaderia.repository.AnimalRepository;
 import com.campoapp.ganaderia.repository.AnimalPotreroRepository;
+import com.campoapp.ganaderia.repository.CatalogoRazaBovinaRepository;
 import com.campoapp.ganaderia.repository.HistorialMedicoAnimalRepository;
 import com.campoapp.ganaderia.repository.MovimientoAnimalRepository;
 import com.campoapp.ganaderia.repository.PotreroRepository;
@@ -36,16 +38,26 @@ public class AnimalServiceImpl implements AnimalService {
     private final HistorialMedicoAnimalRepository historialRepository;
     private final PotreroRepository potreroRepository;
     private final AnimalPotreroRepository animalPotreroRepository;
+    private final CatalogoRazaBovinaRepository razaRepository;
 
     @Override
     @Transactional(readOnly = true)
     public List<AnimalResponse> listAnimales(String caravana, String raza, String ubicacion, String estado) {
-        List<Animal> animals = animalRepository.findFiltered(caravana, raza, null, estado);
+        List<Animal> animals = animalRepository.findFiltered(caravana, raza, estado);
         Map<String, AnimalPotrero> assignments = activeAssignmentsByAnimalId(animals);
         return animals.stream()
                 .map(animal -> toAnimalResponse(animal, assignments.get(animal.getId())))
                 .filter(response -> matchesUbicacion(response, ubicacion))
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CatalogoRazaBovinaResponse> listRazasBovinas(String search) {
+        List<CatalogoRazaBovina> razas = search == null || search.isBlank()
+                ? razaRepository.findAllActive()
+                : razaRepository.search(search);
+        return razas.stream().map(this::toRazaResponse).toList();
     }
 
     @Override
@@ -63,10 +75,12 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public AnimalResponse createAnimal(AnimalRequest request) {
         validateCaravanaForCreate(request.caravana());
-        Potrero potrero = resolvePotreroForRequest(request.potreroId(), request.ubicacionActual(), false);
+        Potrero potrero = resolvePotreroForRequest(request.potreroId(), null, false);
+        CatalogoRazaBovina raza = resolveRaza(request.razaId(), request.raza());
         Animal animal = Animal.builder()
                 .caravana(request.caravana())
-                .raza(request.raza())
+                .raza(raza.getNombre())
+                .razaCatalogo(raza)
                 .sexo(request.sexo())
                 .fechaNacimiento(request.fechaNacimiento())
                 .fechaCompra(request.fechaCompra())
@@ -74,7 +88,6 @@ public class AnimalServiceImpl implements AnimalService {
                 .rfidCodigo(request.rfidCodigo())
                 .qrCodigo(request.qrCodigo())
                 .estado(request.estado() == null || request.estado().isBlank() ? "ACTIVO" : request.estado())
-                .ubicacionActual(potrero != null ? potrero.getNombre() : request.ubicacionActual())
                 .madre(resolveParent(request.madreId(), "madre"))
                 .padre(resolveParent(request.padreId(), "padre"))
                 .observaciones(request.observaciones())
@@ -89,7 +102,9 @@ public class AnimalServiceImpl implements AnimalService {
         Animal animal = getActiveAnimal(id);
         validateCaravanaForUpdate(request.caravana(), id);
         animal.setCaravana(request.caravana());
-        animal.setRaza(request.raza());
+        CatalogoRazaBovina raza = resolveRaza(request.razaId(), request.raza());
+        animal.setRaza(raza.getNombre());
+        animal.setRazaCatalogo(raza);
         animal.setSexo(request.sexo());
         animal.setFechaNacimiento(request.fechaNacimiento());
         animal.setFechaCompra(request.fechaCompra());
@@ -97,12 +112,7 @@ public class AnimalServiceImpl implements AnimalService {
         animal.setRfidCodigo(request.rfidCodigo());
         animal.setQrCodigo(request.qrCodigo());
         animal.setEstado(request.estado() == null || request.estado().isBlank() ? animal.getEstado() : request.estado());
-        Potrero potrero = resolvePotreroForRequest(request.potreroId(), request.ubicacionActual(), false);
-        if (potrero != null) {
-            animal.setUbicacionActual(potrero.getNombre());
-        } else if (request.ubicacionActual() != null) {
-            animal.setUbicacionActual(request.ubicacionActual());
-        }
+        Potrero potrero = resolvePotreroForRequest(request.potreroId(), null, false);
         animal.setMadre(resolveParent(request.madreId(), "madre"));
         animal.setPadre(resolveParent(request.padreId(), "padre"));
         animal.setObservaciones(request.observaciones());
@@ -177,12 +187,12 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     @Transactional(readOnly = true)
     public String exportarSenasaCsv(String estado) {
-        List<Animal> animales = animalRepository.findFiltered(null, null, null, estado);
+        List<Animal> animales = animalRepository.findFiltered(null, null, estado);
         Map<String, AnimalPotrero> assignments = activeAssignmentsByAnimalId(animales);
-        StringBuilder csv = new StringBuilder("caravana,rfid,qr,raza,sexo,estado,ubicacion_actual,fecha_nacimiento,fecha_compra,peso_actual_kg,madre,padre\n");
+        StringBuilder csv = new StringBuilder("caravana,rfid,qr,raza,sexo,estado,potrero_actual,fecha_nacimiento,fecha_compra,peso_actual_kg,madre,padre\n");
         animales.forEach(animal -> {
             AnimalPotrero assignment = assignments.get(animal.getId());
-            String ubicacion = assignment != null ? assignment.getPotrero().getNombre() : animal.getUbicacionActual();
+            String ubicacion = assignment != null && assignment.getPotrero() != null ? assignment.getPotrero().getNombre() : null;
             csv.append(String.join(",",
                 safe(animal.getCaravana()),
                 safe(animal.getRfidCodigo()),
@@ -215,12 +225,18 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     private void validateCaravanaForCreate(String caravana) {
+        if (caravana == null || caravana.isBlank()) {
+            throw new BusinessException("La caravana es obligatoria");
+        }
         if (animalRepository.existsByCaravanaAndDeletedAtIsNull(caravana)) {
             throw new BusinessException("La caravana ya existe");
         }
     }
 
     private void validateCaravanaForUpdate(String caravana, String id) {
+        if (caravana == null || caravana.isBlank()) {
+            throw new BusinessException("La caravana es obligatoria");
+        }
         if (animalRepository.existsByCaravanaAndIdNotAndDeletedAtIsNull(caravana, id)) {
             throw new BusinessException("La caravana ya existe");
         }
@@ -245,6 +261,7 @@ public class AnimalServiceImpl implements AnimalService {
         return new AnimalResponse(
                 animal.getId(),
                 animal.getCaravana(),
+                animal.getRazaCatalogo() != null ? animal.getRazaCatalogo().getId() : null,
                 animal.getRaza(),
                 animal.getSexo(),
                 animal.getFechaNacimiento(),
@@ -255,7 +272,6 @@ public class AnimalServiceImpl implements AnimalService {
                 animal.getEstado(),
                 potreroId,
                 potreroNombre,
-                potreroNombre != null ? potreroNombre : animal.getUbicacionActual(),
                 animal.getMadre() != null ? animal.getMadre().getId() : null,
                 animal.getMadre() != null ? animal.getMadre().getCaravana() : null,
                 animal.getPadre() != null ? animal.getPadre().getId() : null,
@@ -316,11 +332,47 @@ public class AnimalServiceImpl implements AnimalService {
             return true;
         }
         String needle = ubicacion.toLowerCase(Locale.ROOT);
-        return containsIgnoreCase(response.potreroNombre(), needle) || containsIgnoreCase(response.ubicacionActual(), needle);
+        return containsIgnoreCase(response.potreroNombre(), needle);
     }
 
     private boolean containsIgnoreCase(String value, String needle) {
         return value != null && value.toLowerCase(Locale.ROOT).contains(needle);
+    }
+
+    private CatalogoRazaBovina resolveRaza(String razaId, String razaNombre) {
+        if (razaId != null && !razaId.isBlank()) {
+            return razaRepository.findByIdAndDeletedAtIsNullAndActivoTrue(razaId)
+                    .orElseThrow(() -> new BusinessException("No existe la raza bovina indicada"));
+        }
+        if (razaNombre == null || razaNombre.isBlank()) {
+            throw new BusinessException("La raza es obligatoria");
+        }
+        String normalized = normalizeCatalogValue(razaNombre);
+        return razaRepository.findAllActive().stream()
+                .filter(raza -> normalizeCatalogValue(raza.getNombre()).equals(normalized)
+                        || normalizeCatalogValue(raza.getCodigo()).equals(normalized))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException("La raza indicada no existe en el catalogo de razas bovinas"));
+    }
+
+    private String normalizeCatalogValue(String value) {
+        return value == null ? "" : value.trim().replaceAll("[\\s-]+", "_").toLowerCase(Locale.ROOT);
+    }
+
+    private CatalogoRazaBovinaResponse toRazaResponse(CatalogoRazaBovina raza) {
+        return new CatalogoRazaBovinaResponse(
+                raza.getId(),
+                raza.getCodigo(),
+                raza.getNombre(),
+                raza.getEspecie(),
+                raza.getAptitud(),
+                raza.getTipoGenetico(),
+                raza.getOrigen(),
+                raza.getDescripcion(),
+                raza.getFuente(),
+                raza.getActivo(),
+                raza.getUpdatedAt()
+        );
     }
 
     private Potrero resolvePotreroOrigen(String potreroOrigenId, AnimalPotrero activeAssignment) {
@@ -362,8 +414,6 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     private AnimalPotrero assignInitialPotrero(Animal animal, Potrero potrero, String motivo, String responsable, String observaciones) {
-        animal.setUbicacionActual(potrero.getNombre());
-        animalRepository.save(animal);
         return animalPotreroRepository.save(AnimalPotrero.builder()
                 .animal(animal)
                 .potrero(potrero)
@@ -378,8 +428,6 @@ public class AnimalServiceImpl implements AnimalService {
     private AnimalPotrero moveAnimalToPotrero(Animal animal, Potrero potrero, LocalDateTime fecha, String motivo, String responsable, String observaciones, MovimientoAnimal movimiento) {
         AnimalPotrero current = animalPotreroRepository.findActiveByAnimalId(animal.getId()).orElse(null);
         if (current != null && current.getPotrero() != null && current.getPotrero().getId().equals(potrero.getId())) {
-            animal.setUbicacionActual(potrero.getNombre());
-            animalRepository.save(animal);
             return current;
         }
         if (current != null) {
@@ -387,8 +435,6 @@ public class AnimalServiceImpl implements AnimalService {
             current.setFechaHasta(fecha == null ? LocalDateTime.now() : fecha);
             animalPotreroRepository.save(current);
         }
-        animal.setUbicacionActual(potrero.getNombre());
-        animalRepository.save(animal);
         return animalPotreroRepository.save(AnimalPotrero.builder()
                 .animal(animal)
                 .potrero(potrero)

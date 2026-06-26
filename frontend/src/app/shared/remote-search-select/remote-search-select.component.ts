@@ -34,6 +34,8 @@ export class RemoteSearchSelectComponent implements OnInit, OnChanges, OnDestroy
   private readonly http = inject(HttpClient)
   private readonly destroy$ = new Subject<void>()
   private readonly search$ = new Subject<string>()
+  private selectedValue = ''
+  private selectedLabel = ''
 
   @Input() label = ''
   @Input() placeholder = 'Buscar...'
@@ -91,13 +93,18 @@ export class RemoteSearchSelectComponent implements OnInit, OnChanges, OnDestroy
 
   protected select(item: RemoteItem) {
     const value = String(this.fieldValue(item, this.valueField) ?? '')
+    const label = this.itemLabel(item)
+    this.selectedValue = value
+    this.selectedLabel = label
     this.valueChange.emit(value)
     this.itemSelected.emit(item)
-    this.query.set(this.itemLabel(item))
+    this.query.set(label)
     this.open.set(false)
   }
 
   protected clear() {
+    this.selectedValue = ''
+    this.selectedLabel = ''
     this.valueChange.emit('')
     this.query.set('')
     this.open.set(false)
@@ -182,7 +189,15 @@ export class RemoteSearchSelectComponent implements OnInit, OnChanges, OnDestroy
       this.query.set('')
       return
     }
-    const match = this.options.find((item) => String(this.fieldValue(item, this.valueField) ?? '') === current)
+    if (this.selectedValue === current && this.selectedLabel) {
+      this.query.set(this.selectedLabel)
+      return
+    }
+    const match = [...this.items(), ...this.options].find((item) => String(this.fieldValue(item, this.valueField) ?? '') === current)
+    if (match) {
+      this.selectedValue = current
+      this.selectedLabel = this.itemLabel(match)
+    }
     this.query.set(match ? this.itemLabel(match) : current)
   }
 
@@ -193,7 +208,10 @@ export class RemoteSearchSelectComponent implements OnInit, OnChanges, OnDestroy
     }
     const match = items.find((item) => String(this.fieldValue(item, this.valueField) ?? '') === current)
     if (match) {
-      this.query.set(this.itemLabel(match))
+      const label = this.itemLabel(match)
+      this.selectedValue = current
+      this.selectedLabel = label
+      this.query.set(label)
     }
   }
 

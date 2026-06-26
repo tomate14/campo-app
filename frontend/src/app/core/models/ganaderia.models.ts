@@ -1,6 +1,7 @@
 export interface Animal {
   id: string
   caravana: string
+  razaId?: string
   raza: string
   sexo?: string
   fechaNacimiento?: string
@@ -11,7 +12,6 @@ export interface Animal {
   estado: string
   potreroId?: string
   potreroNombre?: string
-  ubicacionActual?: string
   madreId?: string
   madreCaravana?: string
   padreId?: string
@@ -23,7 +23,8 @@ export interface Animal {
 
 export interface AnimalRequest {
   caravana: string
-  raza: string
+  razaId?: string
+  raza?: string
   sexo?: string
   fechaNacimiento?: string
   fechaCompra?: string
@@ -32,10 +33,23 @@ export interface AnimalRequest {
   qrCodigo?: string
   estado?: string
   potreroId?: string
-  ubicacionActual?: string
   madreId?: string
   padreId?: string
   observaciones?: string
+}
+
+export interface CatalogoRazaBovina {
+  id: string
+  codigo: string
+  nombre: string
+  especie: string
+  aptitud: string
+  tipoGenetico: string
+  origen?: string
+  descripcion?: string
+  fuente: string
+  activo: boolean
+  updatedAt?: string
 }
 
 export interface PageResponse<T> {

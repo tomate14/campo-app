@@ -1,16 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
 import { API_BASE_URL } from '../../core/services/api.config';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import type {
+  AplicacionVacuna,
   Animal,
   AnimalDetalle,
   AnimalRequest,
   HistorialMedicoAnimalRequest,
   MovimientoAnimalRequest,
+  Pesaje,
 } from '../../core/models/ganaderia.models';
+
+type HistorialClinicoEvento = {
+  tipo: 'CONTROL_MEDICO' | 'VACUNACION' | 'PESAJE';
+  titulo: string;
+  fecha: string;
+  detalle: string;
+  extra?: string;
+  badge: string;
+  dotClass: string;
+};
 
 @Component({
   selector: 'app-ganaderia-trazabilidad-page',
@@ -24,6 +37,8 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
 
   protected readonly animales = signal<Animal[]>([]);
   protected readonly selected = signal<AnimalDetalle | null>(null);
+  protected readonly selectedAplicaciones = signal<AplicacionVacuna[]>([]);
+  protected readonly selectedPesajes = signal<Pesaje[]>([]);
   protected readonly loading = signal(false);
   protected readonly saving = signal(false);
   protected readonly filters = signal({ search: '', caravana: '', raza: '', ubicacion: '', estado: '' });
@@ -44,21 +59,8 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     animales: `${API_BASE_URL}/ganaderia/trazabilidad/animales`,
     potreros: `${API_BASE_URL}/ganaderia/potreros`,
     operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
+    razasBovinas: `${API_BASE_URL}/ganaderia/trazabilidad/razas-bovinas`,
   };
-  protected readonly razaOptions = [
-    'Aberdeen Angus',
-    'Angus Negro',
-    'Angus Colorado',
-    'Hereford',
-    'Braford',
-    'Brangus',
-    'Shorthorn',
-    'Holando Argentino',
-    'Jersey',
-    'Limousin',
-    'Charolais',
-    'Bonsmara',
-  ].map((label) => ({ value: label, label }));
   protected readonly madreAllowedValues = { sexo: ['Femenino', 'HEMBRA', 'F'] };
   protected readonly padreAllowedValues = { sexo: ['Masculino', 'MACHO', 'TORO', 'M'] };
   protected readonly activeAnimalParams = { estado: 'ACTIVO' };
@@ -67,6 +69,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
 
   protected readonly animalForm = signal<AnimalRequest>({
     caravana: '',
+    razaId: '',
     raza: '',
     sexo: '',
     fechaNacimiento: '',
@@ -75,7 +78,6 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     rfidCodigo: '',
     estado: 'ACTIVO',
     potreroId: '',
-    ubicacionActual: '',
     madreId: '',
     padreId: '',
     observaciones: '',
@@ -146,6 +148,38 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     const end = Math.min(this.page() * this.pageSize(), total);
     return `Mostrando ${start} a ${end} de ${total} animales`;
   });
+  protected readonly historialClinico = computed<HistorialClinicoEvento[]>(() => {
+    const controles = (this.selected()?.historialMedico ?? []).map((item) => ({
+      tipo: 'CONTROL_MEDICO' as const,
+      titulo: item.diagnostico,
+      fecha: item.fecha,
+      detalle: item.tratamiento || 'Sin tratamiento',
+      extra: item.veterinario ? `Veterinario: ${item.veterinario}` : undefined,
+      badge: 'Control médico',
+      dotClass: 'event-dot--blue',
+    }));
+    const vacunas = this.selectedAplicaciones().map((item) => ({
+      tipo: 'VACUNACION' as const,
+      titulo: item.vacunaNombre,
+      fecha: item.fechaAplicacion,
+      detalle: `Próxima dosis: ${item.proximaDosisFecha || 'Sin fecha'}`,
+      extra: item.operario ? `Responsable: ${item.operario}` : undefined,
+      badge: 'Vacunación',
+      dotClass: 'event-dot--green',
+    }));
+    const pesajes = this.selectedPesajes().map((item) => ({
+      tipo: 'PESAJE' as const,
+      titulo: `Pesaje ${item.pesoKg} kg`,
+      fecha: item.fecha,
+      detalle: item.metodo || 'Sin método',
+      extra: item.condicionCorporal ? `Condición corporal: ${item.condicionCorporal}` : undefined,
+      badge: 'Pesaje',
+      dotClass: 'event-dot--warning',
+    }));
+
+    return [...controles, ...vacunas, ...pesajes]
+      .sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+  });
 
   ngOnInit(): void {
     this.loadAnimales();
@@ -174,8 +208,16 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
   }
 
   protected loadAnimalDetail(id: string) {
-    this.ganaderiaService.getAnimal(id).subscribe({
-      next: (detail) => this.selected.set(detail),
+    forkJoin({
+      detail: this.ganaderiaService.getAnimal(id),
+      aplicaciones: this.ganaderiaService.getAplicaciones({ animalId: id }),
+      pesajes: this.ganaderiaService.getPesajes({ animalId: id }),
+    }).subscribe({
+      next: ({ detail, aplicaciones, pesajes }) => {
+        this.selected.set(detail);
+        this.selectedAplicaciones.set(aplicaciones);
+        this.selectedPesajes.set(pesajes);
+      },
       error: () => this.errorMessage.set('No se pudo cargar el detalle del animal.'),
     });
   }
@@ -209,6 +251,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
   protected openCreateAnimal() {
     this.animalForm.set({
       caravana: '',
+      razaId: '',
       raza: '',
       sexo: '',
       fechaNacimiento: '',
@@ -217,7 +260,6 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       rfidCodigo: '',
       estado: 'ACTIVO',
       potreroId: '',
-      ubicacionActual: '',
       madreId: '',
       padreId: '',
       observaciones: '',
@@ -251,7 +293,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       tipoMovimiento: 'TRANSFERENCIA',
       potreroOrigenId: this.selected()?.animal.potreroId ?? '',
       potreroDestinoId: '',
-      ubicacionOrigen: this.selected()?.animal.potreroNombre ?? this.selected()?.animal.ubicacionActual ?? '',
+      ubicacionOrigen: this.selected()?.animal.potreroNombre ?? '',
       ubicacionDestino: '',
       motivo: '',
       responsable: '',
@@ -268,7 +310,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       tipoMovimiento: 'TRANSFERENCIA',
       potreroOrigenId: animal.potreroId ?? '',
       potreroDestinoId: '',
-      ubicacionOrigen: animal.potreroNombre ?? animal.ubicacionActual ?? '',
+      ubicacionOrigen: animal.potreroNombre ?? '',
       ubicacionDestino: '',
       motivo: '',
       responsable: '',
@@ -389,9 +431,28 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     this.animalForm.update((form) => ({ ...form, padreId: undefined }));
   }
 
+  protected selectRaza(item: object) {
+    const raza = item as { id?: string; nombre?: string };
+    this.animalForm.update((form) => ({
+      ...form,
+      razaId: raza.id ?? form.razaId,
+      raza: raza.nombre ?? form.raza,
+    }));
+  }
+
+  protected updateRazaValue(value: string) {
+    this.animalForm.update((form) => ({
+      ...form,
+      razaId: value,
+      raza: value ? form.raza : '',
+    }));
+  }
+
   private normalizeAnimalRequest(form: AnimalRequest): AnimalRequest {
     return {
       ...form,
+      razaId: form.razaId || undefined,
+      raza: form.raza || undefined,
       pesoActualKg: form.pesoActualKg === undefined || form.pesoActualKg === null || form.pesoActualKg === ('' as unknown as number)
         ? undefined
         : Number(form.pesoActualKg),
@@ -403,7 +464,6 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       rfidCodigo: form.rfidCodigo || undefined,
       qrCodigo: undefined,
       potreroId: form.potreroId || undefined,
-      ubicacionActual: form.ubicacionActual || undefined,
       observaciones: form.observaciones || undefined,
     };
   }
@@ -431,7 +491,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
   }
 
   private animalPotreroLabel(animal: Animal) {
-    return animal.potreroNombre || animal.ubicacionActual;
+    return animal.potreroNombre;
   }
 
   protected riesgoAnimal(animal: Animal) {

@@ -57,7 +57,7 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
         LocalDate previousMonthStart = monthStart.minusMonths(1);
         LocalDate previousMonthEnd = monthStart.minusDays(1);
 
-        List<Animal> activeAnimals = animalRepository.findFiltered(null, null, null, "ACTIVO");
+        List<Animal> activeAnimals = animalRepository.findFiltered(null, null, "ACTIVO");
         List<Potrero> activePotreros = potreroRepository.findAllActive().stream()
                 .filter(p -> !"INACTIVO".equalsIgnoreCase(nullSafe(p.getEstado())))
                 .toList();

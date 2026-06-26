@@ -337,7 +337,7 @@ export class GanaderiaReproduccionPageComponent implements OnInit {
   }
 
   protected alertaLote(alerta: AlertaReproductiva) {
-    return this.animales().find((animal) => animal.id === alerta.animalId)?.ubicacionActual || 'Sin lote asignado';
+    return this.animales().find((animal) => animal.id === alerta.animalId)?.potreroNombre || 'Sin potrero asignado';
   }
 
   protected selectedAlertRiskLabel() {

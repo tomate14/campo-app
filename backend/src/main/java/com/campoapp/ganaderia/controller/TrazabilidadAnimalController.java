@@ -35,6 +35,15 @@ public class TrazabilidadAnimalController {
         return ResponseEntity.ok(ApiResponse.ok(animalService.listAnimales(caravana, raza, ubicacion, estado)));
     }
 
+    @GetMapping("/razas-bovinas")
+    @PreAuthorize("hasAuthority('read:animales')")
+    @Operation(summary = "Listar catalogo de razas bovinas")
+    public ResponseEntity<ApiResponse<List<CatalogoRazaBovinaResponse>>> listRazasBovinas(
+            @RequestParam(required = false) String search
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(animalService.listRazasBovinas(search)));
+    }
+
     @GetMapping("/animales/{id}")
     @PreAuthorize("hasAuthority('read:animales')")
     public ResponseEntity<ApiResponse<AnimalDetalleResponse>> getAnimal(@PathVariable String id) {

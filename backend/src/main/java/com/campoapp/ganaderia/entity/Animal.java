@@ -18,6 +18,10 @@ public class Animal extends AuditableEntity {
     @Column(nullable = false, length = 120)
     private String raza;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "raza_id")
+    private CatalogoRazaBovina razaCatalogo;
+
     @Column(length = 20)
     private String sexo;
 
@@ -39,9 +43,6 @@ public class Animal extends AuditableEntity {
     @Column(nullable = false, length = 30)
     @Builder.Default
     private String estado = "ACTIVO";
-
-    @Column(name = "ubicacion_actual", length = 150)
-    private String ubicacionActual;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "madre_id")

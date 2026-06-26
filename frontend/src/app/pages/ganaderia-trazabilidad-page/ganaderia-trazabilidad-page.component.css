@@ -78,6 +78,8 @@ tr.selected .row-selector { background: #9fe870; border-color: #9fe870; box-shad
 .event-item:last-child { border-bottom: 0; }
 .event-dot { width: 10px; height: 10px; margin-top: 3px; border-radius: 999px; background: #9fe870; box-shadow: 0 0 14px rgba(159,232,112,.3); }
 .event-dot--blue { background: #6ea8ff; box-shadow: 0 0 14px rgba(110,168,255,.3); }
+.event-dot--green { background: #9fe870; box-shadow: 0 0 14px rgba(159,232,112,.3); }
+.event-dot--warning { background: #ffb84d; box-shadow: 0 0 14px rgba(255,184,77,.28); }
 .event-item strong { color: #f8fbff; font-size: 12px; }
 .event-item p { margin: 4px 0 0; color: #8ea0bb; font-size: 11px; }
 .event-item em { align-self: start; padding: 5px 8px; border-radius: 999px; background: rgba(110,168,255,.1); color: #b8cff5; font-size: 10px; font-style: normal; font-weight: 800; }

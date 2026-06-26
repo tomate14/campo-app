@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public record AnimalResponse(
         String id,
         String caravana,
+        String razaId,
         String raza,
         String sexo,
         LocalDate fechaNacimiento,
@@ -17,7 +18,6 @@ public record AnimalResponse(
         String estado,
         String potreroId,
         String potreroNombre,
-        String ubicacionActual,
         String madreId,
         String madreCaravana,
         String padreId,

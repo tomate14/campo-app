@@ -17,14 +17,12 @@ public interface AnimalRepository extends JpaRepository<Animal, String> {
             WHERE a.deletedAt IS NULL
               AND (:caravana IS NULL OR LOWER(a.caravana) LIKE LOWER(CONCAT('%', :caravana, '%')))
               AND (:raza IS NULL OR LOWER(a.raza) LIKE LOWER(CONCAT('%', :raza, '%')))
-              AND (:ubicacion IS NULL OR LOWER(a.ubicacionActual) LIKE LOWER(CONCAT('%', :ubicacion, '%')))
               AND (:estado IS NULL OR a.estado = :estado)
             ORDER BY a.updatedAt DESC
             """)
     List<Animal> findFiltered(
             @Param("caravana") String caravana,
             @Param("raza") String raza,
-            @Param("ubicacion") String ubicacion,
             @Param("estado") String estado
     );
 

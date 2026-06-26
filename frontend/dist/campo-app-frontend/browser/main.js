@@ -32,7 +32,7 @@ import {
   provideHttpClient,
   setRootDomAdapter,
   withInterceptors
-} from "./chunk-SV3RP5J4.js";
+} from "./chunk-Y5NP4W2U.js";
 import {
   ANIMATION_MODULE_TYPE,
   APP_BOOTSTRAP_LISTENER,
@@ -47958,6 +47958,8 @@ var RemoteSearchSelectComponent = class _RemoteSearchSelectComponent {
   http = inject(HttpClient);
   destroy$ = new Subject();
   search$ = new Subject();
+  selectedValue = "";
+  selectedLabel = "";
   label = "";
   placeholder = "Buscar...";
   endpoint = "";
@@ -48017,12 +48019,17 @@ var RemoteSearchSelectComponent = class _RemoteSearchSelectComponent {
   }
   select(item) {
     const value = String(this.fieldValue(item, this.valueField) ?? "");
+    const label = this.itemLabel(item);
+    this.selectedValue = value;
+    this.selectedLabel = label;
     this.valueChange.emit(value);
     this.itemSelected.emit(item);
-    this.query.set(this.itemLabel(item));
+    this.query.set(label);
     this.open.set(false);
   }
   clear() {
+    this.selectedValue = "";
+    this.selectedLabel = "";
     this.valueChange.emit("");
     this.query.set("");
     this.open.set(false);
@@ -48094,7 +48101,15 @@ var RemoteSearchSelectComponent = class _RemoteSearchSelectComponent {
       this.query.set("");
       return;
     }
-    const match2 = this.options.find((item) => String(this.fieldValue(item, this.valueField) ?? "") === current);
+    if (this.selectedValue === current && this.selectedLabel) {
+      this.query.set(this.selectedLabel);
+      return;
+    }
+    const match2 = [...this.items(), ...this.options].find((item) => String(this.fieldValue(item, this.valueField) ?? "") === current);
+    if (match2) {
+      this.selectedValue = current;
+      this.selectedLabel = this.itemLabel(match2);
+    }
     this.query.set(match2 ? this.itemLabel(match2) : current);
   }
   syncLabelFromItems(items) {
@@ -48104,7 +48119,10 @@ var RemoteSearchSelectComponent = class _RemoteSearchSelectComponent {
     }
     const match2 = items.find((item) => String(this.fieldValue(item, this.valueField) ?? "") === current);
     if (match2) {
-      this.query.set(this.itemLabel(match2));
+      const label = this.itemLabel(match2);
+      this.selectedValue = current;
+      this.selectedLabel = label;
+      this.query.set(label);
     }
   }
   fieldValue(item, field) {
@@ -48187,13 +48205,15 @@ var RemoteSearchSelectComponent = class _RemoteSearchSelectComponent {
 })();
 
 // src/app/pages/ganaderia-trazabilidad-page/ganaderia-trazabilidad-page.component.ts
-var _c03 = () => ["tipoUso", "estado"];
-var _c12 = () => ["nombre", "tipoUso", "estado"];
-var _c22 = () => ["raza", "ubicacionActual"];
-var _c32 = () => ["caravana", "raza", "ubicacionActual"];
-var _c42 = () => ["rolOperativo", "documentoNumero"];
-var _c5 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
-var _c6 = () => ["nombreCompleto", "username", "documentoNumero"];
+var _c03 = () => ["aptitud", "tipoGenetico"];
+var _c12 = () => ["nombre", "codigo", "aptitud", "tipoGenetico"];
+var _c22 = () => ["tipoUso", "estado"];
+var _c32 = () => ["nombre", "tipoUso", "estado"];
+var _c42 = () => ["raza", "potreroNombre"];
+var _c5 = () => ["caravana", "raza", "potreroNombre"];
+var _c6 = () => ["rolOperativo", "documentoNumero"];
+var _c7 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
+var _c8 = () => ["nombreCompleto", "username", "documentoNumero"];
 function GanaderiaTrazabilidadPageComponent_option_89_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "option", 46);
@@ -48329,7 +48349,7 @@ function GanaderiaTrazabilidadPageComponent_main_115_div_8_tr_24_Template(rf, ct
     \u0275\u0275advance();
     \u0275\u0275textInterpolate(animal_r6.estado);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(animal_r6.potreroNombre || animal_r6.ubicacionActual || "Sin dato");
+    \u0275\u0275textInterpolate(animal_r6.potreroNombre || "Sin dato");
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate(animal_r6.pesoActualKg ? animal_r6.pesoActualKg + " kg" : "Sin dato");
     \u0275\u0275advance(2);
@@ -48495,7 +48515,19 @@ function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_52_Templat
     \u0275\u0275advance(5);
     \u0275\u0275textInterpolate(detail_r10.animal.padreCaravana || "Sin dato");
     \u0275\u0275advance(13);
-    \u0275\u0275textInterpolate(detail_r10.animal.potreroNombre || detail_r10.animal.ubicacionActual || "Sin dato");
+    \u0275\u0275textInterpolate(detail_r10.animal.potreroNombre || "Sin dato");
+  }
+}
+function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_4_p_7_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p");
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const movimiento_r11 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(movimiento_r11.motivo);
   }
 }
 function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_4_Template(rf, ctx) {
@@ -48507,9 +48539,11 @@ function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_4_T
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(5, "p");
     \u0275\u0275text(6);
-    \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(7, "em");
-    \u0275\u0275text(8, "Movimiento");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(7, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_4_p_7_Template, 2, 1, "p", 112);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "em");
+    \u0275\u0275text(9, "Movimiento");
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
@@ -48518,56 +48552,156 @@ function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_4_T
     \u0275\u0275textInterpolate(movimiento_r11.tipoMovimiento);
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate3("", movimiento_r11.fecha, " \xB7 ", movimiento_r11.ubicacionOrigen || "Origen", " \u2192 ", movimiento_r11.ubicacionDestino || "Destino");
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", movimiento_r11.motivo);
   }
 }
 function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_5_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 110);
-    \u0275\u0275element(1, "span", 112);
-    \u0275\u0275elementStart(2, "div")(3, "strong");
-    \u0275\u0275text(4);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "p");
-    \u0275\u0275text(6);
-    \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(7, "em");
-    \u0275\u0275text(8, "Sanidad");
-    \u0275\u0275elementEnd()();
-  }
-  if (rf & 2) {
-    const item_r12 = ctx.$implicit;
-    \u0275\u0275advance(4);
-    \u0275\u0275textInterpolate(item_r12.diagnostico);
-    \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate2("", item_r12.fecha, " \xB7 ", item_r12.tratamiento || "Sin tratamiento");
-  }
-}
-function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_6_Template(rf, ctx) {
-  if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 113);
-    \u0275\u0275text(1, "Sin eventos registrados.");
+    \u0275\u0275text(1, "Sin movimientos registrados.");
     \u0275\u0275elementEnd();
   }
 }
 function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "section", 96)(1, "article", 107)(2, "h4");
-    \u0275\u0275text(3);
+    \u0275\u0275text(3, "Movimientos del animal");
     \u0275\u0275elementEnd();
-    \u0275\u0275template(4, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_4_Template, 9, 4, "div", 108)(5, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_5_Template, 9, 3, "div", 108)(6, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_6_Template, 2, 0, "div", 109);
+    \u0275\u0275template(4, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_4_Template, 10, 5, "div", 108)(5, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_div_5_Template, 2, 0, "div", 109);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
     const detail_r10 = \u0275\u0275nextContext().ngIf;
-    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngForOf", detail_r10.movimientos);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !detail_r10.movimientos.length);
+  }
+}
+function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_54_div_4_p_7_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p");
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const item_r12 = \u0275\u0275nextContext().$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(item_r12.extra);
+  }
+}
+function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_54_div_4_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 110);
+    \u0275\u0275element(1, "span", 114);
+    \u0275\u0275elementStart(2, "div")(3, "strong");
+    \u0275\u0275text(4);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "p");
+    \u0275\u0275text(6);
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(7, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_54_div_4_p_7_Template, 2, 1, "p", 112);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "em");
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const item_r12 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275property("ngClass", item_r12.dotClass);
     \u0275\u0275advance(3);
-    \u0275\u0275textInterpolate(ctx_r2.panelTab() === "MOVIMIENTOS" ? "Movimientos" : ctx_r2.panelTab() === "MEDICO" ? "Historial m\xE9dico" : "Eventos recientes");
+    \u0275\u0275textInterpolate(item_r12.titulo);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate2("", item_r12.fecha, " \xB7 ", item_r12.detalle);
     \u0275\u0275advance();
-    \u0275\u0275property("ngForOf", detail_r10.movimientos.slice(0, 3));
+    \u0275\u0275property("ngIf", item_r12.extra);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r12.badge);
+  }
+}
+function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_54_div_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 113);
+    \u0275\u0275text(1, "Sin historial m\xE9dico registrado.");
+    \u0275\u0275elementEnd();
+  }
+}
+function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_54_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "section", 96)(1, "article", 107)(2, "h4");
+    \u0275\u0275text(3, "Historial m\xE9dico completo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(4, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_54_div_4_Template, 10, 6, "div", 108)(5, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_54_div_5_Template, 2, 0, "div", 109);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r2 = \u0275\u0275nextContext(3);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngForOf", ctx_r2.historialClinico());
     \u0275\u0275advance();
-    \u0275\u0275property("ngForOf", detail_r10.historialMedico.slice(0, 3));
+    \u0275\u0275property("ngIf", !ctx_r2.historialClinico().length);
+  }
+}
+function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_55_div_4_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 110);
+    \u0275\u0275element(1, "span", 115);
+    \u0275\u0275elementStart(2, "div")(3, "strong");
+    \u0275\u0275text(4);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "p");
+    \u0275\u0275text(6);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "p");
+    \u0275\u0275text(8);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(9, "em");
+    \u0275\u0275text(10, "Vacunaci\xF3n");
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const vacuna_r13 = ctx.$implicit;
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(vacuna_r13.vacunaNombre);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate2("", vacuna_r13.fechaAplicacion, " \xB7 Pr\xF3xima dosis: ", vacuna_r13.proximaDosisFecha || "Sin fecha");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate2("", vacuna_r13.vacunaObligatoria ? "Obligatoria" : "Complementaria", " \xB7 ", vacuna_r13.loteMarca || "Sin lote/serie");
+  }
+}
+function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_55_div_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 113);
+    \u0275\u0275text(1, "Sin vacunaciones registradas para este animal.");
+    \u0275\u0275elementEnd();
+  }
+}
+function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_55_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "section", 96)(1, "article", 107)(2, "h4");
+    \u0275\u0275text(3, "Vacunas del animal");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(4, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_55_div_4_Template, 11, 5, "div", 108)(5, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_55_div_5_Template, 2, 0, "div", 109);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r2 = \u0275\u0275nextContext(3);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngForOf", ctx_r2.selectedAplicaciones());
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", !detail_r10.movimientos.length && !detail_r10.historialMedico.length);
+    \u0275\u0275property("ngIf", !ctx_r2.selectedAplicaciones().length);
+  }
+}
+function GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_56_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "section", 96)(1, "article", 107)(2, "h4");
+    \u0275\u0275text(3, "M\xE1s informaci\xF3n");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "div", 113);
+    \u0275\u0275text(5, "Sin informaci\xF3n adicional registrada.");
+    \u0275\u0275elementEnd()()();
   }
 }
 function GanaderiaTrazabilidadPageComponent_main_115_aside_28_Template(rf, ctx) {
@@ -48658,12 +48792,12 @@ function GanaderiaTrazabilidadPageComponent_main_115_aside_28_Template(rf, ctx) 
     });
     \u0275\u0275text(51, "M\xE1s");
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(52, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_52_Template, 65, 6, "section", 92)(53, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_Template, 7, 4, "section", 92);
-    \u0275\u0275elementStart(54, "button", 93);
-    \u0275\u0275text(55, "Ver trazabilidad completa ");
+    \u0275\u0275template(52, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_52_Template, 65, 6, "section", 92)(53, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_53_Template, 6, 2, "section", 92)(54, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_54_Template, 6, 2, "section", 92)(55, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_55_Template, 6, 2, "section", 92)(56, GanaderiaTrazabilidadPageComponent_main_115_aside_28_section_56_Template, 6, 0, "section", 92);
+    \u0275\u0275elementStart(57, "button", 93);
+    \u0275\u0275text(58, "Ver trazabilidad completa ");
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(56, "svg", 6);
-    \u0275\u0275element(57, "path", 94)(58, "path", 95);
+    \u0275\u0275elementStart(59, "svg", 6);
+    \u0275\u0275element(60, "path", 94)(61, "path", 95);
     \u0275\u0275elementEnd()()();
   }
   if (rf & 2) {
@@ -48672,7 +48806,7 @@ function GanaderiaTrazabilidadPageComponent_main_115_aside_28_Template(rf, ctx) 
     \u0275\u0275advance(12);
     \u0275\u0275textInterpolate(detail_r10.animal.caravana);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate3("", detail_r10.animal.raza, " \xB7 ", detail_r10.animal.estado, " \xB7 ", detail_r10.animal.potreroNombre || detail_r10.animal.ubicacionActual || "Sin ubicaci\xF3n");
+    \u0275\u0275textInterpolate3("", detail_r10.animal.raza, " \xB7 ", detail_r10.animal.estado, " \xB7 ", detail_r10.animal.potreroNombre || "Sin ubicaci\xF3n");
     \u0275\u0275advance(3);
     \u0275\u0275textInterpolate1("RP ", detail_r10.animal.caravana);
     \u0275\u0275advance(2);
@@ -48698,7 +48832,13 @@ function GanaderiaTrazabilidadPageComponent_main_115_aside_28_Template(rf, ctx) 
     \u0275\u0275advance(2);
     \u0275\u0275property("ngIf", ctx_r2.panelTab() === "RESUMEN");
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", ctx_r2.panelTab() !== "RESUMEN");
+    \u0275\u0275property("ngIf", ctx_r2.panelTab() === "MOVIMIENTOS");
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", ctx_r2.panelTab() === "MEDICO");
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", ctx_r2.panelTab() === "VACUNAS");
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", ctx_r2.panelTab() === "MAS");
   }
 }
 function GanaderiaTrazabilidadPageComponent_main_115_Template(rf, ctx) {
@@ -48746,16 +48886,16 @@ function GanaderiaTrazabilidadPageComponent_main_115_Template(rf, ctx) {
     \u0275\u0275elementStart(26, "option", 59);
     \u0275\u0275text(27, "100 por p\xE1gina");
     \u0275\u0275elementEnd()()()()();
-    \u0275\u0275template(28, GanaderiaTrazabilidadPageComponent_main_115_aside_28_Template, 59, 22, "aside", 60);
+    \u0275\u0275template(28, GanaderiaTrazabilidadPageComponent_main_115_aside_28_Template, 62, 25, "aside", 60);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const noAnimals_r13 = \u0275\u0275reference(10);
+    const noAnimals_r14 = \u0275\u0275reference(10);
     const ctx_r2 = \u0275\u0275nextContext();
     \u0275\u0275advance(7);
     \u0275\u0275textInterpolate1("", ctx_r2.filteredAnimales().length, " animales");
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", ctx_r2.paginatedAnimales().length)("ngIfElse", noAnimals_r13);
+    \u0275\u0275property("ngIf", ctx_r2.paginatedAnimales().length)("ngIfElse", noAnimals_r14);
     \u0275\u0275advance(5);
     \u0275\u0275textInterpolate(ctx_r2.rangeLabel());
     \u0275\u0275advance(2);
@@ -48777,40 +48917,44 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_option_16_Tem
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const option_r16 = ctx.$implicit;
-    \u0275\u0275property("value", option_r16.value);
+    const option_r17 = ctx.$implicit;
+    \u0275\u0275property("value", option_r17.value);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(option_r16.label);
+    \u0275\u0275textInterpolate(option_r17.label);
   }
 }
 function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, ctx) {
   if (rf & 1) {
-    const _r15 = \u0275\u0275getCurrentView();
+    const _r16 = \u0275\u0275getCurrentView();
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275elementStart(1, "div", 119)(2, "h3");
+    \u0275\u0275elementStart(1, "div", 120)(2, "h3");
     \u0275\u0275text(3, "Registrar animal");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "div", 120)(5, "label")(6, "span");
+    \u0275\u0275elementStart(4, "div", 121)(5, "label")(6, "span");
     \u0275\u0275text(7, "Caravana");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(8, "input", 34);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_input_ngModelChange_8_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.animalForm().caravana, $event) || (ctx_r2.animalForm().caravana = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_input_ngModelChange_8_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { caravana: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(9, "app-remote-search-select", 121);
+    \u0275\u0275elementStart(9, "app-remote-search-select", 122);
     \u0275\u0275listener("valueChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_app_remote_search_select_valueChange_9_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
-      return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { raza: $event })));
+      return \u0275\u0275resetView(ctx_r2.updateRazaValue($event));
+    })("itemSelected", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_app_remote_search_select_itemSelected_9_listener($event) {
+      \u0275\u0275restoreView(_r16);
+      const ctx_r2 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r2.selectRaza($event));
     });
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(10, "label")(11, "span");
@@ -48818,13 +48962,13 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, 
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(13, "select", 34);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_select_ngModelChange_13_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.animalForm().sexo, $event) || (ctx_r2.animalForm().sexo = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_select_ngModelChange_13_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { sexo: $event })));
     });
@@ -48836,15 +48980,15 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, 
     \u0275\u0275elementStart(17, "label")(18, "span");
     \u0275\u0275text(19, "Fecha nacimiento");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(20, "input", 122);
+    \u0275\u0275elementStart(20, "input", 123);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_input_ngModelChange_20_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.animalForm().fechaNacimiento, $event) || (ctx_r2.animalForm().fechaNacimiento = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_input_ngModelChange_20_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { fechaNacimiento: $event })));
     });
@@ -48852,15 +48996,15 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, 
     \u0275\u0275elementStart(21, "label")(22, "span");
     \u0275\u0275text(23, "Fecha compra");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(24, "input", 122);
+    \u0275\u0275elementStart(24, "input", 123);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_input_ngModelChange_24_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.animalForm().fechaCompra, $event) || (ctx_r2.animalForm().fechaCompra = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_input_ngModelChange_24_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { fechaCompra: $event })));
     });
@@ -48868,15 +49012,15 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, 
     \u0275\u0275elementStart(25, "label")(26, "span");
     \u0275\u0275text(27, "Peso actual kg");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(28, "input", 123);
+    \u0275\u0275elementStart(28, "input", 124);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_input_ngModelChange_28_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.animalForm().pesoActualKg, $event) || (ctx_r2.animalForm().pesoActualKg = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_input_ngModelChange_28_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { pesoActualKg: $event })));
     });
@@ -48886,65 +49030,65 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, 
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(32, "input", 34);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_input_ngModelChange_32_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.animalForm().rfidCodigo, $event) || (ctx_r2.animalForm().rfidCodigo = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_input_ngModelChange_32_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { rfidCodigo: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(33, "app-remote-search-select", 124);
+    \u0275\u0275elementStart(33, "app-remote-search-select", 125);
     \u0275\u0275listener("valueChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_app_remote_search_select_valueChange_33_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { potreroId: $event })));
     });
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(34, "app-remote-search-select", 125);
+    \u0275\u0275elementStart(34, "app-remote-search-select", 126);
     \u0275\u0275listener("valueChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_app_remote_search_select_valueChange_34_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { madreId: $event })));
     });
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(35, "app-remote-search-select", 126);
+    \u0275\u0275elementStart(35, "app-remote-search-select", 127);
     \u0275\u0275listener("valueChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_app_remote_search_select_valueChange_35_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { padreId: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(36, "label", 127)(37, "span");
+    \u0275\u0275elementStart(36, "label", 128)(37, "span");
     \u0275\u0275text(38, "Observaciones");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(39, "textarea", 34);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_textarea_ngModelChange_39_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.animalForm().observaciones, $event) || (ctx_r2.animalForm().observaciones = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_textarea_ngModelChange_39_listener($event) {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.animalForm.update((f) => __spreadProps(__spreadValues({}, f), { observaciones: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(40, "div", 128)(41, "button", 129);
+    \u0275\u0275elementStart(40, "div", 129)(41, "button", 130);
     \u0275\u0275listener("click", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_button_click_41_listener() {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.closeModals());
     });
     \u0275\u0275text(42, "Cancelar");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(43, "button", 130);
+    \u0275\u0275elementStart(43, "button", 131);
     \u0275\u0275listener("click", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template_button_click_43_listener() {
-      \u0275\u0275restoreView(_r15);
+      \u0275\u0275restoreView(_r16);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.submitAnimal());
     });
@@ -48957,7 +49101,7 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, 
     \u0275\u0275advance(8);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.animalForm().caravana);
     \u0275\u0275advance();
-    \u0275\u0275property("options", ctx_r2.razaOptions)("value", ctx_r2.animalForm().raza);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.razasBovinas)("subtitleFields", \u0275\u0275pureFunction0(29, _c03))("searchFields", \u0275\u0275pureFunction0(30, _c12))("value", ctx_r2.animalForm().razaId);
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.animalForm().sexo);
     \u0275\u0275advance(3);
@@ -48971,11 +49115,11 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, 
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.animalForm().rfidCodigo);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(27, _c03))("searchFields", \u0275\u0275pureFunction0(28, _c12))("value", ctx_r2.animalForm().potreroId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(31, _c22))("searchFields", \u0275\u0275pureFunction0(32, _c32))("value", ctx_r2.animalForm().potreroId);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.animales)("extraParams", ctx_r2.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(29, _c22))("searchFields", \u0275\u0275pureFunction0(30, _c32))("allowedValues", ctx_r2.madreAllowedValues)("value", ctx_r2.animalForm().madreId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.animales)("extraParams", ctx_r2.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(33, _c42))("searchFields", \u0275\u0275pureFunction0(34, _c5))("allowedValues", ctx_r2.madreAllowedValues)("value", ctx_r2.animalForm().madreId);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.animales)("extraParams", ctx_r2.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(31, _c22))("searchFields", \u0275\u0275pureFunction0(32, _c32))("allowedValues", ctx_r2.padreAllowedValues)("value", ctx_r2.animalForm().padreId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.animales)("extraParams", ctx_r2.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(35, _c42))("searchFields", \u0275\u0275pureFunction0(36, _c5))("allowedValues", ctx_r2.padreAllowedValues)("value", ctx_r2.animalForm().padreId);
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.animalForm().observaciones);
     \u0275\u0275advance(4);
@@ -48984,23 +49128,23 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, 
 }
 function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template(rf, ctx) {
   if (rf & 1) {
-    const _r17 = \u0275\u0275getCurrentView();
+    const _r18 = \u0275\u0275getCurrentView();
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275elementStart(1, "div", 119)(2, "h3");
+    \u0275\u0275elementStart(1, "div", 120)(2, "h3");
     \u0275\u0275text(3, "Registrar movimiento");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "div", 120)(5, "label")(6, "span");
+    \u0275\u0275elementStart(4, "div", 121)(5, "label")(6, "span");
     \u0275\u0275text(7, "Fecha");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(8, "input", 131);
+    \u0275\u0275elementStart(8, "input", 132);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_input_ngModelChange_8_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.movimientoForm().fecha, $event) || (ctx_r2.movimientoForm().fecha = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_input_ngModelChange_8_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { fecha: $event })));
     });
@@ -49010,41 +49154,41 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template(rf, 
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(12, "select", 34);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_select_ngModelChange_12_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.movimientoForm().tipoMovimiento, $event) || (ctx_r2.movimientoForm().tipoMovimiento = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_select_ngModelChange_12_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { tipoMovimiento: $event })));
     });
-    \u0275\u0275elementStart(13, "option", 132);
+    \u0275\u0275elementStart(13, "option", 133);
     \u0275\u0275text(14, "Ingreso");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(15, "option", 133);
+    \u0275\u0275elementStart(15, "option", 134);
     \u0275\u0275text(16, "Egreso");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(17, "option", 134);
+    \u0275\u0275elementStart(17, "option", 135);
     \u0275\u0275text(18, "Transferencia");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(19, "option", 135);
+    \u0275\u0275elementStart(19, "option", 136);
     \u0275\u0275text(20, "Sanidad");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(21, "option", 136);
+    \u0275\u0275elementStart(21, "option", 137);
     \u0275\u0275text(22, "Control");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(23, "app-remote-search-select", 137);
+    \u0275\u0275elementStart(23, "app-remote-search-select", 138);
     \u0275\u0275listener("valueChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_app_remote_search_select_valueChange_23_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { potreroOrigenId: $event })));
     });
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(24, "app-remote-search-select", 138);
+    \u0275\u0275elementStart(24, "app-remote-search-select", 139);
     \u0275\u0275listener("valueChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_app_remote_search_select_valueChange_24_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { potreroDestinoId: $event })));
     });
@@ -49054,51 +49198,51 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template(rf, 
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(28, "input", 34);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_input_ngModelChange_28_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.movimientoForm().motivo, $event) || (ctx_r2.movimientoForm().motivo = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_input_ngModelChange_28_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { motivo: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(29, "app-remote-search-select", 139);
+    \u0275\u0275elementStart(29, "app-remote-search-select", 140);
     \u0275\u0275listener("valueChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_app_remote_search_select_valueChange_29_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { responsable: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(30, "label", 127)(31, "span");
+    \u0275\u0275elementStart(30, "label", 128)(31, "span");
     \u0275\u0275text(32, "Observaciones");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(33, "textarea", 34);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_textarea_ngModelChange_33_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.movimientoForm().observaciones, $event) || (ctx_r2.movimientoForm().observaciones = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_textarea_ngModelChange_33_listener($event) {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { observaciones: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(34, "div", 128)(35, "button", 129);
+    \u0275\u0275elementStart(34, "div", 129)(35, "button", 130);
     \u0275\u0275listener("click", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_button_click_35_listener() {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.closeModals());
     });
     \u0275\u0275text(36, "Cancelar");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(37, "button", 130);
+    \u0275\u0275elementStart(37, "button", 131);
     \u0275\u0275listener("click", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template_button_click_37_listener() {
-      \u0275\u0275restoreView(_r17);
+      \u0275\u0275restoreView(_r18);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.submitMovimiento());
     });
@@ -49113,13 +49257,13 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template(rf, 
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.movimientoForm().tipoMovimiento);
     \u0275\u0275advance(11);
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(18, _c03))("searchFields", \u0275\u0275pureFunction0(19, _c12))("value", ctx_r2.movimientoForm().potreroOrigenId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(18, _c22))("searchFields", \u0275\u0275pureFunction0(19, _c32))("value", ctx_r2.movimientoForm().potreroOrigenId);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(20, _c03))("searchFields", \u0275\u0275pureFunction0(21, _c12))("value", ctx_r2.movimientoForm().potreroDestinoId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(20, _c22))("searchFields", \u0275\u0275pureFunction0(21, _c32))("value", ctx_r2.movimientoForm().potreroDestinoId);
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.movimientoForm().motivo);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.operarios)("extraParams", ctx_r2.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(22, _c42))("searchFields", \u0275\u0275pureFunction0(23, _c5))("value", ctx_r2.movimientoForm().responsable);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.operarios)("extraParams", ctx_r2.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(22, _c6))("searchFields", \u0275\u0275pureFunction0(23, _c7))("value", ctx_r2.movimientoForm().responsable);
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.movimientoForm().observaciones);
     \u0275\u0275advance(4);
@@ -49128,23 +49272,23 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template(rf, 
 }
 function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template(rf, ctx) {
   if (rf & 1) {
-    const _r18 = \u0275\u0275getCurrentView();
+    const _r19 = \u0275\u0275getCurrentView();
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275elementStart(1, "div", 119)(2, "h3");
+    \u0275\u0275elementStart(1, "div", 120)(2, "h3");
     \u0275\u0275text(3, "Registrar historial m\xE9dico");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "div", 120)(5, "label")(6, "span");
+    \u0275\u0275elementStart(4, "div", 121)(5, "label")(6, "span");
     \u0275\u0275text(7, "Fecha");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(8, "input", 122);
+    \u0275\u0275elementStart(8, "input", 123);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_input_ngModelChange_8_listener($event) {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.medicoForm().fecha, $event) || (ctx_r2.medicoForm().fecha = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_input_ngModelChange_8_listener($event) {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.medicoForm.update((f) => __spreadProps(__spreadValues({}, f), { fecha: $event })));
     });
@@ -49154,13 +49298,13 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template(rf, 
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(12, "input", 34);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_input_ngModelChange_12_listener($event) {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.medicoForm().diagnostico, $event) || (ctx_r2.medicoForm().diagnostico = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_input_ngModelChange_12_listener($event) {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.medicoForm.update((f) => __spreadProps(__spreadValues({}, f), { diagnostico: $event })));
     });
@@ -49170,51 +49314,51 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template(rf, 
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(16, "input", 34);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_input_ngModelChange_16_listener($event) {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.medicoForm().tratamiento, $event) || (ctx_r2.medicoForm().tratamiento = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_input_ngModelChange_16_listener($event) {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.medicoForm.update((f) => __spreadProps(__spreadValues({}, f), { tratamiento: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(17, "app-remote-search-select", 140);
+    \u0275\u0275elementStart(17, "app-remote-search-select", 141);
     \u0275\u0275listener("valueChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_app_remote_search_select_valueChange_17_listener($event) {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.medicoForm.update((f) => __spreadProps(__spreadValues({}, f), { veterinario: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(18, "label", 127)(19, "span");
+    \u0275\u0275elementStart(18, "label", 128)(19, "span");
     \u0275\u0275text(20, "Observaciones");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(21, "textarea", 34);
     \u0275\u0275twoWayListener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_textarea_ngModelChange_21_listener($event) {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       \u0275\u0275twoWayBindingSet(ctx_r2.medicoForm().observaciones, $event) || (ctx_r2.medicoForm().observaciones = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275listener("ngModelChange", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_textarea_ngModelChange_21_listener($event) {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.medicoForm.update((f) => __spreadProps(__spreadValues({}, f), { observaciones: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(22, "div", 128)(23, "button", 129);
+    \u0275\u0275elementStart(22, "div", 129)(23, "button", 130);
     \u0275\u0275listener("click", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_button_click_23_listener() {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.closeModals());
     });
     \u0275\u0275text(24, "Cancelar");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(25, "button", 130);
+    \u0275\u0275elementStart(25, "button", 131);
     \u0275\u0275listener("click", function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template_button_click_25_listener() {
-      \u0275\u0275restoreView(_r18);
+      \u0275\u0275restoreView(_r19);
       const ctx_r2 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r2.submitMedico());
     });
@@ -49231,7 +49375,7 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template(rf, 
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.medicoForm().tratamiento);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.operarios)("extraParams", ctx_r2.veterinarioParams)("subtitleFields", \u0275\u0275pureFunction0(10, _c42))("searchFields", \u0275\u0275pureFunction0(11, _c6))("value", ctx_r2.medicoForm().veterinario);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.operarios)("extraParams", ctx_r2.veterinarioParams)("subtitleFields", \u0275\u0275pureFunction0(10, _c6))("searchFields", \u0275\u0275pureFunction0(11, _c8))("value", ctx_r2.medicoForm().veterinario);
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.medicoForm().observaciones);
     \u0275\u0275advance(4);
@@ -49240,32 +49384,32 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template(rf, 
 }
 function GanaderiaTrazabilidadPageComponent_div_116_Template(rf, ctx) {
   if (rf & 1) {
-    const _r14 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 114);
+    const _r15 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 116);
     \u0275\u0275listener("click", function GanaderiaTrazabilidadPageComponent_div_116_Template_div_click_0_listener() {
-      \u0275\u0275restoreView(_r14);
+      \u0275\u0275restoreView(_r15);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.closeModals());
     })("keydown.escape", function GanaderiaTrazabilidadPageComponent_div_116_Template_div_keydown_escape_0_listener() {
-      \u0275\u0275restoreView(_r14);
+      \u0275\u0275restoreView(_r15);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.closeModals());
     }, \u0275\u0275resolveDocument);
-    \u0275\u0275elementStart(1, "div", 115);
+    \u0275\u0275elementStart(1, "div", 117);
     \u0275\u0275listener("click", function GanaderiaTrazabilidadPageComponent_div_116_Template_div_click_1_listener($event) {
       return $event.stopPropagation();
     });
-    \u0275\u0275elementStart(2, "button", 116);
+    \u0275\u0275elementStart(2, "button", 118);
     \u0275\u0275listener("click", function GanaderiaTrazabilidadPageComponent_div_116_Template_button_click_2_listener() {
-      \u0275\u0275restoreView(_r14);
+      \u0275\u0275restoreView(_r15);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.closeModals());
     });
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(3, "svg", 6);
-    \u0275\u0275element(4, "path", 117);
+    \u0275\u0275element(4, "path", 119);
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(5, GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template, 45, 33, "ng-container", 118)(6, GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template, 39, 24, "ng-container", 118)(7, GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template, 27, 12, "ng-container", 118);
+    \u0275\u0275template(5, GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template, 45, 37, "ng-container", 112)(6, GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template, 39, 24, "ng-container", 112)(7, GanaderiaTrazabilidadPageComponent_div_116_ng_container_7_Template, 27, 12, "ng-container", 112);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
@@ -49285,6 +49429,14 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
     []
   ));
   selected = signal(null, ...ngDevMode ? [{ debugName: "selected" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  selectedAplicaciones = signal([], ...ngDevMode ? [{ debugName: "selectedAplicaciones" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  selectedPesajes = signal([], ...ngDevMode ? [{ debugName: "selectedPesajes" }] : (
     /* istanbul ignore next */
     []
   ));
@@ -49343,22 +49495,9 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
   endpoints = {
     animales: `${API_BASE_URL}/ganaderia/trazabilidad/animales`,
     potreros: `${API_BASE_URL}/ganaderia/potreros`,
-    operarios: `${API_BASE_URL}/operarios/gestion/operarios`
+    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
+    razasBovinas: `${API_BASE_URL}/ganaderia/trazabilidad/razas-bovinas`
   };
-  razaOptions = [
-    "Aberdeen Angus",
-    "Angus Negro",
-    "Angus Colorado",
-    "Hereford",
-    "Braford",
-    "Brangus",
-    "Shorthorn",
-    "Holando Argentino",
-    "Jersey",
-    "Limousin",
-    "Charolais",
-    "Bonsmara"
-  ].map((label) => ({ value: label, label }));
   madreAllowedValues = { sexo: ["Femenino", "HEMBRA", "F"] };
   padreAllowedValues = { sexo: ["Masculino", "MACHO", "TORO", "M"] };
   activeAnimalParams = { estado: "ACTIVO" };
@@ -49366,6 +49505,7 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
   activeOperarioParams = { estado: "ACTIVO" };
   animalForm = signal({
     caravana: "",
+    razaId: "",
     raza: "",
     sexo: "",
     fechaNacimiento: "",
@@ -49374,7 +49514,6 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
     rfidCodigo: "",
     estado: "ACTIVO",
     potreroId: "",
-    ubicacionActual: "",
     madreId: "",
     padreId: "",
     observaciones: ""
@@ -49476,6 +49615,39 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
     /* istanbul ignore next */
     []
   ));
+  historialClinico = computed(() => {
+    const controles = (this.selected()?.historialMedico ?? []).map((item) => ({
+      tipo: "CONTROL_MEDICO",
+      titulo: item.diagnostico,
+      fecha: item.fecha,
+      detalle: item.tratamiento || "Sin tratamiento",
+      extra: item.veterinario ? `Veterinario: ${item.veterinario}` : void 0,
+      badge: "Control m\xE9dico",
+      dotClass: "event-dot--blue"
+    }));
+    const vacunas = this.selectedAplicaciones().map((item) => ({
+      tipo: "VACUNACION",
+      titulo: item.vacunaNombre,
+      fecha: item.fechaAplicacion,
+      detalle: `Pr\xF3xima dosis: ${item.proximaDosisFecha || "Sin fecha"}`,
+      extra: item.operario ? `Responsable: ${item.operario}` : void 0,
+      badge: "Vacunaci\xF3n",
+      dotClass: "event-dot--green"
+    }));
+    const pesajes = this.selectedPesajes().map((item) => ({
+      tipo: "PESAJE",
+      titulo: `Pesaje ${item.pesoKg} kg`,
+      fecha: item.fecha,
+      detalle: item.metodo || "Sin m\xE9todo",
+      extra: item.condicionCorporal ? `Condici\xF3n corporal: ${item.condicionCorporal}` : void 0,
+      badge: "Pesaje",
+      dotClass: "event-dot--warning"
+    }));
+    return [...controles, ...vacunas, ...pesajes].sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+  }, ...ngDevMode ? [{ debugName: "historialClinico" }] : (
+    /* istanbul ignore next */
+    []
+  ));
   ngOnInit() {
     this.loadAnimales();
   }
@@ -49501,8 +49673,16 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
     });
   }
   loadAnimalDetail(id) {
-    this.ganaderiaService.getAnimal(id).subscribe({
-      next: (detail) => this.selected.set(detail),
+    forkJoin({
+      detail: this.ganaderiaService.getAnimal(id),
+      aplicaciones: this.ganaderiaService.getAplicaciones({ animalId: id }),
+      pesajes: this.ganaderiaService.getPesajes({ animalId: id })
+    }).subscribe({
+      next: ({ detail, aplicaciones, pesajes }) => {
+        this.selected.set(detail);
+        this.selectedAplicaciones.set(aplicaciones);
+        this.selectedPesajes.set(pesajes);
+      },
       error: () => this.errorMessage.set("No se pudo cargar el detalle del animal.")
     });
   }
@@ -49529,6 +49709,7 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
   openCreateAnimal() {
     this.animalForm.set({
       caravana: "",
+      razaId: "",
       raza: "",
       sexo: "",
       fechaNacimiento: "",
@@ -49537,7 +49718,6 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
       rfidCodigo: "",
       estado: "ACTIVO",
       potreroId: "",
-      ubicacionActual: "",
       madreId: "",
       padreId: "",
       observaciones: ""
@@ -49570,7 +49750,7 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
       tipoMovimiento: "TRANSFERENCIA",
       potreroOrigenId: this.selected()?.animal.potreroId ?? "",
       potreroDestinoId: "",
-      ubicacionOrigen: this.selected()?.animal.potreroNombre ?? this.selected()?.animal.ubicacionActual ?? "",
+      ubicacionOrigen: this.selected()?.animal.potreroNombre ?? "",
       ubicacionDestino: "",
       motivo: "",
       responsable: "",
@@ -49586,7 +49766,7 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
       tipoMovimiento: "TRANSFERENCIA",
       potreroOrigenId: animal.potreroId ?? "",
       potreroDestinoId: "",
-      ubicacionOrigen: animal.potreroNombre ?? animal.ubicacionActual ?? "",
+      ubicacionOrigen: animal.potreroNombre ?? "",
       ubicacionDestino: "",
       motivo: "",
       responsable: "",
@@ -49695,8 +49875,23 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
     this.padreSearch.set("");
     this.animalForm.update((form) => __spreadProps(__spreadValues({}, form), { padreId: void 0 }));
   }
+  selectRaza(item) {
+    const raza = item;
+    this.animalForm.update((form) => __spreadProps(__spreadValues({}, form), {
+      razaId: raza.id ?? form.razaId,
+      raza: raza.nombre ?? form.raza
+    }));
+  }
+  updateRazaValue(value) {
+    this.animalForm.update((form) => __spreadProps(__spreadValues({}, form), {
+      razaId: value,
+      raza: value ? form.raza : ""
+    }));
+  }
   normalizeAnimalRequest(form) {
     return __spreadProps(__spreadValues({}, form), {
+      razaId: form.razaId || void 0,
+      raza: form.raza || void 0,
       pesoActualKg: form.pesoActualKg === void 0 || form.pesoActualKg === null || form.pesoActualKg === "" ? void 0 : Number(form.pesoActualKg),
       madreId: form.madreId || void 0,
       padreId: form.padreId || void 0,
@@ -49706,7 +49901,6 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
       rfidCodigo: form.rfidCodigo || void 0,
       qrCodigo: void 0,
       potreroId: form.potreroId || void 0,
-      ubicacionActual: form.ubicacionActual || void 0,
       observaciones: form.observaciones || void 0
     });
   }
@@ -49726,7 +49920,7 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
     return `${animal.caravana} \xB7 ${animal.raza}${potrero ? ` \xB7 ${potrero}` : ""}`;
   }
   animalPotreroLabel(animal) {
-    return animal.potreroNombre || animal.ubicacionActual;
+    return animal.potreroNombre;
   }
   riesgoAnimal(animal) {
     if (animal.estado !== "ACTIVO")
@@ -49765,7 +49959,7 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
   static \u0275fac = function GanaderiaTrazabilidadPageComponent_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _GanaderiaTrazabilidadPageComponent)();
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _GanaderiaTrazabilidadPageComponent, selectors: [["app-ganaderia-trazabilidad-page"]], decls: 117, vars: 15, consts: [["noAnimals", ""], [1, "trace-page"], [1, "trace-header"], [1, "eyebrow"], [1, "head-actions"], ["type", "button", 1, "btn-secondary", "trace-action", 3, "click"], ["viewBox", "0 0 24 24"], ["d", "M12 3v12"], ["d", "m8 11 4 4 4-4"], ["d", "M5 21h14"], ["type", "button", 1, "btn-primary", "trace-action", 3, "click"], ["d", "M12 5v14M5 12h14"], [1, "trace-kpis"], [1, "kpi-card"], [1, "metric-icon"], ["d", "M6 8c0-3 2-5 6-5s6 2 6 5v5c0 4-2.5 7-6 7s-6-3-6-7V8Z"], ["d", "M9 9h.01M15 9h.01M9 14c1.8 1.2 4.2 1.2 6 0"], [1, "kpi-copy"], ["d", "M5 12h14"], ["d", "m13 6 6 6-6 6"], ["d", "M5 6v12"], ["d", "M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z"], ["d", "M12 8v5m0 3h.01"], ["d", "M6 8a8 8 0 0 0 0 8"], ["d", "M18 8a8 8 0 0 1 0 8"], ["d", "M9 10a4 4 0 0 0 0 4"], ["d", "M15 10a4 4 0 0 1 0 4"], ["cx", "12", "cy", "12", "r", "1"], [1, "trace-filters", "card"], [1, "trace-search"], ["cx", "11", "cy", "11", "r", "7"], ["d", "m16 16 4 4"], ["placeholder", "Buscar por ID, caravana, raza o potrero...", 3, "ngModelChange", "ngModel"], ["placeholder", "Todas", 3, "ngModelChange", "ngModel"], [3, "ngModelChange", "ngModel"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["value", "ACTIVO"], ["value", "VENDIDO"], ["value", "BAJA"], ["type", "button", 1, "filter-button", 3, "click"], ["d", "M4 6h16M7 12h10M10 18h4"], ["class", "error-box", 4, "ngIf"], ["class", "card empty-box", 4, "ngIf"], ["class", "trace-layout", 4, "ngIf"], ["class", "app-modal-backdrop", 3, "click", "keydown.escape", 4, "ngIf"], [3, "value"], [1, "error-box"], [1, "card", "empty-box"], [1, "trace-layout"], [1, "trace-table-card", "card"], [1, "table-head"], ["class", "trace-table-wrap", 4, "ngIf", "ngIfElse"], [1, "trace-pagination"], [1, "pager"], ["type", "button", 3, "click", "disabled"], ["type", "button", 3, "active", "click", 4, "ngFor", "ngForOf"], ["value", "25"], ["value", "50"], ["value", "100"], ["class", "trace-context card", 4, "ngIf"], [1, "trace-table-wrap"], [1, "trace-table"], [3, "selected", "click", 4, "ngFor", "ngForOf"], [3, "click"], [1, "row-selector"], [1, "sex-chip"], [1, "status-badge"], [1, "risk-badge"], [1, "inline-actions"], ["type", "button", "aria-label", "Ver"], ["d", "M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"], ["cx", "12", "cy", "12", "r", "3"], ["type", "button", "aria-label", "Movimiento", 3, "click"], ["type", "button", "aria-label", "Historial m\xE9dico", 3, "click"], ["d", "M9 3h6v4H9z"], ["d", "M8 7h8v13H8z"], ["d", "M10 12h4M12 10v4"], ["type", "button", "aria-label", "M\xE1s opciones"], ["d", "M12 6h.01M12 12h.01M12 18h.01"], [1, "empty-box", "premium-empty-box"], ["type", "button", 3, "click"], [1, "trace-context", "card"], [1, "context-head"], [1, "cow-icon"], ["d", "M7 8c-2-3-4-3-5-2 0 2 1 4 3 5"], ["d", "M17 8c2-3 4-3 5-2 0 2-1 4-3 5"], ["d", "M6 10c0-4 2-6 6-6s6 2 6 6v3c0 4-2.5 7-6 7s-6-3-6-7v-3Z"], ["d", "M9 11h.01M15 11h.01M10 16h4"], [1, "context-badges"], [1, "mini-metrics"], [1, "context-tabs"], ["class", "context-content", 4, "ngIf"], ["type", "button", 1, "full-trace-btn"], ["d", "M7 17 17 7"], ["d", "M8 7h9v9"], [1, "context-content"], [1, "info-card"], [1, "info-card", "genealogy-card"], ["d", "M12 4v6"], ["d", "M8 10h8"], ["d", "M6 14v6M18 14v6M12 14v6"], ["cx", "12", "cy", "4", "r", "2"], ["cx", "6", "cy", "20", "r", "2"], ["cx", "12", "cy", "20", "r", "2"], ["cx", "18", "cy", "20", "r", "2"], ["type", "button"], [1, "info-card", "timeline-card"], ["class", "event-item", 4, "ngFor", "ngForOf"], ["class", "empty-box", 4, "ngIf"], [1, "event-item"], [1, "event-dot"], [1, "event-dot", "event-dot--blue"], [1, "empty-box"], [1, "app-modal-backdrop", 3, "click", "keydown.escape"], [1, "app-modal-panel", "panel-narrow", 3, "click"], ["type", "button", "aria-label", "Cerrar popup", 1, "modal-close-button", 3, "click"], ["d", "M6 6l12 12M18 6 6 18"], [4, "ngIf"], [1, "modal-head"], [1, "form-grid"], ["label", "Raza", "placeholder", "Buscar raza", "valueField", "value", "labelField", "label", 3, "valueChange", "options", "value"], ["type", "date", 3, "ngModelChange", "ngModel"], ["type", "number", 3, "ngModelChange", "ngModel"], ["label", "Potrero actual", "placeholder", "Buscar potrero", "queryParam", "nombre", "valueField", "id", "labelField", "nombre", 3, "valueChange", "endpoint", "subtitleFields", "searchFields", "value"], ["label", "Madre", "placeholder", "Buscar madre por caravana, raza o potrero", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "allowedValues", "value"], ["label", "Padre", "placeholder", "Buscar padre por caravana, raza o potrero", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "allowedValues", "value"], [1, "textarea-field"], [1, "modal-actions"], ["type", "button", 1, "btn-secondary", 3, "click"], ["type", "button", 1, "btn-primary", 3, "click", "disabled"], ["type", "datetime-local", 3, "ngModelChange", "ngModel"], ["value", "INGRESO"], ["value", "EGRESO"], ["value", "TRANSFERENCIA"], ["value", "SANIDAD"], ["value", "CONTROL"], ["label", "Origen", "placeholder", "Buscar potrero origen", "queryParam", "nombre", "valueField", "id", "labelField", "nombre", 3, "valueChange", "endpoint", "subtitleFields", "searchFields", "value"], ["label", "Destino", "placeholder", "Buscar potrero destino", "queryParam", "nombre", "valueField", "id", "labelField", "nombre", 3, "valueChange", "endpoint", "subtitleFields", "searchFields", "value"], ["label", "Responsable", "placeholder", "Buscar operario responsable", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["label", "Veterinario", "placeholder", "Buscar veterinario habilitado", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"]], template: function GanaderiaTrazabilidadPageComponent_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _GanaderiaTrazabilidadPageComponent, selectors: [["app-ganaderia-trazabilidad-page"]], decls: 117, vars: 15, consts: [["noAnimals", ""], [1, "trace-page"], [1, "trace-header"], [1, "eyebrow"], [1, "head-actions"], ["type", "button", 1, "btn-secondary", "trace-action", 3, "click"], ["viewBox", "0 0 24 24"], ["d", "M12 3v12"], ["d", "m8 11 4 4 4-4"], ["d", "M5 21h14"], ["type", "button", 1, "btn-primary", "trace-action", 3, "click"], ["d", "M12 5v14M5 12h14"], [1, "trace-kpis"], [1, "kpi-card"], [1, "metric-icon"], ["d", "M6 8c0-3 2-5 6-5s6 2 6 5v5c0 4-2.5 7-6 7s-6-3-6-7V8Z"], ["d", "M9 9h.01M15 9h.01M9 14c1.8 1.2 4.2 1.2 6 0"], [1, "kpi-copy"], ["d", "M5 12h14"], ["d", "m13 6 6 6-6 6"], ["d", "M5 6v12"], ["d", "M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z"], ["d", "M12 8v5m0 3h.01"], ["d", "M6 8a8 8 0 0 0 0 8"], ["d", "M18 8a8 8 0 0 1 0 8"], ["d", "M9 10a4 4 0 0 0 0 4"], ["d", "M15 10a4 4 0 0 1 0 4"], ["cx", "12", "cy", "12", "r", "1"], [1, "trace-filters", "card"], [1, "trace-search"], ["cx", "11", "cy", "11", "r", "7"], ["d", "m16 16 4 4"], ["placeholder", "Buscar por ID, caravana, raza o potrero...", 3, "ngModelChange", "ngModel"], ["placeholder", "Todas", 3, "ngModelChange", "ngModel"], [3, "ngModelChange", "ngModel"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["value", "ACTIVO"], ["value", "VENDIDO"], ["value", "BAJA"], ["type", "button", 1, "filter-button", 3, "click"], ["d", "M4 6h16M7 12h10M10 18h4"], ["class", "error-box", 4, "ngIf"], ["class", "card empty-box", 4, "ngIf"], ["class", "trace-layout", 4, "ngIf"], ["class", "app-modal-backdrop", 3, "click", "keydown.escape", 4, "ngIf"], [3, "value"], [1, "error-box"], [1, "card", "empty-box"], [1, "trace-layout"], [1, "trace-table-card", "card"], [1, "table-head"], ["class", "trace-table-wrap", 4, "ngIf", "ngIfElse"], [1, "trace-pagination"], [1, "pager"], ["type", "button", 3, "click", "disabled"], ["type", "button", 3, "active", "click", 4, "ngFor", "ngForOf"], ["value", "25"], ["value", "50"], ["value", "100"], ["class", "trace-context card", 4, "ngIf"], [1, "trace-table-wrap"], [1, "trace-table"], [3, "selected", "click", 4, "ngFor", "ngForOf"], [3, "click"], [1, "row-selector"], [1, "sex-chip"], [1, "status-badge"], [1, "risk-badge"], [1, "inline-actions"], ["type", "button", "aria-label", "Ver"], ["d", "M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"], ["cx", "12", "cy", "12", "r", "3"], ["type", "button", "aria-label", "Movimiento", 3, "click"], ["type", "button", "aria-label", "Historial m\xE9dico", 3, "click"], ["d", "M9 3h6v4H9z"], ["d", "M8 7h8v13H8z"], ["d", "M10 12h4M12 10v4"], ["type", "button", "aria-label", "M\xE1s opciones"], ["d", "M12 6h.01M12 12h.01M12 18h.01"], [1, "empty-box", "premium-empty-box"], ["type", "button", 3, "click"], [1, "trace-context", "card"], [1, "context-head"], [1, "cow-icon"], ["d", "M7 8c-2-3-4-3-5-2 0 2 1 4 3 5"], ["d", "M17 8c2-3 4-3 5-2 0 2-1 4-3 5"], ["d", "M6 10c0-4 2-6 6-6s6 2 6 6v3c0 4-2.5 7-6 7s-6-3-6-7v-3Z"], ["d", "M9 11h.01M15 11h.01M10 16h4"], [1, "context-badges"], [1, "mini-metrics"], [1, "context-tabs"], ["class", "context-content", 4, "ngIf"], ["type", "button", 1, "full-trace-btn"], ["d", "M7 17 17 7"], ["d", "M8 7h9v9"], [1, "context-content"], [1, "info-card"], [1, "info-card", "genealogy-card"], ["d", "M12 4v6"], ["d", "M8 10h8"], ["d", "M6 14v6M18 14v6M12 14v6"], ["cx", "12", "cy", "4", "r", "2"], ["cx", "6", "cy", "20", "r", "2"], ["cx", "12", "cy", "20", "r", "2"], ["cx", "18", "cy", "20", "r", "2"], ["type", "button"], [1, "info-card", "timeline-card"], ["class", "event-item", 4, "ngFor", "ngForOf"], ["class", "empty-box", 4, "ngIf"], [1, "event-item"], [1, "event-dot"], [4, "ngIf"], [1, "empty-box"], [1, "event-dot", 3, "ngClass"], [1, "event-dot", "event-dot--green"], [1, "app-modal-backdrop", 3, "click", "keydown.escape"], [1, "app-modal-panel", "panel-narrow", 3, "click"], ["type", "button", "aria-label", "Cerrar popup", 1, "modal-close-button", 3, "click"], ["d", "M6 6l12 12M18 6 6 18"], [1, "modal-head"], [1, "form-grid"], ["label", "Raza", "placeholder", "Buscar raza bovina", "queryParam", "search", "valueField", "id", "labelField", "nombre", 3, "valueChange", "itemSelected", "endpoint", "subtitleFields", "searchFields", "value"], ["type", "date", 3, "ngModelChange", "ngModel"], ["type", "number", 3, "ngModelChange", "ngModel"], ["label", "Potrero actual", "placeholder", "Buscar potrero", "queryParam", "nombre", "valueField", "id", "labelField", "nombre", 3, "valueChange", "endpoint", "subtitleFields", "searchFields", "value"], ["label", "Madre", "placeholder", "Buscar madre por caravana, raza o potrero", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "allowedValues", "value"], ["label", "Padre", "placeholder", "Buscar padre por caravana, raza o potrero", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "allowedValues", "value"], [1, "textarea-field"], [1, "modal-actions"], ["type", "button", 1, "btn-secondary", 3, "click"], ["type", "button", 1, "btn-primary", 3, "click", "disabled"], ["type", "datetime-local", 3, "ngModelChange", "ngModel"], ["value", "INGRESO"], ["value", "EGRESO"], ["value", "TRANSFERENCIA"], ["value", "SANIDAD"], ["value", "CONTROL"], ["label", "Origen", "placeholder", "Buscar potrero origen", "queryParam", "nombre", "valueField", "id", "labelField", "nombre", 3, "valueChange", "endpoint", "subtitleFields", "searchFields", "value"], ["label", "Destino", "placeholder", "Buscar potrero destino", "queryParam", "nombre", "valueField", "id", "labelField", "nombre", 3, "valueChange", "endpoint", "subtitleFields", "searchFields", "value"], ["label", "Responsable", "placeholder", "Buscar operario responsable", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["label", "Veterinario", "placeholder", "Buscar veterinario habilitado", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"]], template: function GanaderiaTrazabilidadPageComponent_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "div", 1)(1, "header", 2)(2, "div")(3, "p", 3);
       \u0275\u0275text(4, "Campo App \xB7 Ganader\xEDa");
@@ -49965,190 +50159,237 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
       \u0275\u0275advance();
       \u0275\u0275property("ngIf", ctx.animalModalOpen() || ctx.movimientoModalOpen() || ctx.medicoModalOpen());
     }
-  }, dependencies: [CommonModule, NgForOf, NgIf, FormsModule, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, SelectControlValueAccessor, NgControlStatus, NgModel, RemoteSearchSelectComponent], styles: ['\n.trace-page[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n  color: #f8fbff;\n}\n.trace-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n}\n.trace-header[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.trace-header[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow[_ngcontent-%COMP%] {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  letter-spacing: .12em;\n  text-transform: uppercase;\n  font-weight: 900;\n}\n.head-actions[_ngcontent-%COMP%], \n.modal-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n.trace-action[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.trace-action[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.filter-button[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.inline-actions[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.full-trace-btn[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.trace-kpis[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n  gap: 12px;\n}\n.trace-kpi[_ngcontent-%COMP%] {\n  min-height: 104px;\n  display: grid;\n  grid-template-columns: 54px 1fr;\n  gap: 14px;\n  align-items: center;\n  padding: 18px;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .10),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03);\n}\n.trace-kpi--blue[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, .14),\n      transparent 34%);\n}\n.trace-kpi--warning[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 184, 77, .12),\n      transparent 34%);\n}\n.kpi-icon[_ngcontent-%COMP%], \n.cow-icon[_ngcontent-%COMP%] {\n  width: 52px;\n  height: 52px;\n  display: grid;\n  place-items: center;\n  border-radius: 18px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .1);\n  border: 1px solid rgba(159, 232, 112, .16);\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08);\n}\n.kpi-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.cow-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 28px;\n  height: 28px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.trace-kpi[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 4px;\n  font-size: 26px;\n  letter-spacing: -.04em;\n}\n.trace-kpi[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.trace-filters[_ngcontent-%COMP%] {\n  padding: 14px;\n  display: grid;\n  grid-template-columns: minmax(260px, 1.45fr) repeat(4, minmax(120px, .7fr)) auto;\n  gap: 10px;\n  align-items: end;\n}\n.trace-filters[_ngcontent-%COMP%]   label[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n}\n.trace-filters[_ngcontent-%COMP%]   input[_ngcontent-%COMP%], \n.trace-filters[_ngcontent-%COMP%]   select[_ngcontent-%COMP%], \n.trace-pagination[_ngcontent-%COMP%]   select[_ngcontent-%COMP%], \n.form-grid[_ngcontent-%COMP%]   input[_ngcontent-%COMP%], \n.form-grid[_ngcontent-%COMP%]   select[_ngcontent-%COMP%], \n.textarea-field[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  width: 100%;\n  min-height: 42px;\n  border: 1px solid rgba(148, 163, 184, .14);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .48);\n  color: #f8fbff;\n  padding: 0 12px;\n  outline: none;\n}\n.trace-search[_ngcontent-%COMP%] {\n  position: relative;\n}\n.trace-search[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  position: absolute;\n  right: 12px;\n  bottom: 12px;\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: #8ea0bb;\n  stroke-width: 1.8;\n}\n.trace-search[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  padding-right: 38px;\n}\n.filter-button[_ngcontent-%COMP%] {\n  min-height: 42px;\n  padding: 0 14px;\n  border: 1px solid rgba(148, 163, 184, .14);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .52);\n  color: #f8fbff;\n  font-weight: 900;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n}\n.trace-layout[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: minmax(0, 1.62fr) minmax(360px, .9fr);\n  gap: 14px;\n  align-items: start;\n}\n.trace-table-card[_ngcontent-%COMP%], \n.trace-context[_ngcontent-%COMP%] {\n  padding: 16px;\n  overflow: hidden;\n}\n.table-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 14px;\n}\n.table-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 18px;\n}\n.table-head[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: inline-flex;\n  margin-top: 8px;\n  padding: 5px 9px;\n  border-radius: 999px;\n  background: rgba(110, 168, 255, .1);\n  color: #b8cff5;\n  font-size: 11px;\n  font-weight: 800;\n}\n.trace-table-wrap[_ngcontent-%COMP%] {\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  background: rgba(7, 15, 31, .34);\n}\n.trace-table[_ngcontent-%COMP%] {\n  width: 100%;\n  border-collapse: separate;\n  border-spacing: 0;\n  min-width: 980px;\n}\n.trace-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  padding: 13px 10px;\n  text-align: left;\n  color: #7f91ac;\n  font-size: 10px;\n  letter-spacing: .08em;\n  text-transform: uppercase;\n  border-bottom: 1px solid rgba(148, 163, 184, .1);\n}\n.trace-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 13px 10px;\n  color: #b9c7da;\n  font-size: 12px;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.trace-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%] {\n  cursor: pointer;\n  transition: background .16s ease, box-shadow .16s ease;\n}\n.trace-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover, \n.trace-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr.selected[_ngcontent-%COMP%] {\n  background: rgba(159, 232, 112, .055);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, .78);\n}\n.trace-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n}\n.row-selector[_ngcontent-%COMP%] {\n  width: 14px;\n  height: 14px;\n  display: inline-block;\n  border-radius: 999px;\n  border: 1px solid rgba(148, 163, 184, .34);\n}\ntr.selected[_ngcontent-%COMP%]   .row-selector[_ngcontent-%COMP%] {\n  background: #9fe870;\n  border-color: #9fe870;\n  box-shadow: 0 0 16px rgba(159, 232, 112, .28);\n}\n.status-badge[_ngcontent-%COMP%], \n.risk-badge[_ngcontent-%COMP%], \n.sex-chip[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 24px;\n  padding: 4px 8px;\n  border-radius: 999px;\n  font-size: 10px;\n  font-weight: 900;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .12);\n  border: 1px solid rgba(159, 232, 112, .15);\n}\n.status-badge--muted[_ngcontent-%COMP%] {\n  color: #a6b3c6;\n  background: rgba(148, 163, 184, .1);\n}\n.risk-badge--medium[_ngcontent-%COMP%] {\n  color: #ffcf73;\n  background: rgba(255, 184, 77, .12);\n  border-color: rgba(255, 184, 77, .18);\n}\n.risk-badge--high[_ngcontent-%COMP%] {\n  color: #ff9b9b;\n  background: rgba(255, 107, 107, .12);\n  border-color: rgba(255, 107, 107, .18);\n}\n.sex-chip[_ngcontent-%COMP%] {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, .1);\n}\n.sex-chip--female[_ngcontent-%COMP%] {\n  color: #f0a3ff;\n  background: rgba(240, 163, 255, .1);\n}\n.inline-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 6px;\n}\n.inline-actions[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  width: 28px;\n  height: 28px;\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 9px;\n  background: rgba(7, 15, 31, .38);\n  color: #9eb0ca;\n}\n.inline-actions[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:hover {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, .3);\n}\n.trace-pagination[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  margin-top: 12px;\n  padding: 14px;\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  background: rgba(7, 15, 31, .36);\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.pager[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 6px;\n  align-items: center;\n}\n.pager[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  min-height: 34px;\n  padding: 0 12px;\n  border: 1px solid rgba(148, 163, 184, .13);\n  border-radius: 10px;\n  background: rgba(7, 15, 31, .42);\n  color: #b8c5d8;\n  font-weight: 800;\n}\n.pager[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, .5);\n  box-shadow: 0 0 18px rgba(159, 232, 112, .13);\n}\n.pager[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:disabled {\n  opacity: .45;\n}\n.trace-context[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 18px;\n  border-color: rgba(110, 168, 255, .16);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, .1),\n      transparent 34%);\n}\n.context-head[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 58px 1fr;\n  gap: 14px;\n  align-items: center;\n}\n.context-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 28px;\n  letter-spacing: -.04em;\n}\n.context-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%]:not(.eyebrow) {\n  margin: 4px 0 0;\n  color: #9badc8;\n  font-size: 12px;\n}\n.context-badges[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  margin: 14px 0;\n}\n.context-badges[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  padding: 7px 10px;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 999px;\n  background: rgba(7, 15, 31, .42);\n  color: #b8c5d8;\n  font-size: 11px;\n  font-weight: 800;\n}\n.mini-metrics[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  overflow: hidden;\n}\n.mini-metrics[_ngcontent-%COMP%]   div[_ngcontent-%COMP%] {\n  padding: 12px;\n  border-right: 1px solid rgba(148, 163, 184, .08);\n}\n.mini-metrics[_ngcontent-%COMP%]   div[_ngcontent-%COMP%]:last-child {\n  border-right: 0;\n}\n.mini-metrics[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8293ad;\n  font-size: 10px;\n}\n.mini-metrics[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 5px;\n  color: #f8fbff;\n  font-size: 12px;\n}\n.context-tabs[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 6px;\n  margin: 16px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, .1);\n}\n.context-tabs[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  border: 0;\n  background: transparent;\n  color: #8ea0bb;\n  padding: 12px 10px;\n  font-size: 12px;\n  font-weight: 900;\n  position: relative;\n}\n.context-tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  color: #9fe870;\n}\n.context-tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%]::after {\n  content: "";\n  position: absolute;\n  left: 8px;\n  right: 8px;\n  bottom: -1px;\n  height: 2px;\n  background: #9fe870;\n  box-shadow: 0 0 16px rgba(159, 232, 112, .28);\n}\n.context-content[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n}\n.info-card[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  padding: 14px;\n  background: rgba(7, 15, 31, .34);\n}\n.info-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  margin: 0 0 12px;\n  font-size: 13px;\n}\n.info-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 10px;\n  margin: 9px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.info-card[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n  text-align: right;\n}\n.genealogy-card[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 12px;\n}\n.genealogy-card[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  fill: none;\n  stroke: #9fe870;\n  stroke-width: 1.6;\n}\n.genealogy-card[_ngcontent-%COMP%]   button[_ngcontent-%COMP%], \n.full-trace-btn[_ngcontent-%COMP%] {\n  width: 100%;\n  min-height: 42px;\n  border: 1px solid rgba(159, 232, 112, .18);\n  border-radius: 12px;\n  background: rgba(159, 232, 112, .1);\n  color: #9fe870;\n  font-weight: 900;\n}\n.timeline-card[_ngcontent-%COMP%] {\n  grid-column: 1 / -1;\n}\n.event-item[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 16px 1fr auto;\n  gap: 10px;\n  padding: 12px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.event-item[_ngcontent-%COMP%]:last-child {\n  border-bottom: 0;\n}\n.event-dot[_ngcontent-%COMP%] {\n  width: 10px;\n  height: 10px;\n  margin-top: 3px;\n  border-radius: 999px;\n  background: #9fe870;\n  box-shadow: 0 0 14px rgba(159, 232, 112, .3);\n}\n.event-dot--blue[_ngcontent-%COMP%] {\n  background: #6ea8ff;\n  box-shadow: 0 0 14px rgba(110, 168, 255, .3);\n}\n.event-item[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n  font-size: 12px;\n}\n.event-item[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 4px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.event-item[_ngcontent-%COMP%]   em[_ngcontent-%COMP%] {\n  align-self: start;\n  padding: 5px 8px;\n  border-radius: 999px;\n  background: rgba(110, 168, 255, .1);\n  color: #b8cff5;\n  font-size: 10px;\n  font-style: normal;\n  font-weight: 800;\n}\n.full-trace-btn[_ngcontent-%COMP%] {\n  margin-top: 14px;\n  display: inline-flex;\n  justify-content: center;\n  align-items: center;\n  gap: 9px;\n  background: rgba(7, 15, 31, .42);\n  color: #f8fbff;\n  border-color: rgba(148, 163, 184, .16);\n}\n.form-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.form-grid[_ngcontent-%COMP%]   label[_ngcontent-%COMP%], \n.textarea-field[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.panel-narrow[_ngcontent-%COMP%] {\n  width: min(920px, 100%);\n}\n.modal-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0 0 18px;\n}\n.textarea-field[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  min-height: 100px;\n}\n.search-select[_ngcontent-%COMP%] {\n  position: relative;\n}\n.search-select__actions[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: flex-end;\n  margin-top: 4px;\n}\n.search-select__menu[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  max-height: 220px;\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, .16);\n  border-radius: 14px;\n  background: rgba(15, 23, 42, .92);\n  padding: 6px;\n}\n.search-select__option[_ngcontent-%COMP%] {\n  width: 100%;\n  text-align: left;\n  border: 0;\n  border-radius: 10px;\n  background: transparent;\n  color: #f8fbff;\n  padding: 10px 12px;\n}\n.search-select__option[_ngcontent-%COMP%]:hover {\n  background: rgba(159, 232, 112, .1);\n}\n.search-select__empty[_ngcontent-%COMP%], \n.empty-box[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.link-btn[_ngcontent-%COMP%] {\n  border: 0;\n  background: transparent;\n  color: #9fe870;\n  padding: 0;\n  min-height: auto;\n  font-size: 12px;\n}\n.error-box[_ngcontent-%COMP%], \n.premium-empty-box[_ngcontent-%COMP%] {\n  padding: 16px;\n  border-radius: 16px;\n  background: rgba(127, 29, 29, .18);\n  color: #fecaca;\n  border: 1px solid rgba(248, 113, 113, .25);\n}\n.premium-empty-box[_ngcontent-%COMP%] {\n  background: rgba(7, 15, 31, .36);\n  color: #8ea0bb;\n  border-color: rgba(148, 163, 184, .14);\n}\n@media (max-width: 1320px) {\n  .trace-layout[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .trace-context[_ngcontent-%COMP%] {\n    position: static;\n  }\n}\n@media (max-width: 1080px) {\n  .trace-kpis[_ngcontent-%COMP%], \n   .trace-filters[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr 1fr;\n  }\n  .context-content[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .trace-header[_ngcontent-%COMP%], \n   .trace-pagination[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: stretch;\n  }\n  .trace-kpis[_ngcontent-%COMP%], \n   .trace-filters[_ngcontent-%COMP%], \n   .mini-metrics[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n.trace-kpi[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.trace-kpi[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%] {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.trace-kpi[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.trace-kpi[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: contents;\n}\n.trace-kpi[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n}\n.trace-kpi[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .trace-kpi[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.trace-kpi[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.trace-kpi[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.trace-kpi[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.trace-kpi[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  grid-column: auto;\n  grid-row: auto;\n}\n.trace-kpi[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  margin: 0;\n  line-height: 1.2;\n}\n.trace-kpi[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .trace-kpi[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.trace-kpi[_ngcontent-%COMP%] {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.trace-kpi[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.trace-kpi[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.trace-kpi[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.trace-kpi[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%] {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%] {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%] {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%] {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-trazabilidad-page.component.css.map */'] });
+  }, dependencies: [CommonModule, NgClass, NgForOf, NgIf, FormsModule, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, SelectControlValueAccessor, NgControlStatus, NgModel, RemoteSearchSelectComponent], styles: ['\n.trace-page[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n  color: #f8fbff;\n}\n.trace-header[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n}\n.trace-header[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.trace-header[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow[_ngcontent-%COMP%] {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  letter-spacing: .12em;\n  text-transform: uppercase;\n  font-weight: 900;\n}\n.head-actions[_ngcontent-%COMP%], \n.modal-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n.trace-action[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.trace-action[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.filter-button[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.inline-actions[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.full-trace-btn[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.trace-kpis[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n  gap: 12px;\n}\n.trace-kpi[_ngcontent-%COMP%] {\n  min-height: 104px;\n  display: grid;\n  grid-template-columns: 54px 1fr;\n  gap: 14px;\n  align-items: center;\n  padding: 18px;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .10),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03);\n}\n.trace-kpi--blue[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, .14),\n      transparent 34%);\n}\n.trace-kpi--warning[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 184, 77, .12),\n      transparent 34%);\n}\n.kpi-icon[_ngcontent-%COMP%], \n.cow-icon[_ngcontent-%COMP%] {\n  width: 52px;\n  height: 52px;\n  display: grid;\n  place-items: center;\n  border-radius: 18px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .1);\n  border: 1px solid rgba(159, 232, 112, .16);\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08);\n}\n.kpi-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.cow-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 28px;\n  height: 28px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.trace-kpi[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 4px;\n  font-size: 26px;\n  letter-spacing: -.04em;\n}\n.trace-kpi[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.trace-filters[_ngcontent-%COMP%] {\n  padding: 14px;\n  display: grid;\n  grid-template-columns: minmax(260px, 1.45fr) repeat(4, minmax(120px, .7fr)) auto;\n  gap: 10px;\n  align-items: end;\n}\n.trace-filters[_ngcontent-%COMP%]   label[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n}\n.trace-filters[_ngcontent-%COMP%]   input[_ngcontent-%COMP%], \n.trace-filters[_ngcontent-%COMP%]   select[_ngcontent-%COMP%], \n.trace-pagination[_ngcontent-%COMP%]   select[_ngcontent-%COMP%], \n.form-grid[_ngcontent-%COMP%]   input[_ngcontent-%COMP%], \n.form-grid[_ngcontent-%COMP%]   select[_ngcontent-%COMP%], \n.textarea-field[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  width: 100%;\n  min-height: 42px;\n  border: 1px solid rgba(148, 163, 184, .14);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .48);\n  color: #f8fbff;\n  padding: 0 12px;\n  outline: none;\n}\n.trace-search[_ngcontent-%COMP%] {\n  position: relative;\n}\n.trace-search[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  position: absolute;\n  right: 12px;\n  bottom: 12px;\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: #8ea0bb;\n  stroke-width: 1.8;\n}\n.trace-search[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  padding-right: 38px;\n}\n.filter-button[_ngcontent-%COMP%] {\n  min-height: 42px;\n  padding: 0 14px;\n  border: 1px solid rgba(148, 163, 184, .14);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .52);\n  color: #f8fbff;\n  font-weight: 900;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n}\n.trace-layout[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: minmax(0, 1.62fr) minmax(360px, .9fr);\n  gap: 14px;\n  align-items: start;\n}\n.trace-table-card[_ngcontent-%COMP%], \n.trace-context[_ngcontent-%COMP%] {\n  padding: 16px;\n  overflow: hidden;\n}\n.table-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 14px;\n}\n.table-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 18px;\n}\n.table-head[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: inline-flex;\n  margin-top: 8px;\n  padding: 5px 9px;\n  border-radius: 999px;\n  background: rgba(110, 168, 255, .1);\n  color: #b8cff5;\n  font-size: 11px;\n  font-weight: 800;\n}\n.trace-table-wrap[_ngcontent-%COMP%] {\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  background: rgba(7, 15, 31, .34);\n}\n.trace-table[_ngcontent-%COMP%] {\n  width: 100%;\n  border-collapse: separate;\n  border-spacing: 0;\n  min-width: 980px;\n}\n.trace-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  padding: 13px 10px;\n  text-align: left;\n  color: #7f91ac;\n  font-size: 10px;\n  letter-spacing: .08em;\n  text-transform: uppercase;\n  border-bottom: 1px solid rgba(148, 163, 184, .1);\n}\n.trace-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 13px 10px;\n  color: #b9c7da;\n  font-size: 12px;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.trace-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%] {\n  cursor: pointer;\n  transition: background .16s ease, box-shadow .16s ease;\n}\n.trace-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover, \n.trace-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr.selected[_ngcontent-%COMP%] {\n  background: rgba(159, 232, 112, .055);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, .78);\n}\n.trace-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n}\n.row-selector[_ngcontent-%COMP%] {\n  width: 14px;\n  height: 14px;\n  display: inline-block;\n  border-radius: 999px;\n  border: 1px solid rgba(148, 163, 184, .34);\n}\ntr.selected[_ngcontent-%COMP%]   .row-selector[_ngcontent-%COMP%] {\n  background: #9fe870;\n  border-color: #9fe870;\n  box-shadow: 0 0 16px rgba(159, 232, 112, .28);\n}\n.status-badge[_ngcontent-%COMP%], \n.risk-badge[_ngcontent-%COMP%], \n.sex-chip[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 24px;\n  padding: 4px 8px;\n  border-radius: 999px;\n  font-size: 10px;\n  font-weight: 900;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .12);\n  border: 1px solid rgba(159, 232, 112, .15);\n}\n.status-badge--muted[_ngcontent-%COMP%] {\n  color: #a6b3c6;\n  background: rgba(148, 163, 184, .1);\n}\n.risk-badge--medium[_ngcontent-%COMP%] {\n  color: #ffcf73;\n  background: rgba(255, 184, 77, .12);\n  border-color: rgba(255, 184, 77, .18);\n}\n.risk-badge--high[_ngcontent-%COMP%] {\n  color: #ff9b9b;\n  background: rgba(255, 107, 107, .12);\n  border-color: rgba(255, 107, 107, .18);\n}\n.sex-chip[_ngcontent-%COMP%] {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, .1);\n}\n.sex-chip--female[_ngcontent-%COMP%] {\n  color: #f0a3ff;\n  background: rgba(240, 163, 255, .1);\n}\n.inline-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 6px;\n}\n.inline-actions[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  width: 28px;\n  height: 28px;\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 9px;\n  background: rgba(7, 15, 31, .38);\n  color: #9eb0ca;\n}\n.inline-actions[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:hover {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, .3);\n}\n.trace-pagination[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  margin-top: 12px;\n  padding: 14px;\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  background: rgba(7, 15, 31, .36);\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.pager[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 6px;\n  align-items: center;\n}\n.pager[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  min-height: 34px;\n  padding: 0 12px;\n  border: 1px solid rgba(148, 163, 184, .13);\n  border-radius: 10px;\n  background: rgba(7, 15, 31, .42);\n  color: #b8c5d8;\n  font-weight: 800;\n}\n.pager[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, .5);\n  box-shadow: 0 0 18px rgba(159, 232, 112, .13);\n}\n.pager[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:disabled {\n  opacity: .45;\n}\n.trace-context[_ngcontent-%COMP%] {\n  position: sticky;\n  top: 18px;\n  border-color: rgba(110, 168, 255, .16);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, .1),\n      transparent 34%);\n}\n.context-head[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 58px 1fr;\n  gap: 14px;\n  align-items: center;\n}\n.context-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 28px;\n  letter-spacing: -.04em;\n}\n.context-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%]:not(.eyebrow) {\n  margin: 4px 0 0;\n  color: #9badc8;\n  font-size: 12px;\n}\n.context-badges[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  margin: 14px 0;\n}\n.context-badges[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  padding: 7px 10px;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 999px;\n  background: rgba(7, 15, 31, .42);\n  color: #b8c5d8;\n  font-size: 11px;\n  font-weight: 800;\n}\n.mini-metrics[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  overflow: hidden;\n}\n.mini-metrics[_ngcontent-%COMP%]   div[_ngcontent-%COMP%] {\n  padding: 12px;\n  border-right: 1px solid rgba(148, 163, 184, .08);\n}\n.mini-metrics[_ngcontent-%COMP%]   div[_ngcontent-%COMP%]:last-child {\n  border-right: 0;\n}\n.mini-metrics[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8293ad;\n  font-size: 10px;\n}\n.mini-metrics[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 5px;\n  color: #f8fbff;\n  font-size: 12px;\n}\n.context-tabs[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 6px;\n  margin: 16px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, .1);\n}\n.context-tabs[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  border: 0;\n  background: transparent;\n  color: #8ea0bb;\n  padding: 12px 10px;\n  font-size: 12px;\n  font-weight: 900;\n  position: relative;\n}\n.context-tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  color: #9fe870;\n}\n.context-tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%]::after {\n  content: "";\n  position: absolute;\n  left: 8px;\n  right: 8px;\n  bottom: -1px;\n  height: 2px;\n  background: #9fe870;\n  box-shadow: 0 0 16px rgba(159, 232, 112, .28);\n}\n.context-content[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n}\n.info-card[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  padding: 14px;\n  background: rgba(7, 15, 31, .34);\n}\n.info-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  margin: 0 0 12px;\n  font-size: 13px;\n}\n.info-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 10px;\n  margin: 9px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.info-card[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n  text-align: right;\n}\n.genealogy-card[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 12px;\n}\n.genealogy-card[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  fill: none;\n  stroke: #9fe870;\n  stroke-width: 1.6;\n}\n.genealogy-card[_ngcontent-%COMP%]   button[_ngcontent-%COMP%], \n.full-trace-btn[_ngcontent-%COMP%] {\n  width: 100%;\n  min-height: 42px;\n  border: 1px solid rgba(159, 232, 112, .18);\n  border-radius: 12px;\n  background: rgba(159, 232, 112, .1);\n  color: #9fe870;\n  font-weight: 900;\n}\n.timeline-card[_ngcontent-%COMP%] {\n  grid-column: 1 / -1;\n}\n.event-item[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 16px 1fr auto;\n  gap: 10px;\n  padding: 12px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.event-item[_ngcontent-%COMP%]:last-child {\n  border-bottom: 0;\n}\n.event-dot[_ngcontent-%COMP%] {\n  width: 10px;\n  height: 10px;\n  margin-top: 3px;\n  border-radius: 999px;\n  background: #9fe870;\n  box-shadow: 0 0 14px rgba(159, 232, 112, .3);\n}\n.event-dot--blue[_ngcontent-%COMP%] {\n  background: #6ea8ff;\n  box-shadow: 0 0 14px rgba(110, 168, 255, .3);\n}\n.event-dot--green[_ngcontent-%COMP%] {\n  background: #9fe870;\n  box-shadow: 0 0 14px rgba(159, 232, 112, .3);\n}\n.event-dot--warning[_ngcontent-%COMP%] {\n  background: #ffb84d;\n  box-shadow: 0 0 14px rgba(255, 184, 77, .28);\n}\n.event-item[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n  font-size: 12px;\n}\n.event-item[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 4px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.event-item[_ngcontent-%COMP%]   em[_ngcontent-%COMP%] {\n  align-self: start;\n  padding: 5px 8px;\n  border-radius: 999px;\n  background: rgba(110, 168, 255, .1);\n  color: #b8cff5;\n  font-size: 10px;\n  font-style: normal;\n  font-weight: 800;\n}\n.full-trace-btn[_ngcontent-%COMP%] {\n  margin-top: 14px;\n  display: inline-flex;\n  justify-content: center;\n  align-items: center;\n  gap: 9px;\n  background: rgba(7, 15, 31, .42);\n  color: #f8fbff;\n  border-color: rgba(148, 163, 184, .16);\n}\n.form-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.form-grid[_ngcontent-%COMP%]   label[_ngcontent-%COMP%], \n.textarea-field[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.panel-narrow[_ngcontent-%COMP%] {\n  width: min(920px, 100%);\n}\n.modal-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0 0 18px;\n}\n.textarea-field[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  min-height: 100px;\n}\n.search-select[_ngcontent-%COMP%] {\n  position: relative;\n}\n.search-select__actions[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: flex-end;\n  margin-top: 4px;\n}\n.search-select__menu[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  max-height: 220px;\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, .16);\n  border-radius: 14px;\n  background: rgba(15, 23, 42, .92);\n  padding: 6px;\n}\n.search-select__option[_ngcontent-%COMP%] {\n  width: 100%;\n  text-align: left;\n  border: 0;\n  border-radius: 10px;\n  background: transparent;\n  color: #f8fbff;\n  padding: 10px 12px;\n}\n.search-select__option[_ngcontent-%COMP%]:hover {\n  background: rgba(159, 232, 112, .1);\n}\n.search-select__empty[_ngcontent-%COMP%], \n.empty-box[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.link-btn[_ngcontent-%COMP%] {\n  border: 0;\n  background: transparent;\n  color: #9fe870;\n  padding: 0;\n  min-height: auto;\n  font-size: 12px;\n}\n.error-box[_ngcontent-%COMP%], \n.premium-empty-box[_ngcontent-%COMP%] {\n  padding: 16px;\n  border-radius: 16px;\n  background: rgba(127, 29, 29, .18);\n  color: #fecaca;\n  border: 1px solid rgba(248, 113, 113, .25);\n}\n.premium-empty-box[_ngcontent-%COMP%] {\n  background: rgba(7, 15, 31, .36);\n  color: #8ea0bb;\n  border-color: rgba(148, 163, 184, .14);\n}\n@media (max-width: 1320px) {\n  .trace-layout[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .trace-context[_ngcontent-%COMP%] {\n    position: static;\n  }\n}\n@media (max-width: 1080px) {\n  .trace-kpis[_ngcontent-%COMP%], \n   .trace-filters[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr 1fr;\n  }\n  .context-content[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .trace-header[_ngcontent-%COMP%], \n   .trace-pagination[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: stretch;\n  }\n  .trace-kpis[_ngcontent-%COMP%], \n   .trace-filters[_ngcontent-%COMP%], \n   .mini-metrics[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n.trace-kpi[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.trace-kpi[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%] {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.trace-kpi[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.trace-kpi[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: contents;\n}\n.trace-kpi[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n}\n.trace-kpi[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .trace-kpi[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.trace-kpi[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.trace-kpi[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.trace-kpi[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.trace-kpi[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  grid-column: auto;\n  grid-row: auto;\n}\n.trace-kpi[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  margin: 0;\n  line-height: 1.2;\n}\n.trace-kpi[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .trace-kpi[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.trace-kpi[_ngcontent-%COMP%] {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.trace-kpi[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.trace-kpi[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.trace-kpi[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.trace-kpi[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.trace-kpi[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%] {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%] {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%] {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%] {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-trazabilidad-page.component.css.map */'] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(GanaderiaTrazabilidadPageComponent, [{
     type: Component,
-    args: [{ selector: "app-ganaderia-trazabilidad-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<div class="trace-page">\r
-  <header class="trace-header">\r
-    <div>\r
-      <p class="eyebrow">Campo App \xB7 Ganader\xEDa</p>\r
-      <h2>Trazabilidad Animal</h2>\r
-      <p>Seguimiento ganadero por caravana, movimientos, genealog\xEDa e historial m\xE9dico.</p>\r
-    </div>\r
-    <div class="head-actions">\r
-      <button class="btn-secondary trace-action" type="button" (click)="exportSenasa()">\r
-        <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>\r
-        Exportar SENASA\r
-      </button>\r
-      <button class="btn-primary trace-action" type="button" (click)="openCreateAnimal()">\r
-        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>\r
-        Nuevo animal\r
-      </button>\r
-    </div>\r
-  </header>\r
-\r
-  <section class="trace-kpis">\r
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M6 8c0-3 2-5 6-5s6 2 6 5v5c0 4-2.5 7-6 7s-6-3-6-7V8Z" /><path d="M9 9h.01M15 9h.01M9 14c1.8 1.2 4.2 1.2 6 0" /></svg></div><div class="kpi-copy"><span>Animales activos</span><small>\u2191 8.4% vs. mes anterior</small></div><strong>{{ resumen().activos }}</strong></article>\r
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /><path d="M5 6v12" /></svg></div><div class="kpi-copy"><span>En movimiento</span><small>\u2191 12.1% vs. mes anterior</small></div><strong>{{ resumen().enMovimiento }}</strong></article>\r
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /><path d="M12 8v5m0 3h.01" /></svg></div><div class="kpi-copy"><span>Riesgo sanitario</span><small>\u2193 2.3% vs. mes anterior</small></div><strong>{{ resumen().riesgoSanitario }}</strong></article>\r
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M6 8a8 8 0 0 0 0 8" /><path d="M18 8a8 8 0 0 1 0 8" /><path d="M9 10a4 4 0 0 0 0 4" /><path d="M15 10a4 4 0 0 1 0 4" /><circle cx="12" cy="12" r="1" /></svg></div><div class="kpi-copy"><span>RFID activos</span><small>\u2191 5.7% vs. mes anterior</small></div><strong>{{ resumen().conRfid }}</strong></article>\r
-  </section>\r
-\r
-  <section class="trace-filters card">\r
-    <label class="trace-search">\r
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m16 16 4 4" /></svg>\r
-      <input placeholder="Buscar por ID, caravana, raza o potrero..." [ngModel]="filters().search" (ngModelChange)="updateFilter('search', $event)" />\r
-    </label>\r
-    <label><span>Caravana</span><input placeholder="Todas" [ngModel]="filters().caravana" (ngModelChange)="updateFilter('caravana', $event)" /></label>\r
-    <label><span>Raza</span><select [ngModel]="filters().raza" (ngModelChange)="updateFilter('raza', $event)"><option value="">Todas</option><option *ngFor="let raza of razas()" [value]="raza">{{ raza }}</option></select></label>\r
-    <label><span>Estado</span><select [ngModel]="filters().estado" (ngModelChange)="updateFilter('estado', $event)"><option value="">Todos</option><option value="ACTIVO">Activo</option><option value="VENDIDO">Vendido</option><option value="BAJA">Baja</option></select></label>\r
-    <label><span>Ubicaci\xF3n</span><select [ngModel]="filters().ubicacion" (ngModelChange)="updateFilter('ubicacion', $event)"><option value="">Todas</option><option *ngFor="let ubicacion of ubicaciones()" [value]="ubicacion">{{ ubicacion }}</option></select></label>\r
-    <button class="filter-button" type="button" (click)="loadAnimales()"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4" /></svg>Filtros</button>\r
-  </section>\r
-\r
-  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>\r
-  <div class="card empty-box" *ngIf="loading()">Cargando animales...</div>\r
-\r
-  <main class="trace-layout" *ngIf="!loading()">\r
-    <section class="trace-table-card card">\r
-      <div class="table-head">\r
-        <div><h3>Animales registrados</h3><span>{{ filteredAnimales().length }} animales</span></div>\r
-      </div>\r
-\r
-      <div class="trace-table-wrap" *ngIf="paginatedAnimales().length; else noAnimals">\r
-        <table class="trace-table">\r
-          <thead>\r
-            <tr>\r
-              <th></th><th>ID animal</th><th>Raza</th><th>Sexo</th><th>Estado</th><th>Potrero</th><th>Peso</th><th>\xDAltimo movimiento</th><th>Riesgo</th><th>Acciones</th>\r
-            </tr>\r
-          </thead>\r
-          <tbody>\r
-            <tr *ngFor="let animal of paginatedAnimales()" [class.selected]="selected()?.animal?.id === animal.id" (click)="loadAnimalDetail(animal.id)">\r
-              <td><span class="row-selector"></span></td>\r
-              <td><strong>{{ animal.caravana }}</strong></td>\r
-              <td>{{ animal.raza }}</td>\r
-              <td><span class="sex-chip" [class.sex-chip--female]="isFemale(animal)">{{ sexoLabel(animal) }}</span></td>\r
-              <td><span class="status-badge" [class.status-badge--muted]="animal.estado !== 'ACTIVO'">{{ animal.estado }}</span></td>\r
-              <td>{{ animal.potreroNombre || animal.ubicacionActual || 'Sin dato' }}</td>\r
-              <td>{{ animal.pesoActualKg ? (animal.pesoActualKg + ' kg') : 'Sin dato' }}</td>\r
-              <td>{{ lastMovement(animal) }}</td>\r
-              <td><span class="risk-badge" [class.risk-badge--medium]="riesgoAnimal(animal) === 'Medio'" [class.risk-badge--high]="riesgoAnimal(animal) === 'Alto'">{{ riesgoAnimal(animal) }}</span></td>\r
-              <td class="inline-actions">\r
-                <button type="button" aria-label="Ver"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg></button>\r
-                <button type="button" aria-label="Movimiento" (click)="$event.stopPropagation(); openMovimientoModalFor(animal)"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg></button>\r
-                <button type="button" aria-label="Historial m\xE9dico" (click)="$event.stopPropagation(); openMedicoModalFor(animal)"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></button>\r
-                <button type="button" aria-label="M\xE1s opciones"><svg viewBox="0 0 24 24"><path d="M12 6h.01M12 12h.01M12 18h.01" /></svg></button>\r
-              </td>\r
-            </tr>\r
-          </tbody>\r
-        </table>\r
-      </div>\r
-\r
-      <ng-template #noAnimals><div class="empty-box premium-empty-box">No hay animales con los filtros actuales.</div></ng-template>\r
-\r
-      <footer class="trace-pagination">\r
-        <span>{{ rangeLabel() }}</span>\r
-        <div class="pager"><button type="button" (click)="previousPage()" [disabled]="page() === 1">Anterior</button><button type="button" *ngFor="let pageNumber of pageNumbers()" [class.active]="pageNumber === page()" (click)="setPage(pageNumber)">{{ pageNumber }}</button><button type="button" (click)="nextPage()" [disabled]="page() === totalPages()">Siguiente</button></div>\r
-        <label><select [ngModel]="pageSize()" (ngModelChange)="updatePageSize($event)"><option value="25">25 por p\xE1gina</option><option value="50">50 por p\xE1gina</option><option value="100">100 por p\xE1gina</option></select></label>\r
-      </footer>\r
-    </section>\r
-\r
-    <aside class="trace-context card" *ngIf="selected() as detail">\r
-      <div class="context-head">\r
-        <div class="cow-icon"><svg viewBox="0 0 24 24"><path d="M7 8c-2-3-4-3-5-2 0 2 1 4 3 5" /><path d="M17 8c2-3 4-3 5-2 0 2-1 4-3 5" /><path d="M6 10c0-4 2-6 6-6s6 2 6 6v3c0 4-2.5 7-6 7s-6-3-6-7v-3Z" /><path d="M9 11h.01M15 11h.01M10 16h4" /></svg></div>\r
-        <div><p class="eyebrow">Animal seleccionado</p><h3>{{ detail.animal.caravana }}</h3><p>{{ detail.animal.raza }} \xB7 {{ detail.animal.estado }} \xB7 {{ detail.animal.potreroNombre || detail.animal.ubicacionActual || 'Sin ubicaci\xF3n' }}</p></div>\r
-      </div>\r
-      <div class="context-badges"><span>RP {{ detail.animal.caravana }}</span><span>HBA {{ detail.animal.rfidCodigo || 'Sin asignar' }}</span></div>\r
-\r
-      <div class="mini-metrics">\r
-        <div><span>RFID</span><strong>{{ detail.animal.rfidCodigo || 'Sin dato' }}</strong></div>\r
-        <div><span>Peso actual</span><strong>{{ detail.animal.pesoActualKg ? (detail.animal.pesoActualKg + ' kg') : 'Sin dato' }}</strong></div>\r
-        <div><span>Edad</span><strong>{{ animalAge(detail.animal) }}</strong></div>\r
-        <div><span>Sexo</span><strong>{{ sexoLabel(detail.animal) }}</strong></div>\r
-      </div>\r
-\r
-      <nav class="context-tabs"><button type="button" [class.active]="panelTab() === 'RESUMEN'" (click)="selectPanelTab('RESUMEN')">Resumen</button><button type="button" [class.active]="panelTab() === 'MOVIMIENTOS'" (click)="selectPanelTab('MOVIMIENTOS')">Movimientos</button><button type="button" [class.active]="panelTab() === 'MEDICO'" (click)="selectPanelTab('MEDICO')">Historial m\xE9dico</button><button type="button" [class.active]="panelTab() === 'VACUNAS'" (click)="selectPanelTab('VACUNAS')">Vacunas</button><button type="button" [class.active]="panelTab() === 'MAS'" (click)="selectPanelTab('MAS')">M\xE1s</button></nav>\r
-\r
-      <section class="context-content" *ngIf="panelTab() === 'RESUMEN'">\r
-        <article class="info-card"><h4>Informaci\xF3n general</h4><p><span>Caravana</span><strong>{{ detail.animal.caravana }}</strong></p><p><span>Raza</span><strong>{{ detail.animal.raza }}</strong></p><p><span>Fecha nacimiento</span><strong>{{ detail.animal.fechaNacimiento || 'Sin dato' }}</strong></p><p><span>Madre</span><strong>{{ detail.animal.madreCaravana || 'Sin dato' }}</strong></p><p><span>Padre</span><strong>{{ detail.animal.padreCaravana || 'Sin dato' }}</strong></p><p><span>Estado reproductivo</span><strong>Apto</strong></p></article>\r
-        <article class="info-card"><h4>Ubicaci\xF3n actual</h4><p><span>Potrero</span><strong>{{ detail.animal.potreroNombre || detail.animal.ubicacionActual || 'Sin dato' }}</strong></p><p><span>Coordenadas</span><strong>-31.4200, -64.1900</strong></p><p><span>Sector</span><strong>Ganader\xEDa</strong></p></article>\r
-        <article class="info-card genealogy-card"><h4>Genealog\xEDa</h4><svg viewBox="0 0 24 24"><path d="M12 4v6" /><path d="M8 10h8" /><path d="M6 14v6M18 14v6M12 14v6" /><circle cx="12" cy="4" r="2" /><circle cx="6" cy="20" r="2" /><circle cx="12" cy="20" r="2" /><circle cx="18" cy="20" r="2" /></svg><button type="button">Ver \xE1rbol geneal\xF3gico</button></article>\r
-      </section>\r
-\r
-      <section class="context-content" *ngIf="panelTab() !== 'RESUMEN'">\r
-        <article class="info-card timeline-card"><h4>{{ panelTab() === 'MOVIMIENTOS' ? 'Movimientos' : panelTab() === 'MEDICO' ? 'Historial m\xE9dico' : 'Eventos recientes' }}</h4>\r
-          <div class="event-item" *ngFor="let movimiento of detail.movimientos.slice(0, 3)"><span class="event-dot"></span><div><strong>{{ movimiento.tipoMovimiento }}</strong><p>{{ movimiento.fecha }} \xB7 {{ movimiento.ubicacionOrigen || 'Origen' }} \u2192 {{ movimiento.ubicacionDestino || 'Destino' }}</p></div><em>Movimiento</em></div>\r
-          <div class="event-item" *ngFor="let item of detail.historialMedico.slice(0, 3)"><span class="event-dot event-dot--blue"></span><div><strong>{{ item.diagnostico }}</strong><p>{{ item.fecha }} \xB7 {{ item.tratamiento || 'Sin tratamiento' }}</p></div><em>Sanidad</em></div>\r
-          <div class="empty-box" *ngIf="!detail.movimientos.length && !detail.historialMedico.length">Sin eventos registrados.</div>\r
-        </article>\r
-      </section>\r
-\r
-      <button class="full-trace-btn" type="button">Ver trazabilidad completa <svg viewBox="0 0 24 24"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></button>\r
-    </aside>\r
-  </main>\r
-\r
-  <div class="app-modal-backdrop" *ngIf="animalModalOpen() || movimientoModalOpen() || medicoModalOpen()" (click)="closeModals()" (document:keydown.escape)="closeModals()">\r
-    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">\r
-      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModals()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>\r
-      <ng-container *ngIf="animalModalOpen()">\r
-        <div class="modal-head"><h3>Registrar animal</h3></div>\r
-        <div class="form-grid">\r
-          <label><span>Caravana</span><input [(ngModel)]="animalForm().caravana" (ngModelChange)="animalForm.update(f => ({ ...f, caravana: $event }))" /></label>\r
-          <app-remote-search-select label="Raza" placeholder="Buscar raza" [options]="razaOptions" valueField="value" labelField="label" [value]="animalForm().raza" (valueChange)="animalForm.update(f => ({ ...f, raza: $event }))"></app-remote-search-select>\r
-          <label><span>Sexo</span><select [(ngModel)]="animalForm().sexo" (ngModelChange)="animalForm.update(f => ({ ...f, sexo: $event }))"><option value="">Seleccionar</option><option *ngFor="let option of sexoOptions" [value]="option.value">{{ option.label }}</option></select></label>\r
-          <label><span>Fecha nacimiento</span><input type="date" [(ngModel)]="animalForm().fechaNacimiento" (ngModelChange)="animalForm.update(f => ({ ...f, fechaNacimiento: $event }))" /></label>\r
-          <label><span>Fecha compra</span><input type="date" [(ngModel)]="animalForm().fechaCompra" (ngModelChange)="animalForm.update(f => ({ ...f, fechaCompra: $event }))" /></label>\r
-          <label><span>Peso actual kg</span><input type="number" [(ngModel)]="animalForm().pesoActualKg" (ngModelChange)="animalForm.update(f => ({ ...f, pesoActualKg: $event }))" /></label>\r
-          <label><span>RFID</span><input [(ngModel)]="animalForm().rfidCodigo" (ngModelChange)="animalForm.update(f => ({ ...f, rfidCodigo: $event }))" /></label>\r
-          <app-remote-search-select label="Potrero actual" placeholder="Buscar potrero" [endpoint]="endpoints.potreros" queryParam="nombre" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="animalForm().potreroId" (valueChange)="animalForm.update(f => ({ ...f, potreroId: $event }))"></app-remote-search-select>\r
-          <app-remote-search-select label="Madre" placeholder="Buscar madre por caravana, raza o potrero" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="madreAllowedValues" [value]="animalForm().madreId" (valueChange)="animalForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>\r
-          <app-remote-search-select label="Padre" placeholder="Buscar padre por caravana, raza o potrero" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="padreAllowedValues" [value]="animalForm().padreId" (valueChange)="animalForm.update(f => ({ ...f, padreId: $event }))"></app-remote-search-select>\r
-        </div>\r
-        <label class="textarea-field"><span>Observaciones</span><textarea [(ngModel)]="animalForm().observaciones" (ngModelChange)="animalForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>\r
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAnimal()">Guardar</button></div>\r
-      </ng-container>\r
-\r
-      <ng-container *ngIf="movimientoModalOpen()">\r
-        <div class="modal-head"><h3>Registrar movimiento</h3></div>\r
-        <div class="form-grid"><label><span>Fecha</span><input type="datetime-local" [(ngModel)]="movimientoForm().fecha" (ngModelChange)="movimientoForm.update(f => ({ ...f, fecha: $event }))" /></label><label><span>Tipo</span><select [(ngModel)]="movimientoForm().tipoMovimiento" (ngModelChange)="movimientoForm.update(f => ({ ...f, tipoMovimiento: $event }))"><option value="INGRESO">Ingreso</option><option value="EGRESO">Egreso</option><option value="TRANSFERENCIA">Transferencia</option><option value="SANIDAD">Sanidad</option><option value="CONTROL">Control</option></select></label><app-remote-search-select label="Origen" placeholder="Buscar potrero origen" [endpoint]="endpoints.potreros" queryParam="nombre" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="movimientoForm().potreroOrigenId" (valueChange)="movimientoForm.update(f => ({ ...f, potreroOrigenId: $event }))"></app-remote-search-select><app-remote-search-select label="Destino" placeholder="Buscar potrero destino" [endpoint]="endpoints.potreros" queryParam="nombre" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="movimientoForm().potreroDestinoId" (valueChange)="movimientoForm.update(f => ({ ...f, potreroDestinoId: $event }))"></app-remote-search-select><label><span>Motivo</span><input [(ngModel)]="movimientoForm().motivo" (ngModelChange)="movimientoForm.update(f => ({ ...f, motivo: $event }))" /></label><app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="movimientoForm().responsable" (valueChange)="movimientoForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select></div>\r
-        <label class="textarea-field"><span>Observaciones</span><textarea [(ngModel)]="movimientoForm().observaciones" (ngModelChange)="movimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>\r
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitMovimiento()">Guardar</button></div>\r
-      </ng-container>\r
-\r
-      <ng-container *ngIf="medicoModalOpen()">\r
-        <div class="modal-head"><h3>Registrar historial m\xE9dico</h3></div>\r
-        <div class="form-grid"><label><span>Fecha</span><input type="date" [(ngModel)]="medicoForm().fecha" (ngModelChange)="medicoForm.update(f => ({ ...f, fecha: $event }))" /></label><label><span>Diagn\xF3stico</span><input [(ngModel)]="medicoForm().diagnostico" (ngModelChange)="medicoForm.update(f => ({ ...f, diagnostico: $event }))" /></label><label><span>Tratamiento</span><input [(ngModel)]="medicoForm().tratamiento" (ngModelChange)="medicoForm.update(f => ({ ...f, tratamiento: $event }))" /></label><app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [endpoint]="endpoints.operarios" [extraParams]="veterinarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero']" [value]="medicoForm().veterinario" (valueChange)="medicoForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select></div>\r
-        <label class="textarea-field"><span>Observaciones</span><textarea [(ngModel)]="medicoForm().observaciones" (ngModelChange)="medicoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>\r
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitMedico()">Guardar</button></div>\r
-      </ng-container>\r
-    </div>\r
-  </div>\r
-</div>\r
-`, styles: ['/* src/app/pages/ganaderia-trazabilidad-page/ganaderia-trazabilidad-page.component.css */\n.trace-page {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n  color: #f8fbff;\n}\n.trace-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n}\n.trace-header h2 {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.trace-header p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  letter-spacing: .12em;\n  text-transform: uppercase;\n  font-weight: 900;\n}\n.head-actions,\n.modal-actions {\n  display: flex;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n.trace-action {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.trace-action svg,\n.filter-button svg,\n.inline-actions svg,\n.full-trace-btn svg {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.trace-kpis {\n  display: grid;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n  gap: 12px;\n}\n.trace-kpi {\n  min-height: 104px;\n  display: grid;\n  grid-template-columns: 54px 1fr;\n  gap: 14px;\n  align-items: center;\n  padding: 18px;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .10),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03);\n}\n.trace-kpi--blue {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, .14),\n      transparent 34%);\n}\n.trace-kpi--warning {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 184, 77, .12),\n      transparent 34%);\n}\n.kpi-icon,\n.cow-icon {\n  width: 52px;\n  height: 52px;\n  display: grid;\n  place-items: center;\n  border-radius: 18px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .1);\n  border: 1px solid rgba(159, 232, 112, .16);\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08);\n}\n.kpi-icon svg,\n.cow-icon svg {\n  width: 28px;\n  height: 28px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.trace-kpi span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.trace-kpi strong {\n  display: block;\n  margin-top: 4px;\n  font-size: 26px;\n  letter-spacing: -.04em;\n}\n.trace-kpi small {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.trace-filters {\n  padding: 14px;\n  display: grid;\n  grid-template-columns: minmax(260px, 1.45fr) repeat(4, minmax(120px, .7fr)) auto;\n  gap: 10px;\n  align-items: end;\n}\n.trace-filters label {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n}\n.trace-filters input,\n.trace-filters select,\n.trace-pagination select,\n.form-grid input,\n.form-grid select,\n.textarea-field textarea {\n  width: 100%;\n  min-height: 42px;\n  border: 1px solid rgba(148, 163, 184, .14);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .48);\n  color: #f8fbff;\n  padding: 0 12px;\n  outline: none;\n}\n.trace-search {\n  position: relative;\n}\n.trace-search svg {\n  position: absolute;\n  right: 12px;\n  bottom: 12px;\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: #8ea0bb;\n  stroke-width: 1.8;\n}\n.trace-search input {\n  padding-right: 38px;\n}\n.filter-button {\n  min-height: 42px;\n  padding: 0 14px;\n  border: 1px solid rgba(148, 163, 184, .14);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .52);\n  color: #f8fbff;\n  font-weight: 900;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n}\n.trace-layout {\n  display: grid;\n  grid-template-columns: minmax(0, 1.62fr) minmax(360px, .9fr);\n  gap: 14px;\n  align-items: start;\n}\n.trace-table-card,\n.trace-context {\n  padding: 16px;\n  overflow: hidden;\n}\n.table-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 14px;\n}\n.table-head h3 {\n  margin: 0;\n  font-size: 18px;\n}\n.table-head span {\n  display: inline-flex;\n  margin-top: 8px;\n  padding: 5px 9px;\n  border-radius: 999px;\n  background: rgba(110, 168, 255, .1);\n  color: #b8cff5;\n  font-size: 11px;\n  font-weight: 800;\n}\n.trace-table-wrap {\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  background: rgba(7, 15, 31, .34);\n}\n.trace-table {\n  width: 100%;\n  border-collapse: separate;\n  border-spacing: 0;\n  min-width: 980px;\n}\n.trace-table th {\n  padding: 13px 10px;\n  text-align: left;\n  color: #7f91ac;\n  font-size: 10px;\n  letter-spacing: .08em;\n  text-transform: uppercase;\n  border-bottom: 1px solid rgba(148, 163, 184, .1);\n}\n.trace-table td {\n  padding: 13px 10px;\n  color: #b9c7da;\n  font-size: 12px;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.trace-table tbody tr {\n  cursor: pointer;\n  transition: background .16s ease, box-shadow .16s ease;\n}\n.trace-table tbody tr:hover,\n.trace-table tbody tr.selected {\n  background: rgba(159, 232, 112, .055);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, .78);\n}\n.trace-table td strong {\n  color: #f8fbff;\n}\n.row-selector {\n  width: 14px;\n  height: 14px;\n  display: inline-block;\n  border-radius: 999px;\n  border: 1px solid rgba(148, 163, 184, .34);\n}\ntr.selected .row-selector {\n  background: #9fe870;\n  border-color: #9fe870;\n  box-shadow: 0 0 16px rgba(159, 232, 112, .28);\n}\n.status-badge,\n.risk-badge,\n.sex-chip {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 24px;\n  padding: 4px 8px;\n  border-radius: 999px;\n  font-size: 10px;\n  font-weight: 900;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .12);\n  border: 1px solid rgba(159, 232, 112, .15);\n}\n.status-badge--muted {\n  color: #a6b3c6;\n  background: rgba(148, 163, 184, .1);\n}\n.risk-badge--medium {\n  color: #ffcf73;\n  background: rgba(255, 184, 77, .12);\n  border-color: rgba(255, 184, 77, .18);\n}\n.risk-badge--high {\n  color: #ff9b9b;\n  background: rgba(255, 107, 107, .12);\n  border-color: rgba(255, 107, 107, .18);\n}\n.sex-chip {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, .1);\n}\n.sex-chip--female {\n  color: #f0a3ff;\n  background: rgba(240, 163, 255, .1);\n}\n.inline-actions {\n  display: flex;\n  gap: 6px;\n}\n.inline-actions button {\n  width: 28px;\n  height: 28px;\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 9px;\n  background: rgba(7, 15, 31, .38);\n  color: #9eb0ca;\n}\n.inline-actions button:hover {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, .3);\n}\n.trace-pagination {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  margin-top: 12px;\n  padding: 14px;\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  background: rgba(7, 15, 31, .36);\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.pager {\n  display: flex;\n  gap: 6px;\n  align-items: center;\n}\n.pager button {\n  min-height: 34px;\n  padding: 0 12px;\n  border: 1px solid rgba(148, 163, 184, .13);\n  border-radius: 10px;\n  background: rgba(7, 15, 31, .42);\n  color: #b8c5d8;\n  font-weight: 800;\n}\n.pager button.active {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, .5);\n  box-shadow: 0 0 18px rgba(159, 232, 112, .13);\n}\n.pager button:disabled {\n  opacity: .45;\n}\n.trace-context {\n  position: sticky;\n  top: 18px;\n  border-color: rgba(110, 168, 255, .16);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, .1),\n      transparent 34%);\n}\n.context-head {\n  display: grid;\n  grid-template-columns: 58px 1fr;\n  gap: 14px;\n  align-items: center;\n}\n.context-head h3 {\n  margin: 0;\n  font-size: 28px;\n  letter-spacing: -.04em;\n}\n.context-head p:not(.eyebrow) {\n  margin: 4px 0 0;\n  color: #9badc8;\n  font-size: 12px;\n}\n.context-badges {\n  display: flex;\n  gap: 8px;\n  margin: 14px 0;\n}\n.context-badges span {\n  padding: 7px 10px;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 999px;\n  background: rgba(7, 15, 31, .42);\n  color: #b8c5d8;\n  font-size: 11px;\n  font-weight: 800;\n}\n.mini-metrics {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  overflow: hidden;\n}\n.mini-metrics div {\n  padding: 12px;\n  border-right: 1px solid rgba(148, 163, 184, .08);\n}\n.mini-metrics div:last-child {\n  border-right: 0;\n}\n.mini-metrics span {\n  display: block;\n  color: #8293ad;\n  font-size: 10px;\n}\n.mini-metrics strong {\n  display: block;\n  margin-top: 5px;\n  color: #f8fbff;\n  font-size: 12px;\n}\n.context-tabs {\n  display: flex;\n  gap: 6px;\n  margin: 16px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, .1);\n}\n.context-tabs button {\n  border: 0;\n  background: transparent;\n  color: #8ea0bb;\n  padding: 12px 10px;\n  font-size: 12px;\n  font-weight: 900;\n  position: relative;\n}\n.context-tabs button.active {\n  color: #9fe870;\n}\n.context-tabs button.active::after {\n  content: "";\n  position: absolute;\n  left: 8px;\n  right: 8px;\n  bottom: -1px;\n  height: 2px;\n  background: #9fe870;\n  box-shadow: 0 0 16px rgba(159, 232, 112, .28);\n}\n.context-content {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n}\n.info-card {\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  padding: 14px;\n  background: rgba(7, 15, 31, .34);\n}\n.info-card h4 {\n  margin: 0 0 12px;\n  font-size: 13px;\n}\n.info-card p {\n  display: flex;\n  justify-content: space-between;\n  gap: 10px;\n  margin: 9px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.info-card strong {\n  color: #f8fbff;\n  text-align: right;\n}\n.genealogy-card {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 12px;\n}\n.genealogy-card svg {\n  width: 48px;\n  height: 48px;\n  fill: none;\n  stroke: #9fe870;\n  stroke-width: 1.6;\n}\n.genealogy-card button,\n.full-trace-btn {\n  width: 100%;\n  min-height: 42px;\n  border: 1px solid rgba(159, 232, 112, .18);\n  border-radius: 12px;\n  background: rgba(159, 232, 112, .1);\n  color: #9fe870;\n  font-weight: 900;\n}\n.timeline-card {\n  grid-column: 1 / -1;\n}\n.event-item {\n  display: grid;\n  grid-template-columns: 16px 1fr auto;\n  gap: 10px;\n  padding: 12px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.event-item:last-child {\n  border-bottom: 0;\n}\n.event-dot {\n  width: 10px;\n  height: 10px;\n  margin-top: 3px;\n  border-radius: 999px;\n  background: #9fe870;\n  box-shadow: 0 0 14px rgba(159, 232, 112, .3);\n}\n.event-dot--blue {\n  background: #6ea8ff;\n  box-shadow: 0 0 14px rgba(110, 168, 255, .3);\n}\n.event-item strong {\n  color: #f8fbff;\n  font-size: 12px;\n}\n.event-item p {\n  margin: 4px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.event-item em {\n  align-self: start;\n  padding: 5px 8px;\n  border-radius: 999px;\n  background: rgba(110, 168, 255, .1);\n  color: #b8cff5;\n  font-size: 10px;\n  font-style: normal;\n  font-weight: 800;\n}\n.full-trace-btn {\n  margin-top: 14px;\n  display: inline-flex;\n  justify-content: center;\n  align-items: center;\n  gap: 9px;\n  background: rgba(7, 15, 31, .42);\n  color: #f8fbff;\n  border-color: rgba(148, 163, 184, .16);\n}\n.form-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.form-grid label,\n.textarea-field {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.panel-narrow {\n  width: min(920px, 100%);\n}\n.modal-head h3 {\n  margin: 0 0 18px;\n}\n.textarea-field textarea {\n  min-height: 100px;\n}\n.search-select {\n  position: relative;\n}\n.search-select__actions {\n  display: flex;\n  justify-content: flex-end;\n  margin-top: 4px;\n}\n.search-select__menu {\n  margin-top: 8px;\n  max-height: 220px;\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, .16);\n  border-radius: 14px;\n  background: rgba(15, 23, 42, .92);\n  padding: 6px;\n}\n.search-select__option {\n  width: 100%;\n  text-align: left;\n  border: 0;\n  border-radius: 10px;\n  background: transparent;\n  color: #f8fbff;\n  padding: 10px 12px;\n}\n.search-select__option:hover {\n  background: rgba(159, 232, 112, .1);\n}\n.search-select__empty,\n.empty-box {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.link-btn {\n  border: 0;\n  background: transparent;\n  color: #9fe870;\n  padding: 0;\n  min-height: auto;\n  font-size: 12px;\n}\n.error-box,\n.premium-empty-box {\n  padding: 16px;\n  border-radius: 16px;\n  background: rgba(127, 29, 29, .18);\n  color: #fecaca;\n  border: 1px solid rgba(248, 113, 113, .25);\n}\n.premium-empty-box {\n  background: rgba(7, 15, 31, .36);\n  color: #8ea0bb;\n  border-color: rgba(148, 163, 184, .14);\n}\n@media (max-width: 1320px) {\n  .trace-layout {\n    grid-template-columns: 1fr;\n  }\n  .trace-context {\n    position: static;\n  }\n}\n@media (max-width: 1080px) {\n  .trace-kpis,\n  .trace-filters {\n    grid-template-columns: 1fr 1fr;\n  }\n  .context-content {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .trace-header,\n  .trace-pagination {\n    flex-direction: column;\n    align-items: stretch;\n  }\n  .trace-kpis,\n  .trace-filters,\n  .mini-metrics {\n    grid-template-columns: 1fr;\n  }\n}\n.trace-kpi {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.trace-kpi .kpi-icon {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.trace-kpi .kpi-icon svg {\n  width: 24px;\n  height: 24px;\n}\n.trace-kpi > div:last-child {\n  display: contents;\n}\n.trace-kpi span {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n}\n.trace-kpi small {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.trace-kpi strong {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .trace-kpi {\n    grid-template-columns: 46px 1fr;\n  }\n  .trace-kpi strong {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.trace-kpi {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.trace-kpi > div:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.trace-kpi span,\n.trace-kpi small,\n.trace-kpi strong {\n  grid-column: auto;\n  grid-row: auto;\n}\n.trace-kpi span {\n  margin: 0;\n  line-height: 1.2;\n}\n.trace-kpi small {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.trace-kpi strong {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .trace-kpi {\n    grid-template-columns: 46px 1fr;\n  }\n  .trace-kpi strong {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.trace-kpi {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.trace-kpi > div:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.trace-kpi .kpi-icon {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.trace-kpi span {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.trace-kpi small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.trace-kpi strong {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid .kpi-card,\n.reproduction-kpis .kpi-card,\n.sanidad-kpis .kpi-card,\n.trace-kpis .kpi-card {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid .metric-icon,\n.reproduction-kpis .metric-icon,\n.sanidad-kpis .metric-icon,\n.trace-kpis .metric-icon {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid .metric-icon.blue,\n.reproduction-kpis .metric-icon.blue,\n.sanidad-kpis .metric-icon.blue,\n.trace-kpis .metric-icon.blue {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid .metric-icon.warning,\n.reproduction-kpis .metric-icon.warning,\n.sanidad-kpis .metric-icon.warning,\n.trace-kpis .metric-icon.warning {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid .metric-icon svg,\n.reproduction-kpis .metric-icon svg,\n.sanidad-kpis .metric-icon svg,\n.trace-kpis .metric-icon svg {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid .kpi-copy,\n.reproduction-kpis .kpi-copy,\n.sanidad-kpis .kpi-copy,\n.trace-kpis .kpi-copy {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid .kpi-copy span,\n.reproduction-kpis .kpi-copy span,\n.sanidad-kpis .kpi-copy span,\n.trace-kpis .kpi-copy span {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid .kpi-copy small,\n.reproduction-kpis .kpi-copy small,\n.sanidad-kpis .kpi-copy small,\n.trace-kpis .kpi-copy small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid .kpi-card > strong,\n.reproduction-kpis .kpi-card > strong,\n.sanidad-kpis .kpi-card > strong,\n.trace-kpis .kpi-card > strong {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-trazabilidad-page.component.css.map */\n'] }]
+    args: [{ selector: "app-ganaderia-trazabilidad-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<div class="trace-page">
+  <header class="trace-header">
+    <div>
+      <p class="eyebrow">Campo App \xB7 Ganader\xEDa</p>
+      <h2>Trazabilidad Animal</h2>
+      <p>Seguimiento ganadero por caravana, movimientos, genealog\xEDa e historial m\xE9dico.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-secondary trace-action" type="button" (click)="exportSenasa()">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>
+        Exportar SENASA
+      </button>
+      <button class="btn-primary trace-action" type="button" (click)="openCreateAnimal()">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+        Nuevo animal
+      </button>
+    </div>
+  </header>
+
+  <section class="trace-kpis">
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M6 8c0-3 2-5 6-5s6 2 6 5v5c0 4-2.5 7-6 7s-6-3-6-7V8Z" /><path d="M9 9h.01M15 9h.01M9 14c1.8 1.2 4.2 1.2 6 0" /></svg></div><div class="kpi-copy"><span>Animales activos</span><small>\u2191 8.4% vs. mes anterior</small></div><strong>{{ resumen().activos }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /><path d="M5 6v12" /></svg></div><div class="kpi-copy"><span>En movimiento</span><small>\u2191 12.1% vs. mes anterior</small></div><strong>{{ resumen().enMovimiento }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /><path d="M12 8v5m0 3h.01" /></svg></div><div class="kpi-copy"><span>Riesgo sanitario</span><small>\u2193 2.3% vs. mes anterior</small></div><strong>{{ resumen().riesgoSanitario }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M6 8a8 8 0 0 0 0 8" /><path d="M18 8a8 8 0 0 1 0 8" /><path d="M9 10a4 4 0 0 0 0 4" /><path d="M15 10a4 4 0 0 1 0 4" /><circle cx="12" cy="12" r="1" /></svg></div><div class="kpi-copy"><span>RFID activos</span><small>\u2191 5.7% vs. mes anterior</small></div><strong>{{ resumen().conRfid }}</strong></article>
+  </section>
+
+  <section class="trace-filters card">
+    <label class="trace-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m16 16 4 4" /></svg>
+      <input placeholder="Buscar por ID, caravana, raza o potrero..." [ngModel]="filters().search" (ngModelChange)="updateFilter('search', $event)" />
+    </label>
+    <label><span>Caravana</span><input placeholder="Todas" [ngModel]="filters().caravana" (ngModelChange)="updateFilter('caravana', $event)" /></label>
+    <label><span>Raza</span><select [ngModel]="filters().raza" (ngModelChange)="updateFilter('raza', $event)"><option value="">Todas</option><option *ngFor="let raza of razas()" [value]="raza">{{ raza }}</option></select></label>
+    <label><span>Estado</span><select [ngModel]="filters().estado" (ngModelChange)="updateFilter('estado', $event)"><option value="">Todos</option><option value="ACTIVO">Activo</option><option value="VENDIDO">Vendido</option><option value="BAJA">Baja</option></select></label>
+    <label><span>Ubicaci\xF3n</span><select [ngModel]="filters().ubicacion" (ngModelChange)="updateFilter('ubicacion', $event)"><option value="">Todas</option><option *ngFor="let ubicacion of ubicaciones()" [value]="ubicacion">{{ ubicacion }}</option></select></label>
+    <button class="filter-button" type="button" (click)="loadAnimales()"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4" /></svg>Filtros</button>
+  </section>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="card empty-box" *ngIf="loading()">Cargando animales...</div>
+
+  <main class="trace-layout" *ngIf="!loading()">
+    <section class="trace-table-card card">
+      <div class="table-head">
+        <div><h3>Animales registrados</h3><span>{{ filteredAnimales().length }} animales</span></div>
+      </div>
+
+      <div class="trace-table-wrap" *ngIf="paginatedAnimales().length; else noAnimals">
+        <table class="trace-table">
+          <thead>
+            <tr>
+              <th></th><th>ID animal</th><th>Raza</th><th>Sexo</th><th>Estado</th><th>Potrero</th><th>Peso</th><th>\xDAltimo movimiento</th><th>Riesgo</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let animal of paginatedAnimales()" [class.selected]="selected()?.animal?.id === animal.id" (click)="loadAnimalDetail(animal.id)">
+              <td><span class="row-selector"></span></td>
+              <td><strong>{{ animal.caravana }}</strong></td>
+              <td>{{ animal.raza }}</td>
+              <td><span class="sex-chip" [class.sex-chip--female]="isFemale(animal)">{{ sexoLabel(animal) }}</span></td>
+              <td><span class="status-badge" [class.status-badge--muted]="animal.estado !== 'ACTIVO'">{{ animal.estado }}</span></td>
+              <td>{{ animal.potreroNombre || 'Sin dato' }}</td>
+              <td>{{ animal.pesoActualKg ? (animal.pesoActualKg + ' kg') : 'Sin dato' }}</td>
+              <td>{{ lastMovement(animal) }}</td>
+              <td><span class="risk-badge" [class.risk-badge--medium]="riesgoAnimal(animal) === 'Medio'" [class.risk-badge--high]="riesgoAnimal(animal) === 'Alto'">{{ riesgoAnimal(animal) }}</span></td>
+              <td class="inline-actions">
+                <button type="button" aria-label="Ver"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg></button>
+                <button type="button" aria-label="Movimiento" (click)="$event.stopPropagation(); openMovimientoModalFor(animal)"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg></button>
+                <button type="button" aria-label="Historial m\xE9dico" (click)="$event.stopPropagation(); openMedicoModalFor(animal)"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></button>
+                <button type="button" aria-label="M\xE1s opciones"><svg viewBox="0 0 24 24"><path d="M12 6h.01M12 12h.01M12 18h.01" /></svg></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #noAnimals><div class="empty-box premium-empty-box">No hay animales con los filtros actuales.</div></ng-template>
+
+      <footer class="trace-pagination">
+        <span>{{ rangeLabel() }}</span>
+        <div class="pager"><button type="button" (click)="previousPage()" [disabled]="page() === 1">Anterior</button><button type="button" *ngFor="let pageNumber of pageNumbers()" [class.active]="pageNumber === page()" (click)="setPage(pageNumber)">{{ pageNumber }}</button><button type="button" (click)="nextPage()" [disabled]="page() === totalPages()">Siguiente</button></div>
+        <label><select [ngModel]="pageSize()" (ngModelChange)="updatePageSize($event)"><option value="25">25 por p\xE1gina</option><option value="50">50 por p\xE1gina</option><option value="100">100 por p\xE1gina</option></select></label>
+      </footer>
+    </section>
+
+    <aside class="trace-context card" *ngIf="selected() as detail">
+      <div class="context-head">
+        <div class="cow-icon"><svg viewBox="0 0 24 24"><path d="M7 8c-2-3-4-3-5-2 0 2 1 4 3 5" /><path d="M17 8c2-3 4-3 5-2 0 2-1 4-3 5" /><path d="M6 10c0-4 2-6 6-6s6 2 6 6v3c0 4-2.5 7-6 7s-6-3-6-7v-3Z" /><path d="M9 11h.01M15 11h.01M10 16h4" /></svg></div>
+        <div><p class="eyebrow">Animal seleccionado</p><h3>{{ detail.animal.caravana }}</h3><p>{{ detail.animal.raza }} \xB7 {{ detail.animal.estado }} \xB7 {{ detail.animal.potreroNombre || 'Sin ubicaci\xF3n' }}</p></div>
+      </div>
+      <div class="context-badges"><span>RP {{ detail.animal.caravana }}</span><span>HBA {{ detail.animal.rfidCodigo || 'Sin asignar' }}</span></div>
+
+      <div class="mini-metrics">
+        <div><span>RFID</span><strong>{{ detail.animal.rfidCodigo || 'Sin dato' }}</strong></div>
+        <div><span>Peso actual</span><strong>{{ detail.animal.pesoActualKg ? (detail.animal.pesoActualKg + ' kg') : 'Sin dato' }}</strong></div>
+        <div><span>Edad</span><strong>{{ animalAge(detail.animal) }}</strong></div>
+        <div><span>Sexo</span><strong>{{ sexoLabel(detail.animal) }}</strong></div>
+      </div>
+
+      <nav class="context-tabs"><button type="button" [class.active]="panelTab() === 'RESUMEN'" (click)="selectPanelTab('RESUMEN')">Resumen</button><button type="button" [class.active]="panelTab() === 'MOVIMIENTOS'" (click)="selectPanelTab('MOVIMIENTOS')">Movimientos</button><button type="button" [class.active]="panelTab() === 'MEDICO'" (click)="selectPanelTab('MEDICO')">Historial m\xE9dico</button><button type="button" [class.active]="panelTab() === 'VACUNAS'" (click)="selectPanelTab('VACUNAS')">Vacunas</button><button type="button" [class.active]="panelTab() === 'MAS'" (click)="selectPanelTab('MAS')">M\xE1s</button></nav>
+
+      <section class="context-content" *ngIf="panelTab() === 'RESUMEN'">
+        <article class="info-card"><h4>Informaci\xF3n general</h4><p><span>Caravana</span><strong>{{ detail.animal.caravana }}</strong></p><p><span>Raza</span><strong>{{ detail.animal.raza }}</strong></p><p><span>Fecha nacimiento</span><strong>{{ detail.animal.fechaNacimiento || 'Sin dato' }}</strong></p><p><span>Madre</span><strong>{{ detail.animal.madreCaravana || 'Sin dato' }}</strong></p><p><span>Padre</span><strong>{{ detail.animal.padreCaravana || 'Sin dato' }}</strong></p><p><span>Estado reproductivo</span><strong>Apto</strong></p></article>
+        <article class="info-card"><h4>Ubicaci\xF3n actual</h4><p><span>Potrero</span><strong>{{ detail.animal.potreroNombre || 'Sin dato' }}</strong></p><p><span>Coordenadas</span><strong>-31.4200, -64.1900</strong></p><p><span>Sector</span><strong>Ganader\xEDa</strong></p></article>
+        <article class="info-card genealogy-card"><h4>Genealog\xEDa</h4><svg viewBox="0 0 24 24"><path d="M12 4v6" /><path d="M8 10h8" /><path d="M6 14v6M18 14v6M12 14v6" /><circle cx="12" cy="4" r="2" /><circle cx="6" cy="20" r="2" /><circle cx="12" cy="20" r="2" /><circle cx="18" cy="20" r="2" /></svg><button type="button">Ver \xE1rbol geneal\xF3gico</button></article>
+      </section>
+
+      <section class="context-content" *ngIf="panelTab() === 'MOVIMIENTOS'">
+        <article class="info-card timeline-card">
+          <h4>Movimientos del animal</h4>
+          <div class="event-item" *ngFor="let movimiento of detail.movimientos">
+            <span class="event-dot"></span>
+            <div>
+              <strong>{{ movimiento.tipoMovimiento }}</strong>
+              <p>{{ movimiento.fecha }} \xB7 {{ movimiento.ubicacionOrigen || 'Origen' }} \u2192 {{ movimiento.ubicacionDestino || 'Destino' }}</p>
+              <p *ngIf="movimiento.motivo">{{ movimiento.motivo }}</p>
+            </div>
+            <em>Movimiento</em>
+          </div>
+          <div class="empty-box" *ngIf="!detail.movimientos.length">Sin movimientos registrados.</div>
+        </article>
+      </section>
+
+      <section class="context-content" *ngIf="panelTab() === 'MEDICO'">
+        <article class="info-card timeline-card">
+          <h4>Historial m\xE9dico completo</h4>
+          <div class="event-item" *ngFor="let item of historialClinico()">
+            <span class="event-dot" [ngClass]="item.dotClass"></span>
+            <div>
+              <strong>{{ item.titulo }}</strong>
+              <p>{{ item.fecha }} \xB7 {{ item.detalle }}</p>
+              <p *ngIf="item.extra">{{ item.extra }}</p>
+            </div>
+            <em>{{ item.badge }}</em>
+          </div>
+          <div class="empty-box" *ngIf="!historialClinico().length">Sin historial m\xE9dico registrado.</div>
+        </article>
+      </section>
+
+      <section class="context-content" *ngIf="panelTab() === 'VACUNAS'">
+        <article class="info-card timeline-card">
+          <h4>Vacunas del animal</h4>
+          <div class="event-item" *ngFor="let vacuna of selectedAplicaciones()">
+            <span class="event-dot event-dot--green"></span>
+            <div>
+              <strong>{{ vacuna.vacunaNombre }}</strong>
+              <p>{{ vacuna.fechaAplicacion }} \xB7 Pr\xF3xima dosis: {{ vacuna.proximaDosisFecha || 'Sin fecha' }}</p>
+              <p>{{ vacuna.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }} \xB7 {{ vacuna.loteMarca || 'Sin lote/serie' }}</p>
+            </div>
+            <em>Vacunaci\xF3n</em>
+          </div>
+          <div class="empty-box" *ngIf="!selectedAplicaciones().length">Sin vacunaciones registradas para este animal.</div>
+        </article>
+      </section>
+
+      <section class="context-content" *ngIf="panelTab() === 'MAS'">
+        <article class="info-card timeline-card">
+          <h4>M\xE1s informaci\xF3n</h4>
+          <div class="empty-box">Sin informaci\xF3n adicional registrada.</div>
+        </article>
+      </section>
+
+      <button class="full-trace-btn" type="button">Ver trazabilidad completa <svg viewBox="0 0 24 24"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></button>
+    </aside>
+  </main>
+
+  <div class="app-modal-backdrop" *ngIf="animalModalOpen() || movimientoModalOpen() || medicoModalOpen()" (click)="closeModals()" (document:keydown.escape)="closeModals()">
+    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModals()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
+      <ng-container *ngIf="animalModalOpen()">
+        <div class="modal-head"><h3>Registrar animal</h3></div>
+        <div class="form-grid">
+          <label><span>Caravana</span><input [(ngModel)]="animalForm().caravana" (ngModelChange)="animalForm.update(f => ({ ...f, caravana: $event }))" /></label>
+          <app-remote-search-select label="Raza" placeholder="Buscar raza bovina" [endpoint]="endpoints.razasBovinas" queryParam="search" valueField="id" labelField="nombre" [subtitleFields]="['aptitud','tipoGenetico']" [searchFields]="['nombre','codigo','aptitud','tipoGenetico']" [value]="animalForm().razaId" (valueChange)="updateRazaValue($event)" (itemSelected)="selectRaza($event)"></app-remote-search-select>
+          <label><span>Sexo</span><select [(ngModel)]="animalForm().sexo" (ngModelChange)="animalForm.update(f => ({ ...f, sexo: $event }))"><option value="">Seleccionar</option><option *ngFor="let option of sexoOptions" [value]="option.value">{{ option.label }}</option></select></label>
+          <label><span>Fecha nacimiento</span><input type="date" [(ngModel)]="animalForm().fechaNacimiento" (ngModelChange)="animalForm.update(f => ({ ...f, fechaNacimiento: $event }))" /></label>
+          <label><span>Fecha compra</span><input type="date" [(ngModel)]="animalForm().fechaCompra" (ngModelChange)="animalForm.update(f => ({ ...f, fechaCompra: $event }))" /></label>
+          <label><span>Peso actual kg</span><input type="number" [(ngModel)]="animalForm().pesoActualKg" (ngModelChange)="animalForm.update(f => ({ ...f, pesoActualKg: $event }))" /></label>
+          <label><span>RFID</span><input [(ngModel)]="animalForm().rfidCodigo" (ngModelChange)="animalForm.update(f => ({ ...f, rfidCodigo: $event }))" /></label>
+          <app-remote-search-select label="Potrero actual" placeholder="Buscar potrero" [endpoint]="endpoints.potreros" queryParam="nombre" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="animalForm().potreroId" (valueChange)="animalForm.update(f => ({ ...f, potreroId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Madre" placeholder="Buscar madre por caravana, raza o potrero" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [allowedValues]="madreAllowedValues" [value]="animalForm().madreId" (valueChange)="animalForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Padre" placeholder="Buscar padre por caravana, raza o potrero" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [allowedValues]="padreAllowedValues" [value]="animalForm().padreId" (valueChange)="animalForm.update(f => ({ ...f, padreId: $event }))"></app-remote-search-select>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [(ngModel)]="animalForm().observaciones" (ngModelChange)="animalForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAnimal()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="movimientoModalOpen()">
+        <div class="modal-head"><h3>Registrar movimiento</h3></div>
+        <div class="form-grid"><label><span>Fecha</span><input type="datetime-local" [(ngModel)]="movimientoForm().fecha" (ngModelChange)="movimientoForm.update(f => ({ ...f, fecha: $event }))" /></label><label><span>Tipo</span><select [(ngModel)]="movimientoForm().tipoMovimiento" (ngModelChange)="movimientoForm.update(f => ({ ...f, tipoMovimiento: $event }))"><option value="INGRESO">Ingreso</option><option value="EGRESO">Egreso</option><option value="TRANSFERENCIA">Transferencia</option><option value="SANIDAD">Sanidad</option><option value="CONTROL">Control</option></select></label><app-remote-search-select label="Origen" placeholder="Buscar potrero origen" [endpoint]="endpoints.potreros" queryParam="nombre" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="movimientoForm().potreroOrigenId" (valueChange)="movimientoForm.update(f => ({ ...f, potreroOrigenId: $event }))"></app-remote-search-select><app-remote-search-select label="Destino" placeholder="Buscar potrero destino" [endpoint]="endpoints.potreros" queryParam="nombre" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="movimientoForm().potreroDestinoId" (valueChange)="movimientoForm.update(f => ({ ...f, potreroDestinoId: $event }))"></app-remote-search-select><label><span>Motivo</span><input [(ngModel)]="movimientoForm().motivo" (ngModelChange)="movimientoForm.update(f => ({ ...f, motivo: $event }))" /></label><app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="movimientoForm().responsable" (valueChange)="movimientoForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select></div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [(ngModel)]="movimientoForm().observaciones" (ngModelChange)="movimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitMovimiento()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="medicoModalOpen()">
+        <div class="modal-head"><h3>Registrar historial m\xE9dico</h3></div>
+        <div class="form-grid"><label><span>Fecha</span><input type="date" [(ngModel)]="medicoForm().fecha" (ngModelChange)="medicoForm.update(f => ({ ...f, fecha: $event }))" /></label><label><span>Diagn\xF3stico</span><input [(ngModel)]="medicoForm().diagnostico" (ngModelChange)="medicoForm.update(f => ({ ...f, diagnostico: $event }))" /></label><label><span>Tratamiento</span><input [(ngModel)]="medicoForm().tratamiento" (ngModelChange)="medicoForm.update(f => ({ ...f, tratamiento: $event }))" /></label><app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [endpoint]="endpoints.operarios" [extraParams]="veterinarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero']" [value]="medicoForm().veterinario" (valueChange)="medicoForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select></div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [(ngModel)]="medicoForm().observaciones" (ngModelChange)="medicoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitMedico()">Guardar</button></div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+`, styles: ['/* src/app/pages/ganaderia-trazabilidad-page/ganaderia-trazabilidad-page.component.css */\n.trace-page {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n  color: #f8fbff;\n}\n.trace-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n}\n.trace-header h2 {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.trace-header p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  letter-spacing: .12em;\n  text-transform: uppercase;\n  font-weight: 900;\n}\n.head-actions,\n.modal-actions {\n  display: flex;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n.trace-action {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.trace-action svg,\n.filter-button svg,\n.inline-actions svg,\n.full-trace-btn svg {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.trace-kpis {\n  display: grid;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n  gap: 12px;\n}\n.trace-kpi {\n  min-height: 104px;\n  display: grid;\n  grid-template-columns: 54px 1fr;\n  gap: 14px;\n  align-items: center;\n  padding: 18px;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .10),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03);\n}\n.trace-kpi--blue {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, .14),\n      transparent 34%);\n}\n.trace-kpi--warning {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, .88),\n      rgba(8, 18, 37, .86)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 184, 77, .12),\n      transparent 34%);\n}\n.kpi-icon,\n.cow-icon {\n  width: 52px;\n  height: 52px;\n  display: grid;\n  place-items: center;\n  border-radius: 18px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .1);\n  border: 1px solid rgba(159, 232, 112, .16);\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08);\n}\n.kpi-icon svg,\n.cow-icon svg {\n  width: 28px;\n  height: 28px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.trace-kpi span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.trace-kpi strong {\n  display: block;\n  margin-top: 4px;\n  font-size: 26px;\n  letter-spacing: -.04em;\n}\n.trace-kpi small {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.trace-filters {\n  padding: 14px;\n  display: grid;\n  grid-template-columns: minmax(260px, 1.45fr) repeat(4, minmax(120px, .7fr)) auto;\n  gap: 10px;\n  align-items: end;\n}\n.trace-filters label {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n}\n.trace-filters input,\n.trace-filters select,\n.trace-pagination select,\n.form-grid input,\n.form-grid select,\n.textarea-field textarea {\n  width: 100%;\n  min-height: 42px;\n  border: 1px solid rgba(148, 163, 184, .14);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .48);\n  color: #f8fbff;\n  padding: 0 12px;\n  outline: none;\n}\n.trace-search {\n  position: relative;\n}\n.trace-search svg {\n  position: absolute;\n  right: 12px;\n  bottom: 12px;\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: #8ea0bb;\n  stroke-width: 1.8;\n}\n.trace-search input {\n  padding-right: 38px;\n}\n.filter-button {\n  min-height: 42px;\n  padding: 0 14px;\n  border: 1px solid rgba(148, 163, 184, .14);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .52);\n  color: #f8fbff;\n  font-weight: 900;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n}\n.trace-layout {\n  display: grid;\n  grid-template-columns: minmax(0, 1.62fr) minmax(360px, .9fr);\n  gap: 14px;\n  align-items: start;\n}\n.trace-table-card,\n.trace-context {\n  padding: 16px;\n  overflow: hidden;\n}\n.table-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 14px;\n}\n.table-head h3 {\n  margin: 0;\n  font-size: 18px;\n}\n.table-head span {\n  display: inline-flex;\n  margin-top: 8px;\n  padding: 5px 9px;\n  border-radius: 999px;\n  background: rgba(110, 168, 255, .1);\n  color: #b8cff5;\n  font-size: 11px;\n  font-weight: 800;\n}\n.trace-table-wrap {\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  background: rgba(7, 15, 31, .34);\n}\n.trace-table {\n  width: 100%;\n  border-collapse: separate;\n  border-spacing: 0;\n  min-width: 980px;\n}\n.trace-table th {\n  padding: 13px 10px;\n  text-align: left;\n  color: #7f91ac;\n  font-size: 10px;\n  letter-spacing: .08em;\n  text-transform: uppercase;\n  border-bottom: 1px solid rgba(148, 163, 184, .1);\n}\n.trace-table td {\n  padding: 13px 10px;\n  color: #b9c7da;\n  font-size: 12px;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.trace-table tbody tr {\n  cursor: pointer;\n  transition: background .16s ease, box-shadow .16s ease;\n}\n.trace-table tbody tr:hover,\n.trace-table tbody tr.selected {\n  background: rgba(159, 232, 112, .055);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, .78);\n}\n.trace-table td strong {\n  color: #f8fbff;\n}\n.row-selector {\n  width: 14px;\n  height: 14px;\n  display: inline-block;\n  border-radius: 999px;\n  border: 1px solid rgba(148, 163, 184, .34);\n}\ntr.selected .row-selector {\n  background: #9fe870;\n  border-color: #9fe870;\n  box-shadow: 0 0 16px rgba(159, 232, 112, .28);\n}\n.status-badge,\n.risk-badge,\n.sex-chip {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 24px;\n  padding: 4px 8px;\n  border-radius: 999px;\n  font-size: 10px;\n  font-weight: 900;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .12);\n  border: 1px solid rgba(159, 232, 112, .15);\n}\n.status-badge--muted {\n  color: #a6b3c6;\n  background: rgba(148, 163, 184, .1);\n}\n.risk-badge--medium {\n  color: #ffcf73;\n  background: rgba(255, 184, 77, .12);\n  border-color: rgba(255, 184, 77, .18);\n}\n.risk-badge--high {\n  color: #ff9b9b;\n  background: rgba(255, 107, 107, .12);\n  border-color: rgba(255, 107, 107, .18);\n}\n.sex-chip {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, .1);\n}\n.sex-chip--female {\n  color: #f0a3ff;\n  background: rgba(240, 163, 255, .1);\n}\n.inline-actions {\n  display: flex;\n  gap: 6px;\n}\n.inline-actions button {\n  width: 28px;\n  height: 28px;\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 9px;\n  background: rgba(7, 15, 31, .38);\n  color: #9eb0ca;\n}\n.inline-actions button:hover {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, .3);\n}\n.trace-pagination {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  margin-top: 12px;\n  padding: 14px;\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  background: rgba(7, 15, 31, .36);\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.pager {\n  display: flex;\n  gap: 6px;\n  align-items: center;\n}\n.pager button {\n  min-height: 34px;\n  padding: 0 12px;\n  border: 1px solid rgba(148, 163, 184, .13);\n  border-radius: 10px;\n  background: rgba(7, 15, 31, .42);\n  color: #b8c5d8;\n  font-weight: 800;\n}\n.pager button.active {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, .5);\n  box-shadow: 0 0 18px rgba(159, 232, 112, .13);\n}\n.pager button:disabled {\n  opacity: .45;\n}\n.trace-context {\n  position: sticky;\n  top: 18px;\n  border-color: rgba(110, 168, 255, .16);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, .1),\n      transparent 34%);\n}\n.context-head {\n  display: grid;\n  grid-template-columns: 58px 1fr;\n  gap: 14px;\n  align-items: center;\n}\n.context-head h3 {\n  margin: 0;\n  font-size: 28px;\n  letter-spacing: -.04em;\n}\n.context-head p:not(.eyebrow) {\n  margin: 4px 0 0;\n  color: #9badc8;\n  font-size: 12px;\n}\n.context-badges {\n  display: flex;\n  gap: 8px;\n  margin: 14px 0;\n}\n.context-badges span {\n  padding: 7px 10px;\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 999px;\n  background: rgba(7, 15, 31, .42);\n  color: #b8c5d8;\n  font-size: 11px;\n  font-weight: 800;\n}\n.mini-metrics {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  overflow: hidden;\n}\n.mini-metrics div {\n  padding: 12px;\n  border-right: 1px solid rgba(148, 163, 184, .08);\n}\n.mini-metrics div:last-child {\n  border-right: 0;\n}\n.mini-metrics span {\n  display: block;\n  color: #8293ad;\n  font-size: 10px;\n}\n.mini-metrics strong {\n  display: block;\n  margin-top: 5px;\n  color: #f8fbff;\n  font-size: 12px;\n}\n.context-tabs {\n  display: flex;\n  gap: 6px;\n  margin: 16px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, .1);\n}\n.context-tabs button {\n  border: 0;\n  background: transparent;\n  color: #8ea0bb;\n  padding: 12px 10px;\n  font-size: 12px;\n  font-weight: 900;\n  position: relative;\n}\n.context-tabs button.active {\n  color: #9fe870;\n}\n.context-tabs button.active::after {\n  content: "";\n  position: absolute;\n  left: 8px;\n  right: 8px;\n  bottom: -1px;\n  height: 2px;\n  background: #9fe870;\n  box-shadow: 0 0 16px rgba(159, 232, 112, .28);\n}\n.context-content {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 10px;\n}\n.info-card {\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  padding: 14px;\n  background: rgba(7, 15, 31, .34);\n}\n.info-card h4 {\n  margin: 0 0 12px;\n  font-size: 13px;\n}\n.info-card p {\n  display: flex;\n  justify-content: space-between;\n  gap: 10px;\n  margin: 9px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.info-card strong {\n  color: #f8fbff;\n  text-align: right;\n}\n.genealogy-card {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 12px;\n}\n.genealogy-card svg {\n  width: 48px;\n  height: 48px;\n  fill: none;\n  stroke: #9fe870;\n  stroke-width: 1.6;\n}\n.genealogy-card button,\n.full-trace-btn {\n  width: 100%;\n  min-height: 42px;\n  border: 1px solid rgba(159, 232, 112, .18);\n  border-radius: 12px;\n  background: rgba(159, 232, 112, .1);\n  color: #9fe870;\n  font-weight: 900;\n}\n.timeline-card {\n  grid-column: 1 / -1;\n}\n.event-item {\n  display: grid;\n  grid-template-columns: 16px 1fr auto;\n  gap: 10px;\n  padding: 12px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.event-item:last-child {\n  border-bottom: 0;\n}\n.event-dot {\n  width: 10px;\n  height: 10px;\n  margin-top: 3px;\n  border-radius: 999px;\n  background: #9fe870;\n  box-shadow: 0 0 14px rgba(159, 232, 112, .3);\n}\n.event-dot--blue {\n  background: #6ea8ff;\n  box-shadow: 0 0 14px rgba(110, 168, 255, .3);\n}\n.event-dot--green {\n  background: #9fe870;\n  box-shadow: 0 0 14px rgba(159, 232, 112, .3);\n}\n.event-dot--warning {\n  background: #ffb84d;\n  box-shadow: 0 0 14px rgba(255, 184, 77, .28);\n}\n.event-item strong {\n  color: #f8fbff;\n  font-size: 12px;\n}\n.event-item p {\n  margin: 4px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.event-item em {\n  align-self: start;\n  padding: 5px 8px;\n  border-radius: 999px;\n  background: rgba(110, 168, 255, .1);\n  color: #b8cff5;\n  font-size: 10px;\n  font-style: normal;\n  font-weight: 800;\n}\n.full-trace-btn {\n  margin-top: 14px;\n  display: inline-flex;\n  justify-content: center;\n  align-items: center;\n  gap: 9px;\n  background: rgba(7, 15, 31, .42);\n  color: #f8fbff;\n  border-color: rgba(148, 163, 184, .16);\n}\n.form-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.form-grid label,\n.textarea-field {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.panel-narrow {\n  width: min(920px, 100%);\n}\n.modal-head h3 {\n  margin: 0 0 18px;\n}\n.textarea-field textarea {\n  min-height: 100px;\n}\n.search-select {\n  position: relative;\n}\n.search-select__actions {\n  display: flex;\n  justify-content: flex-end;\n  margin-top: 4px;\n}\n.search-select__menu {\n  margin-top: 8px;\n  max-height: 220px;\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, .16);\n  border-radius: 14px;\n  background: rgba(15, 23, 42, .92);\n  padding: 6px;\n}\n.search-select__option {\n  width: 100%;\n  text-align: left;\n  border: 0;\n  border-radius: 10px;\n  background: transparent;\n  color: #f8fbff;\n  padding: 10px 12px;\n}\n.search-select__option:hover {\n  background: rgba(159, 232, 112, .1);\n}\n.search-select__empty,\n.empty-box {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.link-btn {\n  border: 0;\n  background: transparent;\n  color: #9fe870;\n  padding: 0;\n  min-height: auto;\n  font-size: 12px;\n}\n.error-box,\n.premium-empty-box {\n  padding: 16px;\n  border-radius: 16px;\n  background: rgba(127, 29, 29, .18);\n  color: #fecaca;\n  border: 1px solid rgba(248, 113, 113, .25);\n}\n.premium-empty-box {\n  background: rgba(7, 15, 31, .36);\n  color: #8ea0bb;\n  border-color: rgba(148, 163, 184, .14);\n}\n@media (max-width: 1320px) {\n  .trace-layout {\n    grid-template-columns: 1fr;\n  }\n  .trace-context {\n    position: static;\n  }\n}\n@media (max-width: 1080px) {\n  .trace-kpis,\n  .trace-filters {\n    grid-template-columns: 1fr 1fr;\n  }\n  .context-content {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .trace-header,\n  .trace-pagination {\n    flex-direction: column;\n    align-items: stretch;\n  }\n  .trace-kpis,\n  .trace-filters,\n  .mini-metrics {\n    grid-template-columns: 1fr;\n  }\n}\n.trace-kpi {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.trace-kpi .kpi-icon {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.trace-kpi .kpi-icon svg {\n  width: 24px;\n  height: 24px;\n}\n.trace-kpi > div:last-child {\n  display: contents;\n}\n.trace-kpi span {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n}\n.trace-kpi small {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.trace-kpi strong {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .trace-kpi {\n    grid-template-columns: 46px 1fr;\n  }\n  .trace-kpi strong {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.trace-kpi {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.trace-kpi > div:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.trace-kpi span,\n.trace-kpi small,\n.trace-kpi strong {\n  grid-column: auto;\n  grid-row: auto;\n}\n.trace-kpi span {\n  margin: 0;\n  line-height: 1.2;\n}\n.trace-kpi small {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.trace-kpi strong {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .trace-kpi {\n    grid-template-columns: 46px 1fr;\n  }\n  .trace-kpi strong {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.trace-kpi {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.trace-kpi > div:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.trace-kpi .kpi-icon {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.trace-kpi span {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.trace-kpi small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.trace-kpi strong {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid .kpi-card,\n.reproduction-kpis .kpi-card,\n.sanidad-kpis .kpi-card,\n.trace-kpis .kpi-card {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid .metric-icon,\n.reproduction-kpis .metric-icon,\n.sanidad-kpis .metric-icon,\n.trace-kpis .metric-icon {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid .metric-icon.blue,\n.reproduction-kpis .metric-icon.blue,\n.sanidad-kpis .metric-icon.blue,\n.trace-kpis .metric-icon.blue {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid .metric-icon.warning,\n.reproduction-kpis .metric-icon.warning,\n.sanidad-kpis .metric-icon.warning,\n.trace-kpis .metric-icon.warning {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid .metric-icon svg,\n.reproduction-kpis .metric-icon svg,\n.sanidad-kpis .metric-icon svg,\n.trace-kpis .metric-icon svg {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid .kpi-copy,\n.reproduction-kpis .kpi-copy,\n.sanidad-kpis .kpi-copy,\n.trace-kpis .kpi-copy {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid .kpi-copy span,\n.reproduction-kpis .kpi-copy span,\n.sanidad-kpis .kpi-copy span,\n.trace-kpis .kpi-copy span {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid .kpi-copy small,\n.reproduction-kpis .kpi-copy small,\n.sanidad-kpis .kpi-copy small,\n.trace-kpis .kpi-copy small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid .kpi-card > strong,\n.reproduction-kpis .kpi-card > strong,\n.sanidad-kpis .kpi-card > strong,\n.trace-kpis .kpi-card > strong {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-trazabilidad-page.component.css.map */\n'] }]
   }], null, null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(GanaderiaTrazabilidadPageComponent, { className: "GanaderiaTrazabilidadPageComponent", filePath: "src/app/pages/ganaderia-trazabilidad-page/ganaderia-trazabilidad-page.component.ts", lineNumber: 22 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(GanaderiaTrazabilidadPageComponent, { className: "GanaderiaTrazabilidadPageComponent", filePath: "src/app/pages/ganaderia-trazabilidad-page/ganaderia-trazabilidad-page.component.ts", lineNumber: 35 });
 })();
 
 // src/app/pages/ganaderia-sanidad-page/ganaderia-sanidad-page.component.ts
-var _c04 = () => ["raza", "ubicacionActual"];
-var _c13 = () => ["caravana", "raza", "ubicacionActual"];
+var _c04 = () => ["raza", "potreroNombre"];
+var _c13 = () => ["caravana", "raza", "potreroNombre"];
 var _c23 = () => ["codigo", "laboratorio"];
 var _c33 = () => ["nombre", "codigo", "laboratorio"];
 var _c43 = () => ["rolOperativo", "documentoNumero"];
 var _c52 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
 function GanaderiaSanidadPageComponent_div_26_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 39)(1, "article", 40)(2, "div", 41);
+    \u0275\u0275elementStart(0, "div", 40)(1, "article", 41)(2, "div", 42);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(3, "svg", 12);
-    \u0275\u0275element(4, "path", 16)(5, "path", 17)(6, "path", 18);
+    \u0275\u0275elementStart(3, "svg", 13);
+    \u0275\u0275element(4, "path", 17)(5, "path", 18)(6, "path", 19);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(7, "div", 42)(8, "span");
+    \u0275\u0275elementStart(7, "div", 43)(8, "span");
     \u0275\u0275text(9, "Cat\xE1logo");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(10, "small");
@@ -50157,13 +50398,13 @@ function GanaderiaSanidadPageComponent_div_26_Template(rf, ctx) {
     \u0275\u0275elementStart(12, "strong");
     \u0275\u0275text(13);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(14, "article", 40)(15, "div", 41);
+    \u0275\u0275elementStart(14, "article", 41)(15, "div", 42);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(16, "svg", 12);
-    \u0275\u0275element(17, "rect", 43)(18, "path", 44);
+    \u0275\u0275elementStart(16, "svg", 13);
+    \u0275\u0275element(17, "rect", 44)(18, "path", 45);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(19, "div", 42)(20, "span");
+    \u0275\u0275elementStart(19, "div", 43)(20, "span");
     \u0275\u0275text(21, "Aplicaciones del mes");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(22, "small");
@@ -50172,13 +50413,13 @@ function GanaderiaSanidadPageComponent_div_26_Template(rf, ctx) {
     \u0275\u0275elementStart(24, "strong");
     \u0275\u0275text(25);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(26, "article", 40)(27, "div", 41);
+    \u0275\u0275elementStart(26, "article", 41)(27, "div", 42);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(28, "svg", 12);
-    \u0275\u0275element(29, "path", 45)(30, "path", 46)(31, "path", 47)(32, "path", 48);
+    \u0275\u0275elementStart(28, "svg", 13);
+    \u0275\u0275element(29, "path", 46)(30, "path", 47)(31, "path", 48)(32, "path", 49);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(33, "div", 42)(34, "span");
+    \u0275\u0275elementStart(33, "div", 43)(34, "span");
     \u0275\u0275text(35, "Diagn\xF3sticos abiertos");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(36, "small");
@@ -50187,13 +50428,13 @@ function GanaderiaSanidadPageComponent_div_26_Template(rf, ctx) {
     \u0275\u0275elementStart(38, "strong");
     \u0275\u0275text(39);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(40, "article", 40)(41, "div", 41);
+    \u0275\u0275elementStart(40, "article", 41)(41, "div", 42);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(42, "svg", 12);
-    \u0275\u0275element(43, "path", 49)(44, "path", 50);
+    \u0275\u0275elementStart(42, "svg", 13);
+    \u0275\u0275element(43, "path", 50)(44, "path", 51);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(45, "div", 42)(46, "span");
+    \u0275\u0275elementStart(45, "div", 43)(46, "span");
     \u0275\u0275text(47, "Tratamientos activos");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(48, "small");
@@ -50202,13 +50443,13 @@ function GanaderiaSanidadPageComponent_div_26_Template(rf, ctx) {
     \u0275\u0275elementStart(50, "strong");
     \u0275\u0275text(51);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(52, "article", 40)(53, "div", 41);
+    \u0275\u0275elementStart(52, "article", 41)(53, "div", 42);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(54, "svg", 12);
-    \u0275\u0275element(55, "path", 51);
+    \u0275\u0275elementStart(54, "svg", 13);
+    \u0275\u0275element(55, "path", 52);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(56, "div", 42)(57, "span");
+    \u0275\u0275elementStart(56, "div", 43)(57, "span");
     \u0275\u0275text(58, "Costo sanitario mes");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(59, "small");
@@ -50218,13 +50459,13 @@ function GanaderiaSanidadPageComponent_div_26_Template(rf, ctx) {
     \u0275\u0275text(62);
     \u0275\u0275pipe(63, "number");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(64, "article", 40)(65, "div", 41);
+    \u0275\u0275elementStart(64, "article", 41)(65, "div", 42);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(66, "svg", 12);
-    \u0275\u0275element(67, "path", 52)(68, "path", 53);
+    \u0275\u0275elementStart(66, "svg", 13);
+    \u0275\u0275element(67, "path", 53)(68, "path", 54);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(69, "div", 42)(70, "span");
+    \u0275\u0275elementStart(69, "div", 43)(70, "span");
     \u0275\u0275text(71, "Alertas vencidas");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(72, "small");
@@ -50253,7 +50494,7 @@ function GanaderiaSanidadPageComponent_div_26_Template(rf, ctx) {
 }
 function GanaderiaSanidadPageComponent_option_35_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "option", 54);
+    \u0275\u0275elementStart(0, "option", 55);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -50266,7 +50507,7 @@ function GanaderiaSanidadPageComponent_option_35_Template(rf, ctx) {
 }
 function GanaderiaSanidadPageComponent_div_65_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 55);
+    \u0275\u0275elementStart(0, "div", 56);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -50278,14 +50519,14 @@ function GanaderiaSanidadPageComponent_div_65_Template(rf, ctx) {
 }
 function GanaderiaSanidadPageComponent_div_66_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 56);
+    \u0275\u0275elementStart(0, "div", 57);
     \u0275\u0275text(1, "Cargando sanidad...");
     \u0275\u0275elementEnd();
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_tr_35_small_30_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_19_div_1_tr_35_small_30_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "small", 95);
+    \u0275\u0275elementStart(0, "small", 97);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -50295,12 +50536,12 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_tr_35_small_
     \u0275\u0275textInterpolate1("", alerta_r5.diasProximaFecha, " d\xEDas");
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_tr_35_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_19_div_1_tr_35_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "div", 89)(3, "span", 90);
+    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "div", 91)(3, "span", 92);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(4, "svg", 12);
-    \u0275\u0275element(5, "path", 16)(6, "path", 17)(7, "path", 18);
+    \u0275\u0275elementStart(4, "svg", 13);
+    \u0275\u0275element(5, "path", 17)(6, "path", 18)(7, "path", 19);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
     \u0275\u0275elementStart(8, "div")(9, "strong");
@@ -50309,16 +50550,16 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_tr_35_Templa
     \u0275\u0275elementStart(11, "small");
     \u0275\u0275text(12);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(13, "td")(14, "span", 91);
+    \u0275\u0275elementStart(13, "td")(14, "span", 93);
     \u0275\u0275text(15);
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(16, "td")(17, "strong");
     \u0275\u0275text(18);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(19, "td")(20, "span", 92);
+    \u0275\u0275elementStart(19, "td")(20, "span", 94);
     \u0275\u0275text(21);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(22, "td")(23, "span", 93);
+    \u0275\u0275elementStart(22, "td")(23, "span", 95);
     \u0275\u0275text(24);
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(25, "td");
@@ -50327,7 +50568,7 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_tr_35_Templa
     \u0275\u0275elementStart(27, "td")(28, "strong");
     \u0275\u0275text(29);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(30, GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_tr_35_small_30_Template, 2, 1, "small", 94);
+    \u0275\u0275template(30, GanaderiaSanidadPageComponent_div_67_ng_container_19_div_1_tr_35_small_30_Template, 2, 1, "small", 96);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
@@ -50354,27 +50595,27 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_tr_35_Templa
     \u0275\u0275property("ngIf", alerta_r5.proximaFecha);
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_19_div_1_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 83)(1, "div", 84)(2, "div")(3, "span");
+    \u0275\u0275elementStart(0, "div", 85)(1, "div", 86)(2, "div")(3, "span");
     \u0275\u0275text(4, "Animales afectados");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(5, "strong");
     \u0275\u0275text(6);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(7, "div", 85)(8, "span");
+    \u0275\u0275elementStart(7, "div", 87)(8, "span");
     \u0275\u0275text(9, "Vencidas");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(10, "strong");
     \u0275\u0275text(11);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(12, "div", 86)(13, "span");
+    \u0275\u0275elementStart(12, "div", 88)(13, "span");
     \u0275\u0275text(14, "Pr\xF3ximas a vencer");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(15, "strong");
     \u0275\u0275text(16);
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(17, "table", 87)(18, "thead")(19, "tr")(20, "th");
+    \u0275\u0275elementStart(17, "table", 89)(18, "thead")(19, "tr")(20, "th");
     \u0275\u0275text(21, "Vacuna");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(22, "th");
@@ -50396,7 +50637,7 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_Template(rf,
     \u0275\u0275text(33, "Pr\xF3xima fecha");
     \u0275\u0275elementEnd()()();
     \u0275\u0275elementStart(34, "tbody");
-    \u0275\u0275template(35, GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_tr_35_Template, 31, 11, "tr", 88);
+    \u0275\u0275template(35, GanaderiaSanidadPageComponent_div_67_ng_container_19_div_1_tr_35_Template, 31, 11, "tr", 90);
     \u0275\u0275elementEnd()()();
   }
   if (rf & 2) {
@@ -50411,26 +50652,26 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_Template(rf,
     \u0275\u0275property("ngForOf", ctx_r1.alertasVacunacionPorVacuna());
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_18_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_19_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_18_div_1_Template, 36, 4, "div", 82);
+    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_19_div_1_Template, 36, 4, "div", 84);
     \u0275\u0275elementContainerEnd();
   }
   if (rf & 2) {
     \u0275\u0275nextContext();
-    const noAlertas_r6 = \u0275\u0275reference(20);
+    const noAlertas_r6 = \u0275\u0275reference(21);
     const ctx_r1 = \u0275\u0275nextContext();
     \u0275\u0275advance();
     \u0275\u0275property("ngIf", ctx_r1.alertasVacunacionPorVacuna().length)("ngIfElse", noAlertas_r6);
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_template_19_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_template_20_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 96);
+    \u0275\u0275elementStart(0, "div", 98);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(1, "svg", 78);
-    \u0275\u0275element(2, "path", 97);
+    \u0275\u0275elementStart(1, "svg", 80);
+    \u0275\u0275element(2, "path", 99);
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceHTML();
     \u0275\u0275elementStart(3, "div")(4, "strong");
@@ -50441,9 +50682,9 @@ function GanaderiaSanidadPageComponent_div_67_ng_template_19_Template(rf, ctx) {
     \u0275\u0275elementEnd()()();
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_template_21_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_template_22_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 98);
+    \u0275\u0275elementStart(0, "div", 100);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -50453,7 +50694,7 @@ function GanaderiaSanidadPageComponent_div_67_ng_template_21_Template(rf, ctx) {
     \u0275\u0275textInterpolate1("Alertas ocultas. ", ctx_r1.alertasVacunacionPorVacuna().length, " vacunas con seguimiento pendiente.");
   }
 }
-function GanaderiaSanidadPageComponent_div_67_span_37_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_span_38_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1);
@@ -50465,11 +50706,11 @@ function GanaderiaSanidadPageComponent_div_67_span_37_Template(rf, ctx) {
     \u0275\u0275textInterpolate(ctx_r1.catalogRangeLabel());
   }
 }
-function GanaderiaSanidadPageComponent_div_67_button_41_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_button_42_Template(rf, ctx) {
   if (rf & 1) {
     const _r7 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "button", 77);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_button_41_Template_button_click_0_listener() {
+    \u0275\u0275elementStart(0, "button", 79);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_button_42_Template_button_click_0_listener() {
       const page_r8 = \u0275\u0275restoreView(_r7).$implicit;
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.setCatalogPage(page_r8));
@@ -50485,131 +50726,109 @@ function GanaderiaSanidadPageComponent_div_67_button_41_Template(rf, ctx) {
     \u0275\u0275textInterpolate(page_r8);
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_48_article_2_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_49_div_1_tr_17_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "article", 106)(1, "div", 107)(2, "div")(3, "h4");
-    \u0275\u0275text(4);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "p");
-    \u0275\u0275text(6);
-    \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(7, "span", 91);
-    \u0275\u0275text(8);
-    \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(9, "div", 108)(10, "div", 109);
+    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "div", 91)(3, "span", 92);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(11, "svg", 12);
-    \u0275\u0275element(12, "path", 16)(13, "path", 17);
-    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "svg", 13);
+    \u0275\u0275element(5, "path", 17)(6, "path", 18)(7, "path", 19);
+    \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(14, "span");
-    \u0275\u0275text(15, "Dosis");
+    \u0275\u0275elementStart(8, "div")(9, "strong");
+    \u0275\u0275text(10);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(16, "strong");
+    \u0275\u0275elementStart(11, "small");
+    \u0275\u0275text(12);
+    \u0275\u0275elementEnd()()()();
+    \u0275\u0275elementStart(13, "td")(14, "span", 93);
+    \u0275\u0275text(15);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(16, "td");
     \u0275\u0275text(17);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(18, "td");
+    \u0275\u0275text(19);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(20, "td");
+    \u0275\u0275text(21);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(22, "td");
+    \u0275\u0275text(23);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(18, "div", 109);
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(19, "svg", 12);
-    \u0275\u0275element(20, "circle", 110)(21, "path", 111);
-    \u0275\u0275elementEnd();
-    \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(22, "span");
-    \u0275\u0275text(23, "Frecuencia");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(24, "strong");
-    \u0275\u0275text(25);
-    \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(26, "div", 109);
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(27, "svg", 12);
-    \u0275\u0275element(28, "path", 112)(29, "path", 113);
-    \u0275\u0275elementEnd();
-    \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(30, "span");
-    \u0275\u0275text(31, "Stock");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(32, "strong");
-    \u0275\u0275text(33);
-    \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(34, "div", 109);
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(35, "svg", 12);
-    \u0275\u0275element(36, "path", 51);
-    \u0275\u0275elementEnd();
-    \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(37, "span");
-    \u0275\u0275text(38, "Costo ref.");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(39, "strong");
-    \u0275\u0275text(40);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(41, "button", 114)(42, "span");
-    \u0275\u0275text(43, "Ver detalle");
-    \u0275\u0275elementEnd();
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(44, "svg", 12);
-    \u0275\u0275element(45, "path", 115);
-    \u0275\u0275elementEnd()()();
   }
   if (rf & 2) {
     const vacuna_r9 = ctx.$implicit;
-    \u0275\u0275advance(4);
+    \u0275\u0275advance(10);
     \u0275\u0275textInterpolate(vacuna_r9.nombre);
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate2("", vacuna_r9.codigo, " \xB7 ", vacuna_r9.laboratorio || "Sin laboratorio");
-    \u0275\u0275advance();
+    \u0275\u0275advance(2);
     \u0275\u0275classProp("catalog-badge--secondary", !vacuna_r9.obligatoria);
     \u0275\u0275advance();
     \u0275\u0275textInterpolate(vacuna_r9.obligatoria ? "Obligatoria" : "Complementaria");
-    \u0275\u0275advance(9);
+    \u0275\u0275advance(2);
     \u0275\u0275textInterpolate(vacuna_r9.dosisRecomendada || "Sin dato");
-    \u0275\u0275advance(8);
+    \u0275\u0275advance(2);
     \u0275\u0275textInterpolate(vacuna_r9.frecuenciaDias ? vacuna_r9.frecuenciaDias + " d\xEDas" : "Sin dato");
-    \u0275\u0275advance(8);
+    \u0275\u0275advance(2);
     \u0275\u0275textInterpolate(vacuna_r9.stockDisponible ?? "Sin dato");
-    \u0275\u0275advance(7);
+    \u0275\u0275advance(2);
     \u0275\u0275textInterpolate1("$", vacuna_r9.costoReferencia ?? 0);
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_48_div_3_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_49_div_1_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 116);
+    \u0275\u0275elementStart(0, "div", 102)(1, "table", 103)(2, "thead")(3, "tr")(4, "th");
+    \u0275\u0275text(5, "Vacuna");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "th");
+    \u0275\u0275text(7, "Tipo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "th");
+    \u0275\u0275text(9, "Dosis");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "th");
+    \u0275\u0275text(11, "Frecuencia");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "th");
+    \u0275\u0275text(13, "Stock");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "th");
+    \u0275\u0275text(15, "Costo ref.");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(16, "tbody");
+    \u0275\u0275template(17, GanaderiaSanidadPageComponent_div_67_ng_container_49_div_1_tr_17_Template, 24, 10, "tr", 90);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(3);
+    \u0275\u0275advance(17);
+    \u0275\u0275property("ngForOf", ctx_r1.paginatedVacunas());
+  }
+}
+function GanaderiaSanidadPageComponent_div_67_ng_container_49_ng_template_2_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 104);
     \u0275\u0275text(1, "Sin vacunas disponibles.");
     \u0275\u0275elementEnd();
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_48_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_49_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275elementStart(1, "div", 99);
-    \u0275\u0275template(2, GanaderiaSanidadPageComponent_div_67_ng_container_48_article_2_Template, 46, 10, "article", 100)(3, GanaderiaSanidadPageComponent_div_67_ng_container_48_div_3_Template, 2, 0, "div", 101);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(4, "article", 102)(5, "div", 103);
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(6, "svg", 12);
-    \u0275\u0275element(7, "circle", 104)(8, "path", 105);
-    \u0275\u0275elementEnd()();
-    \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(9, "div")(10, "strong");
-    \u0275\u0275text(11, "Referencia de costos");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(12, "p");
-    \u0275\u0275text(13, "Los costos son de referencia y pueden variar seg\xFAn el proveedor.");
-    \u0275\u0275elementEnd()()();
+    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_49_div_1_Template, 18, 1, "div", 101)(2, GanaderiaSanidadPageComponent_div_67_ng_container_49_ng_template_2_Template, 2, 0, "ng-template", null, 4, \u0275\u0275templateRefExtractor);
     \u0275\u0275elementContainerEnd();
   }
   if (rf & 2) {
+    const noVacunasCatalogo_r10 = \u0275\u0275reference(3);
     const ctx_r1 = \u0275\u0275nextContext(2);
-    \u0275\u0275advance(2);
-    \u0275\u0275property("ngForOf", ctx_r1.paginatedVacunas());
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", !ctx_r1.vacunas().length);
+    \u0275\u0275property("ngIf", ctx_r1.paginatedVacunas().length)("ngIfElse", noVacunasCatalogo_r10);
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_template_49_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_template_50_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 98);
+    \u0275\u0275elementStart(0, "div", 100);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -50619,7 +50838,7 @@ function GanaderiaSanidadPageComponent_div_67_ng_template_49_Template(rf, ctx) {
     \u0275\u0275textInterpolate1("Cat\xE1logo oculto. ", ctx_r1.vacunas().length, " vacunas disponibles.");
   }
 }
-function GanaderiaSanidadPageComponent_div_67_span_76_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_span_77_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1);
@@ -50631,32 +50850,32 @@ function GanaderiaSanidadPageComponent_div_67_span_76_Template(rf, ctx) {
     \u0275\u0275textInterpolate(ctx_r1.tabRangeLabel());
   }
 }
-function GanaderiaSanidadPageComponent_div_67_button_80_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_button_81_Template(rf, ctx) {
   if (rf & 1) {
-    const _r10 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "button", 77);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_button_80_Template_button_click_0_listener() {
-      const page_r11 = \u0275\u0275restoreView(_r10).$implicit;
+    const _r11 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "button", 79);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_button_81_Template_button_click_0_listener() {
+      const page_r12 = \u0275\u0275restoreView(_r11).$implicit;
       const ctx_r1 = \u0275\u0275nextContext(2);
-      return \u0275\u0275resetView(ctx_r1.setTabPage(page_r11));
+      return \u0275\u0275resetView(ctx_r1.setTabPage(page_r12));
     });
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const page_r11 = ctx.$implicit;
+    const page_r12 = ctx.$implicit;
     const ctx_r1 = \u0275\u0275nextContext(2);
-    \u0275\u0275classProp("active", page_r11 === ctx_r1.tabPage());
+    \u0275\u0275classProp("active", page_r12 === ctx_r1.tabPage());
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(page_r11);
+    \u0275\u0275textInterpolate(page_r12);
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_1_table_1_tr_20_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_div_1_table_1_tr_20_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "div", 123)(3, "span", 124);
+    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "div", 111)(3, "span", 112);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(4, "svg", 12);
-    \u0275\u0275element(5, "path", 16)(6, "path", 17)(7, "path", 18);
+    \u0275\u0275elementStart(4, "svg", 13);
+    \u0275\u0275element(5, "path", 17)(6, "path", 18)(7, "path", 19);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
     \u0275\u0275elementStart(8, "div")(9, "strong");
@@ -50683,37 +50902,37 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_1_table_1_tr_2
     \u0275\u0275elementStart(24, "td");
     \u0275\u0275text(25);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(26, "td")(27, "span", 91);
+    \u0275\u0275elementStart(26, "td")(27, "span", 93);
     \u0275\u0275text(28);
     \u0275\u0275elementEnd()()();
   }
   if (rf & 2) {
-    const aplicacion_r12 = ctx.$implicit;
+    const aplicacion_r13 = ctx.$implicit;
     \u0275\u0275advance(10);
-    \u0275\u0275textInterpolate(aplicacion_r12.vacunaNombre);
+    \u0275\u0275textInterpolate(aplicacion_r13.vacunaNombre);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(aplicacion_r12.observaciones || "Sin observaciones");
+    \u0275\u0275textInterpolate(aplicacion_r13.observaciones || "Sin observaciones");
     \u0275\u0275advance(3);
-    \u0275\u0275textInterpolate(aplicacion_r12.animalCaravana);
+    \u0275\u0275textInterpolate(aplicacion_r13.animalCaravana);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(aplicacion_r12.fechaAplicacion);
+    \u0275\u0275textInterpolate(aplicacion_r13.fechaAplicacion);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(aplicacion_r12.proximaDosisFecha || "Sin fecha");
+    \u0275\u0275textInterpolate(aplicacion_r13.proximaDosisFecha || "Sin fecha");
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(aplicacion_r12.operario || "Sin responsable");
+    \u0275\u0275textInterpolate(aplicacion_r13.operario || "Sin responsable");
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(aplicacion_r12.loteMarca || "Sin lote");
+    \u0275\u0275textInterpolate(aplicacion_r13.loteMarca || "Sin lote");
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate1("$", aplicacion_r12.costoAplicado ?? 0);
+    \u0275\u0275textInterpolate1("$", aplicacion_r13.costoAplicado ?? 0);
     \u0275\u0275advance(2);
-    \u0275\u0275classProp("catalog-badge--secondary", !aplicacion_r12.vacunaObligatoria);
+    \u0275\u0275classProp("catalog-badge--secondary", !aplicacion_r13.vacunaObligatoria);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(aplicacion_r12.vacunaObligatoria ? "Obligatoria" : "Complementaria");
+    \u0275\u0275textInterpolate(aplicacion_r13.vacunaObligatoria ? "Obligatoria" : "Complementaria");
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_1_table_1_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_div_1_table_1_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "table", 122)(1, "thead")(2, "tr")(3, "th");
+    \u0275\u0275elementStart(0, "table", 110)(1, "thead")(2, "tr")(3, "th");
     \u0275\u0275text(4, "Vacuna");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(5, "th");
@@ -50738,7 +50957,7 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_1_table_1_Temp
     \u0275\u0275text(18, "Tipo");
     \u0275\u0275elementEnd()()();
     \u0275\u0275elementStart(19, "tbody");
-    \u0275\u0275template(20, GanaderiaSanidadPageComponent_div_67_ng_container_87_div_1_table_1_tr_20_Template, 29, 11, "tr", 88);
+    \u0275\u0275template(20, GanaderiaSanidadPageComponent_div_67_ng_container_88_div_1_table_1_tr_20_Template, 29, 11, "tr", 90);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
@@ -50747,26 +50966,26 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_1_table_1_Temp
     \u0275\u0275property("ngForOf", ctx_r1.aplicaciones());
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_1_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_div_1_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 120);
-    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_87_div_1_table_1_Template, 21, 1, "table", 121);
+    \u0275\u0275elementStart(0, "div", 108);
+    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_88_div_1_table_1_Template, 21, 1, "table", 109);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     \u0275\u0275nextContext();
-    const noAplicaciones_r13 = \u0275\u0275reference(5);
+    const noAplicaciones_r14 = \u0275\u0275reference(5);
     const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", ctx_r1.aplicaciones().length)("ngIfElse", noAplicaciones_r13);
+    \u0275\u0275property("ngIf", ctx_r1.aplicaciones().length)("ngIfElse", noAplicaciones_r14);
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_2_table_1_tr_20_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_div_2_table_1_tr_20_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "div", 123)(3, "span", 125);
+    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "div", 111)(3, "span", 113);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(4, "svg", 12);
-    \u0275\u0275element(5, "path", 16)(6, "path", 17);
+    \u0275\u0275elementStart(4, "svg", 13);
+    \u0275\u0275element(5, "path", 17)(6, "path", 18);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
     \u0275\u0275elementStart(7, "div")(8, "strong");
@@ -50798,30 +51017,30 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_2_table_1_tr_2
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
-    const tratamiento_r14 = ctx.$implicit;
+    const tratamiento_r15 = ctx.$implicit;
     \u0275\u0275advance(9);
-    \u0275\u0275textInterpolate(tratamiento_r14.medicamento);
+    \u0275\u0275textInterpolate(tratamiento_r15.medicamento);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(tratamiento_r14.motivo || "Sin motivo");
+    \u0275\u0275textInterpolate(tratamiento_r15.motivo || "Sin motivo");
     \u0275\u0275advance(3);
-    \u0275\u0275textInterpolate(tratamiento_r14.animalCaravana);
+    \u0275\u0275textInterpolate(tratamiento_r15.animalCaravana);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(tratamiento_r14.fechaInicio);
+    \u0275\u0275textInterpolate(tratamiento_r15.fechaInicio);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(tratamiento_r14.fechaFin || "Activo");
+    \u0275\u0275textInterpolate(tratamiento_r15.fechaFin || "Activo");
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(tratamiento_r14.dosis || "Sin dosis");
+    \u0275\u0275textInterpolate(tratamiento_r15.dosis || "Sin dosis");
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(tratamiento_r14.viaAplicacion || "Sin via");
+    \u0275\u0275textInterpolate(tratamiento_r15.viaAplicacion || "Sin via");
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(tratamiento_r14.responsable || "Sin responsable");
+    \u0275\u0275textInterpolate(tratamiento_r15.responsable || "Sin responsable");
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate1("$", tratamiento_r14.costo ?? 0);
+    \u0275\u0275textInterpolate1("$", tratamiento_r15.costo ?? 0);
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_2_table_1_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_div_2_table_1_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "table", 122)(1, "thead")(2, "tr")(3, "th");
+    \u0275\u0275elementStart(0, "table", 110)(1, "thead")(2, "tr")(3, "th");
     \u0275\u0275text(4, "Medicamento");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(5, "th");
@@ -50846,7 +51065,7 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_2_table_1_Temp
     \u0275\u0275text(18, "Costo");
     \u0275\u0275elementEnd()()();
     \u0275\u0275elementStart(19, "tbody");
-    \u0275\u0275template(20, GanaderiaSanidadPageComponent_div_67_ng_container_87_div_2_table_1_tr_20_Template, 27, 9, "tr", 88);
+    \u0275\u0275template(20, GanaderiaSanidadPageComponent_div_67_ng_container_88_div_2_table_1_tr_20_Template, 27, 9, "tr", 90);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
@@ -50855,26 +51074,26 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_2_table_1_Temp
     \u0275\u0275property("ngForOf", ctx_r1.tratamientos());
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_2_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_div_2_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 120);
-    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_87_div_2_table_1_Template, 21, 1, "table", 121);
+    \u0275\u0275elementStart(0, "div", 108);
+    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_88_div_2_table_1_Template, 21, 1, "table", 109);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     \u0275\u0275nextContext();
-    const noTratamientos_r15 = \u0275\u0275reference(7);
+    const noTratamientos_r16 = \u0275\u0275reference(7);
     const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", ctx_r1.tratamientos().length)("ngIfElse", noTratamientos_r15);
+    \u0275\u0275property("ngIf", ctx_r1.tratamientos().length)("ngIfElse", noTratamientos_r16);
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_3_table_1_tr_18_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_div_3_table_1_tr_18_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "div", 123)(3, "span", 126);
+    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "div", 111)(3, "span", 114);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(4, "svg", 12);
-    \u0275\u0275element(5, "path", 45)(6, "path", 46)(7, "path", 47);
+    \u0275\u0275elementStart(4, "svg", 13);
+    \u0275\u0275element(5, "path", 46)(6, "path", 47)(7, "path", 48);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
     \u0275\u0275elementStart(8, "div")(9, "strong");
@@ -50889,10 +51108,10 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_3_table_1_tr_1
     \u0275\u0275elementStart(16, "td");
     \u0275\u0275text(17);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(18, "td")(19, "span", 127);
+    \u0275\u0275elementStart(18, "td")(19, "span", 115);
     \u0275\u0275text(20);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(21, "td")(22, "span", 91);
+    \u0275\u0275elementStart(21, "td")(22, "span", 93);
     \u0275\u0275text(23);
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(24, "td");
@@ -50903,32 +51122,32 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_3_table_1_tr_1
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
-    const diagnostico_r16 = ctx.$implicit;
+    const diagnostico_r17 = ctx.$implicit;
     \u0275\u0275advance(10);
-    \u0275\u0275textInterpolate(diagnostico_r16.enfermedad);
+    \u0275\u0275textInterpolate(diagnostico_r17.enfermedad);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(diagnostico_r16.observaciones || "Sin observaciones");
+    \u0275\u0275textInterpolate(diagnostico_r17.observaciones || "Sin observaciones");
     \u0275\u0275advance(3);
-    \u0275\u0275textInterpolate(diagnostico_r16.animalCaravana);
+    \u0275\u0275textInterpolate(diagnostico_r17.animalCaravana);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(diagnostico_r16.fechaDiagnostico);
+    \u0275\u0275textInterpolate(diagnostico_r17.fechaDiagnostico);
     \u0275\u0275advance(2);
-    \u0275\u0275classProp("severity-pill--critical", diagnostico_r16.severidad === "CRITICA")("severity-pill--high", diagnostico_r16.severidad === "ALTA");
+    \u0275\u0275classProp("severity-pill--critical", diagnostico_r17.severidad === "CRITICA")("severity-pill--high", diagnostico_r17.severidad === "ALTA");
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(diagnostico_r16.severidad);
+    \u0275\u0275textInterpolate(diagnostico_r17.severidad);
     \u0275\u0275advance(2);
-    \u0275\u0275classProp("state-chip--danger", diagnostico_r16.estado === "ABIERTO" && diagnostico_r16.severidad === "CRITICA");
+    \u0275\u0275classProp("state-chip--danger", diagnostico_r17.estado === "ABIERTO" && diagnostico_r17.severidad === "CRITICA");
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(diagnostico_r16.estado);
+    \u0275\u0275textInterpolate(diagnostico_r17.estado);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(diagnostico_r16.veterinario || "Sin veterinario");
+    \u0275\u0275textInterpolate(diagnostico_r17.veterinario || "Sin veterinario");
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(diagnostico_r16.tratamientoIndicado || "Sin indicar");
+    \u0275\u0275textInterpolate(diagnostico_r17.tratamientoIndicado || "Sin indicar");
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_3_table_1_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_div_3_table_1_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "table", 122)(1, "thead")(2, "tr")(3, "th");
+    \u0275\u0275elementStart(0, "table", 110)(1, "thead")(2, "tr")(3, "th");
     \u0275\u0275text(4, "Diagnostico");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(5, "th");
@@ -50950,7 +51169,7 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_3_table_1_Temp
     \u0275\u0275text(16, "Tratamiento indicado");
     \u0275\u0275elementEnd()()();
     \u0275\u0275elementStart(17, "tbody");
-    \u0275\u0275template(18, GanaderiaSanidadPageComponent_div_67_ng_container_87_div_3_table_1_tr_18_Template, 28, 14, "tr", 88);
+    \u0275\u0275template(18, GanaderiaSanidadPageComponent_div_67_ng_container_88_div_3_table_1_tr_18_Template, 28, 14, "tr", 90);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
@@ -50959,49 +51178,49 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_3_table_1_Temp
     \u0275\u0275property("ngForOf", ctx_r1.diagnosticos());
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_div_3_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_div_3_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 120);
-    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_87_div_3_table_1_Template, 19, 1, "table", 121);
+    \u0275\u0275elementStart(0, "div", 108);
+    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_88_div_3_table_1_Template, 19, 1, "table", 109);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     \u0275\u0275nextContext();
-    const noDiagnosticos_r17 = \u0275\u0275reference(9);
+    const noDiagnosticos_r18 = \u0275\u0275reference(9);
     const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", ctx_r1.diagnosticos().length)("ngIfElse", noDiagnosticos_r17);
+    \u0275\u0275property("ngIf", ctx_r1.diagnosticos().length)("ngIfElse", noDiagnosticos_r18);
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_ng_template_4_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_ng_template_4_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 116);
+    \u0275\u0275elementStart(0, "div", 104);
     \u0275\u0275text(1, "Sin aplicaciones con este filtro.");
     \u0275\u0275elementEnd();
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_ng_template_6_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_ng_template_6_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 116);
+    \u0275\u0275elementStart(0, "div", 104);
     \u0275\u0275text(1, "Sin tratamientos registrados.");
     \u0275\u0275elementEnd();
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_ng_template_8_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_ng_template_8_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 116);
+    \u0275\u0275elementStart(0, "div", 104);
     \u0275\u0275text(1, "Sin diagnosticos registrados.");
     \u0275\u0275elementEnd();
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_container_87_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_container_88_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_87_div_1_Template, 2, 2, "div", 117)(2, GanaderiaSanidadPageComponent_div_67_ng_container_87_div_2_Template, 2, 2, "div", 117)(3, GanaderiaSanidadPageComponent_div_67_ng_container_87_div_3_Template, 2, 2, "div", 117)(4, GanaderiaSanidadPageComponent_div_67_ng_container_87_ng_template_4_Template, 2, 0, "ng-template", null, 4, \u0275\u0275templateRefExtractor)(6, GanaderiaSanidadPageComponent_div_67_ng_container_87_ng_template_6_Template, 2, 0, "ng-template", null, 5, \u0275\u0275templateRefExtractor)(8, GanaderiaSanidadPageComponent_div_67_ng_container_87_ng_template_8_Template, 2, 0, "ng-template", null, 6, \u0275\u0275templateRefExtractor);
-    \u0275\u0275elementStart(10, "div", 118)(11, "div", 119);
+    \u0275\u0275template(1, GanaderiaSanidadPageComponent_div_67_ng_container_88_div_1_Template, 2, 2, "div", 105)(2, GanaderiaSanidadPageComponent_div_67_ng_container_88_div_2_Template, 2, 2, "div", 105)(3, GanaderiaSanidadPageComponent_div_67_ng_container_88_div_3_Template, 2, 2, "div", 105)(4, GanaderiaSanidadPageComponent_div_67_ng_container_88_ng_template_4_Template, 2, 0, "ng-template", null, 5, \u0275\u0275templateRefExtractor)(6, GanaderiaSanidadPageComponent_div_67_ng_container_88_ng_template_6_Template, 2, 0, "ng-template", null, 6, \u0275\u0275templateRefExtractor)(8, GanaderiaSanidadPageComponent_div_67_ng_container_88_ng_template_8_Template, 2, 0, "ng-template", null, 7, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementStart(10, "div", 106)(11, "div", 107);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(12, "svg", 12);
-    \u0275\u0275element(13, "rect", 43)(14, "path", 44);
+    \u0275\u0275elementStart(12, "svg", 13);
+    \u0275\u0275element(13, "rect", 44)(14, "path", 45);
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceHTML();
     \u0275\u0275elementStart(15, "span");
@@ -51019,9 +51238,9 @@ function GanaderiaSanidadPageComponent_div_67_ng_container_87_Template(rf, ctx) 
     \u0275\u0275property("ngIf", ctx_r1.activeTab() === "DIAGNOSTICOS");
   }
 }
-function GanaderiaSanidadPageComponent_div_67_ng_template_88_Template(rf, ctx) {
+function GanaderiaSanidadPageComponent_div_67_ng_template_89_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 98);
+    \u0275\u0275elementStart(0, "div", 100);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -51034,177 +51253,177 @@ function GanaderiaSanidadPageComponent_div_67_ng_template_88_Template(rf, ctx) {
 function GanaderiaSanidadPageComponent_div_67_Template(rf, ctx) {
   if (rf & 1) {
     const _r4 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 57)(1, "section", 58)(2, "div", 59)(3, "div", 60)(4, "div", 61);
+    \u0275\u0275elementStart(0, "div", 58)(1, "div", 59)(2, "section", 60)(3, "div", 61)(4, "div", 62)(5, "div", 63);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(5, "svg", 12);
-    \u0275\u0275element(6, "path", 49)(7, "path", 50);
+    \u0275\u0275elementStart(6, "svg", 13);
+    \u0275\u0275element(7, "path", 50)(8, "path", 51);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(8, "div")(9, "h3");
-    \u0275\u0275text(10, "Alertas de vacunaci\xF3n");
+    \u0275\u0275elementStart(9, "div")(10, "h3");
+    \u0275\u0275text(11, "Alertas de vacunaci\xF3n");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(11, "p");
-    \u0275\u0275text(12, "Vacunas pr\xF3ximas a inyectarse o vencidas para seguimiento operativo.");
+    \u0275\u0275elementStart(12, "p");
+    \u0275\u0275text(13, "Vacunas pr\xF3ximas a inyectarse o vencidas para seguimiento operativo.");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(13, "button", 62);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_13_listener() {
+    \u0275\u0275elementStart(14, "button", 64);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_14_listener() {
       \u0275\u0275restoreView(_r4);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.toggleAlertas());
     });
-    \u0275\u0275elementStart(14, "span");
-    \u0275\u0275text(15);
+    \u0275\u0275elementStart(15, "span");
+    \u0275\u0275text(16);
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(16, "svg", 12);
-    \u0275\u0275element(17, "path", 63);
+    \u0275\u0275elementStart(17, "svg", 13);
+    \u0275\u0275element(18, "path", 65);
     \u0275\u0275elementEnd()()();
-    \u0275\u0275template(18, GanaderiaSanidadPageComponent_div_67_ng_container_18_Template, 2, 2, "ng-container", 64)(19, GanaderiaSanidadPageComponent_div_67_ng_template_19_Template, 8, 0, "ng-template", null, 0, \u0275\u0275templateRefExtractor)(21, GanaderiaSanidadPageComponent_div_67_ng_template_21_Template, 2, 1, "ng-template", null, 1, \u0275\u0275templateRefExtractor);
+    \u0275\u0275template(19, GanaderiaSanidadPageComponent_div_67_ng_container_19_Template, 2, 2, "ng-container", 66)(20, GanaderiaSanidadPageComponent_div_67_ng_template_20_Template, 8, 0, "ng-template", null, 0, \u0275\u0275templateRefExtractor)(22, GanaderiaSanidadPageComponent_div_67_ng_template_22_Template, 2, 1, "ng-template", null, 1, \u0275\u0275templateRefExtractor);
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(23, "section", 65)(24, "div", 59)(25, "div", 60)(26, "div", 61);
+    \u0275\u0275elementStart(24, "section", 67)(25, "div", 61)(26, "div", 62)(27, "div", 63);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(27, "svg", 12);
-    \u0275\u0275element(28, "path", 16)(29, "path", 17)(30, "path", 18);
+    \u0275\u0275elementStart(28, "svg", 13);
+    \u0275\u0275element(29, "path", 17)(30, "path", 18)(31, "path", 19);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(31, "div")(32, "h3");
-    \u0275\u0275text(33, "Cat\xE1logo de vacunaci\xF3n");
+    \u0275\u0275elementStart(32, "div")(33, "h3");
+    \u0275\u0275text(34, "Cat\xE1logo de vacunaci\xF3n");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(34, "p");
-    \u0275\u0275text(35, "Gesti\xF3n y referencia de vacunas disponibles.");
+    \u0275\u0275elementStart(35, "p");
+    \u0275\u0275text(36, "Gesti\xF3n y referencia de vacunas disponibles.");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(36, "div", 66);
-    \u0275\u0275template(37, GanaderiaSanidadPageComponent_div_67_span_37_Template, 2, 1, "span", 67);
-    \u0275\u0275elementStart(38, "button", 68);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_38_listener() {
+    \u0275\u0275elementStart(37, "div", 68);
+    \u0275\u0275template(38, GanaderiaSanidadPageComponent_div_67_span_38_Template, 2, 1, "span", 69);
+    \u0275\u0275elementStart(39, "button", 70);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_39_listener() {
       \u0275\u0275restoreView(_r4);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.previousCatalogPage());
     });
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(39, "svg", 12);
-    \u0275\u0275element(40, "path", 69);
+    \u0275\u0275elementStart(40, "svg", 13);
+    \u0275\u0275element(41, "path", 71);
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(41, GanaderiaSanidadPageComponent_div_67_button_41_Template, 2, 3, "button", 70);
+    \u0275\u0275template(42, GanaderiaSanidadPageComponent_div_67_button_42_Template, 2, 3, "button", 72);
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(42, "button", 71);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_42_listener() {
+    \u0275\u0275elementStart(43, "button", 73);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_43_listener() {
       \u0275\u0275restoreView(_r4);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.nextCatalogPage());
     });
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(43, "svg", 12);
-    \u0275\u0275element(44, "path", 72);
+    \u0275\u0275elementStart(44, "svg", 13);
+    \u0275\u0275element(45, "path", 74);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(45, "button", 73);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_45_listener() {
+    \u0275\u0275elementStart(46, "button", 75);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_46_listener() {
       \u0275\u0275restoreView(_r4);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.toggleCatalogo());
     });
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(46, "svg", 12);
-    \u0275\u0275element(47, "path", 63);
+    \u0275\u0275elementStart(47, "svg", 13);
+    \u0275\u0275element(48, "path", 65);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275template(48, GanaderiaSanidadPageComponent_div_67_ng_container_48_Template, 14, 2, "ng-container", 64)(49, GanaderiaSanidadPageComponent_div_67_ng_template_49_Template, 2, 1, "ng-template", null, 2, \u0275\u0275templateRefExtractor);
-    \u0275\u0275elementEnd();
+    \u0275\u0275template(49, GanaderiaSanidadPageComponent_div_67_ng_container_49_Template, 4, 2, "ng-container", 66)(50, GanaderiaSanidadPageComponent_div_67_ng_template_50_Template, 2, 1, "ng-template", null, 2, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(51, "section", 74)(52, "div", 75)(53, "div", 76)(54, "button", 77);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_54_listener() {
+    \u0275\u0275elementStart(52, "section", 76)(53, "div", 77)(54, "div", 78)(55, "button", 79);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_55_listener() {
       \u0275\u0275restoreView(_r4);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.setActiveTab("APLICACIONES"));
     });
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(55, "svg", 78);
-    \u0275\u0275element(56, "path", 49)(57, "path", 50);
+    \u0275\u0275elementStart(56, "svg", 80);
+    \u0275\u0275element(57, "path", 50)(58, "path", 51);
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(58, "span");
-    \u0275\u0275text(59, "Vacunaciones registradas");
+    \u0275\u0275elementStart(59, "span");
+    \u0275\u0275text(60, "Vacunaciones registradas");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(60, "button", 77);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_60_listener() {
+    \u0275\u0275elementStart(61, "button", 79);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_61_listener() {
       \u0275\u0275restoreView(_r4);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.setActiveTab("TRATAMIENTOS"));
     });
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(61, "svg", 78);
-    \u0275\u0275element(62, "path", 16)(63, "path", 17)(64, "path", 18);
+    \u0275\u0275elementStart(62, "svg", 80);
+    \u0275\u0275element(63, "path", 17)(64, "path", 18)(65, "path", 19);
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(65, "span");
-    \u0275\u0275text(66, "Tratamientos");
+    \u0275\u0275elementStart(66, "span");
+    \u0275\u0275text(67, "Tratamientos");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(67, "button", 77);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_67_listener() {
+    \u0275\u0275elementStart(68, "button", 79);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_68_listener() {
       \u0275\u0275restoreView(_r4);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.setActiveTab("DIAGNOSTICOS"));
     });
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(68, "svg", 78);
-    \u0275\u0275element(69, "path", 45)(70, "path", 46)(71, "path", 47)(72, "path", 48);
+    \u0275\u0275elementStart(69, "svg", 80);
+    \u0275\u0275element(70, "path", 46)(71, "path", 47)(72, "path", 48)(73, "path", 49);
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(73, "span");
-    \u0275\u0275text(74, "Diagn\xF3sticos");
+    \u0275\u0275elementStart(74, "span");
+    \u0275\u0275text(75, "Diagn\xF3sticos");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(75, "div", 66);
-    \u0275\u0275template(76, GanaderiaSanidadPageComponent_div_67_span_76_Template, 2, 1, "span", 67);
-    \u0275\u0275elementStart(77, "button", 79);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_77_listener() {
+    \u0275\u0275elementStart(76, "div", 68);
+    \u0275\u0275template(77, GanaderiaSanidadPageComponent_div_67_span_77_Template, 2, 1, "span", 69);
+    \u0275\u0275elementStart(78, "button", 81);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_78_listener() {
       \u0275\u0275restoreView(_r4);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.previousTabPage());
     });
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(78, "svg", 78);
-    \u0275\u0275element(79, "path", 69);
+    \u0275\u0275elementStart(79, "svg", 80);
+    \u0275\u0275element(80, "path", 71);
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(80, GanaderiaSanidadPageComponent_div_67_button_80_Template, 2, 3, "button", 70);
+    \u0275\u0275template(81, GanaderiaSanidadPageComponent_div_67_button_81_Template, 2, 3, "button", 72);
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(81, "button", 80);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_81_listener() {
+    \u0275\u0275elementStart(82, "button", 82);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_82_listener() {
       \u0275\u0275restoreView(_r4);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.nextTabPage());
     });
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(82, "svg", 78);
-    \u0275\u0275element(83, "path", 72);
+    \u0275\u0275elementStart(83, "svg", 80);
+    \u0275\u0275element(84, "path", 74);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(84, "button", 81);
-    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_84_listener() {
+    \u0275\u0275elementStart(85, "button", 83);
+    \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_67_Template_button_click_85_listener() {
       \u0275\u0275restoreView(_r4);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.toggleRegistros());
     });
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(85, "svg", 12);
-    \u0275\u0275element(86, "path", 63);
+    \u0275\u0275elementStart(86, "svg", 13);
+    \u0275\u0275element(87, "path", 65);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275template(87, GanaderiaSanidadPageComponent_div_67_ng_container_87_Template, 17, 3, "ng-container", 64)(88, GanaderiaSanidadPageComponent_div_67_ng_template_88_Template, 2, 1, "ng-template", null, 3, \u0275\u0275templateRefExtractor);
+    \u0275\u0275template(88, GanaderiaSanidadPageComponent_div_67_ng_container_88_Template, 17, 3, "ng-container", 66)(89, GanaderiaSanidadPageComponent_div_67_ng_template_89_Template, 2, 1, "ng-template", null, 3, \u0275\u0275templateRefExtractor);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
-    const alertasCollapsedState_r18 = \u0275\u0275reference(22);
-    const catalogCollapsedState_r19 = \u0275\u0275reference(50);
-    const registrosCollapsedState_r20 = \u0275\u0275reference(89);
+    const alertasCollapsedState_r19 = \u0275\u0275reference(23);
+    const catalogCollapsedState_r20 = \u0275\u0275reference(51);
+    const registrosCollapsedState_r21 = \u0275\u0275reference(90);
     const ctx_r1 = \u0275\u0275nextContext();
-    \u0275\u0275advance(13);
+    \u0275\u0275advance(14);
     \u0275\u0275attribute("aria-expanded", !ctx_r1.alertasCollapsed());
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate1("", ctx_r1.alertasVacunacionPorVacuna().length, " vacunas");
     \u0275\u0275advance();
     \u0275\u0275classProp("section-toggle__icon--collapsed", ctx_r1.alertasCollapsed());
     \u0275\u0275advance(2);
-    \u0275\u0275property("ngIf", !ctx_r1.alertasCollapsed())("ngIfElse", alertasCollapsedState_r18);
+    \u0275\u0275property("ngIf", !ctx_r1.alertasCollapsed())("ngIfElse", alertasCollapsedState_r19);
     \u0275\u0275advance(19);
     \u0275\u0275property("ngIf", !ctx_r1.catalogCollapsed());
     \u0275\u0275advance();
@@ -51218,7 +51437,7 @@ function GanaderiaSanidadPageComponent_div_67_Template(rf, ctx) {
     \u0275\u0275advance();
     \u0275\u0275classProp("section-toggle__icon--collapsed", ctx_r1.catalogCollapsed());
     \u0275\u0275advance(2);
-    \u0275\u0275property("ngIf", !ctx_r1.catalogCollapsed())("ngIfElse", catalogCollapsedState_r19);
+    \u0275\u0275property("ngIf", !ctx_r1.catalogCollapsed())("ngIfElse", catalogCollapsedState_r20);
     \u0275\u0275advance(6);
     \u0275\u0275classProp("active", ctx_r1.activeTab() === "APLICACIONES");
     \u0275\u0275advance(6);
@@ -51238,22 +51457,22 @@ function GanaderiaSanidadPageComponent_div_67_Template(rf, ctx) {
     \u0275\u0275advance();
     \u0275\u0275classProp("section-toggle__icon--collapsed", ctx_r1.registrosCollapsed());
     \u0275\u0275advance(2);
-    \u0275\u0275property("ngIf", !ctx_r1.registrosCollapsed())("ngIfElse", registrosCollapsedState_r20);
+    \u0275\u0275property("ngIf", !ctx_r1.registrosCollapsed())("ngIfElse", registrosCollapsedState_r21);
   }
 }
 function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template(rf, ctx) {
   if (rf & 1) {
-    const _r22 = \u0275\u0275getCurrentView();
+    const _r23 = \u0275\u0275getCurrentView();
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275elementStart(1, "div", 132)(2, "h3");
+    \u0275\u0275elementStart(1, "div", 120)(2, "h3");
     \u0275\u0275text(3, "Registrar vacuna");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "div", 133)(5, "label")(6, "span");
+    \u0275\u0275elementStart(4, "div", 121)(5, "label")(6, "span");
     \u0275\u0275text(7, "Codigo");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(8, "input", 24);
+    \u0275\u0275elementStart(8, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_input_ngModelChange_8_listener($event) {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.vacunaForm.update((f) => __spreadProps(__spreadValues({}, f), { codigo: $event })));
     });
@@ -51261,9 +51480,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template(rf, ctx) {
     \u0275\u0275elementStart(9, "label")(10, "span");
     \u0275\u0275text(11, "Nombre");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(12, "input", 24);
+    \u0275\u0275elementStart(12, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_input_ngModelChange_12_listener($event) {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.vacunaForm.update((f) => __spreadProps(__spreadValues({}, f), { nombre: $event })));
     });
@@ -51271,9 +51490,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template(rf, ctx) {
     \u0275\u0275elementStart(13, "label")(14, "span");
     \u0275\u0275text(15, "Laboratorio");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(16, "input", 24);
+    \u0275\u0275elementStart(16, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_input_ngModelChange_16_listener($event) {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.vacunaForm.update((f) => __spreadProps(__spreadValues({}, f), { laboratorio: $event })));
     });
@@ -51281,9 +51500,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template(rf, ctx) {
     \u0275\u0275elementStart(17, "label")(18, "span");
     \u0275\u0275text(19, "Dosis");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(20, "input", 24);
+    \u0275\u0275elementStart(20, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_input_ngModelChange_20_listener($event) {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.vacunaForm.update((f) => __spreadProps(__spreadValues({}, f), { dosisRecomendada: $event })));
     });
@@ -51291,9 +51510,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template(rf, ctx) {
     \u0275\u0275elementStart(21, "label")(22, "span");
     \u0275\u0275text(23, "Frecuencia dias");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(24, "input", 134);
+    \u0275\u0275elementStart(24, "input", 122);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_input_ngModelChange_24_listener($event) {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.vacunaForm.update((f) => __spreadProps(__spreadValues({}, f), { frecuenciaDias: $event })));
     });
@@ -51301,9 +51520,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template(rf, ctx) {
     \u0275\u0275elementStart(25, "label")(26, "span");
     \u0275\u0275text(27, "Costo referencia");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(28, "input", 134);
+    \u0275\u0275elementStart(28, "input", 122);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_input_ngModelChange_28_listener($event) {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.vacunaForm.update((f) => __spreadProps(__spreadValues({}, f), { costoReferencia: $event })));
     });
@@ -51311,9 +51530,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template(rf, ctx) {
     \u0275\u0275elementStart(29, "label")(30, "span");
     \u0275\u0275text(31, "Stock");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(32, "input", 134);
+    \u0275\u0275elementStart(32, "input", 122);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_input_ngModelChange_32_listener($event) {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.vacunaForm.update((f) => __spreadProps(__spreadValues({}, f), { stockDisponible: $event })));
     });
@@ -51321,9 +51540,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template(rf, ctx) {
     \u0275\u0275elementStart(33, "label")(34, "span");
     \u0275\u0275text(35, "Via aplicacion");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(36, "input", 24);
+    \u0275\u0275elementStart(36, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_input_ngModelChange_36_listener($event) {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.vacunaForm.update((f) => __spreadProps(__spreadValues({}, f), { viaAplicacion: $event })));
     });
@@ -51331,39 +51550,39 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template(rf, ctx) {
     \u0275\u0275elementStart(37, "label")(38, "span");
     \u0275\u0275text(39, "Obligatoria");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(40, "select", 24);
+    \u0275\u0275elementStart(40, "select", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_select_ngModelChange_40_listener($event) {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.vacunaForm.update((f) => __spreadProps(__spreadValues({}, f), { obligatoria: $event })));
     });
-    \u0275\u0275elementStart(41, "option", 135);
+    \u0275\u0275elementStart(41, "option", 123);
     \u0275\u0275text(42, "Si");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(43, "option", 135);
+    \u0275\u0275elementStart(43, "option", 123);
     \u0275\u0275text(44, "No");
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(45, "label", 136)(46, "span");
+    \u0275\u0275elementStart(45, "label", 124)(46, "span");
     \u0275\u0275text(47, "Descripcion");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(48, "textarea", 24);
+    \u0275\u0275elementStart(48, "textarea", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_textarea_ngModelChange_48_listener($event) {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.vacunaForm.update((f) => __spreadProps(__spreadValues({}, f), { descripcion: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(49, "div", 137)(50, "button", 34);
+    \u0275\u0275elementStart(49, "div", 125)(50, "button", 35);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_button_click_50_listener() {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.closeModals());
     });
     \u0275\u0275text(51, "Cancelar");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(52, "button", 138);
+    \u0275\u0275elementStart(52, "button", 126);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template_button_click_52_listener() {
-      \u0275\u0275restoreView(_r22);
+      \u0275\u0275restoreView(_r23);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.submitVacuna());
     });
@@ -51403,21 +51622,21 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_5_Template(rf, ctx) {
 }
 function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template(rf, ctx) {
   if (rf & 1) {
-    const _r23 = \u0275\u0275getCurrentView();
+    const _r24 = \u0275\u0275getCurrentView();
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275elementStart(1, "div", 132)(2, "h3");
+    \u0275\u0275elementStart(1, "div", 120)(2, "h3");
     \u0275\u0275text(3, "Registrar aplicacion");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "div", 133)(5, "app-remote-search-select", 139);
+    \u0275\u0275elementStart(4, "div", 121)(5, "app-remote-search-select", 127);
     \u0275\u0275listener("valueChange", function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template_app_remote_search_select_valueChange_5_listener($event) {
-      \u0275\u0275restoreView(_r23);
+      \u0275\u0275restoreView(_r24);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.aplicacionForm.update((f) => __spreadProps(__spreadValues({}, f), { animalId: $event })));
     });
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(6, "app-remote-search-select", 140);
+    \u0275\u0275elementStart(6, "app-remote-search-select", 128);
     \u0275\u0275listener("valueChange", function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template_app_remote_search_select_valueChange_6_listener($event) {
-      \u0275\u0275restoreView(_r23);
+      \u0275\u0275restoreView(_r24);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.aplicacionForm.update((f) => __spreadProps(__spreadValues({}, f), { vacunaId: $event })));
     });
@@ -51425,9 +51644,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template(rf, ctx) {
     \u0275\u0275elementStart(7, "label")(8, "span");
     \u0275\u0275text(9, "Fecha aplicacion");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(10, "input", 141);
+    \u0275\u0275elementStart(10, "input", 129);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template_input_ngModelChange_10_listener($event) {
-      \u0275\u0275restoreView(_r23);
+      \u0275\u0275restoreView(_r24);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.aplicacionForm.update((f) => __spreadProps(__spreadValues({}, f), { fechaAplicacion: $event })));
     });
@@ -51435,16 +51654,16 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template(rf, ctx) {
     \u0275\u0275elementStart(11, "label")(12, "span");
     \u0275\u0275text(13, "Proxima dosis");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(14, "input", 141);
+    \u0275\u0275elementStart(14, "input", 129);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template_input_ngModelChange_14_listener($event) {
-      \u0275\u0275restoreView(_r23);
+      \u0275\u0275restoreView(_r24);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.aplicacionForm.update((f) => __spreadProps(__spreadValues({}, f), { proximaDosisFecha: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(15, "app-remote-search-select", 142);
+    \u0275\u0275elementStart(15, "app-remote-search-select", 130);
     \u0275\u0275listener("valueChange", function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template_app_remote_search_select_valueChange_15_listener($event) {
-      \u0275\u0275restoreView(_r23);
+      \u0275\u0275restoreView(_r24);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.aplicacionForm.update((f) => __spreadProps(__spreadValues({}, f), { operario: $event })));
     });
@@ -51452,9 +51671,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template(rf, ctx) {
     \u0275\u0275elementStart(16, "label")(17, "span");
     \u0275\u0275text(18, "Lote/marca");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(19, "input", 24);
+    \u0275\u0275elementStart(19, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template_input_ngModelChange_19_listener($event) {
-      \u0275\u0275restoreView(_r23);
+      \u0275\u0275restoreView(_r24);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.aplicacionForm.update((f) => __spreadProps(__spreadValues({}, f), { loteMarca: $event })));
     });
@@ -51462,34 +51681,34 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template(rf, ctx) {
     \u0275\u0275elementStart(20, "label")(21, "span");
     \u0275\u0275text(22, "Costo aplicado");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(23, "input", 134);
+    \u0275\u0275elementStart(23, "input", 122);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template_input_ngModelChange_23_listener($event) {
-      \u0275\u0275restoreView(_r23);
+      \u0275\u0275restoreView(_r24);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.aplicacionForm.update((f) => __spreadProps(__spreadValues({}, f), { costoAplicado: $event })));
     });
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(24, "label", 136)(25, "span");
+    \u0275\u0275elementStart(24, "label", 124)(25, "span");
     \u0275\u0275text(26, "Observaciones");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(27, "textarea", 24);
+    \u0275\u0275elementStart(27, "textarea", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template_textarea_ngModelChange_27_listener($event) {
-      \u0275\u0275restoreView(_r23);
+      \u0275\u0275restoreView(_r24);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.aplicacionForm.update((f) => __spreadProps(__spreadValues({}, f), { observaciones: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(28, "div", 137)(29, "button", 34);
+    \u0275\u0275elementStart(28, "div", 125)(29, "button", 35);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template_button_click_29_listener() {
-      \u0275\u0275restoreView(_r23);
+      \u0275\u0275restoreView(_r24);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.closeModals());
     });
     \u0275\u0275text(30, "Cancelar");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(31, "button", 138);
+    \u0275\u0275elementStart(31, "button", 126);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template_button_click_31_listener() {
-      \u0275\u0275restoreView(_r23);
+      \u0275\u0275restoreView(_r24);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.submitAplicacion());
     });
@@ -51521,14 +51740,14 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template(rf, ctx) {
 }
 function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
   if (rf & 1) {
-    const _r24 = \u0275\u0275getCurrentView();
+    const _r25 = \u0275\u0275getCurrentView();
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275elementStart(1, "div", 132)(2, "h3");
+    \u0275\u0275elementStart(1, "div", 120)(2, "h3");
     \u0275\u0275text(3, "Registrar tratamiento");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "div", 133)(5, "app-remote-search-select", 139);
+    \u0275\u0275elementStart(4, "div", 121)(5, "app-remote-search-select", 127);
     \u0275\u0275listener("valueChange", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_app_remote_search_select_valueChange_5_listener($event) {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.tratamientoForm.update((f) => __spreadProps(__spreadValues({}, f), { animalId: $event })));
     });
@@ -51536,9 +51755,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
     \u0275\u0275elementStart(6, "label")(7, "span");
     \u0275\u0275text(8, "Medicamento");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(9, "input", 24);
+    \u0275\u0275elementStart(9, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_input_ngModelChange_9_listener($event) {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.tratamientoForm.update((f) => __spreadProps(__spreadValues({}, f), { medicamento: $event })));
     });
@@ -51546,9 +51765,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
     \u0275\u0275elementStart(10, "label")(11, "span");
     \u0275\u0275text(12, "Fecha inicio");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(13, "input", 141);
+    \u0275\u0275elementStart(13, "input", 129);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_input_ngModelChange_13_listener($event) {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.tratamientoForm.update((f) => __spreadProps(__spreadValues({}, f), { fechaInicio: $event })));
     });
@@ -51556,9 +51775,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
     \u0275\u0275elementStart(14, "label")(15, "span");
     \u0275\u0275text(16, "Fecha fin");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(17, "input", 141);
+    \u0275\u0275elementStart(17, "input", 129);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_input_ngModelChange_17_listener($event) {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.tratamientoForm.update((f) => __spreadProps(__spreadValues({}, f), { fechaFin: $event })));
     });
@@ -51566,9 +51785,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
     \u0275\u0275elementStart(18, "label")(19, "span");
     \u0275\u0275text(20, "Dosis");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(21, "input", 24);
+    \u0275\u0275elementStart(21, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_input_ngModelChange_21_listener($event) {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.tratamientoForm.update((f) => __spreadProps(__spreadValues({}, f), { dosis: $event })));
     });
@@ -51576,16 +51795,16 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
     \u0275\u0275elementStart(22, "label")(23, "span");
     \u0275\u0275text(24, "Via aplicacion");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(25, "input", 24);
+    \u0275\u0275elementStart(25, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_input_ngModelChange_25_listener($event) {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.tratamientoForm.update((f) => __spreadProps(__spreadValues({}, f), { viaAplicacion: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(26, "app-remote-search-select", 143);
+    \u0275\u0275elementStart(26, "app-remote-search-select", 131);
     \u0275\u0275listener("valueChange", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_app_remote_search_select_valueChange_26_listener($event) {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.tratamientoForm.update((f) => __spreadProps(__spreadValues({}, f), { responsable: $event })));
     });
@@ -51593,9 +51812,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
     \u0275\u0275elementStart(27, "label")(28, "span");
     \u0275\u0275text(29, "Costo");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(30, "input", 134);
+    \u0275\u0275elementStart(30, "input", 122);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_input_ngModelChange_30_listener($event) {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.tratamientoForm.update((f) => __spreadProps(__spreadValues({}, f), { costo: $event })));
     });
@@ -51603,34 +51822,34 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
     \u0275\u0275elementStart(31, "label")(32, "span");
     \u0275\u0275text(33, "Motivo");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(34, "input", 24);
+    \u0275\u0275elementStart(34, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_input_ngModelChange_34_listener($event) {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.tratamientoForm.update((f) => __spreadProps(__spreadValues({}, f), { motivo: $event })));
     });
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(35, "label", 136)(36, "span");
+    \u0275\u0275elementStart(35, "label", 124)(36, "span");
     \u0275\u0275text(37, "Observaciones");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(38, "textarea", 24);
+    \u0275\u0275elementStart(38, "textarea", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_textarea_ngModelChange_38_listener($event) {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.tratamientoForm.update((f) => __spreadProps(__spreadValues({}, f), { observaciones: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(39, "div", 137)(40, "button", 34);
+    \u0275\u0275elementStart(39, "div", 125)(40, "button", 35);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_button_click_40_listener() {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.closeModals());
     });
     \u0275\u0275text(41, "Cancelar");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(42, "button", 138);
+    \u0275\u0275elementStart(42, "button", 126);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template_button_click_42_listener() {
-      \u0275\u0275restoreView(_r24);
+      \u0275\u0275restoreView(_r25);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.submitTratamiento());
     });
@@ -51666,14 +51885,14 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
 }
 function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template(rf, ctx) {
   if (rf & 1) {
-    const _r25 = \u0275\u0275getCurrentView();
+    const _r26 = \u0275\u0275getCurrentView();
     \u0275\u0275elementContainerStart(0);
-    \u0275\u0275elementStart(1, "div", 132)(2, "h3");
+    \u0275\u0275elementStart(1, "div", 120)(2, "h3");
     \u0275\u0275text(3, "Registrar diagnostico");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "div", 133)(5, "app-remote-search-select", 139);
+    \u0275\u0275elementStart(4, "div", 121)(5, "app-remote-search-select", 127);
     \u0275\u0275listener("valueChange", function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template_app_remote_search_select_valueChange_5_listener($event) {
-      \u0275\u0275restoreView(_r25);
+      \u0275\u0275restoreView(_r26);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.diagnosticoForm.update((f) => __spreadProps(__spreadValues({}, f), { animalId: $event })));
     });
@@ -51681,9 +51900,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template(rf, ctx) {
     \u0275\u0275elementStart(6, "label")(7, "span");
     \u0275\u0275text(8, "Enfermedad");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(9, "input", 24);
+    \u0275\u0275elementStart(9, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template_input_ngModelChange_9_listener($event) {
-      \u0275\u0275restoreView(_r25);
+      \u0275\u0275restoreView(_r26);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.diagnosticoForm.update((f) => __spreadProps(__spreadValues({}, f), { enfermedad: $event })));
     });
@@ -51691,9 +51910,9 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template(rf, ctx) {
     \u0275\u0275elementStart(10, "label")(11, "span");
     \u0275\u0275text(12, "Fecha diagnostico");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(13, "input", 141);
+    \u0275\u0275elementStart(13, "input", 129);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template_input_ngModelChange_13_listener($event) {
-      \u0275\u0275restoreView(_r25);
+      \u0275\u0275restoreView(_r26);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.diagnosticoForm.update((f) => __spreadProps(__spreadValues({}, f), { fechaDiagnostico: $event })));
     });
@@ -51701,45 +51920,45 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template(rf, ctx) {
     \u0275\u0275elementStart(14, "label")(15, "span");
     \u0275\u0275text(16, "Severidad");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(17, "select", 24);
+    \u0275\u0275elementStart(17, "select", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template_select_ngModelChange_17_listener($event) {
-      \u0275\u0275restoreView(_r25);
+      \u0275\u0275restoreView(_r26);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.diagnosticoForm.update((f) => __spreadProps(__spreadValues({}, f), { severidad: $event })));
     });
-    \u0275\u0275elementStart(18, "option", 144);
+    \u0275\u0275elementStart(18, "option", 132);
     \u0275\u0275text(19, "Baja");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(20, "option", 145);
+    \u0275\u0275elementStart(20, "option", 133);
     \u0275\u0275text(21, "Media");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(22, "option", 146);
+    \u0275\u0275elementStart(22, "option", 134);
     \u0275\u0275text(23, "Alta");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(24, "option", 147);
+    \u0275\u0275elementStart(24, "option", 135);
     \u0275\u0275text(25, "Critica");
     \u0275\u0275elementEnd()()();
     \u0275\u0275elementStart(26, "label")(27, "span");
     \u0275\u0275text(28, "Estado");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(29, "select", 24);
+    \u0275\u0275elementStart(29, "select", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template_select_ngModelChange_29_listener($event) {
-      \u0275\u0275restoreView(_r25);
+      \u0275\u0275restoreView(_r26);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.diagnosticoForm.update((f) => __spreadProps(__spreadValues({}, f), { estado: $event })));
     });
-    \u0275\u0275elementStart(30, "option", 27);
+    \u0275\u0275elementStart(30, "option", 28);
     \u0275\u0275text(31, "Abierto");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(32, "option", 28);
+    \u0275\u0275elementStart(32, "option", 29);
     \u0275\u0275text(33, "Controlado");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(34, "option", 29);
+    \u0275\u0275elementStart(34, "option", 30);
     \u0275\u0275text(35, "Cerrado");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(36, "app-remote-search-select", 148);
+    \u0275\u0275elementStart(36, "app-remote-search-select", 136);
     \u0275\u0275listener("valueChange", function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template_app_remote_search_select_valueChange_36_listener($event) {
-      \u0275\u0275restoreView(_r25);
+      \u0275\u0275restoreView(_r26);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.diagnosticoForm.update((f) => __spreadProps(__spreadValues({}, f), { veterinario: $event })));
     });
@@ -51747,34 +51966,34 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template(rf, ctx) {
     \u0275\u0275elementStart(37, "label")(38, "span");
     \u0275\u0275text(39, "Tratamiento indicado");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(40, "input", 24);
+    \u0275\u0275elementStart(40, "input", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template_input_ngModelChange_40_listener($event) {
-      \u0275\u0275restoreView(_r25);
+      \u0275\u0275restoreView(_r26);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.diagnosticoForm.update((f) => __spreadProps(__spreadValues({}, f), { tratamientoIndicado: $event })));
     });
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(41, "label", 136)(42, "span");
+    \u0275\u0275elementStart(41, "label", 124)(42, "span");
     \u0275\u0275text(43, "Observaciones");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(44, "textarea", 24);
+    \u0275\u0275elementStart(44, "textarea", 25);
     \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template_textarea_ngModelChange_44_listener($event) {
-      \u0275\u0275restoreView(_r25);
+      \u0275\u0275restoreView(_r26);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.diagnosticoForm.update((f) => __spreadProps(__spreadValues({}, f), { observaciones: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(45, "div", 137)(46, "button", 34);
+    \u0275\u0275elementStart(45, "div", 125)(46, "button", 35);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template_button_click_46_listener() {
-      \u0275\u0275restoreView(_r25);
+      \u0275\u0275restoreView(_r26);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.closeModals());
     });
     \u0275\u0275text(47, "Cancelar");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(48, "button", 138);
+    \u0275\u0275elementStart(48, "button", 126);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template_button_click_48_listener() {
-      \u0275\u0275restoreView(_r25);
+      \u0275\u0275restoreView(_r26);
       const ctx_r1 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r1.submitDiagnostico());
     });
@@ -51806,32 +52025,32 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template(rf, ctx) {
 }
 function GanaderiaSanidadPageComponent_div_68_Template(rf, ctx) {
   if (rf & 1) {
-    const _r21 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 128);
+    const _r22 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 116);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_Template_div_click_0_listener() {
-      \u0275\u0275restoreView(_r21);
+      \u0275\u0275restoreView(_r22);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.closeModals());
     })("keydown.escape", function GanaderiaSanidadPageComponent_div_68_Template_div_keydown_escape_0_listener() {
-      \u0275\u0275restoreView(_r21);
+      \u0275\u0275restoreView(_r22);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.closeModals());
     }, \u0275\u0275resolveDocument);
-    \u0275\u0275elementStart(1, "div", 129);
+    \u0275\u0275elementStart(1, "div", 117);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_Template_div_click_1_listener($event) {
       return $event.stopPropagation();
     });
-    \u0275\u0275elementStart(2, "button", 130);
+    \u0275\u0275elementStart(2, "button", 118);
     \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_div_68_Template_button_click_2_listener() {
-      \u0275\u0275restoreView(_r21);
+      \u0275\u0275restoreView(_r22);
       const ctx_r1 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r1.closeModals());
     });
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(3, "svg", 12);
-    \u0275\u0275element(4, "path", 131);
+    \u0275\u0275elementStart(3, "svg", 13);
+    \u0275\u0275element(4, "path", 119);
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(5, GanaderiaSanidadPageComponent_div_68_ng_container_5_Template, 54, 13, "ng-container", 67)(6, GanaderiaSanidadPageComponent_div_68_ng_container_6_Template, 33, 26, "ng-container", 67)(7, GanaderiaSanidadPageComponent_div_68_ng_container_7_Template, 44, 23, "ng-container", 67)(8, GanaderiaSanidadPageComponent_div_68_ng_container_8_Template, 50, 21, "ng-container", 67);
+    \u0275\u0275template(5, GanaderiaSanidadPageComponent_div_68_ng_container_5_Template, 54, 13, "ng-container", 69)(6, GanaderiaSanidadPageComponent_div_68_ng_container_6_Template, 33, 26, "ng-container", 69)(7, GanaderiaSanidadPageComponent_div_68_ng_container_7_Template, 44, 23, "ng-container", 69)(8, GanaderiaSanidadPageComponent_div_68_ng_container_8_Template, 50, 21, "ng-container", 69);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
@@ -52374,9 +52593,9 @@ var GanaderiaSanidadPageComponent = class _GanaderiaSanidadPageComponent {
   static \u0275fac = function GanaderiaSanidadPageComponent_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _GanaderiaSanidadPageComponent)();
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _GanaderiaSanidadPageComponent, selectors: [["app-ganaderia-sanidad-page"]], decls: 69, vars: 9, consts: [["noAlertas", ""], ["alertasCollapsedState", ""], ["catalogCollapsedState", ""], ["registrosCollapsedState", ""], ["noAplicaciones", ""], ["noTratamientos", ""], ["noDiagnosticos", ""], [1, "page"], [1, "sanidad-head"], [1, "eyebrow"], [1, "head-actions"], ["type", "button", 1, "btn-secondary", "sanidad-action", 3, "click"], ["viewBox", "0 0 24 24"], ["d", "M12 3v12"], ["d", "m8 11 4 4 4-4"], ["d", "M5 21h14"], ["d", "M9 3h6v4H9z"], ["d", "M8 7h8v13H8z"], ["d", "M10 12h4M12 10v4"], ["type", "button", 1, "btn-primary", "sanidad-action", 3, "click"], ["d", "M12 5v14M5 12h14"], ["class", "stats-grid sanidad-kpis", 4, "ngIf"], [1, "card", "filters-card"], [1, "filters-grid"], [3, "ngModelChange", "ngModel"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["value", "ABIERTO"], ["value", "CONTROLADO"], ["value", "CERRADO"], ["value", "true"], ["value", "false"], [1, "card-actions"], ["type", "button", 1, "btn-primary", 3, "click"], ["type", "button", 1, "btn-secondary", 3, "click"], ["class", "error-box", 4, "ngIf"], ["class", "card empty-box", 4, "ngIf"], ["class", "sanidad-stack", 4, "ngIf"], ["class", "app-modal-backdrop", 3, "click", "keydown.escape", 4, "ngIf"], [1, "stats-grid", "sanidad-kpis"], [1, "kpi-card"], [1, "metric-icon"], [1, "kpi-copy"], ["x", "4", "y", "5", "width", "16", "height", "15", "rx", "3"], ["d", "M8 3v4m8-4v4M4 10h16"], ["d", "M12 4v7"], ["d", "M8 8c0 2 1.8 4 4 4s4-2 4-4"], ["d", "M7 14c0 3 2 6 5 6s5-3 5-6"], ["d", "M6 4v3a2 2 0 0 0 4 0V4M14 4v3a2 2 0 0 0 4 0V4"], ["d", "M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z"], ["d", "m9 12 2 2 4-5"], ["d", "M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"], ["d", "M12 3 3.5 18h17L12 3Z"], ["d", "M12 9v4m0 3h.01"], [3, "value"], [1, "error-box"], [1, "card", "empty-box"], [1, "sanidad-stack"], [1, "card", "top-panel", "vaccination-alert-panel"], [1, "sanitary-tabs-bar", "catalog-tabs-bar"], [1, "catalog-head", "catalog-head--inline"], ["aria-hidden", "true", 1, "catalog-head__icon"], ["type", "button", "aria-label", "Colapsar alertas de vacunaci\xF3n", 1, "section-toggle", 3, "click"], ["d", "m6 9 6 6 6-6"], [4, "ngIf", "ngIfElse"], [1, "card", "top-panel", "catalog-panel", "sanitary-tabs-panel"], [1, "sanitary-tabs-meta"], [4, "ngIf"], ["type", "button", "aria-label", "Anterior cat\xE1logo", 3, "click", "disabled"], ["d", "m15 18-6-6 6-6"], ["type", "button", 3, "active", "click", 4, "ngFor", "ngForOf"], ["type", "button", "aria-label", "Siguiente cat\xE1logo", 3, "click", "disabled"], ["d", "m9 18 6-6-6-6"], ["type", "button", "aria-label", "Colapsar cat\xE1logo de vacunaci\xF3n", 1, "section-toggle", "section-toggle--compact", 3, "click"], [1, "card", "right-panel", "right-panel--premium", "sanitary-tabs-panel"], [1, "sanitary-tabs-bar"], [1, "sanitary-tabs"], ["type", "button", 3, "click"], ["viewBox", "0 0 24 24", "aria-hidden", "true"], ["type", "button", "aria-label", "Anterior", 3, "click", "disabled"], ["type", "button", "aria-label", "Siguiente", 3, "click", "disabled"], ["type", "button", "aria-label", "Colapsar registros sanitarios", 1, "section-toggle", "section-toggle--compact", 3, "click"], ["class", "vaccination-alert-table-wrap", 4, "ngIf", "ngIfElse"], [1, "vaccination-alert-table-wrap"], [1, "vaccination-alert-summary"], [1, "danger"], [1, "warning"], [1, "vaccination-alert-table"], [4, "ngFor", "ngForOf"], [1, "vaccine-table-identity"], [1, "vaccine-table-icon"], [1, "catalog-badge"], [1, "alert-count", "alert-count--danger"], [1, "alert-count", "alert-count--warning"], ["class", "table-muted", 4, "ngIf"], [1, "table-muted"], [1, "empty-box", "premium-empty-box", "empty-box--section"], ["d", "M20 6 9 17l-5-5"], [1, "section-collapsed-summary"], [1, "sanitary-card-grid"], ["class", "sanitary-record-card catalog-record-card", 4, "ngFor", "ngForOf"], ["class", "empty-box premium-empty-box", 4, "ngIf"], [1, "catalog-info-card", "catalog-info-card--compact"], ["aria-hidden", "true", 1, "catalog-info-card__icon"], ["cx", "12", "cy", "12", "r", "9"], ["d", "M12 11v5M12 7h.01"], [1, "sanitary-record-card", "catalog-record-card"], [1, "sanitary-record-card__top"], [1, "sanitary-record-card__metrics"], [1, "sanitary-record-metric"], ["cx", "12", "cy", "12", "r", "8"], ["d", "M12 8v5l3 2"], ["d", "M4 7h16v13H4z"], ["d", "M8 7V4h8v3"], ["type", "button", 1, "sanitary-detail-btn"], ["d", "M9 18l6-6-6-6"], [1, "empty-box", "premium-empty-box"], ["class", "sanitary-table-wrap", 4, "ngIf"], [1, "sanitary-tabs-footer"], [1, "sanitary-footer-date"], [1, "sanitary-table-wrap"], ["class", "sanitary-data-table", 4, "ngIf", "ngIfElse"], [1, "sanitary-data-table"], [1, "sanitary-table-identity"], [1, "sanitary-table-icon", "sanitary-table-icon--green"], [1, "sanitary-table-icon", "sanitary-table-icon--blue"], [1, "sanitary-table-icon", "sanitary-table-icon--warning"], [1, "severity-pill"], [1, "app-modal-backdrop", 3, "click", "keydown.escape"], [1, "app-modal-panel", "panel-narrow", 3, "click"], ["type", "button", "aria-label", "Cerrar popup", 1, "modal-close-button", 3, "click"], ["d", "M6 6l12 12M18 6 6 18"], [1, "modal-head"], [1, "form-grid"], ["type", "number", 3, "ngModelChange", "ngModel"], [3, "ngValue"], [1, "textarea-field"], [1, "modal-actions"], ["type", "button", 1, "btn-primary", 3, "click", "disabled"], ["label", "Animal", "placeholder", "Buscar animal por caravana", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["label", "Vacuna", "placeholder", "Buscar vacuna", "valueField", "id", "labelField", "nombre", 3, "valueChange", "options", "subtitleFields", "searchFields", "value"], ["type", "date", 3, "ngModelChange", "ngModel"], ["label", "Operario", "placeholder", "Buscar operario responsable", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["label", "Responsable", "placeholder", "Buscar operario responsable", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["value", "BAJA"], ["value", "MEDIA"], ["value", "ALTA"], ["value", "CRITICA"], ["label", "Veterinario", "placeholder", "Buscar veterinario habilitado", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"]], template: function GanaderiaSanidadPageComponent_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _GanaderiaSanidadPageComponent, selectors: [["app-ganaderia-sanidad-page"]], decls: 69, vars: 9, consts: [["noAlertas", ""], ["alertasCollapsedState", ""], ["catalogCollapsedState", ""], ["registrosCollapsedState", ""], ["noVacunasCatalogo", ""], ["noAplicaciones", ""], ["noTratamientos", ""], ["noDiagnosticos", ""], [1, "page"], [1, "sanidad-head"], [1, "eyebrow"], [1, "head-actions"], ["type", "button", 1, "btn-secondary", "sanidad-action", 3, "click"], ["viewBox", "0 0 24 24"], ["d", "M12 3v12"], ["d", "m8 11 4 4 4-4"], ["d", "M5 21h14"], ["d", "M9 3h6v4H9z"], ["d", "M8 7h8v13H8z"], ["d", "M10 12h4M12 10v4"], ["type", "button", 1, "btn-primary", "sanidad-action", 3, "click"], ["d", "M12 5v14M5 12h14"], ["class", "stats-grid sanidad-kpis", 4, "ngIf"], [1, "card", "filters-card"], [1, "filters-grid"], [3, "ngModelChange", "ngModel"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["value", "ABIERTO"], ["value", "CONTROLADO"], ["value", "CERRADO"], ["value", "true"], ["value", "false"], [1, "card-actions"], ["type", "button", 1, "btn-primary", 3, "click"], ["type", "button", 1, "btn-secondary", 3, "click"], ["class", "error-box", 4, "ngIf"], ["class", "card empty-box", 4, "ngIf"], ["class", "sanidad-stack", 4, "ngIf"], ["class", "app-modal-backdrop", 3, "click", "keydown.escape", 4, "ngIf"], [1, "stats-grid", "sanidad-kpis"], [1, "kpi-card"], [1, "metric-icon"], [1, "kpi-copy"], ["x", "4", "y", "5", "width", "16", "height", "15", "rx", "3"], ["d", "M8 3v4m8-4v4M4 10h16"], ["d", "M12 4v7"], ["d", "M8 8c0 2 1.8 4 4 4s4-2 4-4"], ["d", "M7 14c0 3 2 6 5 6s5-3 5-6"], ["d", "M6 4v3a2 2 0 0 0 4 0V4M14 4v3a2 2 0 0 0 4 0V4"], ["d", "M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z"], ["d", "m9 12 2 2 4-5"], ["d", "M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"], ["d", "M12 3 3.5 18h17L12 3Z"], ["d", "M12 9v4m0 3h.01"], [3, "value"], [1, "error-box"], [1, "card", "empty-box"], [1, "sanidad-stack"], [1, "sanidad-top-row"], [1, "card", "top-panel", "vaccination-alert-panel"], [1, "sanitary-tabs-bar", "catalog-tabs-bar"], [1, "catalog-head", "catalog-head--inline"], ["aria-hidden", "true", 1, "catalog-head__icon"], ["type", "button", "aria-label", "Colapsar alertas de vacunaci\xF3n", 1, "section-toggle", 3, "click"], ["d", "m6 9 6 6 6-6"], [4, "ngIf", "ngIfElse"], [1, "card", "top-panel", "catalog-panel", "sanitary-tabs-panel"], [1, "sanitary-tabs-meta"], [4, "ngIf"], ["type", "button", "aria-label", "Anterior cat\xE1logo", 3, "click", "disabled"], ["d", "m15 18-6-6 6-6"], ["type", "button", 3, "active", "click", 4, "ngFor", "ngForOf"], ["type", "button", "aria-label", "Siguiente cat\xE1logo", 3, "click", "disabled"], ["d", "m9 18 6-6-6-6"], ["type", "button", "aria-label", "Colapsar cat\xE1logo de vacunaci\xF3n", 1, "section-toggle", "section-toggle--compact", 3, "click"], [1, "card", "right-panel", "right-panel--premium", "sanitary-tabs-panel"], [1, "sanitary-tabs-bar"], [1, "sanitary-tabs"], ["type", "button", 3, "click"], ["viewBox", "0 0 24 24", "aria-hidden", "true"], ["type", "button", "aria-label", "Anterior", 3, "click", "disabled"], ["type", "button", "aria-label", "Siguiente", 3, "click", "disabled"], ["type", "button", "aria-label", "Colapsar registros sanitarios", 1, "section-toggle", "section-toggle--compact", 3, "click"], ["class", "vaccination-alert-table-wrap", 4, "ngIf", "ngIfElse"], [1, "vaccination-alert-table-wrap"], [1, "vaccination-alert-summary"], [1, "danger"], [1, "warning"], [1, "vaccination-alert-table"], [4, "ngFor", "ngForOf"], [1, "vaccine-table-identity"], [1, "vaccine-table-icon"], [1, "catalog-badge"], [1, "alert-count", "alert-count--danger"], [1, "alert-count", "alert-count--warning"], ["class", "table-muted", 4, "ngIf"], [1, "table-muted"], [1, "empty-box", "premium-empty-box", "empty-box--section"], ["d", "M20 6 9 17l-5-5"], [1, "section-collapsed-summary"], ["class", "catalog-table-wrap", 4, "ngIf", "ngIfElse"], [1, "catalog-table-wrap"], [1, "catalog-data-table"], [1, "empty-box", "premium-empty-box"], ["class", "sanitary-table-wrap", 4, "ngIf"], [1, "sanitary-tabs-footer"], [1, "sanitary-footer-date"], [1, "sanitary-table-wrap"], ["class", "sanitary-data-table", 4, "ngIf", "ngIfElse"], [1, "sanitary-data-table"], [1, "sanitary-table-identity"], [1, "sanitary-table-icon", "sanitary-table-icon--green"], [1, "sanitary-table-icon", "sanitary-table-icon--blue"], [1, "sanitary-table-icon", "sanitary-table-icon--warning"], [1, "severity-pill"], [1, "app-modal-backdrop", 3, "click", "keydown.escape"], [1, "app-modal-panel", "panel-narrow", 3, "click"], ["type", "button", "aria-label", "Cerrar popup", 1, "modal-close-button", 3, "click"], ["d", "M6 6l12 12M18 6 6 18"], [1, "modal-head"], [1, "form-grid"], ["type", "number", 3, "ngModelChange", "ngModel"], [3, "ngValue"], [1, "textarea-field"], [1, "modal-actions"], ["type", "button", 1, "btn-primary", 3, "click", "disabled"], ["label", "Animal", "placeholder", "Buscar animal por caravana", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["label", "Vacuna", "placeholder", "Buscar vacuna", "valueField", "id", "labelField", "nombre", 3, "valueChange", "options", "subtitleFields", "searchFields", "value"], ["type", "date", 3, "ngModelChange", "ngModel"], ["label", "Operario", "placeholder", "Buscar operario responsable", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["label", "Responsable", "placeholder", "Buscar operario responsable", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["value", "BAJA"], ["value", "MEDIA"], ["value", "ALTA"], ["value", "CRITICA"], ["label", "Veterinario", "placeholder", "Buscar veterinario habilitado", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"]], template: function GanaderiaSanidadPageComponent_Template(rf, ctx) {
     if (rf & 1) {
-      \u0275\u0275elementStart(0, "div", 7)(1, "header", 8)(2, "div")(3, "p", 9);
+      \u0275\u0275elementStart(0, "div", 8)(1, "header", 9)(2, "div")(3, "p", 10);
       \u0275\u0275text(4, "Campo App \xB7 Ganader\xEDa");
       \u0275\u0275elementEnd();
       \u0275\u0275elementStart(5, "h2");
@@ -52385,106 +52604,106 @@ var GanaderiaSanidadPageComponent = class _GanaderiaSanidadPageComponent {
       \u0275\u0275elementStart(7, "p");
       \u0275\u0275text(8, "Calendario sanitario, aplicaciones, tratamientos, diagn\xF3sticos y auditor\xEDa del rodeo.");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(9, "div", 10)(10, "button", 11);
+      \u0275\u0275elementStart(9, "div", 11)(10, "button", 12);
       \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_Template_button_click_10_listener() {
         return ctx.exportReporte();
       });
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(11, "svg", 12);
-      \u0275\u0275element(12, "path", 13)(13, "path", 14)(14, "path", 15);
+      \u0275\u0275elementStart(11, "svg", 13);
+      \u0275\u0275element(12, "path", 14)(13, "path", 15)(14, "path", 16);
       \u0275\u0275elementEnd();
       \u0275\u0275text(15, " Exportar auditor\xEDa ");
       \u0275\u0275elementEnd();
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(16, "button", 11);
+      \u0275\u0275elementStart(16, "button", 12);
       \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_Template_button_click_16_listener() {
         return ctx.openVacunaModal();
       });
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(17, "svg", 12);
-      \u0275\u0275element(18, "path", 16)(19, "path", 17)(20, "path", 18);
+      \u0275\u0275elementStart(17, "svg", 13);
+      \u0275\u0275element(18, "path", 17)(19, "path", 18)(20, "path", 19);
       \u0275\u0275elementEnd();
       \u0275\u0275text(21, " Nueva vacuna ");
       \u0275\u0275elementEnd();
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(22, "button", 19);
+      \u0275\u0275elementStart(22, "button", 20);
       \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_Template_button_click_22_listener() {
         return ctx.openAplicacionModal();
       });
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(23, "svg", 12);
-      \u0275\u0275element(24, "path", 20);
+      \u0275\u0275elementStart(23, "svg", 13);
+      \u0275\u0275element(24, "path", 21);
       \u0275\u0275elementEnd();
       \u0275\u0275text(25, " Registrar aplicaci\xF3n ");
       \u0275\u0275elementEnd()()();
-      \u0275\u0275template(26, GanaderiaSanidadPageComponent_div_26_Template, 76, 9, "div", 21);
+      \u0275\u0275template(26, GanaderiaSanidadPageComponent_div_26_Template, 76, 9, "div", 22);
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(27, "div", 22)(28, "div", 23)(29, "label")(30, "span");
+      \u0275\u0275elementStart(27, "div", 23)(28, "div", 24)(29, "label")(30, "span");
       \u0275\u0275text(31, "Animal");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(32, "select", 24);
+      \u0275\u0275elementStart(32, "select", 25);
       \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_Template_select_ngModelChange_32_listener($event) {
         return ctx.updateFilter("animalId", $event);
       });
-      \u0275\u0275elementStart(33, "option", 25);
+      \u0275\u0275elementStart(33, "option", 26);
       \u0275\u0275text(34, "Todos");
       \u0275\u0275elementEnd();
-      \u0275\u0275template(35, GanaderiaSanidadPageComponent_option_35_Template, 2, 3, "option", 26);
+      \u0275\u0275template(35, GanaderiaSanidadPageComponent_option_35_Template, 2, 3, "option", 27);
       \u0275\u0275elementEnd()();
       \u0275\u0275elementStart(36, "label")(37, "span");
       \u0275\u0275text(38, "Diagnostico");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(39, "select", 24);
+      \u0275\u0275elementStart(39, "select", 25);
       \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_Template_select_ngModelChange_39_listener($event) {
         return ctx.updateFilter("estadoDiagnostico", $event);
       });
-      \u0275\u0275elementStart(40, "option", 25);
+      \u0275\u0275elementStart(40, "option", 26);
       \u0275\u0275text(41, "Todos");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(42, "option", 27);
+      \u0275\u0275elementStart(42, "option", 28);
       \u0275\u0275text(43, "Abierto");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(44, "option", 28);
+      \u0275\u0275elementStart(44, "option", 29);
       \u0275\u0275text(45, "Controlado");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(46, "option", 29);
+      \u0275\u0275elementStart(46, "option", 30);
       \u0275\u0275text(47, "Cerrado");
       \u0275\u0275elementEnd()()();
       \u0275\u0275elementStart(48, "label")(49, "span");
       \u0275\u0275text(50, "Vacunas");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(51, "select", 24);
+      \u0275\u0275elementStart(51, "select", 25);
       \u0275\u0275listener("ngModelChange", function GanaderiaSanidadPageComponent_Template_select_ngModelChange_51_listener($event) {
         return ctx.updateFilter("obligatoria", $event);
       });
-      \u0275\u0275elementStart(52, "option", 25);
+      \u0275\u0275elementStart(52, "option", 26);
       \u0275\u0275text(53, "Todas");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(54, "option", 30);
+      \u0275\u0275elementStart(54, "option", 31);
       \u0275\u0275text(55, "Obligatorias");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(56, "option", 31);
+      \u0275\u0275elementStart(56, "option", 32);
       \u0275\u0275text(57, "Complementarias");
       \u0275\u0275elementEnd()()()();
-      \u0275\u0275elementStart(58, "div", 32)(59, "button", 33);
+      \u0275\u0275elementStart(58, "div", 33)(59, "button", 34);
       \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_Template_button_click_59_listener() {
         return ctx.applyFilters();
       });
       \u0275\u0275text(60, "Aplicar filtros");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(61, "button", 34);
+      \u0275\u0275elementStart(61, "button", 35);
       \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_Template_button_click_61_listener() {
         return ctx.openTratamientoModal();
       });
       \u0275\u0275text(62, "Nuevo tratamiento");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(63, "button", 34);
+      \u0275\u0275elementStart(63, "button", 35);
       \u0275\u0275listener("click", function GanaderiaSanidadPageComponent_Template_button_click_63_listener() {
         return ctx.openDiagnosticoModal();
       });
       \u0275\u0275text(64, "Nuevo diagnostico");
       \u0275\u0275elementEnd()()();
-      \u0275\u0275template(65, GanaderiaSanidadPageComponent_div_65_Template, 2, 1, "div", 35)(66, GanaderiaSanidadPageComponent_div_66_Template, 2, 0, "div", 36)(67, GanaderiaSanidadPageComponent_div_67_Template, 90, 30, "div", 37)(68, GanaderiaSanidadPageComponent_div_68_Template, 9, 4, "div", 38);
+      \u0275\u0275template(65, GanaderiaSanidadPageComponent_div_65_Template, 2, 1, "div", 36)(66, GanaderiaSanidadPageComponent_div_66_Template, 2, 0, "div", 37)(67, GanaderiaSanidadPageComponent_div_67_Template, 91, 30, "div", 38)(68, GanaderiaSanidadPageComponent_div_68_Template, 9, 4, "div", 39);
       \u0275\u0275elementEnd();
     }
     if (rf & 2) {
@@ -52507,253 +52726,260 @@ var GanaderiaSanidadPageComponent = class _GanaderiaSanidadPageComponent {
       \u0275\u0275advance();
       \u0275\u0275property("ngIf", ctx.vacunaModalOpen() || ctx.aplicacionModalOpen() || ctx.tratamientoModalOpen() || ctx.diagnosticoModalOpen());
     }
-  }, dependencies: [CommonModule, NgForOf, NgIf, FormsModule, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, SelectControlValueAccessor, NgControlStatus, NgModel, RemoteSearchSelectComponent, DecimalPipe], styles: ["\n.page[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n.page-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 16px;\n}\n.page-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.sanidad-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n  color: #f8fbff;\n}\n.sanidad-head[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.sanidad-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow[_ngcontent-%COMP%] {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  font-weight: 900;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n}\n.head-actions[_ngcontent-%COMP%], \n.card-actions[_ngcontent-%COMP%], \n.modal-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n.sanidad-action[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.sanidad-action[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 54px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n  min-height: 104px;\n  border-radius: 20px;\n  padding: 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.1),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card--blue[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%);\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card--danger[_ngcontent-%COMP%] {\n  border-color: rgba(255, 107, 107, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 107, 107, 0.11),\n      transparent 34%);\n}\n.metric-icon[_ngcontent-%COMP%] {\n  display: grid;\n  width: 52px;\n  height: 52px;\n  place-items: center;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  border-radius: 18px;\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 28px;\n  height: 28px;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  letter-spacing: 0;\n  text-transform: none;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  margin: 4px 0 0;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.04em;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.filters-card[_ngcontent-%COMP%] {\n  padding: 18px;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.filters-grid[_ngcontent-%COMP%], \n.form-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.filters-grid[_ngcontent-%COMP%]   label[_ngcontent-%COMP%], \n.form-grid[_ngcontent-%COMP%]   label[_ngcontent-%COMP%], \n.textarea-field[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: var(--muted);\n  font-size: 13px;\n}\n.layout[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 0.88fr 1.22fr;\n  gap: 18px;\n}\n.left-panel[_ngcontent-%COMP%], \n.right-panel[_ngcontent-%COMP%] {\n  padding: 18px;\n}\n.section-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 14px;\n}\n.section-head--spaced[_ngcontent-%COMP%] {\n  margin-top: 22px;\n}\n.alert-list[_ngcontent-%COMP%], \n.table-list[_ngcontent-%COMP%], \n.catalog-grid[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.alert-card[_ngcontent-%COMP%], \n.table-card[_ngcontent-%COMP%], \n.catalog-card[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 18px;\n  background: rgba(15, 23, 42, 0.46);\n  padding: 16px;\n  display: flex;\n  justify-content: space-between;\n  gap: 16px;\n  align-items: flex-start;\n}\n.alert-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%], \n.table-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%], \n.catalog-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.catalog-top[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n}\n.catalog-card[_ngcontent-%COMP%] {\n  flex-direction: column;\n}\n.catalog-meta[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 8px;\n  color: var(--muted);\n  font-size: 13px;\n}\n.double-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 12px;\n  margin-top: 18px;\n}\n.detail-block[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  background: rgba(15, 23, 42, 0.4);\n  padding: 16px;\n}\n.timeline-item[_ngcontent-%COMP%] {\n  padding: 12px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.12);\n}\n.timeline-item[_ngcontent-%COMP%]:last-child {\n  border-bottom: 0;\n}\n.timeline-item[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.metric-card--accent[_ngcontent-%COMP%] {\n  border-color: rgba(96, 165, 250, 0.25);\n}\n.metric-card--warning[_ngcontent-%COMP%] {\n  border-color: rgba(251, 191, 36, 0.25);\n}\n.state-chip[_ngcontent-%COMP%] {\n  padding: 8px 12px;\n  border-radius: 999px;\n  background: rgba(159, 232, 112, 0.14);\n  color: #b7f587;\n  font-size: 12px;\n  font-weight: 700;\n}\n.state-chip--soft[_ngcontent-%COMP%] {\n  background: rgba(96, 165, 250, 0.12);\n  color: #bfdbfe;\n}\n.state-chip--danger[_ngcontent-%COMP%] {\n  background: rgba(248, 113, 113, 0.16);\n  color: #fecaca;\n}\n.error-box[_ngcontent-%COMP%] {\n  padding: 14px 16px;\n  border: 1px solid rgba(248, 113, 113, 0.3);\n  border-radius: 16px;\n  background: rgba(127, 29, 29, 0.22);\n  color: #fecaca;\n}\n.empty-box[_ngcontent-%COMP%] {\n  color: var(--muted);\n}\n.panel-narrow[_ngcontent-%COMP%] {\n  width: min(920px, 100%);\n}\n.modal-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0 0 18px;\n}\n.textarea-field[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  min-height: 100px;\n}\n.catalog-head__icon[_ngcontent-%COMP%], \n.catalog-info-card__icon[_ngcontent-%COMP%] {\n  width: 56px;\n  height: 56px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #f8fbff;\n  font-size: 20px;\n  font-weight: 700;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(24, 39, 69, 0.9),\n      rgba(13, 24, 47, 0.86));\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 20px rgba(2, 8, 23, 0.22);\n}\n.catalog-head[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  margin-bottom: 18px;\n}\n.catalog-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 30px;\n  line-height: 1.04;\n  letter-spacing: -0.03em;\n  color: #f8fbff;\n}\n.catalog-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 14px;\n  line-height: 1.6;\n}\n.catalog-badge[_ngcontent-%COMP%] {\n  flex-shrink: 0;\n  min-height: 36px;\n  padding: 8px 14px;\n  border-radius: 999px;\n  border: 1px solid rgba(159, 232, 112, 0.2);\n  background: rgba(159, 232, 112, 0.12);\n  color: #9fe870;\n  font-size: 12px;\n  font-weight: 700;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.08);\n}\n.catalog-badge--secondary[_ngcontent-%COMP%] {\n  border-color: rgba(110, 168, 255, 0.2);\n  background: rgba(110, 168, 255, 0.12);\n  color: #6ea8ff;\n  box-shadow: 0 0 18px rgba(110, 168, 255, 0.08);\n}\n.catalog-info-card[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  padding: 18px 20px;\n  border-radius: 24px;\n  border: 1px solid rgba(110, 168, 255, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.84),\n      rgba(10, 18, 35, 0.92)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.06),\n      transparent 30%);\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.catalog-info-card[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n  margin-bottom: 4px;\n}\n.catalog-info-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 13px;\n  line-height: 1.55;\n}\n.right-panel--premium[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.catalog-head--applications[_ngcontent-%COMP%] {\n  margin-bottom: 4px;\n}\n.premium-empty-box[_ngcontent-%COMP%] {\n  border: 1px dashed rgba(148, 163, 184, 0.2);\n  border-radius: 20px;\n  padding: 20px;\n  background: rgba(11, 21, 41, 0.74);\n}\n.vaccination-alert-table-wrap[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  overflow-x: auto;\n}\n.vaccination-alert-summary[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(160px, 1fr));\n  gap: 12px;\n}\n.vaccination-alert-summary[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%] {\n  border: 1px solid rgba(159, 232, 112, 0.14);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.08),\n      transparent 35%);\n}\n.vaccination-alert-summary[_ngcontent-%COMP%]    > div.danger[_ngcontent-%COMP%] {\n  border-color: rgba(255, 107, 107, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 107, 107, 0.1),\n      transparent 35%);\n}\n.vaccination-alert-summary[_ngcontent-%COMP%]    > div.warning[_ngcontent-%COMP%] {\n  border-color: rgba(255, 184, 77, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 184, 77, 0.1),\n      transparent 35%);\n}\n.vaccination-alert-summary[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.vaccination-alert-summary[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 4px;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n}\n.vaccination-alert-table[_ngcontent-%COMP%] {\n  width: 100%;\n  min-width: 900px;\n  border-collapse: separate;\n  border-spacing: 0;\n  overflow: hidden;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 20px;\n  background: rgba(8, 18, 37, 0.68);\n}\n.vaccination-alert-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n.vaccination-alert-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 14px 16px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  color: #dce7f8;\n  font-size: 13px;\n  vertical-align: middle;\n}\n.vaccination-alert-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(11, 23, 48, 0.78);\n}\n.vaccination-alert-table[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:last-child   td[_ngcontent-%COMP%] {\n  border-bottom: 0;\n}\n.vaccination-alert-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%] {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.vaccination-alert-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover {\n  background: rgba(159, 232, 112, 0.04);\n  box-shadow: inset 2px 0 0 rgba(159, 232, 112, 0.65);\n}\n.vaccine-table-identity[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 42px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n}\n.vaccine-table-icon[_ngcontent-%COMP%] {\n  width: 42px;\n  height: 42px;\n  display: grid;\n  place-items: center;\n  border-radius: 14px;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  background: rgba(159, 232, 112, 0.08);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);\n}\n.vaccine-table-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.vaccine-table-identity[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 22px;\n  height: 22px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.vaccine-table-identity[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%], \n.vaccination-alert-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n}\n.vaccine-table-identity[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.table-muted[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 3px;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.alert-count[_ngcontent-%COMP%] {\n  display: inline-flex;\n  min-width: 34px;\n  height: 30px;\n  align-items: center;\n  justify-content: center;\n  border-radius: 999px;\n  font-weight: 800;\n}\n.alert-count--danger[_ngcontent-%COMP%] {\n  color: #ffd0d0;\n  border: 1px solid rgba(255, 107, 107, 0.24);\n  background: rgba(255, 107, 107, 0.12);\n}\n.alert-count--warning[_ngcontent-%COMP%] {\n  color: #ffe1a8;\n  border: 1px solid rgba(255, 184, 77, 0.24);\n  background: rgba(255, 184, 77, 0.12);\n}\n.sanitary-tabs-panel[_ngcontent-%COMP%] {\n  overflow: hidden;\n}\n.sanitary-tabs-bar[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  margin: -18px -18px 18px;\n  padding: 14px 18px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(9, 18, 37, 0.72),\n      rgba(7, 15, 31, 0.42)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 28%);\n}\n.sanitary-tabs[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex-wrap: wrap;\n}\n.sanitary-tabs[_ngcontent-%COMP%]   button[_ngcontent-%COMP%], \n.sanitary-tabs-meta[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  background: rgba(7, 15, 31, 0.42);\n  color: #8ea0bb;\n  border-radius: 12px;\n  min-height: 40px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 9px;\n  padding: 10px 12px;\n  font-weight: 800;\n  font-size: 12px;\n}\n.sanitary-tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%], \n.sanitary-tabs-meta[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, 0.34);\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n}\n.sanitary-tabs[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanitary-tabs-meta[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanitary-record-card[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanitary-tabs-footer[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.sanitary-tabs-meta[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  white-space: nowrap;\n}\n.sanitary-tabs-meta[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  width: 38px;\n  min-height: 38px;\n  padding: 0;\n}\n.sanitary-tabs-meta[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.sanitary-card-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.sanitary-table-wrap[_ngcontent-%COMP%] {\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.78),\n      rgba(8, 18, 37, 0.78)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.05),\n      transparent 34%);\n}\n.sanitary-data-table[_ngcontent-%COMP%] {\n  width: 100%;\n  min-width: 1040px;\n  border-collapse: separate;\n  border-spacing: 0;\n}\n.sanitary-data-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n.sanitary-data-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 13px 14px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.09);\n  color: #c7d4e8;\n  font-size: 12px;\n  vertical-align: middle;\n}\n.sanitary-data-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  color: #7f91ac;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(7, 15, 31, 0.54);\n}\n.sanitary-data-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%] {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.sanitary-data-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover {\n  background: rgba(159, 232, 112, 0.045);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, 0.66);\n}\n.sanitary-data-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:last-child   td[_ngcontent-%COMP%] {\n  border-bottom: 0;\n}\n.sanitary-data-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.sanitary-table-identity[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n  font-weight: 700;\n}\n.sanitary-table-identity[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 40px minmax(0, 1fr);\n  gap: 11px;\n  align-items: center;\n  min-width: 230px;\n}\n.sanitary-table-identity[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  max-width: 260px;\n  margin-top: 3px;\n  overflow: hidden;\n  color: #8ea0bb;\n  font-size: 11px;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.sanitary-table-icon[_ngcontent-%COMP%] {\n  width: 40px;\n  height: 40px;\n  display: grid;\n  place-items: center;\n  border-radius: 14px;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  background: rgba(159, 232, 112, 0.08);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);\n}\n.sanitary-table-icon--blue[_ngcontent-%COMP%] {\n  color: #6ea8ff;\n  border-color: rgba(110, 168, 255, 0.2);\n  background: rgba(110, 168, 255, 0.1);\n  box-shadow: 0 0 18px rgba(110, 168, 255, 0.08);\n}\n.sanitary-table-icon--warning[_ngcontent-%COMP%] {\n  color: #ffb84d;\n  border-color: rgba(255, 184, 77, 0.22);\n  background: rgba(255, 184, 77, 0.1);\n  box-shadow: 0 0 18px rgba(255, 184, 77, 0.08);\n}\n.sanitary-table-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 21px;\n  height: 21px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.severity-pill[_ngcontent-%COMP%] {\n  display: inline-flex;\n  min-height: 30px;\n  align-items: center;\n  justify-content: center;\n  padding: 6px 11px;\n  border-radius: 999px;\n  border: 1px solid rgba(110, 168, 255, 0.18);\n  background: rgba(110, 168, 255, 0.1);\n  color: #b8cff5;\n  font-size: 11px;\n  font-weight: 700;\n}\n.severity-pill--high[_ngcontent-%COMP%] {\n  border-color: rgba(255, 184, 77, 0.24);\n  background: rgba(255, 184, 77, 0.12);\n  color: #ffe1a8;\n}\n.severity-pill--critical[_ngcontent-%COMP%] {\n  border-color: rgba(255, 107, 107, 0.24);\n  background: rgba(255, 107, 107, 0.12);\n  color: #ffd0d0;\n}\n.sanitary-record-card[_ngcontent-%COMP%] {\n  min-height: 390px;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 14px;\n  padding: 16px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.9),\n      rgba(8, 18, 37, 0.88)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 34%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.sanitary-record-card__top[_ngcontent-%COMP%] {\n  min-height: 72px;\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 12px;\n}\n.sanitary-record-card__top[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 15px;\n  line-height: 1.15;\n  letter-spacing: -0.03em;\n}\n.sanitary-record-card__top[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 8px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.sanitary-record-card__metrics[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  margin-top: 16px;\n  flex: 1;\n}\n.sanitary-record-metric[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 18px minmax(0, 1fr);\n  gap: 8px;\n  align-items: center;\n  min-height: 58px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n}\n.sanitary-record-metric[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  color: #9bb3d7;\n}\n.sanitary-record-metric[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 10px;\n}\n.sanitary-record-metric[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  grid-column: 2;\n  color: #f8fbff;\n  font-size: 11px;\n  text-align: left;\n  max-width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.sanitary-detail-btn[_ngcontent-%COMP%] {\n  width: 100%;\n  min-height: 46px;\n  margin-top: 16px;\n  border: 1px solid rgba(159, 232, 112, 0.18);\n  border-radius: 10px;\n  background: rgba(7, 15, 31, 0.46);\n  color: #9fe870;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  font-size: 12px;\n  font-weight: 900;\n}\n.sanitary-detail-btn[_ngcontent-%COMP%]:hover {\n  border-color: rgba(159, 232, 112, 0.42);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.sanitary-tabs-footer[_ngcontent-%COMP%] {\n  margin: 18px -18px -18px;\n  padding: 18px 22px;\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n  background: rgba(7, 15, 31, 0.42);\n}\n.sanitary-footer-date[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 10px;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.sanitary-footer-date[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  color: #9fe870;\n}\n@media (max-width: 1080px) {\n  .layout[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .sanitary-tabs-bar[_ngcontent-%COMP%] {\n    align-items: flex-start;\n    flex-direction: column;\n  }\n  .sanitary-card-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .page-head[_ngcontent-%COMP%], \n   .sanidad-head[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: stretch;\n  }\n}\n.sanidad-stack[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.top-panel[_ngcontent-%COMP%] {\n  padding: 18px;\n}\n.catalog-head__icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.catalog-info-card__icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 28px;\n  height: 28px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.section-toggle[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 14px;\n  min-height: 42px;\n  padding: 10px 14px;\n  background: rgba(7, 15, 31, 0.48);\n  color: #9fe870;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  font-size: 12px;\n  font-weight: 900;\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.section-toggle[_ngcontent-%COMP%]:hover {\n  border-color: rgba(159, 232, 112, 0.36);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.section-toggle[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  transition: transform 160ms ease;\n}\n.section-toggle--compact[_ngcontent-%COMP%] {\n  width: 38px;\n  min-height: 38px;\n  padding: 0;\n}\n.section-toggle--compact[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 16px;\n  height: 16px;\n}\n.section-toggle__icon--collapsed[_ngcontent-%COMP%] {\n  transform: rotate(-90deg);\n}\n.section-collapsed-summary[_ngcontent-%COMP%] {\n  border: 1px dashed rgba(148, 163, 184, 0.18);\n  border-radius: 18px;\n  padding: 18px 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.74),\n      rgba(8, 18, 37, 0.68)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.06),\n      transparent 34%);\n  color: #8ea0bb;\n  font-size: 13px;\n  font-weight: 700;\n}\n.empty-box--section[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 40px 1fr;\n  align-items: center;\n  gap: 12px;\n}\n.empty-box--section[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 26px;\n  height: 26px;\n  fill: none;\n  stroke: #9fe870;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.empty-box--section[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n  margin-bottom: 4px;\n}\n.empty-box--section[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 0;\n}\n.alert-record-card[_ngcontent-%COMP%] {\n  min-height: 360px;\n}\n.catalog-head--inline[_ngcontent-%COMP%] {\n  margin-bottom: 0;\n}\n.catalog-info-card--compact[_ngcontent-%COMP%] {\n  margin-top: 18px;\n}\n.catalog-panel[_ngcontent-%COMP%] {\n  overflow: hidden;\n}\n.catalog-record-card[_ngcontent-%COMP%] {\n  min-height: 360px;\n}\n@media (max-width: 1420px) {\n  .sanitary-card-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: contents;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: auto;\n  grid-row: auto;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  margin: 0;\n  line-height: 1.2;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%] {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%] {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%] {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%] {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-sanidad-page.component.css.map */"] });
+  }, dependencies: [CommonModule, NgForOf, NgIf, FormsModule, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, SelectControlValueAccessor, NgControlStatus, NgModel, RemoteSearchSelectComponent, DecimalPipe], styles: ["\n.page[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n.page-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 16px;\n}\n.page-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.sanidad-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n  color: #f8fbff;\n}\n.sanidad-head[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.sanidad-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow[_ngcontent-%COMP%] {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  font-weight: 900;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n}\n.head-actions[_ngcontent-%COMP%], \n.card-actions[_ngcontent-%COMP%], \n.modal-actions[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n.sanidad-action[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.sanidad-action[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 54px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n  min-height: 104px;\n  border-radius: 20px;\n  padding: 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.1),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card--blue[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%);\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card--danger[_ngcontent-%COMP%] {\n  border-color: rgba(255, 107, 107, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 107, 107, 0.11),\n      transparent 34%);\n}\n.metric-icon[_ngcontent-%COMP%] {\n  display: grid;\n  width: 52px;\n  height: 52px;\n  place-items: center;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  border-radius: 18px;\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 28px;\n  height: 28px;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  letter-spacing: 0;\n  text-transform: none;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  margin: 4px 0 0;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.04em;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.filters-card[_ngcontent-%COMP%] {\n  padding: 18px;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.filters-grid[_ngcontent-%COMP%], \n.form-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.filters-grid[_ngcontent-%COMP%]   label[_ngcontent-%COMP%], \n.form-grid[_ngcontent-%COMP%]   label[_ngcontent-%COMP%], \n.textarea-field[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: var(--muted);\n  font-size: 13px;\n}\n.layout[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 0.88fr 1.22fr;\n  gap: 18px;\n}\n.left-panel[_ngcontent-%COMP%], \n.right-panel[_ngcontent-%COMP%] {\n  padding: 18px;\n}\n.section-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 14px;\n}\n.section-head--spaced[_ngcontent-%COMP%] {\n  margin-top: 22px;\n}\n.alert-list[_ngcontent-%COMP%], \n.table-list[_ngcontent-%COMP%], \n.catalog-grid[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.alert-card[_ngcontent-%COMP%], \n.table-card[_ngcontent-%COMP%], \n.catalog-card[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 18px;\n  background: rgba(15, 23, 42, 0.46);\n  padding: 16px;\n  display: flex;\n  justify-content: space-between;\n  gap: 16px;\n  align-items: flex-start;\n}\n.alert-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%], \n.table-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%], \n.catalog-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.catalog-top[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n}\n.catalog-card[_ngcontent-%COMP%] {\n  flex-direction: column;\n}\n.catalog-meta[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 8px;\n  color: var(--muted);\n  font-size: 13px;\n}\n.double-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 12px;\n  margin-top: 18px;\n}\n.detail-block[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  background: rgba(15, 23, 42, 0.4);\n  padding: 16px;\n}\n.timeline-item[_ngcontent-%COMP%] {\n  padding: 12px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.12);\n}\n.timeline-item[_ngcontent-%COMP%]:last-child {\n  border-bottom: 0;\n}\n.timeline-item[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.metric-card--accent[_ngcontent-%COMP%] {\n  border-color: rgba(96, 165, 250, 0.25);\n}\n.metric-card--warning[_ngcontent-%COMP%] {\n  border-color: rgba(251, 191, 36, 0.25);\n}\n.state-chip[_ngcontent-%COMP%] {\n  padding: 8px 12px;\n  border-radius: 999px;\n  background: rgba(159, 232, 112, 0.14);\n  color: #b7f587;\n  font-size: 12px;\n  font-weight: 700;\n}\n.state-chip--soft[_ngcontent-%COMP%] {\n  background: rgba(96, 165, 250, 0.12);\n  color: #bfdbfe;\n}\n.state-chip--danger[_ngcontent-%COMP%] {\n  background: rgba(248, 113, 113, 0.16);\n  color: #fecaca;\n}\n.error-box[_ngcontent-%COMP%] {\n  padding: 14px 16px;\n  border: 1px solid rgba(248, 113, 113, 0.3);\n  border-radius: 16px;\n  background: rgba(127, 29, 29, 0.22);\n  color: #fecaca;\n}\n.empty-box[_ngcontent-%COMP%] {\n  color: var(--muted);\n}\n.panel-narrow[_ngcontent-%COMP%] {\n  width: min(920px, 100%);\n}\n.modal-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0 0 18px;\n}\n.textarea-field[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  min-height: 100px;\n}\n.catalog-head__icon[_ngcontent-%COMP%], \n.catalog-info-card__icon[_ngcontent-%COMP%] {\n  width: 56px;\n  height: 56px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #f8fbff;\n  font-size: 20px;\n  font-weight: 700;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(24, 39, 69, 0.9),\n      rgba(13, 24, 47, 0.86));\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 20px rgba(2, 8, 23, 0.22);\n}\n.catalog-head[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  margin-bottom: 18px;\n}\n.catalog-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 30px;\n  line-height: 1.04;\n  letter-spacing: -0.03em;\n  color: #f8fbff;\n}\n.catalog-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 14px;\n  line-height: 1.6;\n}\n.catalog-badge[_ngcontent-%COMP%] {\n  flex-shrink: 0;\n  min-height: 36px;\n  padding: 8px 14px;\n  border-radius: 999px;\n  border: 1px solid rgba(159, 232, 112, 0.2);\n  background: rgba(159, 232, 112, 0.12);\n  color: #9fe870;\n  font-size: 12px;\n  font-weight: 700;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.08);\n}\n.catalog-badge--secondary[_ngcontent-%COMP%] {\n  border-color: rgba(110, 168, 255, 0.2);\n  background: rgba(110, 168, 255, 0.12);\n  color: #6ea8ff;\n  box-shadow: 0 0 18px rgba(110, 168, 255, 0.08);\n}\n.catalog-info-card[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  padding: 18px 20px;\n  border-radius: 24px;\n  border: 1px solid rgba(110, 168, 255, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.84),\n      rgba(10, 18, 35, 0.92)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.06),\n      transparent 30%);\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.catalog-info-card[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n  margin-bottom: 4px;\n}\n.catalog-info-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 13px;\n  line-height: 1.55;\n}\n.right-panel--premium[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.catalog-head--applications[_ngcontent-%COMP%] {\n  margin-bottom: 4px;\n}\n.premium-empty-box[_ngcontent-%COMP%] {\n  border: 1px dashed rgba(148, 163, 184, 0.2);\n  border-radius: 20px;\n  padding: 20px;\n  background: rgba(11, 21, 41, 0.74);\n}\n.vaccination-alert-table-wrap[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  overflow-x: auto;\n}\n.vaccination-alert-summary[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(160px, 1fr));\n  gap: 12px;\n}\n.vaccination-alert-summary[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%] {\n  border: 1px solid rgba(159, 232, 112, 0.14);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.08),\n      transparent 35%);\n}\n.vaccination-alert-summary[_ngcontent-%COMP%]    > div.danger[_ngcontent-%COMP%] {\n  border-color: rgba(255, 107, 107, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 107, 107, 0.1),\n      transparent 35%);\n}\n.vaccination-alert-summary[_ngcontent-%COMP%]    > div.warning[_ngcontent-%COMP%] {\n  border-color: rgba(255, 184, 77, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 184, 77, 0.1),\n      transparent 35%);\n}\n.vaccination-alert-summary[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.vaccination-alert-summary[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 4px;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n}\n.vaccination-alert-table[_ngcontent-%COMP%] {\n  width: 100%;\n  min-width: 900px;\n  border-collapse: separate;\n  border-spacing: 0;\n  overflow: hidden;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 20px;\n  background: rgba(8, 18, 37, 0.68);\n}\n.vaccination-alert-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n.vaccination-alert-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 14px 16px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  color: #dce7f8;\n  font-size: 13px;\n  vertical-align: middle;\n}\n.vaccination-alert-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(11, 23, 48, 0.78);\n}\n.vaccination-alert-table[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:last-child   td[_ngcontent-%COMP%] {\n  border-bottom: 0;\n}\n.vaccination-alert-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%] {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.vaccination-alert-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover {\n  background: rgba(159, 232, 112, 0.04);\n  box-shadow: inset 2px 0 0 rgba(159, 232, 112, 0.65);\n}\n.vaccine-table-identity[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 42px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n}\n.vaccine-table-icon[_ngcontent-%COMP%] {\n  width: 42px;\n  height: 42px;\n  display: grid;\n  place-items: center;\n  border-radius: 14px;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  background: rgba(159, 232, 112, 0.08);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);\n}\n.vaccine-table-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.vaccine-table-identity[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 22px;\n  height: 22px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.vaccine-table-identity[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%], \n.vaccination-alert-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n}\n.vaccine-table-identity[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.table-muted[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 3px;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.alert-count[_ngcontent-%COMP%] {\n  display: inline-flex;\n  min-width: 34px;\n  height: 30px;\n  align-items: center;\n  justify-content: center;\n  border-radius: 999px;\n  font-weight: 800;\n}\n.alert-count--danger[_ngcontent-%COMP%] {\n  color: #ffd0d0;\n  border: 1px solid rgba(255, 107, 107, 0.24);\n  background: rgba(255, 107, 107, 0.12);\n}\n.alert-count--warning[_ngcontent-%COMP%] {\n  color: #ffe1a8;\n  border: 1px solid rgba(255, 184, 77, 0.24);\n  background: rgba(255, 184, 77, 0.12);\n}\n.sanitary-tabs-panel[_ngcontent-%COMP%] {\n  overflow: hidden;\n}\n.sanitary-tabs-bar[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  margin: -18px -18px 18px;\n  padding: 14px 18px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(9, 18, 37, 0.72),\n      rgba(7, 15, 31, 0.42)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 28%);\n}\n.sanitary-tabs[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex-wrap: wrap;\n}\n.sanitary-tabs[_ngcontent-%COMP%]   button[_ngcontent-%COMP%], \n.sanitary-tabs-meta[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  background: rgba(7, 15, 31, 0.42);\n  color: #8ea0bb;\n  border-radius: 12px;\n  min-height: 40px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 9px;\n  padding: 10px 12px;\n  font-weight: 800;\n  font-size: 12px;\n}\n.sanitary-tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%], \n.sanitary-tabs-meta[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, 0.34);\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n}\n.sanitary-tabs[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanitary-tabs-meta[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanitary-record-card[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanitary-tabs-footer[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.sanitary-tabs-meta[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  white-space: nowrap;\n}\n.sanitary-tabs-meta[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  width: 38px;\n  min-height: 38px;\n  padding: 0;\n}\n.sanitary-tabs-meta[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.sanitary-card-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.sanitary-table-wrap[_ngcontent-%COMP%] {\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.78),\n      rgba(8, 18, 37, 0.78)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.05),\n      transparent 34%);\n}\n.sanitary-data-table[_ngcontent-%COMP%] {\n  width: 100%;\n  min-width: 1040px;\n  border-collapse: separate;\n  border-spacing: 0;\n}\n.sanitary-data-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n.sanitary-data-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 13px 14px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.09);\n  color: #c7d4e8;\n  font-size: 12px;\n  vertical-align: middle;\n}\n.sanitary-data-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  color: #7f91ac;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(7, 15, 31, 0.54);\n}\n.sanitary-data-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%] {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.sanitary-data-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover {\n  background: rgba(159, 232, 112, 0.045);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, 0.66);\n}\n.sanitary-data-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:last-child   td[_ngcontent-%COMP%] {\n  border-bottom: 0;\n}\n.sanitary-data-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.sanitary-table-identity[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n  font-weight: 700;\n}\n.sanitary-table-identity[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 40px minmax(0, 1fr);\n  gap: 11px;\n  align-items: center;\n  min-width: 230px;\n}\n.sanitary-table-identity[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  max-width: 260px;\n  margin-top: 3px;\n  overflow: hidden;\n  color: #8ea0bb;\n  font-size: 11px;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.sanitary-table-icon[_ngcontent-%COMP%] {\n  width: 40px;\n  height: 40px;\n  display: grid;\n  place-items: center;\n  border-radius: 14px;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  background: rgba(159, 232, 112, 0.08);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);\n}\n.sanitary-table-icon--blue[_ngcontent-%COMP%] {\n  color: #6ea8ff;\n  border-color: rgba(110, 168, 255, 0.2);\n  background: rgba(110, 168, 255, 0.1);\n  box-shadow: 0 0 18px rgba(110, 168, 255, 0.08);\n}\n.sanitary-table-icon--warning[_ngcontent-%COMP%] {\n  color: #ffb84d;\n  border-color: rgba(255, 184, 77, 0.22);\n  background: rgba(255, 184, 77, 0.1);\n  box-shadow: 0 0 18px rgba(255, 184, 77, 0.08);\n}\n.sanitary-table-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 21px;\n  height: 21px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.severity-pill[_ngcontent-%COMP%] {\n  display: inline-flex;\n  min-height: 30px;\n  align-items: center;\n  justify-content: center;\n  padding: 6px 11px;\n  border-radius: 999px;\n  border: 1px solid rgba(110, 168, 255, 0.18);\n  background: rgba(110, 168, 255, 0.1);\n  color: #b8cff5;\n  font-size: 11px;\n  font-weight: 700;\n}\n.severity-pill--high[_ngcontent-%COMP%] {\n  border-color: rgba(255, 184, 77, 0.24);\n  background: rgba(255, 184, 77, 0.12);\n  color: #ffe1a8;\n}\n.severity-pill--critical[_ngcontent-%COMP%] {\n  border-color: rgba(255, 107, 107, 0.24);\n  background: rgba(255, 107, 107, 0.12);\n  color: #ffd0d0;\n}\n.sanitary-record-card[_ngcontent-%COMP%] {\n  min-height: 390px;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 14px;\n  padding: 16px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.9),\n      rgba(8, 18, 37, 0.88)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 34%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.sanitary-record-card__top[_ngcontent-%COMP%] {\n  min-height: 72px;\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 12px;\n}\n.sanitary-record-card__top[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 15px;\n  line-height: 1.15;\n  letter-spacing: -0.03em;\n}\n.sanitary-record-card__top[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 8px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.sanitary-record-card__metrics[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  margin-top: 16px;\n  flex: 1;\n}\n.sanitary-record-metric[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 18px minmax(0, 1fr);\n  gap: 8px;\n  align-items: center;\n  min-height: 58px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n}\n.sanitary-record-metric[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  color: #9bb3d7;\n}\n.sanitary-record-metric[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 10px;\n}\n.sanitary-record-metric[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  grid-column: 2;\n  color: #f8fbff;\n  font-size: 11px;\n  text-align: left;\n  max-width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.sanitary-detail-btn[_ngcontent-%COMP%] {\n  width: 100%;\n  min-height: 46px;\n  margin-top: 16px;\n  border: 1px solid rgba(159, 232, 112, 0.18);\n  border-radius: 10px;\n  background: rgba(7, 15, 31, 0.46);\n  color: #9fe870;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  font-size: 12px;\n  font-weight: 900;\n}\n.sanitary-detail-btn[_ngcontent-%COMP%]:hover {\n  border-color: rgba(159, 232, 112, 0.42);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.sanitary-tabs-footer[_ngcontent-%COMP%] {\n  margin: 18px -18px -18px;\n  padding: 18px 22px;\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n  background: rgba(7, 15, 31, 0.42);\n}\n.sanitary-footer-date[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 10px;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.sanitary-footer-date[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  color: #9fe870;\n}\n@media (max-width: 1080px) {\n  .layout[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .sanitary-tabs-bar[_ngcontent-%COMP%] {\n    align-items: flex-start;\n    flex-direction: column;\n  }\n  .sanitary-card-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .page-head[_ngcontent-%COMP%], \n   .sanidad-head[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: stretch;\n  }\n}\n.sanidad-stack[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.sanidad-top-row[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);\n  gap: 18px;\n  align-items: start;\n}\n.sanidad-top-row[_ngcontent-%COMP%]    > .card[_ngcontent-%COMP%] {\n  min-width: 0;\n}\n.sanidad-top-row[_ngcontent-%COMP%]   .sanitary-tabs-bar[_ngcontent-%COMP%] {\n  gap: 12px;\n}\n.sanidad-top-row[_ngcontent-%COMP%]   .catalog-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 22px;\n}\n.sanidad-top-row[_ngcontent-%COMP%]   .catalog-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  font-size: 13px;\n}\n.sanidad-top-row[_ngcontent-%COMP%]   .vaccination-alert-summary[_ngcontent-%COMP%] {\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n.sanidad-top-row[_ngcontent-%COMP%]   .vaccination-alert-summary[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%] {\n  padding: 12px 14px;\n}\n.sanidad-top-row[_ngcontent-%COMP%]   .vaccination-alert-table[_ngcontent-%COMP%] {\n  min-width: 760px;\n}\n.sanidad-top-row[_ngcontent-%COMP%]   .vaccination-alert-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n.sanidad-top-row[_ngcontent-%COMP%]   .vaccination-alert-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 12px 14px;\n  font-size: 12px;\n}\n.catalog-table-wrap[_ngcontent-%COMP%] {\n  overflow-x: auto;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 20px;\n  background: rgba(8, 18, 37, 0.68);\n}\n.catalog-data-table[_ngcontent-%COMP%] {\n  width: 100%;\n  min-width: 720px;\n  border-collapse: separate;\n  border-spacing: 0;\n}\n.catalog-data-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n.catalog-data-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 12px 14px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  color: #dce7f8;\n  font-size: 12px;\n  vertical-align: middle;\n}\n.catalog-data-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(11, 23, 48, 0.78);\n}\n.catalog-data-table[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:last-child   td[_ngcontent-%COMP%] {\n  border-bottom: 0;\n}\n.catalog-data-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%] {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.catalog-data-table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover {\n  background: rgba(159, 232, 112, 0.04);\n  box-shadow: inset 2px 0 0 rgba(159, 232, 112, 0.65);\n}\n.catalog-data-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.catalog-data-table[_ngcontent-%COMP%]   .vaccine-table-identity[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n}\n.top-panel[_ngcontent-%COMP%] {\n  padding: 18px;\n}\n.catalog-head__icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.catalog-info-card__icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 28px;\n  height: 28px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.section-toggle[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 14px;\n  min-height: 42px;\n  padding: 10px 14px;\n  background: rgba(7, 15, 31, 0.48);\n  color: #9fe870;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  font-size: 12px;\n  font-weight: 900;\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.section-toggle[_ngcontent-%COMP%]:hover {\n  border-color: rgba(159, 232, 112, 0.36);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.section-toggle[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  transition: transform 160ms ease;\n}\n.section-toggle--compact[_ngcontent-%COMP%] {\n  width: 38px;\n  min-height: 38px;\n  padding: 0;\n}\n.section-toggle--compact[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 16px;\n  height: 16px;\n}\n.section-toggle__icon--collapsed[_ngcontent-%COMP%] {\n  transform: rotate(-90deg);\n}\n.section-collapsed-summary[_ngcontent-%COMP%] {\n  border: 1px dashed rgba(148, 163, 184, 0.18);\n  border-radius: 18px;\n  padding: 18px 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.74),\n      rgba(8, 18, 37, 0.68)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.06),\n      transparent 34%);\n  color: #8ea0bb;\n  font-size: 13px;\n  font-weight: 700;\n}\n.empty-box--section[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 40px 1fr;\n  align-items: center;\n  gap: 12px;\n}\n.empty-box--section[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 26px;\n  height: 26px;\n  fill: none;\n  stroke: #9fe870;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.empty-box--section[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n  margin-bottom: 4px;\n}\n.empty-box--section[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 0;\n}\n.alert-record-card[_ngcontent-%COMP%] {\n  min-height: 360px;\n}\n.catalog-head--inline[_ngcontent-%COMP%] {\n  margin-bottom: 0;\n}\n.catalog-info-card--compact[_ngcontent-%COMP%] {\n  margin-top: 18px;\n}\n.catalog-panel[_ngcontent-%COMP%] {\n  overflow: hidden;\n}\n.catalog-record-card[_ngcontent-%COMP%] {\n  min-height: 360px;\n}\n@media (max-width: 1420px) {\n  .sanitary-card-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n}\n@media (max-width: 1320px) {\n  .sanidad-top-row[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: contents;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: auto;\n  grid-row: auto;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  margin: 0;\n  line-height: 1.2;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.sanidad-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%] {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%] {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%] {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%] {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-sanidad-page.component.css.map */"] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(GanaderiaSanidadPageComponent, [{
     type: Component,
-    args: [{ selector: "app-ganaderia-sanidad-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<div class="page">\r
-  <header class="sanidad-head">\r
-    <div>\r
-      <p class="eyebrow">Campo App \xB7 Ganader\xEDa</p>\r
-      <h2>Sanidad y vacunaci\xF3n</h2>\r
-      <p>Calendario sanitario, aplicaciones, tratamientos, diagn\xF3sticos y auditor\xEDa del rodeo.</p>\r
-    </div>\r
-    <div class="head-actions">\r
-      <button class="btn-secondary sanidad-action" type="button" (click)="exportReporte()">\r
-        <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>\r
-        Exportar auditor\xEDa\r
-      </button>\r
-      <button class="btn-secondary sanidad-action" type="button" (click)="openVacunaModal()">\r
-        <svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>\r
-        Nueva vacuna\r
-      </button>\r
-      <button class="btn-primary sanidad-action" type="button" (click)="openAplicacionModal()">\r
-        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>\r
-        Registrar aplicaci\xF3n\r
-      </button>\r
-    </div>\r
-  </header>\r
-\r
-  <div class="stats-grid sanidad-kpis" *ngIf="dashboard() as summary">\r
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></div><div class="kpi-copy"><span>Cat\xE1logo</span><small>Vacunas disponibles</small></div><strong>{{ summary.vacunasCatalogadas }}</strong></article>\r
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></div><div class="kpi-copy"><span>Aplicaciones del mes</span><small>Actividad sanitaria</small></div><strong>{{ summary.aplicacionesMesActual }}</strong></article>\r
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 4v7" /><path d="M8 8c0 2 1.8 4 4 4s4-2 4-4" /><path d="M7 14c0 3 2 6 5 6s5-3 5-6" /><path d="M6 4v3a2 2 0 0 0 4 0V4M14 4v3a2 2 0 0 0 4 0V4" /></svg></div><div class="kpi-copy"><span>Diagn\xF3sticos abiertos</span><small>Casos en seguimiento</small></div><strong>{{ summary.diagnosticosAbiertos }}</strong></article>\r
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg></div><div class="kpi-copy"><span>Tratamientos activos</span><small>Protocolos vigentes</small></div><strong>{{ summary.tratamientosActivos }}</strong></article>\r
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" /></svg></div><div class="kpi-copy"><span>Costo sanitario mes</span><small>Inversi\xF3n mensual</small></div><strong>\${{ summary.costoSanitarioMes | number:'1.0-2' }}</strong></article>\r
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 3.5 18h17L12 3Z" /><path d="M12 9v4m0 3h.01" /></svg></div><div class="kpi-copy"><span>Alertas vencidas</span><small>Requieren atenci\xF3n</small></div><strong>{{ alertasCriticas() }}</strong></article>\r
-  </div>\r
-\r
-  <div class="card filters-card">\r
-    <div class="filters-grid">\r
-      <label>\r
-        <span>Animal</span>\r
-        <select [ngModel]="filters().animalId" (ngModelChange)="updateFilter('animalId', $event)">\r
-          <option value="">Todos</option>\r
-          <option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} \xB7 {{ animal.raza }}</option>\r
-        </select>\r
-      </label>\r
-      <label>\r
-        <span>Diagnostico</span>\r
-        <select [ngModel]="filters().estadoDiagnostico" (ngModelChange)="updateFilter('estadoDiagnostico', $event)">\r
-          <option value="">Todos</option>\r
-          <option value="ABIERTO">Abierto</option>\r
-          <option value="CONTROLADO">Controlado</option>\r
-          <option value="CERRADO">Cerrado</option>\r
-        </select>\r
-      </label>\r
-      <label>\r
-        <span>Vacunas</span>\r
-        <select [ngModel]="filters().obligatoria" (ngModelChange)="updateFilter('obligatoria', $event)">\r
-          <option value="">Todas</option>\r
-          <option value="true">Obligatorias</option>\r
-          <option value="false">Complementarias</option>\r
-        </select>\r
-      </label>\r
-    </div>\r
-    <div class="card-actions">\r
+    args: [{ selector: "app-ganaderia-sanidad-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<div class="page">
+  <header class="sanidad-head">
+    <div>
+      <p class="eyebrow">Campo App \xB7 Ganader\xEDa</p>
+      <h2>Sanidad y vacunaci\xF3n</h2>
+      <p>Calendario sanitario, aplicaciones, tratamientos, diagn\xF3sticos y auditor\xEDa del rodeo.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-secondary sanidad-action" type="button" (click)="exportReporte()">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>
+        Exportar auditor\xEDa
+      </button>
+      <button class="btn-secondary sanidad-action" type="button" (click)="openVacunaModal()">
+        <svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>
+        Nueva vacuna
+      </button>
+      <button class="btn-primary sanidad-action" type="button" (click)="openAplicacionModal()">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+        Registrar aplicaci\xF3n
+      </button>
+    </div>
+  </header>
+
+  <div class="stats-grid sanidad-kpis" *ngIf="dashboard() as summary">
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></div><div class="kpi-copy"><span>Cat\xE1logo</span><small>Vacunas disponibles</small></div><strong>{{ summary.vacunasCatalogadas }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></div><div class="kpi-copy"><span>Aplicaciones del mes</span><small>Actividad sanitaria</small></div><strong>{{ summary.aplicacionesMesActual }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 4v7" /><path d="M8 8c0 2 1.8 4 4 4s4-2 4-4" /><path d="M7 14c0 3 2 6 5 6s5-3 5-6" /><path d="M6 4v3a2 2 0 0 0 4 0V4M14 4v3a2 2 0 0 0 4 0V4" /></svg></div><div class="kpi-copy"><span>Diagn\xF3sticos abiertos</span><small>Casos en seguimiento</small></div><strong>{{ summary.diagnosticosAbiertos }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg></div><div class="kpi-copy"><span>Tratamientos activos</span><small>Protocolos vigentes</small></div><strong>{{ summary.tratamientosActivos }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" /></svg></div><div class="kpi-copy"><span>Costo sanitario mes</span><small>Inversi\xF3n mensual</small></div><strong>\${{ summary.costoSanitarioMes | number:'1.0-2' }}</strong></article>
+    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 3.5 18h17L12 3Z" /><path d="M12 9v4m0 3h.01" /></svg></div><div class="kpi-copy"><span>Alertas vencidas</span><small>Requieren atenci\xF3n</small></div><strong>{{ alertasCriticas() }}</strong></article>
+  </div>
+
+  <div class="card filters-card">
+    <div class="filters-grid">
+      <label>
+        <span>Animal</span>
+        <select [ngModel]="filters().animalId" (ngModelChange)="updateFilter('animalId', $event)">
+          <option value="">Todos</option>
+          <option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} \xB7 {{ animal.raza }}</option>
+        </select>
+      </label>
+      <label>
+        <span>Diagnostico</span>
+        <select [ngModel]="filters().estadoDiagnostico" (ngModelChange)="updateFilter('estadoDiagnostico', $event)">
+          <option value="">Todos</option>
+          <option value="ABIERTO">Abierto</option>
+          <option value="CONTROLADO">Controlado</option>
+          <option value="CERRADO">Cerrado</option>
+        </select>
+      </label>
+      <label>
+        <span>Vacunas</span>
+        <select [ngModel]="filters().obligatoria" (ngModelChange)="updateFilter('obligatoria', $event)">
+          <option value="">Todas</option>
+          <option value="true">Obligatorias</option>
+          <option value="false">Complementarias</option>
+        </select>
+      </label>
+    </div>
+    <div class="card-actions">
       <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>
-      <button class="btn-secondary" type="button" (click)="openTratamientoModal()">Nuevo tratamiento</button>\r
-      <button class="btn-secondary" type="button" (click)="openDiagnosticoModal()">Nuevo diagnostico</button>\r
-    </div>\r
-  </div>\r
-\r
-  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>\r
-  <div class="card empty-box" *ngIf="loading()">Cargando sanidad...</div>\r
-\r
-  <div class="sanidad-stack" *ngIf="!loading()">\r
-    <section class="card top-panel vaccination-alert-panel">\r
-      <div class="sanitary-tabs-bar catalog-tabs-bar">\r
-        <div class="catalog-head catalog-head--inline">\r
-          <div class="catalog-head__icon" aria-hidden="true">\r
-            <svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg>\r
-          </div>\r
-          <div>\r
-            <h3>Alertas de vacunaci\xF3n</h3>\r
-            <p>Vacunas pr\xF3ximas a inyectarse o vencidas para seguimiento operativo.</p>\r
-          </div>\r
-        </div>\r
-        <button class="section-toggle" type="button" (click)="toggleAlertas()" [attr.aria-expanded]="!alertasCollapsed()" aria-label="Colapsar alertas de vacunaci\xF3n">\r
-          <span>{{ alertasVacunacionPorVacuna().length }} vacunas</span>\r
-          <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="alertasCollapsed()"><path d="m6 9 6 6 6-6" /></svg>\r
-        </button>\r
-      </div>\r
-\r
-      <ng-container *ngIf="!alertasCollapsed(); else alertasCollapsedState">\r
-        <div class="vaccination-alert-table-wrap" *ngIf="alertasVacunacionPorVacuna().length; else noAlertas">\r
-          <div class="vaccination-alert-summary">\r
-            <div>\r
-              <span>Animales afectados</span>\r
-              <strong>{{ totalAnimalesConAlertasVacuna() }}</strong>\r
-            </div>\r
-            <div class="danger">\r
-              <span>Vencidas</span>\r
-              <strong>{{ alertasCriticas() }}</strong>\r
-            </div>\r
-            <div class="warning">\r
-              <span>Pr\xF3ximas a vencer</span>\r
-              <strong>{{ totalProximasAVencer() }}</strong>\r
-            </div>\r
-          </div>\r
-          <table class="vaccination-alert-table">\r
-            <thead>\r
-              <tr>\r
-                <th>Vacuna</th>\r
-                <th>Tipo</th>\r
-                <th>Animales</th>\r
-                <th>Vencidas</th>\r
-                <th>Pr\xF3ximas</th>\r
-                <th>M\xE1s vencida</th>\r
-                <th>Pr\xF3xima fecha</th>\r
-              </tr>\r
-            </thead>\r
-            <tbody>\r
-              <tr *ngFor="let alerta of alertasVacunacionPorVacuna()">\r
-                <td>\r
-                  <div class="vaccine-table-identity">\r
-                    <span class="vaccine-table-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></span>\r
-                    <div>\r
-                      <strong>{{ alerta.vacunaNombre }}</strong>\r
-                      <small>{{ alerta.vacunaCodigo || 'Sin c\xF3digo' }}</small>\r
-                    </div>\r
-                  </div>\r
-                </td>\r
-                <td><span class="catalog-badge" [class.catalog-badge--secondary]="!alerta.obligatoria">{{ alerta.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>\r
-                <td><strong>{{ alerta.animalesAfectados }}</strong></td>\r
-                <td><span class="alert-count alert-count--danger">{{ alerta.vencidas }}</span></td>\r
-                <td><span class="alert-count alert-count--warning">{{ alerta.proximasAVencer }}</span></td>\r
-                <td>{{ alerta.fechaMasVencida || 'Sin vencidas' }}</td>\r
-                <td>\r
-                  <strong>{{ alerta.proximaFecha || 'Sin pr\xF3ximas' }}</strong>\r
-                  <small class="table-muted" *ngIf="alerta.proximaFecha">{{ alerta.diasProximaFecha }} d\xEDas</small>\r
-                </td>\r
-              </tr>\r
-            </tbody>\r
-          </table>\r
-        </div>\r
-      </ng-container>\r
-\r
-      <ng-template #noAlertas>\r
-        <div class="empty-box premium-empty-box empty-box--section">\r
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>\r
-          <div>\r
-            <strong>Sin pr\xF3ximas vacunas</strong>\r
-            <p>No hay pr\xF3ximas vacunas a inyectarse.</p>\r
-          </div>\r
-        </div>\r
-      </ng-template>\r
-\r
-      <ng-template #alertasCollapsedState>\r
-        <div class="section-collapsed-summary">Alertas ocultas. {{ alertasVacunacionPorVacuna().length }} vacunas con seguimiento pendiente.</div>\r
-      </ng-template>\r
-    </section>\r
-\r
-    <section class="card top-panel catalog-panel sanitary-tabs-panel">\r
-      <div class="sanitary-tabs-bar catalog-tabs-bar">\r
-        <div class="catalog-head catalog-head--inline">\r
-          <div class="catalog-head__icon" aria-hidden="true">\r
-            <svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>\r
-          </div>\r
-          <div>\r
-            <h3>Cat\xE1logo de vacunaci\xF3n</h3>\r
-            <p>Gesti\xF3n y referencia de vacunas disponibles.</p>\r
-          </div>\r
-        </div>\r
-        <div class="sanitary-tabs-meta">\r
-          <span *ngIf="!catalogCollapsed()">{{ catalogRangeLabel() }}</span>\r
-          <button type="button" (click)="previousCatalogPage()" [disabled]="catalogPage() === 1" aria-label="Anterior cat\xE1logo"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>\r
-          <button type="button" *ngFor="let page of catalogPageNumbers()" [class.active]="page === catalogPage()" (click)="setCatalogPage(page)">{{ page }}</button>\r
-          <button type="button" (click)="nextCatalogPage()" [disabled]="catalogPage() === catalogTotalPages()" aria-label="Siguiente cat\xE1logo"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>\r
-          <button class="section-toggle section-toggle--compact" type="button" (click)="toggleCatalogo()" [attr.aria-expanded]="!catalogCollapsed()" aria-label="Colapsar cat\xE1logo de vacunaci\xF3n">\r
-            <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="catalogCollapsed()"><path d="m6 9 6 6 6-6" /></svg>\r
-          </button>\r
-        </div>\r
-      </div>\r
-\r
-      <ng-container *ngIf="!catalogCollapsed(); else catalogCollapsedState">\r
-        <div class="sanitary-card-grid">\r
-          <article class="sanitary-record-card catalog-record-card" *ngFor="let vacuna of paginatedVacunas()">\r
-            <div class="sanitary-record-card__top">\r
-              <div>\r
-                <h4>{{ vacuna.nombre }}</h4>\r
-                <p>{{ vacuna.codigo }} \xB7 {{ vacuna.laboratorio || 'Sin laboratorio' }}</p>\r
-              </div>\r
-              <span class="catalog-badge" [class.catalog-badge--secondary]="!vacuna.obligatoria">{{ vacuna.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span>\r
-            </div>\r
-            <div class="sanitary-record-card__metrics">\r
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg><span>Dosis</span><strong>{{ vacuna.dosisRecomendada || 'Sin dato' }}</strong></div>\r
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg><span>Frecuencia</span><strong>{{ vacuna.frecuenciaDias ? (vacuna.frecuenciaDias + ' d\xEDas') : 'Sin dato' }}</strong></div>\r
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4z" /><path d="M8 7V4h8v3" /></svg><span>Stock</span><strong>{{ vacuna.stockDisponible ?? 'Sin dato' }}</strong></div>\r
-              <div class="sanitary-record-metric"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" /></svg><span>Costo ref.</span><strong>\${{ vacuna.costoReferencia ?? 0 }}</strong></div>\r
-            </div>\r
-            <button class="sanitary-detail-btn" type="button"><span>Ver detalle</span><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" /></svg></button>\r
-          </article>\r
-          <div class="empty-box premium-empty-box" *ngIf="!vacunas().length">Sin vacunas disponibles.</div>\r
-        </div>\r
-\r
-        <article class="catalog-info-card catalog-info-card--compact">\r
-          <div class="catalog-info-card__icon" aria-hidden="true">\r
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 7h.01" /></svg>\r
-          </div>\r
-          <div>\r
-            <strong>Referencia de costos</strong>\r
-            <p>Los costos son de referencia y pueden variar seg\xFAn el proveedor.</p>\r
-          </div>\r
-        </article>\r
-      </ng-container>\r
-\r
-      <ng-template #catalogCollapsedState>\r
-        <div class="section-collapsed-summary">Cat\xE1logo oculto. {{ vacunas().length }} vacunas disponibles.</div>\r
-      </ng-template>\r
-    </section>\r
-\r
-    <section class="card right-panel right-panel--premium sanitary-tabs-panel">\r
-      <div class="sanitary-tabs-bar">\r
-        <div class="sanitary-tabs">\r
-          <button type="button" [class.active]="activeTab() === 'APLICACIONES'" (click)="setActiveTab('APLICACIONES')">\r
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg>\r
-            <span>Vacunaciones registradas</span>\r
-          </button>\r
-          <button type="button" [class.active]="activeTab() === 'TRATAMIENTOS'" (click)="setActiveTab('TRATAMIENTOS')">\r
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>\r
-            <span>Tratamientos</span>\r
-          </button>\r
-          <button type="button" [class.active]="activeTab() === 'DIAGNOSTICOS'" (click)="setActiveTab('DIAGNOSTICOS')">\r
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v7" /><path d="M8 8c0 2 1.8 4 4 4s4-2 4-4" /><path d="M7 14c0 3 2 6 5 6s5-3 5-6" /><path d="M6 4v3a2 2 0 0 0 4 0V4M14 4v3a2 2 0 0 0 4 0V4" /></svg>\r
-            <span>Diagn\xF3sticos</span>\r
-          </button>\r
-        </div>\r
-        <div class="sanitary-tabs-meta">\r
-          <span *ngIf="!registrosCollapsed()">{{ tabRangeLabel() }}</span>\r
-          <button type="button" (click)="previousTabPage()" [disabled]="tabPage() === 1" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg></button>\r
-          <button type="button" *ngFor="let page of tabPageNumbers()" [class.active]="page === tabPage()" (click)="setTabPage(page)">{{ page }}</button>\r
-          <button type="button" (click)="nextTabPage()" [disabled]="tabPage() === tabTotalPages()" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg></button>\r
-          <button class="section-toggle section-toggle--compact" type="button" (click)="toggleRegistros()" [attr.aria-expanded]="!registrosCollapsed()" aria-label="Colapsar registros sanitarios">\r
-            <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="registrosCollapsed()"><path d="m6 9 6 6 6-6" /></svg>\r
-          </button>\r
-        </div>\r
-      </div>\r
-\r
+      <button class="btn-secondary" type="button" (click)="openTratamientoModal()">Nuevo tratamiento</button>
+      <button class="btn-secondary" type="button" (click)="openDiagnosticoModal()">Nuevo diagnostico</button>
+    </div>
+  </div>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="card empty-box" *ngIf="loading()">Cargando sanidad...</div>
+
+  <div class="sanidad-stack" *ngIf="!loading()">
+    <div class="sanidad-top-row">
+    <section class="card top-panel vaccination-alert-panel">
+      <div class="sanitary-tabs-bar catalog-tabs-bar">
+        <div class="catalog-head catalog-head--inline">
+          <div class="catalog-head__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg>
+          </div>
+          <div>
+            <h3>Alertas de vacunaci\xF3n</h3>
+            <p>Vacunas pr\xF3ximas a inyectarse o vencidas para seguimiento operativo.</p>
+          </div>
+        </div>
+        <button class="section-toggle" type="button" (click)="toggleAlertas()" [attr.aria-expanded]="!alertasCollapsed()" aria-label="Colapsar alertas de vacunaci\xF3n">
+          <span>{{ alertasVacunacionPorVacuna().length }} vacunas</span>
+          <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="alertasCollapsed()"><path d="m6 9 6 6 6-6" /></svg>
+        </button>
+      </div>
+
+      <ng-container *ngIf="!alertasCollapsed(); else alertasCollapsedState">
+        <div class="vaccination-alert-table-wrap" *ngIf="alertasVacunacionPorVacuna().length; else noAlertas">
+          <div class="vaccination-alert-summary">
+            <div>
+              <span>Animales afectados</span>
+              <strong>{{ totalAnimalesConAlertasVacuna() }}</strong>
+            </div>
+            <div class="danger">
+              <span>Vencidas</span>
+              <strong>{{ alertasCriticas() }}</strong>
+            </div>
+            <div class="warning">
+              <span>Pr\xF3ximas a vencer</span>
+              <strong>{{ totalProximasAVencer() }}</strong>
+            </div>
+          </div>
+          <table class="vaccination-alert-table">
+            <thead>
+              <tr>
+                <th>Vacuna</th>
+                <th>Tipo</th>
+                <th>Animales</th>
+                <th>Vencidas</th>
+                <th>Pr\xF3ximas</th>
+                <th>M\xE1s vencida</th>
+                <th>Pr\xF3xima fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let alerta of alertasVacunacionPorVacuna()">
+                <td>
+                  <div class="vaccine-table-identity">
+                    <span class="vaccine-table-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></span>
+                    <div>
+                      <strong>{{ alerta.vacunaNombre }}</strong>
+                      <small>{{ alerta.vacunaCodigo || 'Sin c\xF3digo' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="catalog-badge" [class.catalog-badge--secondary]="!alerta.obligatoria">{{ alerta.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
+                <td><strong>{{ alerta.animalesAfectados }}</strong></td>
+                <td><span class="alert-count alert-count--danger">{{ alerta.vencidas }}</span></td>
+                <td><span class="alert-count alert-count--warning">{{ alerta.proximasAVencer }}</span></td>
+                <td>{{ alerta.fechaMasVencida || 'Sin vencidas' }}</td>
+                <td>
+                  <strong>{{ alerta.proximaFecha || 'Sin pr\xF3ximas' }}</strong>
+                  <small class="table-muted" *ngIf="alerta.proximaFecha">{{ alerta.diasProximaFecha }} d\xEDas</small>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+      <ng-template #noAlertas>
+        <div class="empty-box premium-empty-box empty-box--section">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+          <div>
+            <strong>Sin pr\xF3ximas vacunas</strong>
+            <p>No hay pr\xF3ximas vacunas a inyectarse.</p>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template #alertasCollapsedState>
+        <div class="section-collapsed-summary">Alertas ocultas. {{ alertasVacunacionPorVacuna().length }} vacunas con seguimiento pendiente.</div>
+      </ng-template>
+    </section>
+
+    <section class="card top-panel catalog-panel sanitary-tabs-panel">
+      <div class="sanitary-tabs-bar catalog-tabs-bar">
+        <div class="catalog-head catalog-head--inline">
+          <div class="catalog-head__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>
+          </div>
+          <div>
+            <h3>Cat\xE1logo de vacunaci\xF3n</h3>
+            <p>Gesti\xF3n y referencia de vacunas disponibles.</p>
+          </div>
+        </div>
+        <div class="sanitary-tabs-meta">
+          <span *ngIf="!catalogCollapsed()">{{ catalogRangeLabel() }}</span>
+          <button type="button" (click)="previousCatalogPage()" [disabled]="catalogPage() === 1" aria-label="Anterior cat\xE1logo"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+          <button type="button" *ngFor="let page of catalogPageNumbers()" [class.active]="page === catalogPage()" (click)="setCatalogPage(page)">{{ page }}</button>
+          <button type="button" (click)="nextCatalogPage()" [disabled]="catalogPage() === catalogTotalPages()" aria-label="Siguiente cat\xE1logo"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+          <button class="section-toggle section-toggle--compact" type="button" (click)="toggleCatalogo()" [attr.aria-expanded]="!catalogCollapsed()" aria-label="Colapsar cat\xE1logo de vacunaci\xF3n">
+            <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="catalogCollapsed()"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <ng-container *ngIf="!catalogCollapsed(); else catalogCollapsedState">
+        <div class="catalog-table-wrap" *ngIf="paginatedVacunas().length; else noVacunasCatalogo">
+          <table class="catalog-data-table">
+            <thead>
+              <tr>
+                <th>Vacuna</th>
+                <th>Tipo</th>
+                <th>Dosis</th>
+                <th>Frecuencia</th>
+                <th>Stock</th>
+                <th>Costo ref.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let vacuna of paginatedVacunas()">
+                <td>
+                  <div class="vaccine-table-identity">
+                    <span class="vaccine-table-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></span>
+                    <div>
+                      <strong>{{ vacuna.nombre }}</strong>
+                      <small>{{ vacuna.codigo }} \xB7 {{ vacuna.laboratorio || 'Sin laboratorio' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="catalog-badge" [class.catalog-badge--secondary]="!vacuna.obligatoria">{{ vacuna.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
+                <td>{{ vacuna.dosisRecomendada || 'Sin dato' }}</td>
+                <td>{{ vacuna.frecuenciaDias ? (vacuna.frecuenciaDias + ' d\xEDas') : 'Sin dato' }}</td>
+                <td>{{ vacuna.stockDisponible ?? 'Sin dato' }}</td>
+                <td>\${{ vacuna.costoReferencia ?? 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noVacunasCatalogo><div class="empty-box premium-empty-box">Sin vacunas disponibles.</div></ng-template>
+      </ng-container>
+
+      <ng-template #catalogCollapsedState>
+        <div class="section-collapsed-summary">Cat\xE1logo oculto. {{ vacunas().length }} vacunas disponibles.</div>
+      </ng-template>
+    </section>
+
+    </div>
+
+    <section class="card right-panel right-panel--premium sanitary-tabs-panel">
+      <div class="sanitary-tabs-bar">
+        <div class="sanitary-tabs">
+          <button type="button" [class.active]="activeTab() === 'APLICACIONES'" (click)="setActiveTab('APLICACIONES')">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg>
+            <span>Vacunaciones registradas</span>
+          </button>
+          <button type="button" [class.active]="activeTab() === 'TRATAMIENTOS'" (click)="setActiveTab('TRATAMIENTOS')">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>
+            <span>Tratamientos</span>
+          </button>
+          <button type="button" [class.active]="activeTab() === 'DIAGNOSTICOS'" (click)="setActiveTab('DIAGNOSTICOS')">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v7" /><path d="M8 8c0 2 1.8 4 4 4s4-2 4-4" /><path d="M7 14c0 3 2 6 5 6s5-3 5-6" /><path d="M6 4v3a2 2 0 0 0 4 0V4M14 4v3a2 2 0 0 0 4 0V4" /></svg>
+            <span>Diagn\xF3sticos</span>
+          </button>
+        </div>
+        <div class="sanitary-tabs-meta">
+          <span *ngIf="!registrosCollapsed()">{{ tabRangeLabel() }}</span>
+          <button type="button" (click)="previousTabPage()" [disabled]="tabPage() === 1" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg></button>
+          <button type="button" *ngFor="let page of tabPageNumbers()" [class.active]="page === tabPage()" (click)="setTabPage(page)">{{ page }}</button>
+          <button type="button" (click)="nextTabPage()" [disabled]="tabPage() === tabTotalPages()" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg></button>
+          <button class="section-toggle section-toggle--compact" type="button" (click)="toggleRegistros()" [attr.aria-expanded]="!registrosCollapsed()" aria-label="Colapsar registros sanitarios">
+            <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="registrosCollapsed()"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+        </div>
+      </div>
+
       <ng-container *ngIf="!registrosCollapsed(); else registrosCollapsedState">
         <div class="sanitary-table-wrap" *ngIf="activeTab() === 'APLICACIONES'">
           <table class="sanitary-data-table" *ngIf="aplicaciones().length; else noAplicaciones">
@@ -52858,100 +53084,100 @@ var GanaderiaSanidadPageComponent = class _GanaderiaSanidadPageComponent {
         <ng-template #noAplicaciones><div class="empty-box premium-empty-box">Sin aplicaciones con este filtro.</div></ng-template>
         <ng-template #noTratamientos><div class="empty-box premium-empty-box">Sin tratamientos registrados.</div></ng-template>
         <ng-template #noDiagnosticos><div class="empty-box premium-empty-box">Sin diagnosticos registrados.</div></ng-template>
-      <div class="sanitary-tabs-footer"><div class="sanitary-footer-date"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>\xDAltima actualizaci\xF3n: 21/05/2026 19:45</span></div></div>\r
-      </ng-container>\r
-\r
-      <ng-template #registrosCollapsedState>\r
-        <div class="section-collapsed-summary">Registros ocultos. {{ activeTotal() }} elementos en la pesta\xF1a actual.</div>\r
-      </ng-template>\r
-    </section>\r
-  </div>\r
-\r
-  <div class="app-modal-backdrop" *ngIf="vacunaModalOpen() || aplicacionModalOpen() || tratamientoModalOpen() || diagnosticoModalOpen()" (click)="closeModals()" (document:keydown.escape)="closeModals()">\r
-    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">\r
-      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModals()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>\r
-      <ng-container *ngIf="vacunaModalOpen()">\r
-        <div class="modal-head"><h3>Registrar vacuna</h3></div>\r
-        <div class="form-grid">\r
-          <label><span>Codigo</span><input [ngModel]="vacunaForm().codigo" (ngModelChange)="vacunaForm.update(f => ({ ...f, codigo: $event }))" /></label>\r
-          <label><span>Nombre</span><input [ngModel]="vacunaForm().nombre" (ngModelChange)="vacunaForm.update(f => ({ ...f, nombre: $event }))" /></label>\r
-          <label><span>Laboratorio</span><input [ngModel]="vacunaForm().laboratorio" (ngModelChange)="vacunaForm.update(f => ({ ...f, laboratorio: $event }))" /></label>\r
-          <label><span>Dosis</span><input [ngModel]="vacunaForm().dosisRecomendada" (ngModelChange)="vacunaForm.update(f => ({ ...f, dosisRecomendada: $event }))" /></label>\r
-          <label><span>Frecuencia dias</span><input type="number" [ngModel]="vacunaForm().frecuenciaDias" (ngModelChange)="vacunaForm.update(f => ({ ...f, frecuenciaDias: $event }))" /></label>\r
-          <label><span>Costo referencia</span><input type="number" [ngModel]="vacunaForm().costoReferencia" (ngModelChange)="vacunaForm.update(f => ({ ...f, costoReferencia: $event }))" /></label>\r
-          <label><span>Stock</span><input type="number" [ngModel]="vacunaForm().stockDisponible" (ngModelChange)="vacunaForm.update(f => ({ ...f, stockDisponible: $event }))" /></label>\r
-          <label><span>Via aplicacion</span><input [ngModel]="vacunaForm().viaAplicacion" (ngModelChange)="vacunaForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>\r
-          <label><span>Obligatoria</span><select [ngModel]="vacunaForm().obligatoria" (ngModelChange)="vacunaForm.update(f => ({ ...f, obligatoria: $event }))"><option [ngValue]="true">Si</option><option [ngValue]="false">No</option></select></label>\r
-        </div>\r
-        <label class="textarea-field"><span>Descripcion</span><textarea [ngModel]="vacunaForm().descripcion" (ngModelChange)="vacunaForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>\r
-        <div class="modal-actions">\r
-          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>\r
-          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitVacuna()">Guardar</button>\r
-        </div>\r
-      </ng-container>\r
-\r
-      <ng-container *ngIf="aplicacionModalOpen()">\r
-        <div class="modal-head"><h3>Registrar aplicacion</h3></div>\r
-        <div class="form-grid">\r
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="aplicacionForm().animalId" (valueChange)="aplicacionForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>\r
-          <app-remote-search-select label="Vacuna" placeholder="Buscar vacuna" [options]="vacunas()" valueField="id" labelField="nombre" [subtitleFields]="['codigo','laboratorio']" [searchFields]="['nombre','codigo','laboratorio']" [value]="aplicacionForm().vacunaId" (valueChange)="aplicacionForm.update(f => ({ ...f, vacunaId: $event }))"></app-remote-search-select>\r
-          <label><span>Fecha aplicacion</span><input type="date" [ngModel]="aplicacionForm().fechaAplicacion" (ngModelChange)="aplicacionForm.update(f => ({ ...f, fechaAplicacion: $event }))" /></label>\r
-          <label><span>Proxima dosis</span><input type="date" [ngModel]="aplicacionForm().proximaDosisFecha" (ngModelChange)="aplicacionForm.update(f => ({ ...f, proximaDosisFecha: $event }))" /></label>\r
-          <app-remote-search-select label="Operario" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="aplicacionForm().operario" (valueChange)="aplicacionForm.update(f => ({ ...f, operario: $event }))"></app-remote-search-select>\r
-          <label><span>Lote/marca</span><input [ngModel]="aplicacionForm().loteMarca" (ngModelChange)="aplicacionForm.update(f => ({ ...f, loteMarca: $event }))" /></label>\r
-          <label><span>Costo aplicado</span><input type="number" [ngModel]="aplicacionForm().costoAplicado" (ngModelChange)="aplicacionForm.update(f => ({ ...f, costoAplicado: $event }))" /></label>\r
-        </div>\r
-        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="aplicacionForm().observaciones" (ngModelChange)="aplicacionForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>\r
-        <div class="modal-actions">\r
-          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>\r
-          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAplicacion()">Guardar</button>\r
-        </div>\r
-      </ng-container>\r
-\r
-      <ng-container *ngIf="tratamientoModalOpen()">\r
-        <div class="modal-head"><h3>Registrar tratamiento</h3></div>\r
-        <div class="form-grid">\r
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="tratamientoForm().animalId" (valueChange)="tratamientoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>\r
-          <label><span>Medicamento</span><input [ngModel]="tratamientoForm().medicamento" (ngModelChange)="tratamientoForm.update(f => ({ ...f, medicamento: $event }))" /></label>\r
-          <label><span>Fecha inicio</span><input type="date" [ngModel]="tratamientoForm().fechaInicio" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaInicio: $event }))" /></label>\r
-          <label><span>Fecha fin</span><input type="date" [ngModel]="tratamientoForm().fechaFin" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaFin: $event }))" /></label>\r
-          <label><span>Dosis</span><input [ngModel]="tratamientoForm().dosis" (ngModelChange)="tratamientoForm.update(f => ({ ...f, dosis: $event }))" /></label>\r
-          <label><span>Via aplicacion</span><input [ngModel]="tratamientoForm().viaAplicacion" (ngModelChange)="tratamientoForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>\r
-          <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="tratamientoForm().responsable" (valueChange)="tratamientoForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>\r
-          <label><span>Costo</span><input type="number" [ngModel]="tratamientoForm().costo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, costo: $event }))" /></label>\r
-          <label><span>Motivo</span><input [ngModel]="tratamientoForm().motivo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, motivo: $event }))" /></label>\r
-        </div>\r
-        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="tratamientoForm().observaciones" (ngModelChange)="tratamientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>\r
-        <div class="modal-actions">\r
-          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>\r
-          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitTratamiento()">Guardar</button>\r
-        </div>\r
-      </ng-container>\r
-\r
-      <ng-container *ngIf="diagnosticoModalOpen()">\r
-        <div class="modal-head"><h3>Registrar diagnostico</h3></div>\r
-        <div class="form-grid">\r
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="diagnosticoForm().animalId" (valueChange)="diagnosticoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>\r
-          <label><span>Enfermedad</span><input [ngModel]="diagnosticoForm().enfermedad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, enfermedad: $event }))" /></label>\r
-          <label><span>Fecha diagnostico</span><input type="date" [ngModel]="diagnosticoForm().fechaDiagnostico" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>\r
-          <label><span>Severidad</span><select [ngModel]="diagnosticoForm().severidad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, severidad: $event }))"><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>\r
-          <label><span>Estado</span><select [ngModel]="diagnosticoForm().estado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, estado: $event }))"><option value="ABIERTO">Abierto</option><option value="CONTROLADO">Controlado</option><option value="CERRADO">Cerrado</option></select></label>\r
-          <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [endpoint]="endpoints.operarios" [extraParams]="veterinarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="diagnosticoForm().veterinario" (valueChange)="diagnosticoForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>\r
-          <label><span>Tratamiento indicado</span><input [ngModel]="diagnosticoForm().tratamientoIndicado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, tratamientoIndicado: $event }))" /></label>\r
-        </div>\r
-        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="diagnosticoForm().observaciones" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>\r
-        <div class="modal-actions">\r
-          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>\r
-          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDiagnostico()">Guardar</button>\r
-        </div>\r
-      </ng-container>\r
-    </div>\r
-  </div>\r
-</div>\r
-\r
-\r
-\r
-`, styles: ["/* src/app/pages/ganaderia-sanidad-page/ganaderia-sanidad-page.component.css */\n.page {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n.page-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 16px;\n}\n.page-head p {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.sanidad-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n  color: #f8fbff;\n}\n.sanidad-head h2 {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.sanidad-head p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  font-weight: 900;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n}\n.head-actions,\n.card-actions,\n.modal-actions {\n  display: flex;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n.sanidad-action {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.sanidad-action svg,\n.metric-icon svg {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.sanidad-kpis .metric-card {\n  display: grid;\n  grid-template-columns: 54px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n  min-height: 104px;\n  border-radius: 20px;\n  padding: 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.1),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.sanidad-kpis .metric-card--blue {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%);\n}\n.sanidad-kpis .metric-card--danger {\n  border-color: rgba(255, 107, 107, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 107, 107, 0.11),\n      transparent 34%);\n}\n.metric-icon {\n  display: grid;\n  width: 52px;\n  height: 52px;\n  place-items: center;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  border-radius: 18px;\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.metric-icon svg {\n  width: 28px;\n  height: 28px;\n}\n.sanidad-kpis .metric-card .label {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  letter-spacing: 0;\n  text-transform: none;\n}\n.sanidad-kpis .metric-card .value {\n  margin: 4px 0 0;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.04em;\n}\n.sanidad-kpis .metric-card small {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.filters-card {\n  padding: 18px;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.filters-grid,\n.form-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.filters-grid label,\n.form-grid label,\n.textarea-field {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: var(--muted);\n  font-size: 13px;\n}\n.layout {\n  display: grid;\n  grid-template-columns: 0.88fr 1.22fr;\n  gap: 18px;\n}\n.left-panel,\n.right-panel {\n  padding: 18px;\n}\n.section-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 14px;\n}\n.section-head--spaced {\n  margin-top: 22px;\n}\n.alert-list,\n.table-list,\n.catalog-grid {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.alert-card,\n.table-card,\n.catalog-card {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 18px;\n  background: rgba(15, 23, 42, 0.46);\n  padding: 16px;\n  display: flex;\n  justify-content: space-between;\n  gap: 16px;\n  align-items: flex-start;\n}\n.alert-card p,\n.table-card p,\n.catalog-card p {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.catalog-top {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n}\n.catalog-card {\n  flex-direction: column;\n}\n.catalog-meta {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 8px;\n  color: var(--muted);\n  font-size: 13px;\n}\n.double-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 12px;\n  margin-top: 18px;\n}\n.detail-block {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  background: rgba(15, 23, 42, 0.4);\n  padding: 16px;\n}\n.timeline-item {\n  padding: 12px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.12);\n}\n.timeline-item:last-child {\n  border-bottom: 0;\n}\n.timeline-item p {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.metric-card--accent {\n  border-color: rgba(96, 165, 250, 0.25);\n}\n.metric-card--warning {\n  border-color: rgba(251, 191, 36, 0.25);\n}\n.state-chip {\n  padding: 8px 12px;\n  border-radius: 999px;\n  background: rgba(159, 232, 112, 0.14);\n  color: #b7f587;\n  font-size: 12px;\n  font-weight: 700;\n}\n.state-chip--soft {\n  background: rgba(96, 165, 250, 0.12);\n  color: #bfdbfe;\n}\n.state-chip--danger {\n  background: rgba(248, 113, 113, 0.16);\n  color: #fecaca;\n}\n.error-box {\n  padding: 14px 16px;\n  border: 1px solid rgba(248, 113, 113, 0.3);\n  border-radius: 16px;\n  background: rgba(127, 29, 29, 0.22);\n  color: #fecaca;\n}\n.empty-box {\n  color: var(--muted);\n}\n.panel-narrow {\n  width: min(920px, 100%);\n}\n.modal-head h3 {\n  margin: 0 0 18px;\n}\n.textarea-field textarea {\n  min-height: 100px;\n}\n.catalog-head__icon,\n.catalog-info-card__icon {\n  width: 56px;\n  height: 56px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #f8fbff;\n  font-size: 20px;\n  font-weight: 700;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(24, 39, 69, 0.9),\n      rgba(13, 24, 47, 0.86));\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 20px rgba(2, 8, 23, 0.22);\n}\n.catalog-head {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  margin-bottom: 18px;\n}\n.catalog-head h3 {\n  margin: 0;\n  font-size: 30px;\n  line-height: 1.04;\n  letter-spacing: -0.03em;\n  color: #f8fbff;\n}\n.catalog-head p {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 14px;\n  line-height: 1.6;\n}\n.catalog-badge {\n  flex-shrink: 0;\n  min-height: 36px;\n  padding: 8px 14px;\n  border-radius: 999px;\n  border: 1px solid rgba(159, 232, 112, 0.2);\n  background: rgba(159, 232, 112, 0.12);\n  color: #9fe870;\n  font-size: 12px;\n  font-weight: 700;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.08);\n}\n.catalog-badge--secondary {\n  border-color: rgba(110, 168, 255, 0.2);\n  background: rgba(110, 168, 255, 0.12);\n  color: #6ea8ff;\n  box-shadow: 0 0 18px rgba(110, 168, 255, 0.08);\n}\n.catalog-info-card {\n  margin-top: 16px;\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  padding: 18px 20px;\n  border-radius: 24px;\n  border: 1px solid rgba(110, 168, 255, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.84),\n      rgba(10, 18, 35, 0.92)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.06),\n      transparent 30%);\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.catalog-info-card strong {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n  margin-bottom: 4px;\n}\n.catalog-info-card p {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 13px;\n  line-height: 1.55;\n}\n.right-panel--premium {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.catalog-head--applications {\n  margin-bottom: 4px;\n}\n.premium-empty-box {\n  border: 1px dashed rgba(148, 163, 184, 0.2);\n  border-radius: 20px;\n  padding: 20px;\n  background: rgba(11, 21, 41, 0.74);\n}\n.vaccination-alert-table-wrap {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  overflow-x: auto;\n}\n.vaccination-alert-summary {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(160px, 1fr));\n  gap: 12px;\n}\n.vaccination-alert-summary > div {\n  border: 1px solid rgba(159, 232, 112, 0.14);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.08),\n      transparent 35%);\n}\n.vaccination-alert-summary > div.danger {\n  border-color: rgba(255, 107, 107, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 107, 107, 0.1),\n      transparent 35%);\n}\n.vaccination-alert-summary > div.warning {\n  border-color: rgba(255, 184, 77, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 184, 77, 0.1),\n      transparent 35%);\n}\n.vaccination-alert-summary span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.vaccination-alert-summary strong {\n  display: block;\n  margin-top: 4px;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n}\n.vaccination-alert-table {\n  width: 100%;\n  min-width: 900px;\n  border-collapse: separate;\n  border-spacing: 0;\n  overflow: hidden;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 20px;\n  background: rgba(8, 18, 37, 0.68);\n}\n.vaccination-alert-table th,\n.vaccination-alert-table td {\n  padding: 14px 16px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  color: #dce7f8;\n  font-size: 13px;\n  vertical-align: middle;\n}\n.vaccination-alert-table th {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(11, 23, 48, 0.78);\n}\n.vaccination-alert-table tr:last-child td {\n  border-bottom: 0;\n}\n.vaccination-alert-table tbody tr {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.vaccination-alert-table tbody tr:hover {\n  background: rgba(159, 232, 112, 0.04);\n  box-shadow: inset 2px 0 0 rgba(159, 232, 112, 0.65);\n}\n.vaccine-table-identity {\n  display: grid;\n  grid-template-columns: 42px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n}\n.vaccine-table-icon {\n  width: 42px;\n  height: 42px;\n  display: grid;\n  place-items: center;\n  border-radius: 14px;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  background: rgba(159, 232, 112, 0.08);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);\n}\n.vaccine-table-icon svg,\n.vaccine-table-identity svg {\n  width: 22px;\n  height: 22px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.vaccine-table-identity strong,\n.vaccination-alert-table td > strong {\n  color: #f8fbff;\n}\n.vaccine-table-identity small,\n.table-muted {\n  display: block;\n  margin-top: 3px;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.alert-count {\n  display: inline-flex;\n  min-width: 34px;\n  height: 30px;\n  align-items: center;\n  justify-content: center;\n  border-radius: 999px;\n  font-weight: 800;\n}\n.alert-count--danger {\n  color: #ffd0d0;\n  border: 1px solid rgba(255, 107, 107, 0.24);\n  background: rgba(255, 107, 107, 0.12);\n}\n.alert-count--warning {\n  color: #ffe1a8;\n  border: 1px solid rgba(255, 184, 77, 0.24);\n  background: rgba(255, 184, 77, 0.12);\n}\n.sanitary-tabs-panel {\n  overflow: hidden;\n}\n.sanitary-tabs-bar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  margin: -18px -18px 18px;\n  padding: 14px 18px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(9, 18, 37, 0.72),\n      rgba(7, 15, 31, 0.42)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 28%);\n}\n.sanitary-tabs {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex-wrap: wrap;\n}\n.sanitary-tabs button,\n.sanitary-tabs-meta button {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  background: rgba(7, 15, 31, 0.42);\n  color: #8ea0bb;\n  border-radius: 12px;\n  min-height: 40px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 9px;\n  padding: 10px 12px;\n  font-weight: 800;\n  font-size: 12px;\n}\n.sanitary-tabs button.active,\n.sanitary-tabs-meta button.active {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, 0.34);\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n}\n.sanitary-tabs svg,\n.sanitary-tabs-meta svg,\n.sanitary-record-card svg,\n.sanitary-tabs-footer svg {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.sanitary-tabs-meta {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  white-space: nowrap;\n}\n.sanitary-tabs-meta button {\n  width: 38px;\n  min-height: 38px;\n  padding: 0;\n}\n.sanitary-tabs-meta button:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.sanitary-card-grid {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.sanitary-table-wrap {\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.78),\n      rgba(8, 18, 37, 0.78)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.05),\n      transparent 34%);\n}\n.sanitary-data-table {\n  width: 100%;\n  min-width: 1040px;\n  border-collapse: separate;\n  border-spacing: 0;\n}\n.sanitary-data-table th,\n.sanitary-data-table td {\n  padding: 13px 14px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.09);\n  color: #c7d4e8;\n  font-size: 12px;\n  vertical-align: middle;\n}\n.sanitary-data-table th {\n  color: #7f91ac;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(7, 15, 31, 0.54);\n}\n.sanitary-data-table tbody tr {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.sanitary-data-table tbody tr:hover {\n  background: rgba(159, 232, 112, 0.045);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, 0.66);\n}\n.sanitary-data-table tbody tr:last-child td {\n  border-bottom: 0;\n}\n.sanitary-data-table td > strong,\n.sanitary-table-identity strong {\n  color: #f8fbff;\n  font-weight: 700;\n}\n.sanitary-table-identity {\n  display: grid;\n  grid-template-columns: 40px minmax(0, 1fr);\n  gap: 11px;\n  align-items: center;\n  min-width: 230px;\n}\n.sanitary-table-identity small {\n  display: block;\n  max-width: 260px;\n  margin-top: 3px;\n  overflow: hidden;\n  color: #8ea0bb;\n  font-size: 11px;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.sanitary-table-icon {\n  width: 40px;\n  height: 40px;\n  display: grid;\n  place-items: center;\n  border-radius: 14px;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  background: rgba(159, 232, 112, 0.08);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);\n}\n.sanitary-table-icon--blue {\n  color: #6ea8ff;\n  border-color: rgba(110, 168, 255, 0.2);\n  background: rgba(110, 168, 255, 0.1);\n  box-shadow: 0 0 18px rgba(110, 168, 255, 0.08);\n}\n.sanitary-table-icon--warning {\n  color: #ffb84d;\n  border-color: rgba(255, 184, 77, 0.22);\n  background: rgba(255, 184, 77, 0.1);\n  box-shadow: 0 0 18px rgba(255, 184, 77, 0.08);\n}\n.sanitary-table-icon svg {\n  width: 21px;\n  height: 21px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.severity-pill {\n  display: inline-flex;\n  min-height: 30px;\n  align-items: center;\n  justify-content: center;\n  padding: 6px 11px;\n  border-radius: 999px;\n  border: 1px solid rgba(110, 168, 255, 0.18);\n  background: rgba(110, 168, 255, 0.1);\n  color: #b8cff5;\n  font-size: 11px;\n  font-weight: 700;\n}\n.severity-pill--high {\n  border-color: rgba(255, 184, 77, 0.24);\n  background: rgba(255, 184, 77, 0.12);\n  color: #ffe1a8;\n}\n.severity-pill--critical {\n  border-color: rgba(255, 107, 107, 0.24);\n  background: rgba(255, 107, 107, 0.12);\n  color: #ffd0d0;\n}\n.sanitary-record-card {\n  min-height: 390px;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 14px;\n  padding: 16px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.9),\n      rgba(8, 18, 37, 0.88)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 34%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.sanitary-record-card__top {\n  min-height: 72px;\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 12px;\n}\n.sanitary-record-card__top h4 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 15px;\n  line-height: 1.15;\n  letter-spacing: -0.03em;\n}\n.sanitary-record-card__top p {\n  margin: 8px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.sanitary-record-card__metrics {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  margin-top: 16px;\n  flex: 1;\n}\n.sanitary-record-metric {\n  display: grid;\n  grid-template-columns: 18px minmax(0, 1fr);\n  gap: 8px;\n  align-items: center;\n  min-height: 58px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n}\n.sanitary-record-metric svg {\n  color: #9bb3d7;\n}\n.sanitary-record-metric span {\n  color: #8ea0bb;\n  font-size: 10px;\n}\n.sanitary-record-metric strong {\n  grid-column: 2;\n  color: #f8fbff;\n  font-size: 11px;\n  text-align: left;\n  max-width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.sanitary-detail-btn {\n  width: 100%;\n  min-height: 46px;\n  margin-top: 16px;\n  border: 1px solid rgba(159, 232, 112, 0.18);\n  border-radius: 10px;\n  background: rgba(7, 15, 31, 0.46);\n  color: #9fe870;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  font-size: 12px;\n  font-weight: 900;\n}\n.sanitary-detail-btn:hover {\n  border-color: rgba(159, 232, 112, 0.42);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.sanitary-tabs-footer {\n  margin: 18px -18px -18px;\n  padding: 18px 22px;\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n  background: rgba(7, 15, 31, 0.42);\n}\n.sanitary-footer-date {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 10px;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.sanitary-footer-date svg {\n  color: #9fe870;\n}\n@media (max-width: 1080px) {\n  .layout {\n    grid-template-columns: 1fr;\n  }\n  .sanitary-tabs-bar {\n    align-items: flex-start;\n    flex-direction: column;\n  }\n  .sanitary-card-grid {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .page-head,\n  .sanidad-head {\n    flex-direction: column;\n    align-items: stretch;\n  }\n}\n.sanidad-stack {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.top-panel {\n  padding: 18px;\n}\n.catalog-head__icon svg,\n.catalog-info-card__icon svg {\n  width: 28px;\n  height: 28px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.section-toggle {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 14px;\n  min-height: 42px;\n  padding: 10px 14px;\n  background: rgba(7, 15, 31, 0.48);\n  color: #9fe870;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  font-size: 12px;\n  font-weight: 900;\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.section-toggle:hover {\n  border-color: rgba(159, 232, 112, 0.36);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.section-toggle svg {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  transition: transform 160ms ease;\n}\n.section-toggle--compact {\n  width: 38px;\n  min-height: 38px;\n  padding: 0;\n}\n.section-toggle--compact svg {\n  width: 16px;\n  height: 16px;\n}\n.section-toggle__icon--collapsed {\n  transform: rotate(-90deg);\n}\n.section-collapsed-summary {\n  border: 1px dashed rgba(148, 163, 184, 0.18);\n  border-radius: 18px;\n  padding: 18px 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.74),\n      rgba(8, 18, 37, 0.68)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.06),\n      transparent 34%);\n  color: #8ea0bb;\n  font-size: 13px;\n  font-weight: 700;\n}\n.empty-box--section {\n  display: grid;\n  grid-template-columns: 40px 1fr;\n  align-items: center;\n  gap: 12px;\n}\n.empty-box--section svg {\n  width: 26px;\n  height: 26px;\n  fill: none;\n  stroke: #9fe870;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.empty-box--section strong {\n  display: block;\n  color: #f8fbff;\n  margin-bottom: 4px;\n}\n.empty-box--section p {\n  margin: 0;\n}\n.alert-record-card {\n  min-height: 360px;\n}\n.catalog-head--inline {\n  margin-bottom: 0;\n}\n.catalog-info-card--compact {\n  margin-top: 18px;\n}\n.catalog-panel {\n  overflow: hidden;\n}\n.catalog-record-card {\n  min-height: 360px;\n}\n@media (max-width: 1420px) {\n  .sanitary-card-grid {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n}\n.sanidad-kpis .metric-card {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.sanidad-kpis .metric-icon {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.sanidad-kpis .metric-icon svg {\n  width: 24px;\n  height: 24px;\n}\n.sanidad-kpis .metric-card > div:last-child {\n  display: contents;\n}\n.sanidad-kpis .metric-card .label {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n}\n.sanidad-kpis .metric-card small {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.sanidad-kpis .metric-card .value {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .sanidad-kpis .metric-card {\n    grid-template-columns: 46px 1fr;\n  }\n  .sanidad-kpis .metric-card .value {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.sanidad-kpis .metric-card {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.sanidad-kpis .metric-card > div:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.sanidad-kpis .metric-card .label,\n.sanidad-kpis .metric-card small,\n.sanidad-kpis .metric-card .value {\n  grid-column: auto;\n  grid-row: auto;\n}\n.sanidad-kpis .metric-card .label {\n  margin: 0;\n  line-height: 1.2;\n}\n.sanidad-kpis .metric-card small {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.sanidad-kpis .metric-card .value {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .sanidad-kpis .metric-card {\n    grid-template-columns: 46px 1fr;\n  }\n  .sanidad-kpis .metric-card .value {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.sanidad-kpis .metric-card {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.sanidad-kpis .metric-card > div:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.sanidad-kpis .metric-icon {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.sanidad-kpis .metric-card .label {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.sanidad-kpis .metric-card small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.sanidad-kpis .metric-card .value {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid .kpi-card,\n.reproduction-kpis .kpi-card,\n.sanidad-kpis .kpi-card,\n.trace-kpis .kpi-card {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid .metric-icon,\n.reproduction-kpis .metric-icon,\n.sanidad-kpis .metric-icon,\n.trace-kpis .metric-icon {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid .metric-icon.blue,\n.reproduction-kpis .metric-icon.blue,\n.sanidad-kpis .metric-icon.blue,\n.trace-kpis .metric-icon.blue {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid .metric-icon.warning,\n.reproduction-kpis .metric-icon.warning,\n.sanidad-kpis .metric-icon.warning,\n.trace-kpis .metric-icon.warning {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid .metric-icon svg,\n.reproduction-kpis .metric-icon svg,\n.sanidad-kpis .metric-icon svg,\n.trace-kpis .metric-icon svg {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid .kpi-copy,\n.reproduction-kpis .kpi-copy,\n.sanidad-kpis .kpi-copy,\n.trace-kpis .kpi-copy {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid .kpi-copy span,\n.reproduction-kpis .kpi-copy span,\n.sanidad-kpis .kpi-copy span,\n.trace-kpis .kpi-copy span {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid .kpi-copy small,\n.reproduction-kpis .kpi-copy small,\n.sanidad-kpis .kpi-copy small,\n.trace-kpis .kpi-copy small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid .kpi-card > strong,\n.reproduction-kpis .kpi-card > strong,\n.sanidad-kpis .kpi-card > strong,\n.trace-kpis .kpi-card > strong {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-sanidad-page.component.css.map */\n"] }]
+      <div class="sanitary-tabs-footer"><div class="sanitary-footer-date"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>\xDAltima actualizaci\xF3n: 21/05/2026 19:45</span></div></div>
+      </ng-container>
+
+      <ng-template #registrosCollapsedState>
+        <div class="section-collapsed-summary">Registros ocultos. {{ activeTotal() }} elementos en la pesta\xF1a actual.</div>
+      </ng-template>
+    </section>
+  </div>
+
+  <div class="app-modal-backdrop" *ngIf="vacunaModalOpen() || aplicacionModalOpen() || tratamientoModalOpen() || diagnosticoModalOpen()" (click)="closeModals()" (document:keydown.escape)="closeModals()">
+    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModals()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
+      <ng-container *ngIf="vacunaModalOpen()">
+        <div class="modal-head"><h3>Registrar vacuna</h3></div>
+        <div class="form-grid">
+          <label><span>Codigo</span><input [ngModel]="vacunaForm().codigo" (ngModelChange)="vacunaForm.update(f => ({ ...f, codigo: $event }))" /></label>
+          <label><span>Nombre</span><input [ngModel]="vacunaForm().nombre" (ngModelChange)="vacunaForm.update(f => ({ ...f, nombre: $event }))" /></label>
+          <label><span>Laboratorio</span><input [ngModel]="vacunaForm().laboratorio" (ngModelChange)="vacunaForm.update(f => ({ ...f, laboratorio: $event }))" /></label>
+          <label><span>Dosis</span><input [ngModel]="vacunaForm().dosisRecomendada" (ngModelChange)="vacunaForm.update(f => ({ ...f, dosisRecomendada: $event }))" /></label>
+          <label><span>Frecuencia dias</span><input type="number" [ngModel]="vacunaForm().frecuenciaDias" (ngModelChange)="vacunaForm.update(f => ({ ...f, frecuenciaDias: $event }))" /></label>
+          <label><span>Costo referencia</span><input type="number" [ngModel]="vacunaForm().costoReferencia" (ngModelChange)="vacunaForm.update(f => ({ ...f, costoReferencia: $event }))" /></label>
+          <label><span>Stock</span><input type="number" [ngModel]="vacunaForm().stockDisponible" (ngModelChange)="vacunaForm.update(f => ({ ...f, stockDisponible: $event }))" /></label>
+          <label><span>Via aplicacion</span><input [ngModel]="vacunaForm().viaAplicacion" (ngModelChange)="vacunaForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>
+          <label><span>Obligatoria</span><select [ngModel]="vacunaForm().obligatoria" (ngModelChange)="vacunaForm.update(f => ({ ...f, obligatoria: $event }))"><option [ngValue]="true">Si</option><option [ngValue]="false">No</option></select></label>
+        </div>
+        <label class="textarea-field"><span>Descripcion</span><textarea [ngModel]="vacunaForm().descripcion" (ngModelChange)="vacunaForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+        <div class="modal-actions">
+          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitVacuna()">Guardar</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="aplicacionModalOpen()">
+        <div class="modal-head"><h3>Registrar aplicacion</h3></div>
+        <div class="form-grid">
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="aplicacionForm().animalId" (valueChange)="aplicacionForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Vacuna" placeholder="Buscar vacuna" [options]="vacunas()" valueField="id" labelField="nombre" [subtitleFields]="['codigo','laboratorio']" [searchFields]="['nombre','codigo','laboratorio']" [value]="aplicacionForm().vacunaId" (valueChange)="aplicacionForm.update(f => ({ ...f, vacunaId: $event }))"></app-remote-search-select>
+          <label><span>Fecha aplicacion</span><input type="date" [ngModel]="aplicacionForm().fechaAplicacion" (ngModelChange)="aplicacionForm.update(f => ({ ...f, fechaAplicacion: $event }))" /></label>
+          <label><span>Proxima dosis</span><input type="date" [ngModel]="aplicacionForm().proximaDosisFecha" (ngModelChange)="aplicacionForm.update(f => ({ ...f, proximaDosisFecha: $event }))" /></label>
+          <app-remote-search-select label="Operario" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="aplicacionForm().operario" (valueChange)="aplicacionForm.update(f => ({ ...f, operario: $event }))"></app-remote-search-select>
+          <label><span>Lote/marca</span><input [ngModel]="aplicacionForm().loteMarca" (ngModelChange)="aplicacionForm.update(f => ({ ...f, loteMarca: $event }))" /></label>
+          <label><span>Costo aplicado</span><input type="number" [ngModel]="aplicacionForm().costoAplicado" (ngModelChange)="aplicacionForm.update(f => ({ ...f, costoAplicado: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="aplicacionForm().observaciones" (ngModelChange)="aplicacionForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions">
+          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAplicacion()">Guardar</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="tratamientoModalOpen()">
+        <div class="modal-head"><h3>Registrar tratamiento</h3></div>
+        <div class="form-grid">
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="tratamientoForm().animalId" (valueChange)="tratamientoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+          <label><span>Medicamento</span><input [ngModel]="tratamientoForm().medicamento" (ngModelChange)="tratamientoForm.update(f => ({ ...f, medicamento: $event }))" /></label>
+          <label><span>Fecha inicio</span><input type="date" [ngModel]="tratamientoForm().fechaInicio" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaInicio: $event }))" /></label>
+          <label><span>Fecha fin</span><input type="date" [ngModel]="tratamientoForm().fechaFin" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaFin: $event }))" /></label>
+          <label><span>Dosis</span><input [ngModel]="tratamientoForm().dosis" (ngModelChange)="tratamientoForm.update(f => ({ ...f, dosis: $event }))" /></label>
+          <label><span>Via aplicacion</span><input [ngModel]="tratamientoForm().viaAplicacion" (ngModelChange)="tratamientoForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>
+          <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="tratamientoForm().responsable" (valueChange)="tratamientoForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
+          <label><span>Costo</span><input type="number" [ngModel]="tratamientoForm().costo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, costo: $event }))" /></label>
+          <label><span>Motivo</span><input [ngModel]="tratamientoForm().motivo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, motivo: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="tratamientoForm().observaciones" (ngModelChange)="tratamientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions">
+          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitTratamiento()">Guardar</button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="diagnosticoModalOpen()">
+        <div class="modal-head"><h3>Registrar diagnostico</h3></div>
+        <div class="form-grid">
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="diagnosticoForm().animalId" (valueChange)="diagnosticoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+          <label><span>Enfermedad</span><input [ngModel]="diagnosticoForm().enfermedad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, enfermedad: $event }))" /></label>
+          <label><span>Fecha diagnostico</span><input type="date" [ngModel]="diagnosticoForm().fechaDiagnostico" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
+          <label><span>Severidad</span><select [ngModel]="diagnosticoForm().severidad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, severidad: $event }))"><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
+          <label><span>Estado</span><select [ngModel]="diagnosticoForm().estado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, estado: $event }))"><option value="ABIERTO">Abierto</option><option value="CONTROLADO">Controlado</option><option value="CERRADO">Cerrado</option></select></label>
+          <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [endpoint]="endpoints.operarios" [extraParams]="veterinarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="diagnosticoForm().veterinario" (valueChange)="diagnosticoForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>
+          <label><span>Tratamiento indicado</span><input [ngModel]="diagnosticoForm().tratamientoIndicado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, tratamientoIndicado: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="diagnosticoForm().observaciones" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <div class="modal-actions">
+          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDiagnostico()">Guardar</button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+
+
+`, styles: ["/* src/app/pages/ganaderia-sanidad-page/ganaderia-sanidad-page.component.css */\n.page {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n.page-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 16px;\n}\n.page-head p {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.sanidad-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n  color: #f8fbff;\n}\n.sanidad-head h2 {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.sanidad-head p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  font-weight: 900;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n}\n.head-actions,\n.card-actions,\n.modal-actions {\n  display: flex;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n.sanidad-action {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.sanidad-action svg,\n.metric-icon svg {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.sanidad-kpis .metric-card {\n  display: grid;\n  grid-template-columns: 54px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n  min-height: 104px;\n  border-radius: 20px;\n  padding: 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.1),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.sanidad-kpis .metric-card--blue {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%);\n}\n.sanidad-kpis .metric-card--danger {\n  border-color: rgba(255, 107, 107, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 107, 107, 0.11),\n      transparent 34%);\n}\n.metric-icon {\n  display: grid;\n  width: 52px;\n  height: 52px;\n  place-items: center;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  border-radius: 18px;\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.metric-icon svg {\n  width: 28px;\n  height: 28px;\n}\n.sanidad-kpis .metric-card .label {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  letter-spacing: 0;\n  text-transform: none;\n}\n.sanidad-kpis .metric-card .value {\n  margin: 4px 0 0;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.04em;\n}\n.sanidad-kpis .metric-card small {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.filters-card {\n  padding: 18px;\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}\n.filters-grid,\n.form-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.filters-grid label,\n.form-grid label,\n.textarea-field {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: var(--muted);\n  font-size: 13px;\n}\n.layout {\n  display: grid;\n  grid-template-columns: 0.88fr 1.22fr;\n  gap: 18px;\n}\n.left-panel,\n.right-panel {\n  padding: 18px;\n}\n.section-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  margin-bottom: 14px;\n}\n.section-head--spaced {\n  margin-top: 22px;\n}\n.alert-list,\n.table-list,\n.catalog-grid {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.alert-card,\n.table-card,\n.catalog-card {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 18px;\n  background: rgba(15, 23, 42, 0.46);\n  padding: 16px;\n  display: flex;\n  justify-content: space-between;\n  gap: 16px;\n  align-items: flex-start;\n}\n.alert-card p,\n.table-card p,\n.catalog-card p {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.catalog-top {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n}\n.catalog-card {\n  flex-direction: column;\n}\n.catalog-meta {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n  gap: 8px;\n  color: var(--muted);\n  font-size: 13px;\n}\n.double-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  gap: 12px;\n  margin-top: 18px;\n}\n.detail-block {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  background: rgba(15, 23, 42, 0.4);\n  padding: 16px;\n}\n.timeline-item {\n  padding: 12px 0;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.12);\n}\n.timeline-item:last-child {\n  border-bottom: 0;\n}\n.timeline-item p {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.metric-card--accent {\n  border-color: rgba(96, 165, 250, 0.25);\n}\n.metric-card--warning {\n  border-color: rgba(251, 191, 36, 0.25);\n}\n.state-chip {\n  padding: 8px 12px;\n  border-radius: 999px;\n  background: rgba(159, 232, 112, 0.14);\n  color: #b7f587;\n  font-size: 12px;\n  font-weight: 700;\n}\n.state-chip--soft {\n  background: rgba(96, 165, 250, 0.12);\n  color: #bfdbfe;\n}\n.state-chip--danger {\n  background: rgba(248, 113, 113, 0.16);\n  color: #fecaca;\n}\n.error-box {\n  padding: 14px 16px;\n  border: 1px solid rgba(248, 113, 113, 0.3);\n  border-radius: 16px;\n  background: rgba(127, 29, 29, 0.22);\n  color: #fecaca;\n}\n.empty-box {\n  color: var(--muted);\n}\n.panel-narrow {\n  width: min(920px, 100%);\n}\n.modal-head h3 {\n  margin: 0 0 18px;\n}\n.textarea-field textarea {\n  min-height: 100px;\n}\n.catalog-head__icon,\n.catalog-info-card__icon {\n  width: 56px;\n  height: 56px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #f8fbff;\n  font-size: 20px;\n  font-weight: 700;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(24, 39, 69, 0.9),\n      rgba(13, 24, 47, 0.86));\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 20px rgba(2, 8, 23, 0.22);\n}\n.catalog-head {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  margin-bottom: 18px;\n}\n.catalog-head h3 {\n  margin: 0;\n  font-size: 30px;\n  line-height: 1.04;\n  letter-spacing: -0.03em;\n  color: #f8fbff;\n}\n.catalog-head p {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 14px;\n  line-height: 1.6;\n}\n.catalog-badge {\n  flex-shrink: 0;\n  min-height: 36px;\n  padding: 8px 14px;\n  border-radius: 999px;\n  border: 1px solid rgba(159, 232, 112, 0.2);\n  background: rgba(159, 232, 112, 0.12);\n  color: #9fe870;\n  font-size: 12px;\n  font-weight: 700;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.08);\n}\n.catalog-badge--secondary {\n  border-color: rgba(110, 168, 255, 0.2);\n  background: rgba(110, 168, 255, 0.12);\n  color: #6ea8ff;\n  box-shadow: 0 0 18px rgba(110, 168, 255, 0.08);\n}\n.catalog-info-card {\n  margin-top: 16px;\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  padding: 18px 20px;\n  border-radius: 24px;\n  border: 1px solid rgba(110, 168, 255, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.84),\n      rgba(10, 18, 35, 0.92)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.06),\n      transparent 30%);\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.catalog-info-card strong {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n  margin-bottom: 4px;\n}\n.catalog-info-card p {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 13px;\n  line-height: 1.55;\n}\n.right-panel--premium {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.catalog-head--applications {\n  margin-bottom: 4px;\n}\n.premium-empty-box {\n  border: 1px dashed rgba(148, 163, 184, 0.2);\n  border-radius: 20px;\n  padding: 20px;\n  background: rgba(11, 21, 41, 0.74);\n}\n.vaccination-alert-table-wrap {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  overflow-x: auto;\n}\n.vaccination-alert-summary {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(160px, 1fr));\n  gap: 12px;\n}\n.vaccination-alert-summary > div {\n  border: 1px solid rgba(159, 232, 112, 0.14);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.08),\n      transparent 35%);\n}\n.vaccination-alert-summary > div.danger {\n  border-color: rgba(255, 107, 107, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 107, 107, 0.1),\n      transparent 35%);\n}\n.vaccination-alert-summary > div.warning {\n  border-color: rgba(255, 184, 77, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.78),\n      rgba(8, 18, 37, 0.82)),\n    radial-gradient(\n      circle at top left,\n      rgba(255, 184, 77, 0.1),\n      transparent 35%);\n}\n.vaccination-alert-summary span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.vaccination-alert-summary strong {\n  display: block;\n  margin-top: 4px;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n}\n.vaccination-alert-table {\n  width: 100%;\n  min-width: 900px;\n  border-collapse: separate;\n  border-spacing: 0;\n  overflow: hidden;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 20px;\n  background: rgba(8, 18, 37, 0.68);\n}\n.vaccination-alert-table th,\n.vaccination-alert-table td {\n  padding: 14px 16px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  color: #dce7f8;\n  font-size: 13px;\n  vertical-align: middle;\n}\n.vaccination-alert-table th {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(11, 23, 48, 0.78);\n}\n.vaccination-alert-table tr:last-child td {\n  border-bottom: 0;\n}\n.vaccination-alert-table tbody tr {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.vaccination-alert-table tbody tr:hover {\n  background: rgba(159, 232, 112, 0.04);\n  box-shadow: inset 2px 0 0 rgba(159, 232, 112, 0.65);\n}\n.vaccine-table-identity {\n  display: grid;\n  grid-template-columns: 42px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n}\n.vaccine-table-icon {\n  width: 42px;\n  height: 42px;\n  display: grid;\n  place-items: center;\n  border-radius: 14px;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  background: rgba(159, 232, 112, 0.08);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);\n}\n.vaccine-table-icon svg,\n.vaccine-table-identity svg {\n  width: 22px;\n  height: 22px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.vaccine-table-identity strong,\n.vaccination-alert-table td > strong {\n  color: #f8fbff;\n}\n.vaccine-table-identity small,\n.table-muted {\n  display: block;\n  margin-top: 3px;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.alert-count {\n  display: inline-flex;\n  min-width: 34px;\n  height: 30px;\n  align-items: center;\n  justify-content: center;\n  border-radius: 999px;\n  font-weight: 800;\n}\n.alert-count--danger {\n  color: #ffd0d0;\n  border: 1px solid rgba(255, 107, 107, 0.24);\n  background: rgba(255, 107, 107, 0.12);\n}\n.alert-count--warning {\n  color: #ffe1a8;\n  border: 1px solid rgba(255, 184, 77, 0.24);\n  background: rgba(255, 184, 77, 0.12);\n}\n.sanitary-tabs-panel {\n  overflow: hidden;\n}\n.sanitary-tabs-bar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  margin: -18px -18px 18px;\n  padding: 14px 18px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(9, 18, 37, 0.72),\n      rgba(7, 15, 31, 0.42)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 28%);\n}\n.sanitary-tabs {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  flex-wrap: wrap;\n}\n.sanitary-tabs button,\n.sanitary-tabs-meta button {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  background: rgba(7, 15, 31, 0.42);\n  color: #8ea0bb;\n  border-radius: 12px;\n  min-height: 40px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 9px;\n  padding: 10px 12px;\n  font-weight: 800;\n  font-size: 12px;\n}\n.sanitary-tabs button.active,\n.sanitary-tabs-meta button.active {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, 0.34);\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n}\n.sanitary-tabs svg,\n.sanitary-tabs-meta svg,\n.sanitary-record-card svg,\n.sanitary-tabs-footer svg {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.sanitary-tabs-meta {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  white-space: nowrap;\n}\n.sanitary-tabs-meta button {\n  width: 38px;\n  min-height: 38px;\n  padding: 0;\n}\n.sanitary-tabs-meta button:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.sanitary-card-grid {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.sanitary-table-wrap {\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.78),\n      rgba(8, 18, 37, 0.78)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.05),\n      transparent 34%);\n}\n.sanitary-data-table {\n  width: 100%;\n  min-width: 1040px;\n  border-collapse: separate;\n  border-spacing: 0;\n}\n.sanitary-data-table th,\n.sanitary-data-table td {\n  padding: 13px 14px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.09);\n  color: #c7d4e8;\n  font-size: 12px;\n  vertical-align: middle;\n}\n.sanitary-data-table th {\n  color: #7f91ac;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(7, 15, 31, 0.54);\n}\n.sanitary-data-table tbody tr {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.sanitary-data-table tbody tr:hover {\n  background: rgba(159, 232, 112, 0.045);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, 0.66);\n}\n.sanitary-data-table tbody tr:last-child td {\n  border-bottom: 0;\n}\n.sanitary-data-table td > strong,\n.sanitary-table-identity strong {\n  color: #f8fbff;\n  font-weight: 700;\n}\n.sanitary-table-identity {\n  display: grid;\n  grid-template-columns: 40px minmax(0, 1fr);\n  gap: 11px;\n  align-items: center;\n  min-width: 230px;\n}\n.sanitary-table-identity small {\n  display: block;\n  max-width: 260px;\n  margin-top: 3px;\n  overflow: hidden;\n  color: #8ea0bb;\n  font-size: 11px;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.sanitary-table-icon {\n  width: 40px;\n  height: 40px;\n  display: grid;\n  place-items: center;\n  border-radius: 14px;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  background: rgba(159, 232, 112, 0.08);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);\n}\n.sanitary-table-icon--blue {\n  color: #6ea8ff;\n  border-color: rgba(110, 168, 255, 0.2);\n  background: rgba(110, 168, 255, 0.1);\n  box-shadow: 0 0 18px rgba(110, 168, 255, 0.08);\n}\n.sanitary-table-icon--warning {\n  color: #ffb84d;\n  border-color: rgba(255, 184, 77, 0.22);\n  background: rgba(255, 184, 77, 0.1);\n  box-shadow: 0 0 18px rgba(255, 184, 77, 0.08);\n}\n.sanitary-table-icon svg {\n  width: 21px;\n  height: 21px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.severity-pill {\n  display: inline-flex;\n  min-height: 30px;\n  align-items: center;\n  justify-content: center;\n  padding: 6px 11px;\n  border-radius: 999px;\n  border: 1px solid rgba(110, 168, 255, 0.18);\n  background: rgba(110, 168, 255, 0.1);\n  color: #b8cff5;\n  font-size: 11px;\n  font-weight: 700;\n}\n.severity-pill--high {\n  border-color: rgba(255, 184, 77, 0.24);\n  background: rgba(255, 184, 77, 0.12);\n  color: #ffe1a8;\n}\n.severity-pill--critical {\n  border-color: rgba(255, 107, 107, 0.24);\n  background: rgba(255, 107, 107, 0.12);\n  color: #ffd0d0;\n}\n.sanitary-record-card {\n  min-height: 390px;\n  display: flex;\n  flex-direction: column;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 14px;\n  padding: 16px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.9),\n      rgba(8, 18, 37, 0.88)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 34%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.sanitary-record-card__top {\n  min-height: 72px;\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 12px;\n}\n.sanitary-record-card__top h4 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 15px;\n  line-height: 1.15;\n  letter-spacing: -0.03em;\n}\n.sanitary-record-card__top p {\n  margin: 8px 0 0;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.sanitary-record-card__metrics {\n  display: flex;\n  flex-direction: column;\n  gap: 0;\n  margin-top: 16px;\n  flex: 1;\n}\n.sanitary-record-metric {\n  display: grid;\n  grid-template-columns: 18px minmax(0, 1fr);\n  gap: 8px;\n  align-items: center;\n  min-height: 58px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n}\n.sanitary-record-metric svg {\n  color: #9bb3d7;\n}\n.sanitary-record-metric span {\n  color: #8ea0bb;\n  font-size: 10px;\n}\n.sanitary-record-metric strong {\n  grid-column: 2;\n  color: #f8fbff;\n  font-size: 11px;\n  text-align: left;\n  max-width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.sanitary-detail-btn {\n  width: 100%;\n  min-height: 46px;\n  margin-top: 16px;\n  border: 1px solid rgba(159, 232, 112, 0.18);\n  border-radius: 10px;\n  background: rgba(7, 15, 31, 0.46);\n  color: #9fe870;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  font-size: 12px;\n  font-weight: 900;\n}\n.sanitary-detail-btn:hover {\n  border-color: rgba(159, 232, 112, 0.42);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.sanitary-tabs-footer {\n  margin: 18px -18px -18px;\n  padding: 18px 22px;\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n  background: rgba(7, 15, 31, 0.42);\n}\n.sanitary-footer-date {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 10px;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.sanitary-footer-date svg {\n  color: #9fe870;\n}\n@media (max-width: 1080px) {\n  .layout {\n    grid-template-columns: 1fr;\n  }\n  .sanitary-tabs-bar {\n    align-items: flex-start;\n    flex-direction: column;\n  }\n  .sanitary-card-grid {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .page-head,\n  .sanidad-head {\n    flex-direction: column;\n    align-items: stretch;\n  }\n}\n.sanidad-stack {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.sanidad-top-row {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);\n  gap: 18px;\n  align-items: start;\n}\n.sanidad-top-row > .card {\n  min-width: 0;\n}\n.sanidad-top-row .sanitary-tabs-bar {\n  gap: 12px;\n}\n.sanidad-top-row .catalog-head h3 {\n  font-size: 22px;\n}\n.sanidad-top-row .catalog-head p {\n  font-size: 13px;\n}\n.sanidad-top-row .vaccination-alert-summary {\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n.sanidad-top-row .vaccination-alert-summary > div {\n  padding: 12px 14px;\n}\n.sanidad-top-row .vaccination-alert-table {\n  min-width: 760px;\n}\n.sanidad-top-row .vaccination-alert-table th,\n.sanidad-top-row .vaccination-alert-table td {\n  padding: 12px 14px;\n  font-size: 12px;\n}\n.catalog-table-wrap {\n  overflow-x: auto;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 20px;\n  background: rgba(8, 18, 37, 0.68);\n}\n.catalog-data-table {\n  width: 100%;\n  min-width: 720px;\n  border-collapse: separate;\n  border-spacing: 0;\n}\n.catalog-data-table th,\n.catalog-data-table td {\n  padding: 12px 14px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  color: #dce7f8;\n  font-size: 12px;\n  vertical-align: middle;\n}\n.catalog-data-table th {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(11, 23, 48, 0.78);\n}\n.catalog-data-table tr:last-child td {\n  border-bottom: 0;\n}\n.catalog-data-table tbody tr {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.catalog-data-table tbody tr:hover {\n  background: rgba(159, 232, 112, 0.04);\n  box-shadow: inset 2px 0 0 rgba(159, 232, 112, 0.65);\n}\n.catalog-data-table td > strong,\n.catalog-data-table .vaccine-table-identity strong {\n  color: #f8fbff;\n}\n.top-panel {\n  padding: 18px;\n}\n.catalog-head__icon svg,\n.catalog-info-card__icon svg {\n  width: 28px;\n  height: 28px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.section-toggle {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 14px;\n  min-height: 42px;\n  padding: 10px 14px;\n  background: rgba(7, 15, 31, 0.48);\n  color: #9fe870;\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  font-size: 12px;\n  font-weight: 900;\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.section-toggle:hover {\n  border-color: rgba(159, 232, 112, 0.36);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.section-toggle svg {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  transition: transform 160ms ease;\n}\n.section-toggle--compact {\n  width: 38px;\n  min-height: 38px;\n  padding: 0;\n}\n.section-toggle--compact svg {\n  width: 16px;\n  height: 16px;\n}\n.section-toggle__icon--collapsed {\n  transform: rotate(-90deg);\n}\n.section-collapsed-summary {\n  border: 1px dashed rgba(148, 163, 184, 0.18);\n  border-radius: 18px;\n  padding: 18px 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.74),\n      rgba(8, 18, 37, 0.68)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.06),\n      transparent 34%);\n  color: #8ea0bb;\n  font-size: 13px;\n  font-weight: 700;\n}\n.empty-box--section {\n  display: grid;\n  grid-template-columns: 40px 1fr;\n  align-items: center;\n  gap: 12px;\n}\n.empty-box--section svg {\n  width: 26px;\n  height: 26px;\n  fill: none;\n  stroke: #9fe870;\n  stroke-width: 2;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.empty-box--section strong {\n  display: block;\n  color: #f8fbff;\n  margin-bottom: 4px;\n}\n.empty-box--section p {\n  margin: 0;\n}\n.alert-record-card {\n  min-height: 360px;\n}\n.catalog-head--inline {\n  margin-bottom: 0;\n}\n.catalog-info-card--compact {\n  margin-top: 18px;\n}\n.catalog-panel {\n  overflow: hidden;\n}\n.catalog-record-card {\n  min-height: 360px;\n}\n@media (max-width: 1420px) {\n  .sanitary-card-grid {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n}\n@media (max-width: 1320px) {\n  .sanidad-top-row {\n    grid-template-columns: 1fr;\n  }\n}\n.sanidad-kpis .metric-card {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.sanidad-kpis .metric-icon {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.sanidad-kpis .metric-icon svg {\n  width: 24px;\n  height: 24px;\n}\n.sanidad-kpis .metric-card > div:last-child {\n  display: contents;\n}\n.sanidad-kpis .metric-card .label {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n}\n.sanidad-kpis .metric-card small {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.sanidad-kpis .metric-card .value {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .sanidad-kpis .metric-card {\n    grid-template-columns: 46px 1fr;\n  }\n  .sanidad-kpis .metric-card .value {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.sanidad-kpis .metric-card {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.sanidad-kpis .metric-card > div:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.sanidad-kpis .metric-card .label,\n.sanidad-kpis .metric-card small,\n.sanidad-kpis .metric-card .value {\n  grid-column: auto;\n  grid-row: auto;\n}\n.sanidad-kpis .metric-card .label {\n  margin: 0;\n  line-height: 1.2;\n}\n.sanidad-kpis .metric-card small {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.sanidad-kpis .metric-card .value {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .sanidad-kpis .metric-card {\n    grid-template-columns: 46px 1fr;\n  }\n  .sanidad-kpis .metric-card .value {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.sanidad-kpis .metric-card {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.sanidad-kpis .metric-card > div:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.sanidad-kpis .metric-icon {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.sanidad-kpis .metric-card .label {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.sanidad-kpis .metric-card small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.sanidad-kpis .metric-card .value {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid .kpi-card,\n.reproduction-kpis .kpi-card,\n.sanidad-kpis .kpi-card,\n.trace-kpis .kpi-card {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid .metric-icon,\n.reproduction-kpis .metric-icon,\n.sanidad-kpis .metric-icon,\n.trace-kpis .metric-icon {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid .metric-icon.blue,\n.reproduction-kpis .metric-icon.blue,\n.sanidad-kpis .metric-icon.blue,\n.trace-kpis .metric-icon.blue {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid .metric-icon.warning,\n.reproduction-kpis .metric-icon.warning,\n.sanidad-kpis .metric-icon.warning,\n.trace-kpis .metric-icon.warning {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid .metric-icon svg,\n.reproduction-kpis .metric-icon svg,\n.sanidad-kpis .metric-icon svg,\n.trace-kpis .metric-icon svg {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid .kpi-copy,\n.reproduction-kpis .kpi-copy,\n.sanidad-kpis .kpi-copy,\n.trace-kpis .kpi-copy {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid .kpi-copy span,\n.reproduction-kpis .kpi-copy span,\n.sanidad-kpis .kpi-copy span,\n.trace-kpis .kpi-copy span {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid .kpi-copy small,\n.reproduction-kpis .kpi-copy small,\n.sanidad-kpis .kpi-copy small,\n.trace-kpis .kpi-copy small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid .kpi-card > strong,\n.reproduction-kpis .kpi-card > strong,\n.sanidad-kpis .kpi-card > strong,\n.trace-kpis .kpi-card > strong {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-sanidad-page.component.css.map */\n"] }]
   }], null, null);
 })();
 (() => {
@@ -52959,8 +53185,8 @@ var GanaderiaSanidadPageComponent = class _GanaderiaSanidadPageComponent {
 })();
 
 // src/app/pages/ganaderia-reproduccion-page/ganaderia-reproduccion-page.component.ts
-var _c05 = () => ["raza", "ubicacionActual"];
-var _c14 = () => ["caravana", "raza", "ubicacionActual"];
+var _c05 = () => ["raza", "potreroNombre"];
+var _c14 = () => ["caravana", "raza", "potreroNombre"];
 var _c24 = () => ["rolOperativo", "documentoNumero"];
 var _c34 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
 function GanaderiaReproduccionPageComponent_div_14_Template(rf, ctx) {
@@ -53164,136 +53390,113 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_8_Template(rf, c
     \u0275\u0275property("disabled", ctx_r0.kpiOffset() === ctx_r0.maxKpiOffset());
   }
 }
-function GanaderiaReproduccionPageComponent_ng_container_16_div_37_article_1_Template(rf, ctx) {
+function GanaderiaReproduccionPageComponent_ng_container_16_div_37_tr_19_Template(rf, ctx) {
   if (rf & 1) {
     const _r5 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "article", 94)(1, "span", 95);
-    \u0275\u0275text(2);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(3, "div", 96)(4, "div", 97)(5, "div", 98);
+    \u0275\u0275elementStart(0, "tr", 95)(1, "td")(2, "div", 96)(3, "span", 97);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(6, "svg", 27);
-    \u0275\u0275element(7, "path", 33)(8, "path", 34);
+    \u0275\u0275elementStart(4, "svg", 27);
+    \u0275\u0275element(5, "path", 33)(6, "path", 34);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(9, "div")(10, "h4");
+    \u0275\u0275elementStart(7, "div")(8, "strong");
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "small");
     \u0275\u0275text(11);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(12, "p");
-    \u0275\u0275text(13);
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(14, "p", 99);
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(15, "svg", 40);
-    \u0275\u0275element(16, "path", 100)(17, "path", 101);
-    \u0275\u0275elementEnd();
-    \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(18, "span");
-    \u0275\u0275text(19);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(20, "div", 102)(21, "div", 103);
+    \u0275\u0275elementStart(12, "td")(13, "span", 98);
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(22, "svg", 40);
-    \u0275\u0275element(23, "rect", 28)(24, "path", 29);
+    \u0275\u0275elementStart(14, "svg", 40);
+    \u0275\u0275element(15, "path", 99)(16, "path", 100);
     \u0275\u0275elementEnd();
-    \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(25, "div")(26, "span");
-    \u0275\u0275text(27, "Fecha estimada");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(28, "strong");
-    \u0275\u0275text(29);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(30, "div", 103);
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(31, "svg", 40);
-    \u0275\u0275element(32, "circle", 104)(33, "path", 105);
-    \u0275\u0275elementEnd();
-    \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(34, "div")(35, "span");
-    \u0275\u0275text(36, "Dias restantes");
-    \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(37, "strong");
-    \u0275\u0275text(38);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(39, "div", 103);
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(40, "svg", 40);
-    \u0275\u0275element(41, "path", 106)(42, "path", 107);
-    \u0275\u0275elementEnd();
-    \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(43, "div")(44, "span");
-    \u0275\u0275text(45, "Nivel de riesgo");
+    \u0275\u0275text(17);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(46, "strong", 108);
-    \u0275\u0275text(47);
-    \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(48, "div", 103);
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(49, "svg", 40);
-    \u0275\u0275element(50, "path", 109)(51, "path", 110);
-    \u0275\u0275elementEnd();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(52, "div")(53, "span");
-    \u0275\u0275text(54, "Parto");
+    \u0275\u0275elementStart(18, "td")(19, "strong");
+    \u0275\u0275text(20);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(55, "strong");
-    \u0275\u0275text(56);
-    \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(57, "button", 111);
-    \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_ng_container_16_div_37_article_1_Template_button_click_57_listener() {
+    \u0275\u0275elementStart(21, "td");
+    \u0275\u0275text(22);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(23, "td")(24, "span", 101);
+    \u0275\u0275text(25);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(26, "td")(27, "strong");
+    \u0275\u0275text(28);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(29, "td")(30, "button", 102);
+    \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_ng_container_16_div_37_tr_19_Template_button_click_30_listener() {
       const alerta_r6 = \u0275\u0275restoreView(_r5).$implicit;
       const ctx_r0 = \u0275\u0275nextContext(3);
       return \u0275\u0275resetView(ctx_r0.viewAlertaDetalle(alerta_r6));
     });
-    \u0275\u0275elementStart(58, "span");
-    \u0275\u0275text(59, "Ver detalle");
+    \u0275\u0275elementStart(31, "span");
+    \u0275\u0275text(32, "Ver detalle");
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(60, "svg", 40);
-    \u0275\u0275element(61, "path", 112);
+    \u0275\u0275elementStart(33, "svg", 40);
+    \u0275\u0275element(34, "path", 103);
     \u0275\u0275elementEnd()()()();
   }
   if (rf & 2) {
     const alerta_r6 = ctx.$implicit;
     const ctx_r0 = \u0275\u0275nextContext(3);
     \u0275\u0275property("ngClass", ctx_r0.riesgoClass(alerta_r6));
-    \u0275\u0275advance();
-    \u0275\u0275property("ngClass", ctx_r0.riesgoClass(alerta_r6));
-    \u0275\u0275advance();
-    \u0275\u0275textInterpolate1("", ctx_r0.riesgoLabel(alerta_r6), " prioridad");
     \u0275\u0275advance(9);
     \u0275\u0275textInterpolate1("VACA ", alerta_r6.animalCaravana);
     \u0275\u0275advance(2);
     \u0275\u0275textInterpolate1("RP ", alerta_r6.animalCaravana, " \xB7 HBA sin registrar");
     \u0275\u0275advance(6);
-    \u0275\u0275textInterpolate1("Lote: ", ctx_r0.alertaLote(alerta_r6));
-    \u0275\u0275advance(10);
+    \u0275\u0275textInterpolate1(" ", ctx_r0.alertaLote(alerta_r6), " ");
+    \u0275\u0275advance(3);
     \u0275\u0275textInterpolate(alerta_r6.fecha);
-    \u0275\u0275advance(9);
-    \u0275\u0275textInterpolate1("", ctx_r0.diasRestantes(alerta_r6), " dias");
-    \u0275\u0275advance(8);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate1("", ctx_r0.diasRestantes(alerta_r6), " d\xEDas");
+    \u0275\u0275advance(2);
     \u0275\u0275property("ngClass", ctx_r0.riesgoClass(alerta_r6));
     \u0275\u0275advance();
     \u0275\u0275textInterpolate(ctx_r0.riesgoLabel(alerta_r6));
-    \u0275\u0275advance(9);
+    \u0275\u0275advance(3);
     \u0275\u0275textInterpolate1("", ctx_r0.alertaPartoNumber(alerta_r6), "\xB0");
   }
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_div_37_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 92);
-    \u0275\u0275template(1, GanaderiaReproduccionPageComponent_ng_container_16_div_37_article_1_Template, 62, 11, "article", 93);
+    \u0275\u0275elementStart(0, "div", 92)(1, "table", 93)(2, "thead")(3, "tr")(4, "th");
+    \u0275\u0275text(5, "Animal");
     \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "th");
+    \u0275\u0275text(7, "Lote");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "th");
+    \u0275\u0275text(9, "Fecha estimada");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "th");
+    \u0275\u0275text(11, "D\xEDas restantes");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "th");
+    \u0275\u0275text(13, "Riesgo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "th");
+    \u0275\u0275text(15, "Parto");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "th");
+    \u0275\u0275text(17, "Acci\xF3n");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(18, "tbody");
+    \u0275\u0275template(19, GanaderiaReproduccionPageComponent_ng_container_16_div_37_tr_19_Template, 35, 9, "tr", 94);
+    \u0275\u0275elementEnd()()();
   }
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
-    \u0275\u0275advance();
+    \u0275\u0275advance(19);
     \u0275\u0275property("ngForOf", ctx_r0.paginatedAlertas());
   }
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_ng_template_38_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 113);
+    \u0275\u0275elementStart(0, "div", 104);
     \u0275\u0275text(1, "Sin alertas reproductivas inmediatas.");
     \u0275\u0275elementEnd();
   }
@@ -53321,7 +53524,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_40_button_8_Temp
 function GanaderiaReproduccionPageComponent_ng_container_16_div_40_Template(rf, ctx) {
   if (rf & 1) {
     const _r7 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 114)(1, "button", 115);
+    \u0275\u0275elementStart(0, "div", 105)(1, "button", 106);
     \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_ng_container_16_div_40_Template_button_click_1_listener() {
       \u0275\u0275restoreView(_r7);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53338,8 +53541,8 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_40_Template(rf, 
     \u0275\u0275elementStart(6, "span");
     \u0275\u0275text(7);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(8, GanaderiaReproduccionPageComponent_ng_container_16_div_40_button_8_Template, 2, 3, "button", 116);
-    \u0275\u0275elementStart(9, "button", 117);
+    \u0275\u0275template(8, GanaderiaReproduccionPageComponent_ng_container_16_div_40_button_8_Template, 2, 3, "button", 107);
+    \u0275\u0275elementStart(9, "button", 108);
     \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_ng_container_16_div_40_Template_button_click_9_listener() {
       \u0275\u0275restoreView(_r7);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53368,14 +53571,14 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_40_Template(rf, 
 function GanaderiaReproduccionPageComponent_ng_container_16_div_62_Template(rf, ctx) {
   if (rf & 1) {
     const _r10 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 118)(1, "app-remote-search-select", 119);
+    \u0275\u0275elementStart(0, "div", 109)(1, "app-remote-search-select", 110);
     \u0275\u0275listener("valueChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_62_Template_app_remote_search_select_valueChange_1_listener($event) {
       \u0275\u0275restoreView(_r10);
       const ctx_r0 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r0.montaForm.update((f) => __spreadProps(__spreadValues({}, f), { vacaId: $event })));
     });
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(2, "app-remote-search-select", 120);
+    \u0275\u0275elementStart(2, "app-remote-search-select", 111);
     \u0275\u0275listener("valueChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_62_Template_app_remote_search_select_valueChange_2_listener($event) {
       \u0275\u0275restoreView(_r10);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53385,7 +53588,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_62_Template(rf, 
     \u0275\u0275elementStart(3, "label")(4, "span");
     \u0275\u0275text(5, "Fecha");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(6, "input", 121);
+    \u0275\u0275elementStart(6, "input", 112);
     \u0275\u0275listener("ngModelChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_62_Template_input_ngModelChange_6_listener($event) {
       \u0275\u0275restoreView(_r10);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53401,13 +53604,13 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_62_Template(rf, 
       const ctx_r0 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r0.montaForm.update((f) => __spreadProps(__spreadValues({}, f), { resultado: $event })));
     });
-    \u0275\u0275elementStart(11, "option", 122);
+    \u0275\u0275elementStart(11, "option", 113);
     \u0275\u0275text(12, "Pendiente");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(13, "option", 123);
+    \u0275\u0275elementStart(13, "option", 114);
     \u0275\u0275text(14, "Pre\xF1ada");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(15, "option", 124);
+    \u0275\u0275elementStart(15, "option", 115);
     \u0275\u0275text(16, "Fallida");
     \u0275\u0275elementEnd()()()();
   }
@@ -53426,7 +53629,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_62_Template(rf, 
 function GanaderiaReproduccionPageComponent_ng_container_16_div_63_Template(rf, ctx) {
   if (rf & 1) {
     const _r11 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 118)(1, "app-remote-search-select", 119);
+    \u0275\u0275elementStart(0, "div", 109)(1, "app-remote-search-select", 110);
     \u0275\u0275listener("valueChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_63_Template_app_remote_search_select_valueChange_1_listener($event) {
       \u0275\u0275restoreView(_r11);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53436,7 +53639,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_63_Template(rf, 
     \u0275\u0275elementStart(2, "label")(3, "span");
     \u0275\u0275text(4, "Fecha");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "input", 121);
+    \u0275\u0275elementStart(5, "input", 112);
     \u0275\u0275listener("ngModelChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_63_Template_input_ngModelChange_5_listener($event) {
       \u0275\u0275restoreView(_r11);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53453,7 +53656,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_63_Template(rf, 
       return \u0275\u0275resetView(ctx_r0.inseminacionForm.update((f) => __spreadProps(__spreadValues({}, f), { geneticaUsada: $event })));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(10, "app-remote-search-select", 125);
+    \u0275\u0275elementStart(10, "app-remote-search-select", 116);
     \u0275\u0275listener("valueChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_63_Template_app_remote_search_select_valueChange_10_listener($event) {
       \u0275\u0275restoreView(_r11);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53463,7 +53666,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_63_Template(rf, 
     \u0275\u0275elementStart(11, "label")(12, "span");
     \u0275\u0275text(13, "Costo");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(14, "input", 126);
+    \u0275\u0275elementStart(14, "input", 117);
     \u0275\u0275listener("ngModelChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_63_Template_input_ngModelChange_14_listener($event) {
       \u0275\u0275restoreView(_r11);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53488,7 +53691,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_63_Template(rf, 
 function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template(rf, ctx) {
   if (rf & 1) {
     const _r12 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 118)(1, "app-remote-search-select", 119);
+    \u0275\u0275elementStart(0, "div", 109)(1, "app-remote-search-select", 110);
     \u0275\u0275listener("valueChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template_app_remote_search_select_valueChange_1_listener($event) {
       \u0275\u0275restoreView(_r12);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53498,7 +53701,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template(rf, 
     \u0275\u0275elementStart(2, "label")(3, "span");
     \u0275\u0275text(4, "Diagnostico");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "input", 121);
+    \u0275\u0275elementStart(5, "input", 112);
     \u0275\u0275listener("ngModelChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template_input_ngModelChange_5_listener($event) {
       \u0275\u0275restoreView(_r12);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53514,19 +53717,19 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template(rf, 
       const ctx_r0 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r0.prenezForm.update((f) => __spreadProps(__spreadValues({}, f), { estado: $event })));
     });
-    \u0275\u0275elementStart(10, "option", 123);
+    \u0275\u0275elementStart(10, "option", 114);
     \u0275\u0275text(11, "Pre\xF1ada");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(12, "option", 127);
+    \u0275\u0275elementStart(12, "option", 118);
     \u0275\u0275text(13, "Vac\xEDa");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(14, "option", 128);
+    \u0275\u0275elementStart(14, "option", 119);
     \u0275\u0275text(15, "Control");
     \u0275\u0275elementEnd()()();
     \u0275\u0275elementStart(16, "label")(17, "span");
     \u0275\u0275text(18, "Parto estimado");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(19, "input", 121);
+    \u0275\u0275elementStart(19, "input", 112);
     \u0275\u0275listener("ngModelChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template_input_ngModelChange_19_listener($event) {
       \u0275\u0275restoreView(_r12);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53542,16 +53745,16 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template(rf, 
       const ctx_r0 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r0.prenezForm.update((f) => __spreadProps(__spreadValues({}, f), { nivelRiesgoParto: $event })));
     });
-    \u0275\u0275elementStart(24, "option", 129);
+    \u0275\u0275elementStart(24, "option", 120);
     \u0275\u0275text(25, "Bajo");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(26, "option", 130);
+    \u0275\u0275elementStart(26, "option", 121);
     \u0275\u0275text(27, "Medio");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(28, "option", 131);
+    \u0275\u0275elementStart(28, "option", 122);
     \u0275\u0275text(29, "Alto");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(30, "app-remote-search-select", 132);
+    \u0275\u0275elementStart(30, "app-remote-search-select", 123);
     \u0275\u0275listener("valueChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template_app_remote_search_select_valueChange_30_listener($event) {
       \u0275\u0275restoreView(_r12);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53578,14 +53781,14 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template(rf, 
 function GanaderiaReproduccionPageComponent_ng_container_16_div_65_Template(rf, ctx) {
   if (rf & 1) {
     const _r13 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 118)(1, "app-remote-search-select", 119);
+    \u0275\u0275elementStart(0, "div", 109)(1, "app-remote-search-select", 110);
     \u0275\u0275listener("valueChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_65_Template_app_remote_search_select_valueChange_1_listener($event) {
       \u0275\u0275restoreView(_r13);
       const ctx_r0 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r0.partoForm.update((f) => __spreadProps(__spreadValues({}, f), { madreId: $event })));
     });
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(2, "app-remote-search-select", 133);
+    \u0275\u0275elementStart(2, "app-remote-search-select", 124);
     \u0275\u0275listener("valueChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_65_Template_app_remote_search_select_valueChange_2_listener($event) {
       \u0275\u0275restoreView(_r13);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53595,7 +53798,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_65_Template(rf, 
     \u0275\u0275elementStart(3, "label")(4, "span");
     \u0275\u0275text(5, "Fecha");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(6, "input", 121);
+    \u0275\u0275elementStart(6, "input", 112);
     \u0275\u0275listener("ngModelChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_65_Template_input_ngModelChange_6_listener($event) {
       \u0275\u0275restoreView(_r13);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53611,13 +53814,13 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_65_Template(rf, 
       const ctx_r0 = \u0275\u0275nextContext(2);
       return \u0275\u0275resetView(ctx_r0.partoForm.update((f) => __spreadProps(__spreadValues({}, f), { viabilidadTernero: $event })));
     });
-    \u0275\u0275elementStart(11, "option", 134);
+    \u0275\u0275elementStart(11, "option", 125);
     \u0275\u0275text(12, "Viable");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(13, "option", 135);
+    \u0275\u0275elementStart(13, "option", 126);
     \u0275\u0275text(14, "No viable");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(15, "option", 136);
+    \u0275\u0275elementStart(15, "option", 127);
     \u0275\u0275text(16, "Observacion");
     \u0275\u0275elementEnd()()()();
   }
@@ -53636,7 +53839,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_65_Template(rf, 
 function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template(rf, ctx) {
   if (rf & 1) {
     const _r14 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 118)(1, "app-remote-search-select", 61);
+    \u0275\u0275elementStart(0, "div", 109)(1, "app-remote-search-select", 61);
     \u0275\u0275listener("valueChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template_app_remote_search_select_valueChange_1_listener($event) {
       \u0275\u0275restoreView(_r14);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53646,7 +53849,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template(rf, 
     \u0275\u0275elementStart(2, "label")(3, "span");
     \u0275\u0275text(4, "Fecha");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(5, "input", 121);
+    \u0275\u0275elementStart(5, "input", 112);
     \u0275\u0275listener("ngModelChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template_input_ngModelChange_5_listener($event) {
       \u0275\u0275restoreView(_r14);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53656,7 +53859,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template(rf, 
     \u0275\u0275elementStart(6, "label")(7, "span");
     \u0275\u0275text(8, "EPD");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(9, "input", 126);
+    \u0275\u0275elementStart(9, "input", 117);
     \u0275\u0275listener("ngModelChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template_input_ngModelChange_9_listener($event) {
       \u0275\u0275restoreView(_r14);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53666,7 +53869,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template(rf, 
     \u0275\u0275elementStart(10, "label")(11, "span");
     \u0275\u0275text(12, "DEP");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(13, "input", 126);
+    \u0275\u0275elementStart(13, "input", 117);
     \u0275\u0275listener("ngModelChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template_input_ngModelChange_13_listener($event) {
       \u0275\u0275restoreView(_r14);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53676,7 +53879,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template(rf, 
     \u0275\u0275elementStart(14, "label")(15, "span");
     \u0275\u0275text(16, "Indice productivo");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(17, "input", 126);
+    \u0275\u0275elementStart(17, "input", 117);
     \u0275\u0275listener("ngModelChange", function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template_input_ngModelChange_17_listener($event) {
       \u0275\u0275restoreView(_r14);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -53716,8 +53919,8 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_88_ng_template_3
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_div_88_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 137)(1, "div", 138);
-    \u0275\u0275template(2, GanaderiaReproduccionPageComponent_ng_container_16_div_88__svg_svg_2_Template, 3, 0, "svg", 139)(3, GanaderiaReproduccionPageComponent_ng_container_16_div_88_ng_template_3_Template, 3, 0, "ng-template", null, 2, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementStart(0, "div", 128)(1, "div", 129);
+    \u0275\u0275template(2, GanaderiaReproduccionPageComponent_ng_container_16_div_88__svg_svg_2_Template, 3, 0, "svg", 130)(3, GanaderiaReproduccionPageComponent_ng_container_16_div_88_ng_template_3_Template, 3, 0, "ng-template", null, 2, \u0275\u0275templateRefExtractor);
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(5, "div")(6, "span");
     \u0275\u0275text(7, "Animal");
@@ -53780,8 +53983,8 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_19_ng
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_19_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "article", 150)(1, "div", 143);
-    \u0275\u0275template(2, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_19__svg_svg_2_Template, 3, 0, "svg", 139)(3, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_19_ng_template_3_Template, 3, 0, "ng-template", null, 4, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementStart(0, "article", 141)(1, "div", 134);
+    \u0275\u0275template(2, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_19__svg_svg_2_Template, 3, 0, "svg", 130)(3, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_19_ng_template_3_Template, 3, 0, "ng-template", null, 4, \u0275\u0275templateRefExtractor);
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(5, "div")(6, "strong");
     \u0275\u0275text(7);
@@ -53822,8 +54025,8 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_26_ng
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_26_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "article", 150)(1, "div", 143);
-    \u0275\u0275template(2, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_26__svg_svg_2_Template, 3, 0, "svg", 139)(3, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_26_ng_template_3_Template, 3, 0, "ng-template", null, 5, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementStart(0, "article", 141)(1, "div", 134);
+    \u0275\u0275template(2, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_26__svg_svg_2_Template, 3, 0, "svg", 130)(3, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_26_ng_template_3_Template, 3, 0, "ng-template", null, 5, \u0275\u0275templateRefExtractor);
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(5, "div")(6, "strong");
     \u0275\u0275text(7);
@@ -53864,8 +54067,8 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_33_ng
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_33_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "article", 150)(1, "div", 143);
-    \u0275\u0275template(2, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_33__svg_svg_2_Template, 3, 0, "svg", 139)(3, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_33_ng_template_3_Template, 3, 0, "ng-template", null, 6, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementStart(0, "article", 141)(1, "div", 134);
+    \u0275\u0275template(2, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_33__svg_svg_2_Template, 3, 0, "svg", 130)(3, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_33_ng_template_3_Template, 3, 0, "ng-template", null, 6, \u0275\u0275templateRefExtractor);
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(5, "div")(6, "strong");
     \u0275\u0275text(7);
@@ -53890,8 +54093,8 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_33_Te
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_div_91_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 140)(1, "div", 141)(2, "article", 142)(3, "div", 143);
-    \u0275\u0275template(4, GanaderiaReproduccionPageComponent_ng_container_16_div_91__svg_svg_4_Template, 3, 0, "svg", 139)(5, GanaderiaReproduccionPageComponent_ng_container_16_div_91_ng_template_5_Template, 3, 0, "ng-template", null, 3, \u0275\u0275templateRefExtractor);
+    \u0275\u0275elementStart(0, "div", 131)(1, "div", 132)(2, "article", 133)(3, "div", 134);
+    \u0275\u0275template(4, GanaderiaReproduccionPageComponent_ng_container_16_div_91__svg_svg_4_Template, 3, 0, "svg", 130)(5, GanaderiaReproduccionPageComponent_ng_container_16_div_91_ng_template_5_Template, 3, 0, "ng-template", null, 3, \u0275\u0275templateRefExtractor);
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(7, "div")(8, "strong");
     \u0275\u0275text(9);
@@ -53899,32 +54102,32 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_91_Template(rf, 
     \u0275\u0275elementStart(10, "span");
     \u0275\u0275text(11);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275element(12, "div", 144);
-    \u0275\u0275elementStart(13, "div", 145)(14, "p", 146);
+    \u0275\u0275element(12, "div", 135);
+    \u0275\u0275elementStart(13, "div", 136)(14, "p", 137);
     \u0275\u0275text(15, "1 Generacion ");
     \u0275\u0275elementStart(16, "span");
     \u0275\u0275text(17, "Padres");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(18, "div", 147);
-    \u0275\u0275template(19, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_19_Template, 10, 6, "article", 148);
+    \u0275\u0275elementStart(18, "div", 138);
+    \u0275\u0275template(19, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_19_Template, 10, 6, "article", 139);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(20, "div", 145)(21, "p", 146);
+    \u0275\u0275elementStart(20, "div", 136)(21, "p", 137);
     \u0275\u0275text(22, "2 Generacion ");
     \u0275\u0275elementStart(23, "span");
     \u0275\u0275text(24, "Abuelos");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(25, "div", 147);
-    \u0275\u0275template(26, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_26_Template, 10, 6, "article", 148);
+    \u0275\u0275elementStart(25, "div", 138);
+    \u0275\u0275template(26, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_26_Template, 10, 6, "article", 139);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(27, "div", 145)(28, "p", 146);
+    \u0275\u0275elementStart(27, "div", 136)(28, "p", 137);
     \u0275\u0275text(29, "3 Generacion ");
     \u0275\u0275elementStart(30, "span");
     \u0275\u0275text(31, "Bisabuelos");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(32, "div", 147);
-    \u0275\u0275template(33, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_33_Template, 10, 6, "article", 148);
+    \u0275\u0275elementStart(32, "div", 138);
+    \u0275\u0275template(33, GanaderiaReproduccionPageComponent_ng_container_16_div_91_article_33_Template, 10, 6, "article", 139);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(34, "div", 149)(35, "span");
+    \u0275\u0275elementStart(34, "div", 140)(35, "span");
     \u0275\u0275text(36, "Info basada en animales registrados en el sistema.");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(37, "span");
@@ -53955,7 +54158,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_91_Template(rf, 
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_div_92_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 113);
+    \u0275\u0275elementStart(0, "div", 104);
     \u0275\u0275text(1, "Selecciona un animal para visualizar genealogia.");
     \u0275\u0275elementEnd();
   }
@@ -53963,10 +54166,10 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_92_Template(rf, 
 function GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Template(rf, ctx) {
   if (rf & 1) {
     const _r25 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "article", 153)(1, "span", 95);
+    \u0275\u0275elementStart(0, "article", 144)(1, "span", 101);
     \u0275\u0275text(2);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(3, "div", 154)(4, "div", 155)(5, "div", 156);
+    \u0275\u0275elementStart(3, "div", 145)(4, "div", 146)(5, "div", 147);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(6, "svg", 27);
     \u0275\u0275element(7, "circle", 81)(8, "path", 82);
@@ -53978,13 +54181,13 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Te
     \u0275\u0275elementStart(12, "strong");
     \u0275\u0275text(13);
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(14, "div", 157);
+    \u0275\u0275elementStart(14, "div", 148);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(15, "svg", 27);
-    \u0275\u0275element(16, "path", 158);
+    \u0275\u0275element(16, "path", 149);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(17, "div", 155)(18, "div", 159);
+    \u0275\u0275elementStart(17, "div", 146)(18, "div", 150);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(19, "svg", 27);
     \u0275\u0275element(20, "circle", 75)(21, "path", 76);
@@ -53996,7 +54199,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Te
     \u0275\u0275elementStart(25, "strong");
     \u0275\u0275text(26);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(27, "div", 160)(28, "div", 103);
+    \u0275\u0275elementStart(27, "div", 151)(28, "div", 152);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(29, "svg", 40);
     \u0275\u0275element(30, "path", 83)(31, "path", 84);
@@ -54008,10 +54211,10 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Te
     \u0275\u0275elementStart(35, "strong");
     \u0275\u0275text(36);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(37, "div", 103);
+    \u0275\u0275elementStart(37, "div", 152);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(38, "svg", 40);
-    \u0275\u0275element(39, "path", 161)(40, "path", 162);
+    \u0275\u0275element(39, "path", 153)(40, "path", 154);
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceHTML();
     \u0275\u0275elementStart(41, "div")(42, "span");
@@ -54020,10 +54223,10 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Te
     \u0275\u0275elementStart(44, "strong");
     \u0275\u0275text(45, "Validado");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(46, "div", 103);
+    \u0275\u0275elementStart(46, "div", 152);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(47, "svg", 40);
-    \u0275\u0275element(48, "path", 163)(49, "path", 164);
+    \u0275\u0275element(48, "path", 155)(49, "path", 156);
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceHTML();
     \u0275\u0275elementStart(50, "div")(51, "span");
@@ -54032,10 +54235,10 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Te
     \u0275\u0275elementStart(53, "strong");
     \u0275\u0275text(54, "Heuristico");
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(55, "p", 165);
+    \u0275\u0275elementStart(55, "p", 157);
     \u0275\u0275text(56);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(57, "button", 111);
+    \u0275\u0275elementStart(57, "button", 158);
     \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Template_button_click_57_listener() {
       const item_r26 = \u0275\u0275restoreView(_r25).$implicit;
       const ctx_r0 = \u0275\u0275nextContext(3);
@@ -54046,7 +54249,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Te
     \u0275\u0275elementEnd();
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(60, "svg", 40);
-    \u0275\u0275element(61, "path", 112);
+    \u0275\u0275element(61, "path", 103);
     \u0275\u0275elementEnd()()();
   }
   if (rf & 2) {
@@ -54069,8 +54272,8 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Te
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_div_122_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 151);
-    \u0275\u0275template(1, GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Template, 62, 7, "article", 152);
+    \u0275\u0275elementStart(0, "div", 142);
+    \u0275\u0275template(1, GanaderiaReproduccionPageComponent_ng_container_16_div_122_article_1_Template, 62, 7, "article", 143);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -54081,7 +54284,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_122_Template(rf,
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_ng_template_123_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 113);
+    \u0275\u0275elementStart(0, "div", 104);
     \u0275\u0275text(1, "Sin recomendaciones disponibles.");
     \u0275\u0275elementEnd();
   }
@@ -54109,7 +54312,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_125_button_8_Tem
 function GanaderiaReproduccionPageComponent_ng_container_16_div_125_Template(rf, ctx) {
   if (rf & 1) {
     const _r27 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 114)(1, "button", 166);
+    \u0275\u0275elementStart(0, "div", 105)(1, "button", 159);
     \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_ng_container_16_div_125_Template_button_click_1_listener() {
       \u0275\u0275restoreView(_r27);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -54126,8 +54329,8 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_125_Template(rf,
     \u0275\u0275elementStart(6, "span");
     \u0275\u0275text(7);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(8, GanaderiaReproduccionPageComponent_ng_container_16_div_125_button_8_Template, 2, 3, "button", 116);
-    \u0275\u0275elementStart(9, "button", 167);
+    \u0275\u0275template(8, GanaderiaReproduccionPageComponent_ng_container_16_div_125_button_8_Template, 2, 3, "button", 107);
+    \u0275\u0275elementStart(9, "button", 160);
     \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_ng_container_16_div_125_Template_button_click_9_listener() {
       \u0275\u0275restoreView(_r27);
       const ctx_r0 = \u0275\u0275nextContext(2);
@@ -54191,7 +54394,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_Template(rf, ctx) {
     \u0275\u0275elementStart(35, "strong");
     \u0275\u0275text(36);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275template(37, GanaderiaReproduccionPageComponent_ng_container_16_div_37_Template, 2, 1, "div", 37)(38, GanaderiaReproduccionPageComponent_ng_container_16_ng_template_38_Template, 2, 0, "ng-template", null, 0, \u0275\u0275templateRefExtractor)(40, GanaderiaReproduccionPageComponent_ng_container_16_div_40_Template, 14, 5, "div", 38);
+    \u0275\u0275template(37, GanaderiaReproduccionPageComponent_ng_container_16_div_37_Template, 20, 1, "div", 37)(38, GanaderiaReproduccionPageComponent_ng_container_16_ng_template_38_Template, 2, 0, "ng-template", null, 0, \u0275\u0275templateRefExtractor)(40, GanaderiaReproduccionPageComponent_ng_container_16_div_40_Template, 14, 5, "div", 38);
     \u0275\u0275elementStart(41, "div", 39);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(42, "svg", 40);
@@ -54401,7 +54604,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_ng_container_81_Templa
 }
 function GanaderiaReproduccionPageComponent_div_17_div_13_div_188_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 202)(1, "span");
+    \u0275\u0275elementStart(0, "div", 196)(1, "span");
     \u0275\u0275text(2);
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(3, "strong");
@@ -54433,14 +54636,14 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_div_188_Template(rf, c
 }
 function GanaderiaReproduccionPageComponent_div_17_div_13_div_189_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 203);
+    \u0275\u0275elementStart(0, "div", 197);
     \u0275\u0275text(1, "Sin eventos asociados a esta vaca.");
     \u0275\u0275elementEnd();
   }
 }
 function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 180)(1, "aside", 181)(2, "div", 182);
+    \u0275\u0275elementStart(0, "div", 173)(1, "aside", 174)(2, "div", 175);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(3, "svg", 27);
     \u0275\u0275element(4, "path", 33)(5, "path", 34);
@@ -54449,13 +54652,13 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(6, "h3");
     \u0275\u0275text(7);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(8, "div", 183)(9, "span");
+    \u0275\u0275elementStart(8, "div", 176)(9, "span");
     \u0275\u0275text(10);
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(11, "span");
     \u0275\u0275text(12, "HBA pendiente");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(13, "dl", 184)(14, "div")(15, "dt");
+    \u0275\u0275elementStart(13, "dl", 177)(14, "div")(15, "dt");
     \u0275\u0275text(16, "Raza");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(17, "dd");
@@ -54476,7 +54679,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(29, "div")(30, "dt");
     \u0275\u0275text(31, "Estado reproductivo");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(32, "dd")(33, "span", 185);
+    \u0275\u0275elementStart(32, "dd")(33, "span", 178);
     \u0275\u0275text(34);
     \u0275\u0275elementEnd()()();
     \u0275\u0275elementStart(35, "div")(36, "dt");
@@ -54485,7 +54688,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(38, "dd");
     \u0275\u0275text(39);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(40, "section", 186)(41, "div", 187)(42, "article", 188)(43, "span", 189);
+    \u0275\u0275elementStart(40, "section", 179)(41, "div", 180)(42, "article", 181)(43, "span", 182);
     \u0275\u0275text(44, "Proximo parto");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(45, "strong");
@@ -54494,7 +54697,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(47, "small");
     \u0275\u0275text(48, "Fecha estimada");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(49, "div", 190)(50, "div")(51, "span");
+    \u0275\u0275elementStart(49, "div", 183)(50, "div")(51, "span");
     \u0275\u0275text(52, "Dias restantes");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(53, "b");
@@ -54503,7 +54706,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(55, "div")(56, "span");
     \u0275\u0275text(57, "Nivel de riesgo");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(58, "b", 108);
+    \u0275\u0275elementStart(58, "b", 184);
     \u0275\u0275text(59);
     \u0275\u0275elementEnd()();
     \u0275\u0275elementStart(60, "div")(61, "span");
@@ -54512,7 +54715,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(63, "b");
     \u0275\u0275text(64);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(65, "article", 191)(66, "div")(67, "span");
+    \u0275\u0275elementStart(65, "article", 185)(66, "div")(67, "span");
     \u0275\u0275text(68, "Ultimo servicio");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(69, "strong");
@@ -54537,7 +54740,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(85, "strong");
     \u0275\u0275text(86);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(87, "div", 192)(88, "span", 193);
+    \u0275\u0275elementStart(87, "div", 186)(88, "span", 187);
     \u0275\u0275text(89, "Informacion general");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(90, "span");
@@ -54549,7 +54752,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(94, "span");
     \u0275\u0275text(95, "Eventos");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(96, "div", 194)(97, "article", 195)(98, "h4");
+    \u0275\u0275elementStart(96, "div", 188)(97, "article", 189)(98, "h4");
     \u0275\u0275text(99, "Informacion general");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(100, "dl")(101, "div")(102, "dt");
@@ -54594,7 +54797,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(134, "dd");
     \u0275\u0275text(135);
     \u0275\u0275elementEnd()()()();
-    \u0275\u0275elementStart(136, "article", 195)(137, "h4");
+    \u0275\u0275elementStart(136, "article", 189)(137, "h4");
     \u0275\u0275text(138, "Resumen reproductivo");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(139, "dl")(140, "div")(141, "dt");
@@ -54633,13 +54836,13 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(168, "dd");
     \u0275\u0275text(169);
     \u0275\u0275elementEnd()()()()();
-    \u0275\u0275elementStart(170, "article", 196)(171, "div", 197)(172, "h4");
+    \u0275\u0275elementStart(170, "article", 190)(171, "div", 191)(172, "h4");
     \u0275\u0275text(173, "Seguimiento de eventos");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(174, "span");
     \u0275\u0275text(175);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(176, "div", 198)(177, "div", 199)(178, "span");
+    \u0275\u0275elementStart(176, "div", 192)(177, "div", 193)(178, "span");
     \u0275\u0275text(179, "Fecha");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(180, "span");
@@ -54654,7 +54857,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275elementStart(186, "span");
     \u0275\u0275text(187, "Detalle");
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(188, GanaderiaReproduccionPageComponent_div_17_div_13_div_188_Template, 11, 5, "div", 200)(189, GanaderiaReproduccionPageComponent_div_17_div_13_div_189_Template, 2, 0, "div", 201);
+    \u0275\u0275template(188, GanaderiaReproduccionPageComponent_div_17_div_13_div_188_Template, 11, 5, "div", 194)(189, GanaderiaReproduccionPageComponent_div_17_div_13_div_189_Template, 2, 0, "div", 195);
     \u0275\u0275elementEnd()()()();
   }
   if (rf & 2) {
@@ -54698,7 +54901,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275advance();
     \u0275\u0275property("ngIf", animal_r34.pesoActualKg);
     \u0275\u0275advance(5);
-    \u0275\u0275textInterpolate(animal_r34.ubicacionActual || "Sin potrero");
+    \u0275\u0275textInterpolate(animal_r34.potreroNombre || "Sin potrero");
     \u0275\u0275advance(19);
     \u0275\u0275textInterpolate(animal_r34.raza || "Sin dato");
     \u0275\u0275advance(5);
@@ -54710,7 +54913,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
     \u0275\u0275advance(5);
     \u0275\u0275textInterpolate(animal_r34.padreCaravana || "Sin dato");
     \u0275\u0275advance(5);
-    \u0275\u0275textInterpolate(animal_r34.ubicacionActual || "Sin dato");
+    \u0275\u0275textInterpolate(animal_r34.potreroNombre || "Sin dato");
     \u0275\u0275advance(5);
     \u0275\u0275textInterpolate(animal_r34.observaciones || "Sin observaciones");
     \u0275\u0275advance(9);
@@ -54734,7 +54937,7 @@ function GanaderiaReproduccionPageComponent_div_17_div_13_Template(rf, ctx) {
 function GanaderiaReproduccionPageComponent_div_17_Template(rf, ctx) {
   if (rf & 1) {
     const _r32 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 168);
+    \u0275\u0275elementStart(0, "div", 161);
     \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_div_17_Template_div_click_0_listener() {
       \u0275\u0275restoreView(_r32);
       const ctx_r0 = \u0275\u0275nextContext();
@@ -54744,20 +54947,20 @@ function GanaderiaReproduccionPageComponent_div_17_Template(rf, ctx) {
       const ctx_r0 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r0.closeAlertaDetalle());
     }, \u0275\u0275resolveDocument);
-    \u0275\u0275elementStart(1, "section", 169);
+    \u0275\u0275elementStart(1, "section", 162);
     \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_div_17_Template_section_click_1_listener($event) {
       return $event.stopPropagation();
     });
-    \u0275\u0275elementStart(2, "header", 170)(3, "div", 171)(4, "span", 172);
+    \u0275\u0275elementStart(2, "header", 163)(3, "div", 164)(4, "span", 165);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(5, "svg", 27);
-    \u0275\u0275element(6, "path", 173)(7, "path", 174);
+    \u0275\u0275element(6, "path", 166)(7, "path", 167);
     \u0275\u0275elementEnd()();
     \u0275\u0275namespaceHTML();
     \u0275\u0275elementStart(8, "strong");
     \u0275\u0275text(9, "Detalle de la vaca");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(10, "button", 175);
+    \u0275\u0275elementStart(10, "button", 168);
     \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_div_17_Template_button_click_10_listener() {
       \u0275\u0275restoreView(_r32);
       const ctx_r0 = \u0275\u0275nextContext();
@@ -54765,14 +54968,14 @@ function GanaderiaReproduccionPageComponent_div_17_Template(rf, ctx) {
     });
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(11, "svg", 40);
-    \u0275\u0275element(12, "path", 176);
+    \u0275\u0275element(12, "path", 169);
     \u0275\u0275elementEnd()()();
-    \u0275\u0275template(13, GanaderiaReproduccionPageComponent_div_17_div_13_Template, 190, 32, "div", 177);
+    \u0275\u0275template(13, GanaderiaReproduccionPageComponent_div_17_div_13_Template, 190, 32, "div", 170);
     \u0275\u0275namespaceHTML();
-    \u0275\u0275elementStart(14, "footer", 178)(15, "span");
+    \u0275\u0275elementStart(14, "footer", 171)(15, "span");
     \u0275\u0275text(16);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(17, "button", 179);
+    \u0275\u0275elementStart(17, "button", 172);
     \u0275\u0275listener("click", function GanaderiaReproduccionPageComponent_div_17_Template_button_click_17_listener() {
       \u0275\u0275restoreView(_r32);
       const ctx_r0 = \u0275\u0275nextContext();
@@ -55151,7 +55354,7 @@ var GanaderiaReproduccionPageComponent = class _GanaderiaReproduccionPageCompone
     this.selectedAlertDetail.set(null);
   }
   alertaLote(alerta) {
-    return this.animales().find((animal) => animal.id === alerta.animalId)?.ubicacionActual || "Sin lote asignado";
+    return this.animales().find((animal) => animal.id === alerta.animalId)?.potreroNombre || "Sin potrero asignado";
   }
   selectedAlertRiskLabel() {
     const risk = this.selectedAlertControl()?.nivelRiesgoParto || this.selectedAlert()?.nivelRiesgoParto || this.selectedAlert()?.prioridad || "MEDIO";
@@ -55333,7 +55536,7 @@ var GanaderiaReproduccionPageComponent = class _GanaderiaReproduccionPageCompone
         return ctx.onResize();
       }, \u0275\u0275resolveWindow);
     }
-  }, decls: 18, vars: 4, consts: [["noAlerts", ""], ["noRecommendations", ""], ["selectedFemaleIcon", ""], ["rootFemaleIcon", ""], ["femaleNodeIcon1", ""], ["femaleNodeIcon2", ""], ["femaleNodeIcon3", ""], [1, "page"], [1, "reproduction-head"], [1, "eyebrow"], ["type", "button", 1, "btn-secondary", "reproduction-action", 3, "click"], ["viewBox", "0 0 24 24"], ["d", "M20 12a8 8 0 1 1-2.3-5.7"], ["d", "M20 4v6h-6"], ["class", "error-box", 4, "ngIf"], ["class", "card empty-box", 4, "ngIf"], [4, "ngIf"], ["class", "detail-overlay", 3, "click", "keydown.escape", 4, "ngIf"], [1, "error-box"], [1, "card", "empty-box"], [1, "stats-grid", "reproduction-kpis"], ["class", "kpi-card", 4, "ngIf"], ["class", "kpi-carousel", 4, "ngIf"], [1, "birth-alerts"], [1, "birth-alerts__header"], [1, "birth-alerts__title"], ["aria-hidden", "true", 1, "birth-alerts__icon"], ["viewBox", "0 0 24 24", "role", "img"], ["x", "4", "y", "5", "width", "16", "height", "15", "rx", "3"], ["d", "M8 3v4m8-4v4M4 10h16"], ["d", "M8 15h3l2-3 3 5 2-3"], [1, "birth-alerts__metrics"], ["aria-hidden", "true", 1, "birth-alerts__metric-icon"], ["d", "M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z"], ["d", "M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4"], [1, "birth-metric", "birth-metric--green"], [1, "birth-metric", "birth-metric--orange"], ["class", "birth-alerts__grid", 4, "ngIf", "ngIfElse"], ["class", "birth-pagination", 4, "ngIf"], [1, "birth-alerts__footer"], ["viewBox", "0 0 24 24", "aria-hidden", "true"], ["cx", "12", "cy", "12", "r", "9"], ["d", "M12 10v6m0-9h.01"], [1, "layout"], [1, "card", "panel"], [1, "tabs"], ["type", "button", 3, "click"], ["class", "form-grid", 4, "ngIf"], [1, "textarea-field"], [3, "ngModelChange", "ngModel"], ["type", "button", 1, "btn-primary", 3, "click", "disabled"], [1, "genealogy-card"], [1, "genealogy-head"], [1, "genealogy-title"], ["aria-hidden", "true", 1, "band-icon", "band-icon--tree"], ["d", "M12 3v4m0 0H7.5A2.5 2.5 0 0 0 5 9.5V12m7-5h4.5A2.5 2.5 0 0 1 19 9.5V12M5 12v2.2m14-2.2v2.2M12 7v7.2"], ["cx", "5", "cy", "17", "r", "2.4"], ["cx", "12", "cy", "17", "r", "2.4"], ["cx", "19", "cy", "17", "r", "2.4"], ["class", "genealogy-selected", 4, "ngIf"], [1, "form-grid", "one", "genealogy-selector"], ["label", "Animal", "placeholder", "Buscar animal por caravana", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["class", "genealogy-tree", 4, "ngIf"], ["class", "empty-box premium-empty", 4, "ngIf"], [1, "cross-panel"], ["d", "M6 7c0-2 1.5-3.5 3.5-3.5S13 5 13 7s-1.5 3.5-3.5 3.5S6 9 6 7Z"], ["d", "M11 11.5c1.5-1 3.5-1 5 0 2 1.3 2.7 4 1.4 6L16 20l-2.2-1.2"], ["d", "M4 20c.4-3.8 2.5-6.2 5.5-6.2s5.1 2.4 5.5 6.2"], [1, "birth-alerts__metrics", "cross-panel__metrics"], ["d", "M5 19c1.6-5.2 4.8-8 9.5-8H20"], ["d", "M16 7h4v4"], ["d", "M4 12h4m-2-2v4"], ["class", "cross-grid", 4, "ngIf", "ngIfElse"], [1, "kpi-card"], [1, "metric-icon"], ["cx", "10", "cy", "14", "r", "5"], ["d", "M14 10l6-6m0 0h-5m5 0v5"], [1, "kpi-copy"], ["d", "M9 3h6v4H9z"], ["d", "M8 7h8v13H8z"], ["d", "M10 12h4M12 10v4"], ["cx", "12", "cy", "9", "r", "5"], ["d", "M12 14v7m-4-3.5h8"], ["d", "M4 16 9 9l4 4 7-9"], ["d", "M14 4h6v6"], ["d", "M5 12h14"], ["d", "M12 5v14"], [1, "kpi-carousel"], ["type", "button", "aria-label", "KPIs anteriores", 3, "click", "disabled"], ["d", "m15 18-6-6 6-6"], ["type", "button", "aria-label", "KPIs siguientes", 3, "click", "disabled"], ["d", "m9 18 6-6-6-6"], [1, "birth-alerts__grid"], ["class", "birth-card", 3, "ngClass", 4, "ngFor", "ngForOf"], [1, "birth-card", 3, "ngClass"], [1, "risk-badge", 3, "ngClass"], [1, "birth-card__content"], [1, "birth-card__top"], ["aria-hidden", "true", 1, "birth-card__avatar"], [1, "birth-card__lot"], ["d", "M4 6.5 9 4l6 2.5 5-2.5v13.5L15 20l-6-2.5L4 20V6.5Z"], ["d", "M9 4v13.5M15 6.5V20"], [1, "birth-card__metrics"], [1, "birth-data"], ["cx", "12", "cy", "12", "r", "8"], ["d", "M12 8v5l3 2"], ["d", "M12 3 3.5 18h17L12 3Z"], ["d", "M12 9v4m0 3h.01"], [1, "inline-risk", 3, "ngClass"], ["d", "M8 19V7l4-3 4 3v12"], ["d", "M6 19h12M10 11h4"], ["type", "button", 1, "birth-card__action", 3, "click"], ["d", "M5 12h14m-6-6 6 6-6 6"], [1, "empty-box", "premium-empty"], [1, "birth-pagination"], ["type", "button", "aria-label", "Alertas anteriores", 1, "carousel-arrow", 3, "click", "disabled"], ["type", "button", 3, "active", "click", 4, "ngFor", "ngForOf"], ["type", "button", "aria-label", "Alertas siguientes", 1, "carousel-arrow", 3, "click", "disabled"], [1, "form-grid"], ["label", "Vaca", "placeholder", "Buscar vaca por caravana", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "allowedValues", "value"], ["label", "Toro", "placeholder", "Buscar toro por caravana", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "allowedValues", "value"], ["type", "date", 3, "ngModelChange", "ngModel"], ["value", "PENDIENTE"], ["value", "PRENADA"], ["value", "FALLIDA"], ["label", "Tecnico", "placeholder", "Buscar usuario tecnico", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["type", "number", 3, "ngModelChange", "ngModel"], ["value", "VACIA"], ["value", "CONTROL"], ["value", "BAJO"], ["value", "MEDIO"], ["value", "ALTO"], ["label", "Veterinario", "placeholder", "Buscar veterinario habilitado", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["label", "Ternero", "placeholder", "Buscar ternero por caravana", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["value", "VIABLE"], ["value", "NO_VIABLE"], ["value", "OBSERVACION"], [1, "genealogy-selected"], ["aria-hidden", "true", 1, "animal-icon"], ["viewBox", "0 0 24 24", "role", "img", 4, "ngIf", "ngIfElse"], [1, "genealogy-tree"], [1, "genealogy-row", "genealogy-row--root"], [1, "pedigree-node", "pedigree-node--main"], ["aria-hidden", "true", 1, "pedigree-icon"], [1, "genealogy-connector"], [1, "genealogy-row"], [1, "generation-label"], [1, "generation-grid"], ["class", "pedigree-node", 4, "ngFor", "ngForOf"], [1, "genealogy-foot"], [1, "pedigree-node"], [1, "cross-grid"], ["class", "cross-card", 3, "ngClass", 4, "ngFor", "ngForOf"], [1, "cross-card", 3, "ngClass"], [1, "cross-card__pair"], [1, "cross-animal"], ["aria-hidden", "true", 1, "cross-animal__icon"], ["aria-hidden", "true", 1, "cross-link"], ["d", "M7 12h10m-4-4 4 4-4 4"], ["aria-hidden", "true", 1, "cross-animal__icon", "cross-animal__icon--male"], [1, "cross-card__metrics"], ["d", "M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z"], ["d", "m9 12 2 2 4-5"], ["d", "M6 18c0-4 2.7-7 6-7s6 3 6 7"], ["d", "M9 8a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z"], [1, "cross-card__note"], ["type", "button", "aria-label", "Recomendaciones anteriores", 1, "carousel-arrow", 3, "click", "disabled"], ["type", "button", "aria-label", "Recomendaciones siguientes", 1, "carousel-arrow", 3, "click", "disabled"], [1, "detail-overlay", 3, "click", "keydown.escape"], ["role", "dialog", "aria-modal", "true", 1, "cow-detail-modal", 3, "click"], [1, "cow-detail-modal__header"], [1, "cow-detail-modal__eyebrow"], ["aria-hidden", "true", 1, "birth-alerts__icon", "detail-title-icon"], ["d", "M5 5h14v14H5z"], ["d", "m8 12 2.5 2.5L16 9"], ["type", "button", "aria-label", "Cerrar detalle", 1, "detail-close", 3, "click"], ["d", "M6 6l12 12M18 6 6 18"], ["class", "cow-detail-modal__body", 4, "ngIf"], [1, "cow-detail-modal__footer"], ["type", "button", 1, "btn-secondary", 3, "click"], [1, "cow-detail-modal__body"], [1, "cow-profile-card"], ["aria-hidden", "true", 1, "cow-profile-card__avatar"], [1, "cow-profile-card__badges"], [1, "cow-profile-list"], [1, "inline-risk", "risk-low"], [1, "cow-detail-main"], [1, "cow-summary-grid"], [1, "cow-summary-card", "cow-summary-card--large"], [1, "summary-label"], [1, "summary-split"], [1, "cow-summary-card"], [1, "detail-tabs"], [1, "active"], [1, "detail-content-grid"], [1, "detail-info-card"], [1, "events-card"], [1, "events-card__head"], [1, "events-table"], [1, "events-table__row", "events-table__row--head"], ["class", "events-table__row", 4, "ngFor", "ngForOf"], ["class", "events-table__empty", 4, "ngIf"], [1, "events-table__row"], [1, "events-table__empty"]], template: function GanaderiaReproduccionPageComponent_Template(rf, ctx) {
+  }, decls: 18, vars: 4, consts: [["noAlerts", ""], ["noRecommendations", ""], ["selectedFemaleIcon", ""], ["rootFemaleIcon", ""], ["femaleNodeIcon1", ""], ["femaleNodeIcon2", ""], ["femaleNodeIcon3", ""], [1, "page"], [1, "reproduction-head"], [1, "eyebrow"], ["type", "button", 1, "btn-secondary", "reproduction-action", 3, "click"], ["viewBox", "0 0 24 24"], ["d", "M20 12a8 8 0 1 1-2.3-5.7"], ["d", "M20 4v6h-6"], ["class", "error-box", 4, "ngIf"], ["class", "card empty-box", 4, "ngIf"], [4, "ngIf"], ["class", "detail-overlay", 3, "click", "keydown.escape", 4, "ngIf"], [1, "error-box"], [1, "card", "empty-box"], [1, "stats-grid", "reproduction-kpis"], ["class", "kpi-card", 4, "ngIf"], ["class", "kpi-carousel", 4, "ngIf"], [1, "birth-alerts"], [1, "birth-alerts__header"], [1, "birth-alerts__title"], ["aria-hidden", "true", 1, "birth-alerts__icon"], ["viewBox", "0 0 24 24", "role", "img"], ["x", "4", "y", "5", "width", "16", "height", "15", "rx", "3"], ["d", "M8 3v4m8-4v4M4 10h16"], ["d", "M8 15h3l2-3 3 5 2-3"], [1, "birth-alerts__metrics"], ["aria-hidden", "true", 1, "birth-alerts__metric-icon"], ["d", "M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z"], ["d", "M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4"], [1, "birth-metric", "birth-metric--green"], [1, "birth-metric", "birth-metric--orange"], ["class", "birth-alerts__table-wrap", 4, "ngIf", "ngIfElse"], ["class", "birth-pagination", 4, "ngIf"], [1, "birth-alerts__footer"], ["viewBox", "0 0 24 24", "aria-hidden", "true"], ["cx", "12", "cy", "12", "r", "9"], ["d", "M12 10v6m0-9h.01"], [1, "layout"], [1, "card", "panel"], [1, "tabs"], ["type", "button", 3, "click"], ["class", "form-grid", 4, "ngIf"], [1, "textarea-field"], [3, "ngModelChange", "ngModel"], ["type", "button", 1, "btn-primary", 3, "click", "disabled"], [1, "genealogy-card"], [1, "genealogy-head"], [1, "genealogy-title"], ["aria-hidden", "true", 1, "band-icon", "band-icon--tree"], ["d", "M12 3v4m0 0H7.5A2.5 2.5 0 0 0 5 9.5V12m7-5h4.5A2.5 2.5 0 0 1 19 9.5V12M5 12v2.2m14-2.2v2.2M12 7v7.2"], ["cx", "5", "cy", "17", "r", "2.4"], ["cx", "12", "cy", "17", "r", "2.4"], ["cx", "19", "cy", "17", "r", "2.4"], ["class", "genealogy-selected", 4, "ngIf"], [1, "form-grid", "one", "genealogy-selector"], ["label", "Animal", "placeholder", "Buscar animal por caravana", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["class", "genealogy-tree", 4, "ngIf"], ["class", "empty-box premium-empty", 4, "ngIf"], [1, "cross-panel"], ["d", "M6 7c0-2 1.5-3.5 3.5-3.5S13 5 13 7s-1.5 3.5-3.5 3.5S6 9 6 7Z"], ["d", "M11 11.5c1.5-1 3.5-1 5 0 2 1.3 2.7 4 1.4 6L16 20l-2.2-1.2"], ["d", "M4 20c.4-3.8 2.5-6.2 5.5-6.2s5.1 2.4 5.5 6.2"], [1, "birth-alerts__metrics", "cross-panel__metrics"], ["d", "M5 19c1.6-5.2 4.8-8 9.5-8H20"], ["d", "M16 7h4v4"], ["d", "M4 12h4m-2-2v4"], ["class", "cross-grid", 4, "ngIf", "ngIfElse"], [1, "kpi-card"], [1, "metric-icon"], ["cx", "10", "cy", "14", "r", "5"], ["d", "M14 10l6-6m0 0h-5m5 0v5"], [1, "kpi-copy"], ["d", "M9 3h6v4H9z"], ["d", "M8 7h8v13H8z"], ["d", "M10 12h4M12 10v4"], ["cx", "12", "cy", "9", "r", "5"], ["d", "M12 14v7m-4-3.5h8"], ["d", "M4 16 9 9l4 4 7-9"], ["d", "M14 4h6v6"], ["d", "M5 12h14"], ["d", "M12 5v14"], [1, "kpi-carousel"], ["type", "button", "aria-label", "KPIs anteriores", 3, "click", "disabled"], ["d", "m15 18-6-6 6-6"], ["type", "button", "aria-label", "KPIs siguientes", 3, "click", "disabled"], ["d", "m9 18 6-6-6-6"], [1, "birth-alerts__table-wrap"], [1, "birth-alerts__table"], [3, "ngClass", 4, "ngFor", "ngForOf"], [3, "ngClass"], [1, "birth-table-animal"], ["aria-hidden", "true", 1, "birth-table-icon"], [1, "birth-table-location"], ["d", "M4 6.5 9 4l6 2.5 5-2.5v13.5L15 20l-6-2.5L4 20V6.5Z"], ["d", "M9 4v13.5M15 6.5V20"], [1, "risk-badge", 3, "ngClass"], ["type", "button", 1, "birth-table-action", 3, "click"], ["d", "M5 12h14m-6-6 6 6-6 6"], [1, "empty-box", "premium-empty"], [1, "birth-pagination"], ["type", "button", "aria-label", "Alertas anteriores", 1, "carousel-arrow", 3, "click", "disabled"], ["type", "button", 3, "active", "click", 4, "ngFor", "ngForOf"], ["type", "button", "aria-label", "Alertas siguientes", 1, "carousel-arrow", 3, "click", "disabled"], [1, "form-grid"], ["label", "Vaca", "placeholder", "Buscar vaca por caravana", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "allowedValues", "value"], ["label", "Toro", "placeholder", "Buscar toro por caravana", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "allowedValues", "value"], ["type", "date", 3, "ngModelChange", "ngModel"], ["value", "PENDIENTE"], ["value", "PRENADA"], ["value", "FALLIDA"], ["label", "Tecnico", "placeholder", "Buscar usuario tecnico", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["type", "number", 3, "ngModelChange", "ngModel"], ["value", "VACIA"], ["value", "CONTROL"], ["value", "BAJO"], ["value", "MEDIO"], ["value", "ALTO"], ["label", "Veterinario", "placeholder", "Buscar veterinario habilitado", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["label", "Ternero", "placeholder", "Buscar ternero por caravana", "queryParam", "caravana", "valueField", "id", "labelField", "caravana", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["value", "VIABLE"], ["value", "NO_VIABLE"], ["value", "OBSERVACION"], [1, "genealogy-selected"], ["aria-hidden", "true", 1, "animal-icon"], ["viewBox", "0 0 24 24", "role", "img", 4, "ngIf", "ngIfElse"], [1, "genealogy-tree"], [1, "genealogy-row", "genealogy-row--root"], [1, "pedigree-node", "pedigree-node--main"], ["aria-hidden", "true", 1, "pedigree-icon"], [1, "genealogy-connector"], [1, "genealogy-row"], [1, "generation-label"], [1, "generation-grid"], ["class", "pedigree-node", 4, "ngFor", "ngForOf"], [1, "genealogy-foot"], [1, "pedigree-node"], [1, "cross-grid"], ["class", "cross-card", 3, "ngClass", 4, "ngFor", "ngForOf"], [1, "cross-card", 3, "ngClass"], [1, "cross-card__pair"], [1, "cross-animal"], ["aria-hidden", "true", 1, "cross-animal__icon"], ["aria-hidden", "true", 1, "cross-link"], ["d", "M7 12h10m-4-4 4 4-4 4"], ["aria-hidden", "true", 1, "cross-animal__icon", "cross-animal__icon--male"], [1, "cross-card__metrics"], [1, "birth-data"], ["d", "M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z"], ["d", "m9 12 2 2 4-5"], ["d", "M6 18c0-4 2.7-7 6-7s6 3 6 7"], ["d", "M9 8a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z"], [1, "cross-card__note"], ["type", "button", 1, "birth-card__action", 3, "click"], ["type", "button", "aria-label", "Recomendaciones anteriores", 1, "carousel-arrow", 3, "click", "disabled"], ["type", "button", "aria-label", "Recomendaciones siguientes", 1, "carousel-arrow", 3, "click", "disabled"], [1, "detail-overlay", 3, "click", "keydown.escape"], ["role", "dialog", "aria-modal", "true", 1, "cow-detail-modal", 3, "click"], [1, "cow-detail-modal__header"], [1, "cow-detail-modal__eyebrow"], ["aria-hidden", "true", 1, "birth-alerts__icon", "detail-title-icon"], ["d", "M5 5h14v14H5z"], ["d", "m8 12 2.5 2.5L16 9"], ["type", "button", "aria-label", "Cerrar detalle", 1, "detail-close", 3, "click"], ["d", "M6 6l12 12M18 6 6 18"], ["class", "cow-detail-modal__body", 4, "ngIf"], [1, "cow-detail-modal__footer"], ["type", "button", 1, "btn-secondary", 3, "click"], [1, "cow-detail-modal__body"], [1, "cow-profile-card"], ["aria-hidden", "true", 1, "cow-profile-card__avatar"], [1, "cow-profile-card__badges"], [1, "cow-profile-list"], [1, "inline-risk", "risk-low"], [1, "cow-detail-main"], [1, "cow-summary-grid"], [1, "cow-summary-card", "cow-summary-card--large"], [1, "summary-label"], [1, "summary-split"], [1, "inline-risk", 3, "ngClass"], [1, "cow-summary-card"], [1, "detail-tabs"], [1, "active"], [1, "detail-content-grid"], [1, "detail-info-card"], [1, "events-card"], [1, "events-card__head"], [1, "events-table"], [1, "events-table__row", "events-table__row--head"], ["class", "events-table__row", 4, "ngFor", "ngForOf"], ["class", "events-table__empty", 4, "ngIf"], [1, "events-table__row"], [1, "events-table__empty"]], template: function GanaderiaReproduccionPageComponent_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "div", 7)(1, "header", 8)(2, "div")(3, "p", 9);
       \u0275\u0275text(4, "Campo App \xB7 Ganader\xEDa");
@@ -55367,532 +55570,534 @@ var GanaderiaReproduccionPageComponent = class _GanaderiaReproduccionPageCompone
       \u0275\u0275advance();
       \u0275\u0275property("ngIf", ctx.selectedAlert());
     }
-  }, dependencies: [CommonModule, NgClass, NgForOf, NgIf, FormsModule, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, SelectControlValueAccessor, NgControlStatus, NgModel, RemoteSearchSelectComponent], styles: ['\n.page[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n.page-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 16px;\n}\n.page-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.reproduction-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n  color: #f8fbff;\n}\n.reproduction-head[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.reproduction-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow[_ngcontent-%COMP%] {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  font-weight: 900;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n}\n.reproduction-action[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.reproduction-action[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(6, minmax(0, 1fr));\n  gap: 10px;\n}\n.metric-card[_ngcontent-%COMP%] {\n  position: relative;\n  min-height: 82px;\n  overflow: hidden;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 16px;\n  padding: 16px 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.9),\n      rgba(11, 21, 41, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 34%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.metric-card[_ngcontent-%COMP%]::before {\n  content: "";\n  position: absolute;\n  inset: 0;\n  background:\n    radial-gradient(\n      circle at 18% 0%,\n      rgba(159, 232, 112, 0.08),\n      transparent 42%);\n  pointer-events: none;\n}\n.metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n}\n.metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin: 10px 0 0;\n  color: #f8fbff;\n  font-size: 24px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.03em;\n}\n.metric-card--accent[_ngcontent-%COMP%] {\n  border-color: rgba(159, 232, 112, 0.16);\n  box-shadow: inset 0 0 28px rgba(159, 232, 112, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.metric-card--accent[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  color: #9fe870;\n}\n.metric-card--warning[_ngcontent-%COMP%] {\n  border-color: rgba(255, 184, 77, 0.18);\n  box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.065), inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.metric-card--warning[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  color: #ffb84d;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 54px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n  min-height: 104px;\n  border-radius: 20px;\n  padding: 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.1),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card--blue[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%);\n}\n.metric-icon[_ngcontent-%COMP%] {\n  display: grid;\n  width: 52px;\n  height: 52px;\n  place-items: center;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  border-radius: 18px;\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 28px;\n  height: 28px;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  letter-spacing: 0;\n  text-transform: none;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  margin: 4px 0 0;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.04em;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.kpi-carousel[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 10px;\n  margin-top: -8px;\n}\n.kpi-carousel[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  width: 42px;\n  height: 38px;\n  border-radius: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.16);\n  color: #dbeafe;\n  background: rgba(7, 15, 31, 0.52);\n  display: grid;\n  place-items: center;\n  cursor: pointer;\n}\n.kpi-carousel[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:hover:not(:disabled) {\n  border-color: rgba(159, 232, 112, 0.42);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.08);\n}\n.kpi-carousel[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.kpi-carousel[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.kpi-carousel[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 13px;\n  font-weight: 700;\n}\n.layout[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1.08fr 0.92fr;\n  gap: 18px;\n}\n.panel[_ngcontent-%COMP%], \n.premium-band[_ngcontent-%COMP%] {\n  padding: 20px;\n}\n.premium-band[_ngcontent-%COMP%], \n.panel[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 24px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.9),\n      rgba(11, 21, 41, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 30%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.band-head[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  margin-bottom: 16px;\n}\n.band-head.compact[_ngcontent-%COMP%] {\n  margin-bottom: 14px;\n}\n.band-icon[_ngcontent-%COMP%] {\n  width: 56px;\n  height: 56px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #f8fbff;\n  font-weight: 800;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(24, 39, 69, 0.9),\n      rgba(13, 24, 47, 0.86));\n}\n.band-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.animal-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.pedigree-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 26px;\n  height: 26px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.band-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 26px;\n  letter-spacing: 0;\n}\n.band-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.premium-list[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.cards-compact[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n}\n.premium-card[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 16px;\n  padding: 16px;\n  border-radius: 22px;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  background: rgba(9, 18, 36, 0.58);\n}\n.premium-card__icon[_ngcontent-%COMP%] {\n  width: 54px;\n  height: 54px;\n  flex: 0 0 54px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  background: rgba(110, 168, 255, 0.08);\n}\n.premium-card__body[_ngcontent-%COMP%] {\n  flex: 1;\n  min-width: 0;\n}\n.premium-card__top[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: flex-start;\n}\n.premium-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 18px;\n}\n.premium-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #90a1bb;\n}\n.premium-card__note[_ngcontent-%COMP%] {\n  font-size: 14px;\n}\n.badge[_ngcontent-%COMP%] {\n  border-radius: 999px;\n  padding: 8px 12px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.12);\n  border: 1px solid rgba(159, 232, 112, 0.2);\n  font-weight: 800;\n  font-size: 12px;\n}\n.badge--danger[_ngcontent-%COMP%] {\n  color: #fecaca;\n  background: rgba(248, 113, 113, 0.14);\n  border-color: rgba(248, 113, 113, 0.24);\n}\n.birth-alerts[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    radial-gradient(\n      circle at 10% 0%,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%),\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.92),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 22px 44px rgba(2, 8, 23, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.cross-panel[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    radial-gradient(\n      circle at 10% 0%,\n      rgba(159, 232, 112, 0.1),\n      transparent 32%),\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.92),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 22px 44px rgba(2, 8, 23, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.birth-alerts__header[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) auto;\n  gap: 18px;\n  align-items: center;\n  margin-bottom: 14px;\n}\n.birth-alerts__title[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 46px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n}\n.birth-alerts__icon[_ngcontent-%COMP%], \n.birth-card__avatar[_ngcontent-%COMP%] {\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(110, 168, 255, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(25, 43, 76, 0.88),\n      rgba(11, 23, 48, 0.82));\n  color: #9fe870;\n  box-shadow: 0 0 26px rgba(110, 168, 255, 0.1);\n}\n.birth-alerts__icon[_ngcontent-%COMP%] {\n  width: 46px;\n  height: 46px;\n  border-radius: 13px;\n}\n.birth-alerts[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.birth-card[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.birth-pagination[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.birth-alerts__footer[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.birth-alerts__icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 25px;\n  height: 25px;\n}\n.birth-card__avatar[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 31px;\n  height: 31px;\n}\n.birth-alerts__title[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 18px;\n  letter-spacing: -0.02em;\n}\n.birth-alerts__title[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 8px 0 0;\n  color: #9caec8;\n  font-size: 13px;\n}\n.birth-alerts__metrics[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 46px repeat(2, minmax(92px, 1fr));\n  align-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  overflow: hidden;\n  background: rgba(7, 15, 31, 0.42);\n}\n.birth-alerts__metric-icon[_ngcontent-%COMP%] {\n  display: grid;\n  place-items: center;\n  height: 58px;\n  color: #9fe870;\n}\n.birth-alerts__metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 30px;\n  height: 30px;\n}\n.birth-metric[_ngcontent-%COMP%] {\n  padding: 11px 14px;\n}\n.birth-metric[_ngcontent-%COMP%]    + .birth-metric[_ngcontent-%COMP%] {\n  border-left: 1px solid rgba(148, 163, 184, 0.12);\n}\n.birth-metric[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 4px;\n  color: #f8fbff;\n  font-size: 18px;\n  line-height: 1;\n}\n.birth-metric[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n}\n.birth-metric--orange[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #ff7a3d;\n}\n.birth-metric--green[_ngcontent-%COMP%] {\n  box-shadow: inset 0 0 28px rgba(159, 232, 112, 0.06);\n}\n.birth-metric--orange[_ngcontent-%COMP%] {\n  box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.07);\n}\n.birth-alerts__grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.birth-card[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 12px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.88),\n      rgba(8, 18, 37, 0.86));\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.birth-card.risk-high[_ngcontent-%COMP%] {\n  border-color: rgba(255, 107, 107, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 107, 107, 0.06);\n}\n.birth-card.risk-medium[_ngcontent-%COMP%] {\n  border-color: rgba(255, 184, 77, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 184, 77, 0.06);\n}\n.birth-card.risk-low[_ngcontent-%COMP%] {\n  border-color: rgba(159, 232, 112, 0.18);\n  box-shadow: 0 14px 30px rgba(159, 232, 112, 0.05);\n}\n.birth-card__top[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 56px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n  margin-top: 8px;\n}\n.birth-card__avatar[_ngcontent-%COMP%] {\n  width: 56px;\n  height: 56px;\n  border-radius: 50%;\n  border-color: rgba(159, 232, 112, 0.22);\n  background:\n    radial-gradient(\n      circle at 38% 28%,\n      rgba(255, 255, 255, 0.2),\n      transparent 16%),\n    linear-gradient(\n      145deg,\n      rgba(159, 232, 112, 0.2),\n      rgba(8, 18, 37, 0.9));\n}\n.birth-card__content[_ngcontent-%COMP%] {\n  min-width: 0;\n}\n.birth-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  margin: 0 0 4px;\n  color: #f8fbff;\n  font-size: 15px;\n  letter-spacing: -0.02em;\n}\n.birth-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.birth-card__lot[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  margin-top: 6px !important;\n  color: #c9d7ec !important;\n  font-size: 10.5px !important;\n}\n.birth-card__lot[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 13px;\n  height: 13px;\n  color: #9fe870;\n  flex: 0 0 16px;\n}\n.risk-badge[_ngcontent-%COMP%] {\n  display: inline-flex;\n  width: fit-content;\n  border-radius: 999px;\n  padding: 5px 8px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.18);\n  font-size: 10px;\n  font-weight: 900;\n  letter-spacing: -0.01em;\n}\n.risk-badge.risk-high[_ngcontent-%COMP%] {\n  color: #fecaca;\n  background: rgba(255, 107, 107, 0.12);\n  border-color: rgba(255, 107, 107, 0.24);\n}\n.risk-badge.risk-medium[_ngcontent-%COMP%] {\n  color: #fde68a;\n  background: rgba(255, 184, 77, 0.12);\n  border-color: rgba(255, 184, 77, 0.24);\n}\n.birth-card__metrics[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 0;\n  margin-top: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 10px;\n  overflow: hidden;\n}\n.birth-data[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 22px minmax(0, 1fr) auto;\n  gap: 8px;\n  align-items: center;\n  border: 0;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 0;\n  padding: 12px 8px;\n  background: rgba(7, 15, 31, 0.42);\n}\n.birth-data[_ngcontent-%COMP%]:last-child {\n  border-bottom: 0;\n}\n.birth-data[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 17px;\n  height: 17px;\n  color: #b8c6dd;\n}\n.birth-data[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 10.5px;\n}\n.birth-data[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n  font-size: 12px;\n  text-align: right;\n}\n.birth-data[_ngcontent-%COMP%]:nth-child(2)   strong[_ngcontent-%COMP%] {\n  color: #ffb84d;\n}\n.inline-risk[_ngcontent-%COMP%] {\n  border-radius: 999px;\n  padding: 5px 8px;\n  font-size: 10px !important;\n  background: rgba(159, 232, 112, 0.12);\n  border: 1px solid rgba(159, 232, 112, 0.14);\n}\n.inline-risk.risk-high[_ngcontent-%COMP%] {\n  color: #ff6b6b;\n  background: rgba(255, 107, 107, 0.12);\n  border-color: rgba(255, 107, 107, 0.18);\n}\n.inline-risk.risk-medium[_ngcontent-%COMP%] {\n  color: #ffb84d;\n  background: rgba(255, 184, 77, 0.12);\n  border-color: rgba(255, 184, 77, 0.18);\n}\n.inline-risk.risk-low[_ngcontent-%COMP%] {\n  color: #9fe870;\n}\n.birth-card__action[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 10px;\n  width: 100%;\n  margin-top: 12px;\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 8px;\n  padding: 10px 12px;\n  color: #9fe870;\n  background: rgba(7, 15, 31, 0.42);\n  font-weight: 900;\n  font-size: 12px;\n  cursor: pointer;\n  transition:\n    border-color 160ms ease,\n    transform 160ms ease,\n    box-shadow 160ms ease;\n}\n.birth-card__action[_ngcontent-%COMP%]:hover {\n  border-color: rgba(159, 232, 112, 0.48);\n  transform: translateY(-1px);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.birth-card__action[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n}\n.birth-pagination[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  flex-wrap: wrap;\n  gap: 10px;\n  margin: 10px -16px 0;\n  padding: 10px 16px;\n  border-top: 1px solid rgba(148, 163, 184, 0.08);\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  background: rgba(7, 15, 31, 0.3);\n}\n.birth-pagination[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 8px;\n  padding: 10px 14px;\n  color: #dbeafe;\n  background: rgba(7, 15, 31, 0.52);\n  font-weight: 800;\n  cursor: pointer;\n}\n.birth-pagination[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  color: #081225;\n  background: #9fe870;\n  border-color: #9fe870;\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.22);\n}\n.birth-pagination[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.birth-pagination[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 13px;\n  margin-left: 8px;\n}\n.birth-pagination[_ngcontent-%COMP%]   .carousel-arrow[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 112px;\n  justify-content: center;\n}\n.birth-pagination[_ngcontent-%COMP%]   .carousel-arrow[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n}\n.birth-alerts__footer[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 22px minmax(0, 1fr) auto;\n  gap: 10px;\n  align-items: center;\n  margin: 12px -16px -14px;\n  border: 1px solid rgba(148, 163, 184, 0.1);\n  border-radius: 10px;\n  padding: 13px 24px;\n  color: #8ea0bb;\n  background: rgba(7, 15, 31, 0.46);\n}\n.birth-alerts__footer[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 20px;\n  height: 20px;\n  color: #6ea8ff;\n}\n.birth-alerts__footer[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #c9d7ec;\n  font-size: 13px;\n}\n.cross-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.cross-card[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 12px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.88),\n      rgba(8, 18, 37, 0.86));\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.cross-card.risk-low[_ngcontent-%COMP%] {\n  border-color: rgba(159, 232, 112, 0.18);\n  box-shadow: 0 14px 30px rgba(159, 232, 112, 0.05);\n}\n.cross-card.risk-medium[_ngcontent-%COMP%] {\n  border-color: rgba(255, 184, 77, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 184, 77, 0.06);\n}\n.cross-card.risk-high[_ngcontent-%COMP%] {\n  border-color: rgba(255, 107, 107, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 107, 107, 0.06);\n}\n.cross-card__pair[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 9px;\n  margin-top: 4px;\n}\n.cross-animal[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 42px minmax(0, 1fr);\n  gap: 10px;\n  align-items: center;\n}\n.cross-animal__icon[_ngcontent-%COMP%] {\n  width: 42px;\n  height: 42px;\n  display: grid;\n  place-items: center;\n  border-radius: 50%;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.18);\n}\n.cross-animal__icon--male[_ngcontent-%COMP%] {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, 0.1);\n  border-color: rgba(110, 168, 255, 0.18);\n}\n.cross-animal__icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.cross-link[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.cross-panel[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.cross-animal__icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 23px;\n  height: 23px;\n}\n.cross-animal[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 10.5px;\n}\n.cross-animal[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n}\n.cross-link[_ngcontent-%COMP%] {\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  opacity: 0.8;\n}\n.cross-link[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 22px;\n  height: 22px;\n}\n.cross-card__metrics[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 0;\n  border: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 10px;\n  overflow: hidden;\n}\n.cross-card__note[_ngcontent-%COMP%] {\n  min-height: 48px;\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  line-height: 1.45;\n}\n.tabs[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  margin-bottom: 16px;\n}\n.tabs[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.16);\n  border-radius: 999px;\n  background: rgba(15, 23, 42, 0.54);\n  color: #9bb0cc;\n  padding: 10px 14px;\n  font-weight: 800;\n  cursor: pointer;\n}\n.tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  color: #081225;\n  background: #9fe870;\n  border-color: #9fe870;\n}\n.form-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.form-grid.one[_ngcontent-%COMP%] {\n  grid-template-columns: 1fr;\n}\n.form-grid[_ngcontent-%COMP%]   label[_ngcontent-%COMP%], \n.textarea-field[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 13px;\n}\n.textarea-field[_ngcontent-%COMP%] {\n  margin: 12px 0;\n}\n.textarea-field[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  min-height: 88px;\n}\n.tree[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.tree-columns[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.tree-title[_ngcontent-%COMP%] {\n  margin: 0 0 8px;\n  color: #8ea0bb;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  font-size: 11px;\n  font-weight: 800;\n}\n.tree-node[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  background: rgba(9, 18, 36, 0.58);\n  padding: 12px 14px;\n  margin-bottom: 8px;\n}\n.tree-node.main[_ngcontent-%COMP%] {\n  border-color: rgba(159, 232, 112, 0.22);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.06);\n}\n.tree-node[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n}\n.tree-node[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #90a1bb;\n  font-size: 13px;\n}\n.genealogy-card[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.genealogy-head[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.72fr);\n  gap: 16px;\n  align-items: center;\n}\n.genealogy-title[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n}\n.genealogy-title[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 26px;\n}\n.genealogy-title[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.genealogy-selected[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 54px 1fr 1fr;\n  gap: 16px;\n  align-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background: rgba(9, 18, 36, 0.58);\n}\n.genealogy-selected[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n  margin-bottom: 4px;\n}\n.genealogy-selected[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n  font-size: 16px;\n}\n.animal-icon[_ngcontent-%COMP%], \n.pedigree-icon[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  font-weight: 900;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.16);\n}\n.icon-male[_ngcontent-%COMP%] {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, 0.1);\n  border-color: rgba(110, 168, 255, 0.18);\n}\n.genealogy-selector[_ngcontent-%COMP%] {\n  max-width: 420px;\n}\n.genealogy-tree[_ngcontent-%COMP%] {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 24px;\n  padding: 18px;\n  background:\n    radial-gradient(\n      circle at top,\n      rgba(159, 232, 112, 0.05),\n      transparent 36%),\n    rgba(7, 15, 31, 0.5);\n}\n.genealogy-row[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 10px;\n}\n.genealogy-row--root[_ngcontent-%COMP%] {\n  padding-top: 4px;\n}\n.genealogy-connector[_ngcontent-%COMP%] {\n  width: 1px;\n  height: 22px;\n  align-self: center;\n  border-left: 1px dashed rgba(159, 232, 112, 0.6);\n}\n.generation-label[_ngcontent-%COMP%] {\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 4px;\n  margin: 0;\n  padding: 8px 16px;\n  border-radius: 12px;\n  color: #c6d4ea;\n  font-size: 12px;\n  font-weight: 900;\n  background: rgba(110, 168, 255, 0.06);\n}\n.generation-label[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-weight: 700;\n}\n.generation-grid[_ngcontent-%COMP%] {\n  width: 100%;\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));\n  gap: 10px;\n}\n.pedigree-node[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 48px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n  min-height: 80px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 18px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(17, 32, 60, 0.82),\n      rgba(9, 18, 36, 0.76));\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.pedigree-node--main[_ngcontent-%COMP%] {\n  min-width: 240px;\n  border-color: rgba(159, 232, 112, 0.45);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.pedigree-node[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n}\n.pedigree-node[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 4px;\n  color: #8ea0bb;\n  font-size: 13px;\n}\n.genealogy-foot[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.11);\n  border-radius: 16px;\n  padding: 12px 14px;\n  color: #8ea0bb;\n  background: rgba(9, 18, 36, 0.48);\n  font-size: 12px;\n}\n.premium-empty[_ngcontent-%COMP%] {\n  padding: 18px;\n  border: 1px dashed rgba(148, 163, 184, 0.22);\n  border-radius: 18px;\n  background: rgba(9, 18, 36, 0.5);\n}\n.error-box[_ngcontent-%COMP%] {\n  padding: 14px 16px;\n  border: 1px solid rgba(248, 113, 113, 0.3);\n  border-radius: 16px;\n  background: rgba(127, 29, 29, 0.22);\n  color: #fecaca;\n}\n.empty-box[_ngcontent-%COMP%] {\n  color: var(--muted);\n}\n.detail-overlay[_ngcontent-%COMP%] {\n  position: fixed;\n  inset: 0;\n  z-index: 80;\n  display: grid;\n  place-items: center;\n  padding: 24px;\n  background: rgba(2, 8, 23, 0.72);\n  -webkit-backdrop-filter: blur(10px);\n  backdrop-filter: blur(10px);\n}\n.cow-detail-modal[_ngcontent-%COMP%] {\n  width: min(1180px, 96vw);\n  max-height: 92vh;\n  overflow: auto;\n  border: 1px solid rgba(110, 168, 255, 0.18);\n  border-radius: 18px;\n  background:\n    radial-gradient(\n      circle at 18% 0%,\n      rgba(110, 168, 255, 0.15),\n      transparent 28%),\n    linear-gradient(\n      180deg,\n      rgba(12, 25, 50, 0.98),\n      rgba(6, 15, 31, 0.98));\n  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.05);\n}\n.cow-detail-modal__header[_ngcontent-%COMP%], \n.cow-detail-modal__footer[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 14px;\n  padding: 14px 18px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n}\n.cow-detail-modal__footer[_ngcontent-%COMP%] {\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n  border-bottom: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.cow-detail-modal__eyebrow[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  color: #f8fbff;\n  font-weight: 900;\n}\n.detail-title-icon[_ngcontent-%COMP%] {\n  width: 34px;\n  height: 34px;\n  border-radius: 10px;\n}\n.detail-title-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n}\n.detail-close[_ngcontent-%COMP%] {\n  width: 34px;\n  height: 34px;\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 10px;\n  color: #9caec8;\n  background: rgba(7, 15, 31, 0.58);\n  cursor: pointer;\n}\n.detail-close[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n}\n.cow-detail-modal__body[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 280px minmax(0, 1fr);\n  gap: 18px;\n  padding: 20px;\n}\n.cow-profile-card[_ngcontent-%COMP%], \n.cow-summary-card[_ngcontent-%COMP%], \n.detail-info-card[_ngcontent-%COMP%], \n.events-card[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 14px;\n  background: rgba(8, 18, 37, 0.66);\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.cow-profile-card[_ngcontent-%COMP%] {\n  padding: 22px 18px;\n  text-align: center;\n}\n.cow-profile-card__avatar[_ngcontent-%COMP%] {\n  width: 92px;\n  height: 92px;\n  display: grid;\n  place-items: center;\n  margin: 0 auto 16px;\n  border-radius: 50%;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  background:\n    radial-gradient(\n      circle at 35% 22%,\n      rgba(159, 232, 112, 0.22),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 0 34px rgba(159, 232, 112, 0.09);\n}\n.cow-profile-card__avatar[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.7;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.cow-profile-card[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 25px;\n  letter-spacing: -0.03em;\n}\n.cow-profile-card__badges[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: center;\n  flex-wrap: wrap;\n  gap: 8px;\n  margin: 12px 0 20px;\n}\n.cow-profile-card__badges[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  border-radius: 999px;\n  padding: 6px 9px;\n  color: #a9bad3;\n  background: rgba(110, 168, 255, 0.08);\n  font-size: 11px;\n  font-weight: 800;\n}\n.cow-profile-list[_ngcontent-%COMP%], \n.detail-info-card[_ngcontent-%COMP%]   dl[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n  margin: 0;\n}\n.cow-profile-list[_ngcontent-%COMP%]   div[_ngcontent-%COMP%], \n.detail-info-card[_ngcontent-%COMP%]   dl[_ngcontent-%COMP%]   div[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  padding-bottom: 9px;\n}\n.cow-profile-list[_ngcontent-%COMP%]   dt[_ngcontent-%COMP%], \n.detail-info-card[_ngcontent-%COMP%]   dt[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.cow-profile-list[_ngcontent-%COMP%]   dd[_ngcontent-%COMP%], \n.detail-info-card[_ngcontent-%COMP%]   dd[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 12px;\n  text-align: right;\n}\n.cow-detail-main[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.cow-summary-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr 1.15fr;\n  gap: 12px;\n}\n.cow-summary-card[_ngcontent-%COMP%] {\n  padding: 18px;\n}\n.cow-summary-card--large[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 18px;\n  color: #f8fbff;\n  font-size: 28px;\n  line-height: 1;\n}\n.summary-label[_ngcontent-%COMP%], \n.cow-summary-card[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n}\n.cow-summary-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 8px;\n  color: #8ea0bb;\n}\n.summary-split[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  gap: 10px;\n  margin: 20px -18px -18px;\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n}\n.summary-split[_ngcontent-%COMP%]   div[_ngcontent-%COMP%] {\n  padding: 13px 18px;\n  border-right: 1px solid rgba(148, 163, 184, 0.1);\n}\n.summary-split[_ngcontent-%COMP%]   div[_ngcontent-%COMP%]:last-child {\n  border-right: 0;\n}\n.summary-split[_ngcontent-%COMP%]   b[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 6px;\n  color: #ffb84d;\n}\n.cow-summary-card[_ngcontent-%COMP%]:not(.cow-summary-card--large) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.cow-summary-card[_ngcontent-%COMP%]:not(.cow-summary-card--large)   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 6px;\n  color: #f8fbff;\n  font-size: 13px;\n}\n.detail-tabs[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n}\n.detail-tabs[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  padding: 12px 14px;\n  color: #9caec8;\n  font-size: 12px;\n  font-weight: 800;\n}\n.detail-tabs[_ngcontent-%COMP%]   span.active[_ngcontent-%COMP%] {\n  color: #9fe870;\n  border-bottom: 2px solid #9fe870;\n}\n.detail-content-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.detail-info-card[_ngcontent-%COMP%], \n.events-card[_ngcontent-%COMP%] {\n  padding: 16px;\n}\n.detail-info-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%], \n.events-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  margin: 0 0 14px;\n  color: #f8fbff;\n  font-size: 14px;\n}\n.events-card__head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: center;\n}\n.events-card__head[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.events-table[_ngcontent-%COMP%] {\n  overflow-x: auto;\n}\n.events-table__row[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 110px 130px 110px 150px minmax(220px, 1fr);\n  gap: 12px;\n  min-width: 760px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  padding: 11px 0;\n  color: #b9c7dc;\n  font-size: 12px;\n}\n.events-table__row--head[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n.events-table__row[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n}\n.events-table__empty[_ngcontent-%COMP%] {\n  padding: 18px 0 4px;\n  color: #8ea0bb;\n}\n@media (max-width: 1366px) and (min-width: 1081px) {\n  .birth-alerts__grid[_ngcontent-%COMP%], \n   .cross-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(4, minmax(0, 1fr));\n  }\n  .birth-card[_ngcontent-%COMP%], \n   .cross-card[_ngcontent-%COMP%] {\n    min-width: 0;\n  }\n}\n@media (max-width: 1600px) and (min-width: 1081px) {\n  .reproduction-kpis[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(5, minmax(0, 1fr));\n  }\n}\n@media (max-width: 1080px) {\n  .layout[_ngcontent-%COMP%], \n   .tree-columns[_ngcontent-%COMP%], \n   .genealogy-head[_ngcontent-%COMP%], \n   .birth-alerts__header[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n  .birth-alerts__metrics[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr 1fr;\n  }\n  .birth-alerts__grid[_ngcontent-%COMP%], \n   .cross-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n  .cow-detail-modal__body[_ngcontent-%COMP%], \n   .cow-summary-grid[_ngcontent-%COMP%], \n   .detail-content-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .page-head[_ngcontent-%COMP%], \n   .reproduction-head[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: stretch;\n  }\n  .band-head[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .premium-card__top[_ngcontent-%COMP%] {\n    flex-direction: column;\n  }\n  .birth-alerts[_ngcontent-%COMP%] {\n    padding: 16px;\n    border-radius: 22px;\n  }\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr 1fr;\n  }\n  .birth-alerts__title[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .birth-alerts__metrics[_ngcontent-%COMP%], \n   .birth-alerts__grid[_ngcontent-%COMP%], \n   .cross-grid[_ngcontent-%COMP%], \n   .birth-card__metrics[_ngcontent-%COMP%], \n   .birth-alerts__footer[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .birth-metric[_ngcontent-%COMP%]    + .birth-metric[_ngcontent-%COMP%] {\n    border-left: 0;\n    border-top: 1px solid rgba(148, 163, 184, 0.12);\n  }\n  .genealogy-selected[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .genealogy-foot[_ngcontent-%COMP%] {\n    flex-direction: column;\n  }\n  .detail-overlay[_ngcontent-%COMP%] {\n    padding: 10px;\n  }\n  .cow-detail-modal[_ngcontent-%COMP%] {\n    width: 100%;\n    max-height: 96vh;\n  }\n  .cow-detail-modal__body[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n  .cow-summary-card[_ngcontent-%COMP%]:not(.cow-summary-card--large), \n   .summary-split[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .summary-split[_ngcontent-%COMP%]   div[_ngcontent-%COMP%] {\n    border-right: 0;\n    border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  }\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: contents;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n  text-transform: none;\n  letter-spacing: 0;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: auto;\n  grid-row: auto;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  margin: 0;\n  line-height: 1.2;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%] {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%] {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%] {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%] {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-reproduccion-page.component.css.map */'] });
+  }, dependencies: [CommonModule, NgClass, NgForOf, NgIf, FormsModule, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, SelectControlValueAccessor, NgControlStatus, NgModel, RemoteSearchSelectComponent], styles: ['\n.page[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n.page-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 16px;\n}\n.page-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.reproduction-head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n  color: #f8fbff;\n}\n.reproduction-head[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.reproduction-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow[_ngcontent-%COMP%] {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  font-weight: 900;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n}\n.reproduction-action[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.reproduction-action[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.stats-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(6, minmax(0, 1fr));\n  gap: 10px;\n}\n.metric-card[_ngcontent-%COMP%] {\n  position: relative;\n  min-height: 82px;\n  overflow: hidden;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 16px;\n  padding: 16px 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.9),\n      rgba(11, 21, 41, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 34%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.metric-card[_ngcontent-%COMP%]::before {\n  content: "";\n  position: absolute;\n  inset: 0;\n  background:\n    radial-gradient(\n      circle at 18% 0%,\n      rgba(159, 232, 112, 0.08),\n      transparent 42%);\n  pointer-events: none;\n}\n.metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n}\n.metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin: 10px 0 0;\n  color: #f8fbff;\n  font-size: 24px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.03em;\n}\n.metric-card--accent[_ngcontent-%COMP%] {\n  border-color: rgba(159, 232, 112, 0.16);\n  box-shadow: inset 0 0 28px rgba(159, 232, 112, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.metric-card--accent[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  color: #9fe870;\n}\n.metric-card--warning[_ngcontent-%COMP%] {\n  border-color: rgba(255, 184, 77, 0.18);\n  box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.065), inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.metric-card--warning[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  color: #ffb84d;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 54px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n  min-height: 104px;\n  border-radius: 20px;\n  padding: 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.1),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card--blue[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%);\n}\n.metric-icon[_ngcontent-%COMP%] {\n  display: grid;\n  width: 52px;\n  height: 52px;\n  place-items: center;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  border-radius: 18px;\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 28px;\n  height: 28px;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  letter-spacing: 0;\n  text-transform: none;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  margin: 4px 0 0;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.04em;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.kpi-carousel[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 10px;\n  margin-top: -8px;\n}\n.kpi-carousel[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  width: 42px;\n  height: 38px;\n  border-radius: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.16);\n  color: #dbeafe;\n  background: rgba(7, 15, 31, 0.52);\n  display: grid;\n  place-items: center;\n  cursor: pointer;\n}\n.kpi-carousel[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:hover:not(:disabled) {\n  border-color: rgba(159, 232, 112, 0.42);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.08);\n}\n.kpi-carousel[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.kpi-carousel[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.kpi-carousel[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 13px;\n  font-weight: 700;\n}\n.layout[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1.08fr 0.92fr;\n  gap: 18px;\n}\n.panel[_ngcontent-%COMP%], \n.premium-band[_ngcontent-%COMP%] {\n  padding: 20px;\n}\n.premium-band[_ngcontent-%COMP%], \n.panel[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 24px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.9),\n      rgba(11, 21, 41, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 30%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.band-head[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  margin-bottom: 16px;\n}\n.band-head.compact[_ngcontent-%COMP%] {\n  margin-bottom: 14px;\n}\n.band-icon[_ngcontent-%COMP%] {\n  width: 56px;\n  height: 56px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #f8fbff;\n  font-weight: 800;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(24, 39, 69, 0.9),\n      rgba(13, 24, 47, 0.86));\n}\n.band-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.animal-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.pedigree-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 26px;\n  height: 26px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.band-head[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 26px;\n  letter-spacing: 0;\n}\n.band-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.premium-list[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.cards-compact[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n}\n.premium-card[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 16px;\n  padding: 16px;\n  border-radius: 22px;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  background: rgba(9, 18, 36, 0.58);\n}\n.premium-card__icon[_ngcontent-%COMP%] {\n  width: 54px;\n  height: 54px;\n  flex: 0 0 54px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  background: rgba(110, 168, 255, 0.08);\n}\n.premium-card__body[_ngcontent-%COMP%] {\n  flex: 1;\n  min-width: 0;\n}\n.premium-card__top[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: flex-start;\n}\n.premium-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 18px;\n}\n.premium-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #90a1bb;\n}\n.premium-card__note[_ngcontent-%COMP%] {\n  font-size: 14px;\n}\n.badge[_ngcontent-%COMP%] {\n  border-radius: 999px;\n  padding: 8px 12px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.12);\n  border: 1px solid rgba(159, 232, 112, 0.2);\n  font-weight: 800;\n  font-size: 12px;\n}\n.badge--danger[_ngcontent-%COMP%] {\n  color: #fecaca;\n  background: rgba(248, 113, 113, 0.14);\n  border-color: rgba(248, 113, 113, 0.24);\n}\n.birth-alerts[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    radial-gradient(\n      circle at 10% 0%,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%),\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.92),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 22px 44px rgba(2, 8, 23, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.cross-panel[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    radial-gradient(\n      circle at 10% 0%,\n      rgba(159, 232, 112, 0.1),\n      transparent 32%),\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.92),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 22px 44px rgba(2, 8, 23, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.birth-alerts__header[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) auto;\n  gap: 18px;\n  align-items: center;\n  margin-bottom: 14px;\n}\n.birth-alerts__title[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 46px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n}\n.birth-alerts__icon[_ngcontent-%COMP%], \n.birth-card__avatar[_ngcontent-%COMP%] {\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(110, 168, 255, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(25, 43, 76, 0.88),\n      rgba(11, 23, 48, 0.82));\n  color: #9fe870;\n  box-shadow: 0 0 26px rgba(110, 168, 255, 0.1);\n}\n.birth-alerts__icon[_ngcontent-%COMP%] {\n  width: 46px;\n  height: 46px;\n  border-radius: 13px;\n}\n.birth-alerts[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.birth-card[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.birth-pagination[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.birth-alerts__footer[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.birth-alerts__icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 25px;\n  height: 25px;\n}\n.birth-card__avatar[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 31px;\n  height: 31px;\n}\n.birth-alerts__title[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 18px;\n  letter-spacing: -0.02em;\n}\n.birth-alerts__title[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 8px 0 0;\n  color: #9caec8;\n  font-size: 13px;\n}\n.birth-alerts__metrics[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 46px repeat(2, minmax(92px, 1fr));\n  align-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  overflow: hidden;\n  background: rgba(7, 15, 31, 0.42);\n}\n.birth-alerts__metric-icon[_ngcontent-%COMP%] {\n  display: grid;\n  place-items: center;\n  height: 58px;\n  color: #9fe870;\n}\n.birth-alerts__metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 30px;\n  height: 30px;\n}\n.birth-metric[_ngcontent-%COMP%] {\n  padding: 11px 14px;\n}\n.birth-metric[_ngcontent-%COMP%]    + .birth-metric[_ngcontent-%COMP%] {\n  border-left: 1px solid rgba(148, 163, 184, 0.12);\n}\n.birth-metric[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 4px;\n  color: #f8fbff;\n  font-size: 18px;\n  line-height: 1;\n}\n.birth-metric[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n}\n.birth-metric--orange[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #ff7a3d;\n}\n.birth-metric--green[_ngcontent-%COMP%] {\n  box-shadow: inset 0 0 28px rgba(159, 232, 112, 0.06);\n}\n.birth-metric--orange[_ngcontent-%COMP%] {\n  box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.07);\n}\n.birth-alerts__grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.birth-alerts__table-wrap[_ngcontent-%COMP%] {\n  overflow-x: auto;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  background: rgba(8, 18, 37, 0.68);\n}\n.birth-alerts__table[_ngcontent-%COMP%] {\n  width: 100%;\n  min-width: 920px;\n  border-collapse: separate;\n  border-spacing: 0;\n}\n.birth-alerts__table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], \n.birth-alerts__table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%] {\n  padding: 13px 14px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  color: #dce7f8;\n  font-size: 12px;\n  vertical-align: middle;\n}\n.birth-alerts__table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(11, 23, 48, 0.78);\n}\n.birth-alerts__table[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:last-child   td[_ngcontent-%COMP%] {\n  border-bottom: 0;\n}\n.birth-alerts__table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%] {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.birth-alerts__table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover {\n  background: rgba(159, 232, 112, 0.04);\n  box-shadow: inset 2px 0 0 rgba(159, 232, 112, 0.65);\n}\n.birth-alerts__table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr.risk-high[_ngcontent-%COMP%]:hover {\n  box-shadow: inset 2px 0 0 rgba(255, 107, 107, 0.75);\n}\n.birth-alerts__table[_ngcontent-%COMP%]   tbody[_ngcontent-%COMP%]   tr.risk-medium[_ngcontent-%COMP%]:hover {\n  box-shadow: inset 2px 0 0 rgba(255, 184, 77, 0.75);\n}\n.birth-table-animal[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 42px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n}\n.birth-table-icon[_ngcontent-%COMP%] {\n  width: 42px;\n  height: 42px;\n  display: grid;\n  place-items: center;\n  border-radius: 14px;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  background: rgba(159, 232, 112, 0.08);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);\n}\n.birth-table-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 22px;\n  height: 22px;\n}\n.birth-table-animal[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%], \n.birth-alerts__table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n}\n.birth-table-animal[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 3px;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.birth-table-location[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  color: #c9d7ec;\n  white-space: nowrap;\n}\n.birth-table-location[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 15px;\n  height: 15px;\n  color: #9fe870;\n}\n.birth-table-action[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 12px;\n  padding: 9px 12px;\n  color: #9fe870;\n  background: rgba(7, 15, 31, 0.42);\n  font-weight: 800;\n  font-size: 12px;\n  cursor: pointer;\n  white-space: nowrap;\n  transition:\n    border-color 160ms ease,\n    transform 160ms ease,\n    box-shadow 160ms ease;\n}\n.birth-table-action[_ngcontent-%COMP%]:hover {\n  border-color: rgba(159, 232, 112, 0.48);\n  transform: translateY(-1px);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.birth-table-action[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 16px;\n  height: 16px;\n}\n.birth-card[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 12px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.88),\n      rgba(8, 18, 37, 0.86));\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.birth-card.risk-high[_ngcontent-%COMP%] {\n  border-color: rgba(255, 107, 107, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 107, 107, 0.06);\n}\n.birth-card.risk-medium[_ngcontent-%COMP%] {\n  border-color: rgba(255, 184, 77, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 184, 77, 0.06);\n}\n.birth-card.risk-low[_ngcontent-%COMP%] {\n  border-color: rgba(159, 232, 112, 0.18);\n  box-shadow: 0 14px 30px rgba(159, 232, 112, 0.05);\n}\n.birth-card__top[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 56px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n  margin-top: 8px;\n}\n.birth-card__avatar[_ngcontent-%COMP%] {\n  width: 56px;\n  height: 56px;\n  border-radius: 50%;\n  border-color: rgba(159, 232, 112, 0.22);\n  background:\n    radial-gradient(\n      circle at 38% 28%,\n      rgba(255, 255, 255, 0.2),\n      transparent 16%),\n    linear-gradient(\n      145deg,\n      rgba(159, 232, 112, 0.2),\n      rgba(8, 18, 37, 0.9));\n}\n.birth-card__content[_ngcontent-%COMP%] {\n  min-width: 0;\n}\n.birth-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  margin: 0 0 4px;\n  color: #f8fbff;\n  font-size: 15px;\n  letter-spacing: -0.02em;\n}\n.birth-card[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.birth-card__lot[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  margin-top: 6px !important;\n  color: #c9d7ec !important;\n  font-size: 10.5px !important;\n}\n.birth-card__lot[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 13px;\n  height: 13px;\n  color: #9fe870;\n  flex: 0 0 16px;\n}\n.risk-badge[_ngcontent-%COMP%] {\n  display: inline-flex;\n  width: fit-content;\n  border-radius: 999px;\n  padding: 5px 8px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.18);\n  font-size: 10px;\n  font-weight: 900;\n  letter-spacing: -0.01em;\n}\n.risk-badge.risk-high[_ngcontent-%COMP%] {\n  color: #fecaca;\n  background: rgba(255, 107, 107, 0.12);\n  border-color: rgba(255, 107, 107, 0.24);\n}\n.risk-badge.risk-medium[_ngcontent-%COMP%] {\n  color: #fde68a;\n  background: rgba(255, 184, 77, 0.12);\n  border-color: rgba(255, 184, 77, 0.24);\n}\n.birth-card__metrics[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 0;\n  margin-top: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 10px;\n  overflow: hidden;\n}\n.birth-data[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 22px minmax(0, 1fr) auto;\n  gap: 8px;\n  align-items: center;\n  border: 0;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 0;\n  padding: 12px 8px;\n  background: rgba(7, 15, 31, 0.42);\n}\n.birth-data[_ngcontent-%COMP%]:last-child {\n  border-bottom: 0;\n}\n.birth-data[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 17px;\n  height: 17px;\n  color: #b8c6dd;\n}\n.birth-data[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 10.5px;\n}\n.birth-data[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n  font-size: 12px;\n  text-align: right;\n}\n.birth-data[_ngcontent-%COMP%]:nth-child(2)   strong[_ngcontent-%COMP%] {\n  color: #ffb84d;\n}\n.inline-risk[_ngcontent-%COMP%] {\n  border-radius: 999px;\n  padding: 5px 8px;\n  font-size: 10px !important;\n  background: rgba(159, 232, 112, 0.12);\n  border: 1px solid rgba(159, 232, 112, 0.14);\n}\n.inline-risk.risk-high[_ngcontent-%COMP%] {\n  color: #ff6b6b;\n  background: rgba(255, 107, 107, 0.12);\n  border-color: rgba(255, 107, 107, 0.18);\n}\n.inline-risk.risk-medium[_ngcontent-%COMP%] {\n  color: #ffb84d;\n  background: rgba(255, 184, 77, 0.12);\n  border-color: rgba(255, 184, 77, 0.18);\n}\n.inline-risk.risk-low[_ngcontent-%COMP%] {\n  color: #9fe870;\n}\n.birth-card__action[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 10px;\n  width: 100%;\n  margin-top: 12px;\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 8px;\n  padding: 10px 12px;\n  color: #9fe870;\n  background: rgba(7, 15, 31, 0.42);\n  font-weight: 900;\n  font-size: 12px;\n  cursor: pointer;\n  transition:\n    border-color 160ms ease,\n    transform 160ms ease,\n    box-shadow 160ms ease;\n}\n.birth-card__action[_ngcontent-%COMP%]:hover {\n  border-color: rgba(159, 232, 112, 0.48);\n  transform: translateY(-1px);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.birth-card__action[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n}\n.birth-pagination[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  flex-wrap: wrap;\n  gap: 10px;\n  margin: 10px -16px 0;\n  padding: 10px 16px;\n  border-top: 1px solid rgba(148, 163, 184, 0.08);\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  background: rgba(7, 15, 31, 0.3);\n}\n.birth-pagination[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 8px;\n  padding: 10px 14px;\n  color: #dbeafe;\n  background: rgba(7, 15, 31, 0.52);\n  font-weight: 800;\n  cursor: pointer;\n}\n.birth-pagination[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  color: #081225;\n  background: #9fe870;\n  border-color: #9fe870;\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.22);\n}\n.birth-pagination[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.birth-pagination[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 13px;\n  margin-left: 8px;\n}\n.birth-pagination[_ngcontent-%COMP%]   .carousel-arrow[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 112px;\n  justify-content: center;\n}\n.birth-pagination[_ngcontent-%COMP%]   .carousel-arrow[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n}\n.birth-alerts__footer[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 22px minmax(0, 1fr) auto;\n  gap: 10px;\n  align-items: center;\n  margin: 12px -16px -14px;\n  border: 1px solid rgba(148, 163, 184, 0.1);\n  border-radius: 10px;\n  padding: 13px 24px;\n  color: #8ea0bb;\n  background: rgba(7, 15, 31, 0.46);\n}\n.birth-alerts__footer[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 20px;\n  height: 20px;\n  color: #6ea8ff;\n}\n.birth-alerts__footer[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #c9d7ec;\n  font-size: 13px;\n}\n.cross-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.cross-card[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 12px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.88),\n      rgba(8, 18, 37, 0.86));\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.cross-card.risk-low[_ngcontent-%COMP%] {\n  border-color: rgba(159, 232, 112, 0.18);\n  box-shadow: 0 14px 30px rgba(159, 232, 112, 0.05);\n}\n.cross-card.risk-medium[_ngcontent-%COMP%] {\n  border-color: rgba(255, 184, 77, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 184, 77, 0.06);\n}\n.cross-card.risk-high[_ngcontent-%COMP%] {\n  border-color: rgba(255, 107, 107, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 107, 107, 0.06);\n}\n.cross-card__pair[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 9px;\n  margin-top: 4px;\n}\n.cross-animal[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 42px minmax(0, 1fr);\n  gap: 10px;\n  align-items: center;\n}\n.cross-animal__icon[_ngcontent-%COMP%] {\n  width: 42px;\n  height: 42px;\n  display: grid;\n  place-items: center;\n  border-radius: 50%;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.18);\n}\n.cross-animal__icon--male[_ngcontent-%COMP%] {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, 0.1);\n  border-color: rgba(110, 168, 255, 0.18);\n}\n.cross-animal__icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.cross-link[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.cross-panel[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.cross-animal__icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 23px;\n  height: 23px;\n}\n.cross-animal[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 10.5px;\n}\n.cross-animal[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n}\n.cross-link[_ngcontent-%COMP%] {\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  opacity: 0.8;\n}\n.cross-link[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 22px;\n  height: 22px;\n}\n.cross-card__metrics[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 0;\n  border: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 10px;\n  overflow: hidden;\n}\n.cross-card__note[_ngcontent-%COMP%] {\n  min-height: 48px;\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  line-height: 1.45;\n}\n.tabs[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  margin-bottom: 16px;\n}\n.tabs[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.16);\n  border-radius: 999px;\n  background: rgba(15, 23, 42, 0.54);\n  color: #9bb0cc;\n  padding: 10px 14px;\n  font-weight: 800;\n  cursor: pointer;\n}\n.tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  color: #081225;\n  background: #9fe870;\n  border-color: #9fe870;\n}\n.form-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.form-grid.one[_ngcontent-%COMP%] {\n  grid-template-columns: 1fr;\n}\n.form-grid[_ngcontent-%COMP%]   label[_ngcontent-%COMP%], \n.textarea-field[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 13px;\n}\n.textarea-field[_ngcontent-%COMP%] {\n  margin: 12px 0;\n}\n.textarea-field[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  min-height: 88px;\n}\n.tree[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.tree-columns[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.tree-title[_ngcontent-%COMP%] {\n  margin: 0 0 8px;\n  color: #8ea0bb;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  font-size: 11px;\n  font-weight: 800;\n}\n.tree-node[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  background: rgba(9, 18, 36, 0.58);\n  padding: 12px 14px;\n  margin-bottom: 8px;\n}\n.tree-node.main[_ngcontent-%COMP%] {\n  border-color: rgba(159, 232, 112, 0.22);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.06);\n}\n.tree-node[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n}\n.tree-node[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #90a1bb;\n  font-size: 13px;\n}\n.genealogy-card[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.genealogy-head[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.72fr);\n  gap: 16px;\n  align-items: center;\n}\n.genealogy-title[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n}\n.genealogy-title[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 26px;\n}\n.genealogy-title[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.genealogy-selected[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 54px 1fr 1fr;\n  gap: 16px;\n  align-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background: rgba(9, 18, 36, 0.58);\n}\n.genealogy-selected[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n  margin-bottom: 4px;\n}\n.genealogy-selected[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n  font-size: 16px;\n}\n.animal-icon[_ngcontent-%COMP%], \n.pedigree-icon[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  font-weight: 900;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.16);\n}\n.icon-male[_ngcontent-%COMP%] {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, 0.1);\n  border-color: rgba(110, 168, 255, 0.18);\n}\n.genealogy-selector[_ngcontent-%COMP%] {\n  max-width: 420px;\n}\n.genealogy-tree[_ngcontent-%COMP%] {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 24px;\n  padding: 18px;\n  background:\n    radial-gradient(\n      circle at top,\n      rgba(159, 232, 112, 0.05),\n      transparent 36%),\n    rgba(7, 15, 31, 0.5);\n}\n.genealogy-row[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 10px;\n}\n.genealogy-row--root[_ngcontent-%COMP%] {\n  padding-top: 4px;\n}\n.genealogy-connector[_ngcontent-%COMP%] {\n  width: 1px;\n  height: 22px;\n  align-self: center;\n  border-left: 1px dashed rgba(159, 232, 112, 0.6);\n}\n.generation-label[_ngcontent-%COMP%] {\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 4px;\n  margin: 0;\n  padding: 8px 16px;\n  border-radius: 12px;\n  color: #c6d4ea;\n  font-size: 12px;\n  font-weight: 900;\n  background: rgba(110, 168, 255, 0.06);\n}\n.generation-label[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-weight: 700;\n}\n.generation-grid[_ngcontent-%COMP%] {\n  width: 100%;\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));\n  gap: 10px;\n}\n.pedigree-node[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 48px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n  min-height: 80px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 18px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(17, 32, 60, 0.82),\n      rgba(9, 18, 36, 0.76));\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.pedigree-node--main[_ngcontent-%COMP%] {\n  min-width: 240px;\n  border-color: rgba(159, 232, 112, 0.45);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.pedigree-node[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n}\n.pedigree-node[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 4px;\n  color: #8ea0bb;\n  font-size: 13px;\n}\n.genealogy-foot[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.11);\n  border-radius: 16px;\n  padding: 12px 14px;\n  color: #8ea0bb;\n  background: rgba(9, 18, 36, 0.48);\n  font-size: 12px;\n}\n.premium-empty[_ngcontent-%COMP%] {\n  padding: 18px;\n  border: 1px dashed rgba(148, 163, 184, 0.22);\n  border-radius: 18px;\n  background: rgba(9, 18, 36, 0.5);\n}\n.error-box[_ngcontent-%COMP%] {\n  padding: 14px 16px;\n  border: 1px solid rgba(248, 113, 113, 0.3);\n  border-radius: 16px;\n  background: rgba(127, 29, 29, 0.22);\n  color: #fecaca;\n}\n.empty-box[_ngcontent-%COMP%] {\n  color: var(--muted);\n}\n.detail-overlay[_ngcontent-%COMP%] {\n  position: fixed;\n  inset: 0;\n  z-index: 80;\n  display: grid;\n  place-items: center;\n  padding: 24px;\n  background: rgba(2, 8, 23, 0.72);\n  -webkit-backdrop-filter: blur(10px);\n  backdrop-filter: blur(10px);\n}\n.cow-detail-modal[_ngcontent-%COMP%] {\n  width: min(1180px, 96vw);\n  max-height: 92vh;\n  overflow: auto;\n  border: 1px solid rgba(110, 168, 255, 0.18);\n  border-radius: 18px;\n  background:\n    radial-gradient(\n      circle at 18% 0%,\n      rgba(110, 168, 255, 0.15),\n      transparent 28%),\n    linear-gradient(\n      180deg,\n      rgba(12, 25, 50, 0.98),\n      rgba(6, 15, 31, 0.98));\n  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.05);\n}\n.cow-detail-modal__header[_ngcontent-%COMP%], \n.cow-detail-modal__footer[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 14px;\n  padding: 14px 18px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n}\n.cow-detail-modal__footer[_ngcontent-%COMP%] {\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n  border-bottom: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.cow-detail-modal__eyebrow[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  color: #f8fbff;\n  font-weight: 900;\n}\n.detail-title-icon[_ngcontent-%COMP%] {\n  width: 34px;\n  height: 34px;\n  border-radius: 10px;\n}\n.detail-title-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n}\n.detail-close[_ngcontent-%COMP%] {\n  width: 34px;\n  height: 34px;\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 10px;\n  color: #9caec8;\n  background: rgba(7, 15, 31, 0.58);\n  cursor: pointer;\n}\n.detail-close[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n}\n.cow-detail-modal__body[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 280px minmax(0, 1fr);\n  gap: 18px;\n  padding: 20px;\n}\n.cow-profile-card[_ngcontent-%COMP%], \n.cow-summary-card[_ngcontent-%COMP%], \n.detail-info-card[_ngcontent-%COMP%], \n.events-card[_ngcontent-%COMP%] {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 14px;\n  background: rgba(8, 18, 37, 0.66);\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.cow-profile-card[_ngcontent-%COMP%] {\n  padding: 22px 18px;\n  text-align: center;\n}\n.cow-profile-card__avatar[_ngcontent-%COMP%] {\n  width: 92px;\n  height: 92px;\n  display: grid;\n  place-items: center;\n  margin: 0 auto 16px;\n  border-radius: 50%;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  background:\n    radial-gradient(\n      circle at 35% 22%,\n      rgba(159, 232, 112, 0.22),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 0 34px rgba(159, 232, 112, 0.09);\n}\n.cow-profile-card__avatar[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 48px;\n  height: 48px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.7;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.cow-profile-card[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 25px;\n  letter-spacing: -0.03em;\n}\n.cow-profile-card__badges[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: center;\n  flex-wrap: wrap;\n  gap: 8px;\n  margin: 12px 0 20px;\n}\n.cow-profile-card__badges[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  border-radius: 999px;\n  padding: 6px 9px;\n  color: #a9bad3;\n  background: rgba(110, 168, 255, 0.08);\n  font-size: 11px;\n  font-weight: 800;\n}\n.cow-profile-list[_ngcontent-%COMP%], \n.detail-info-card[_ngcontent-%COMP%]   dl[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n  margin: 0;\n}\n.cow-profile-list[_ngcontent-%COMP%]   div[_ngcontent-%COMP%], \n.detail-info-card[_ngcontent-%COMP%]   dl[_ngcontent-%COMP%]   div[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  padding-bottom: 9px;\n}\n.cow-profile-list[_ngcontent-%COMP%]   dt[_ngcontent-%COMP%], \n.detail-info-card[_ngcontent-%COMP%]   dt[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.cow-profile-list[_ngcontent-%COMP%]   dd[_ngcontent-%COMP%], \n.detail-info-card[_ngcontent-%COMP%]   dd[_ngcontent-%COMP%] {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 12px;\n  text-align: right;\n}\n.cow-detail-main[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.cow-summary-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 1fr 1.15fr;\n  gap: 12px;\n}\n.cow-summary-card[_ngcontent-%COMP%] {\n  padding: 18px;\n}\n.cow-summary-card--large[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 18px;\n  color: #f8fbff;\n  font-size: 28px;\n  line-height: 1;\n}\n.summary-label[_ngcontent-%COMP%], \n.cow-summary-card[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n}\n.cow-summary-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 8px;\n  color: #8ea0bb;\n}\n.summary-split[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  gap: 10px;\n  margin: 20px -18px -18px;\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n}\n.summary-split[_ngcontent-%COMP%]   div[_ngcontent-%COMP%] {\n  padding: 13px 18px;\n  border-right: 1px solid rgba(148, 163, 184, 0.1);\n}\n.summary-split[_ngcontent-%COMP%]   div[_ngcontent-%COMP%]:last-child {\n  border-right: 0;\n}\n.summary-split[_ngcontent-%COMP%]   b[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 6px;\n  color: #ffb84d;\n}\n.cow-summary-card[_ngcontent-%COMP%]:not(.cow-summary-card--large) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.cow-summary-card[_ngcontent-%COMP%]:not(.cow-summary-card--large)   strong[_ngcontent-%COMP%] {\n  display: block;\n  margin-top: 6px;\n  color: #f8fbff;\n  font-size: 13px;\n}\n.detail-tabs[_ngcontent-%COMP%] {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n}\n.detail-tabs[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  padding: 12px 14px;\n  color: #9caec8;\n  font-size: 12px;\n  font-weight: 800;\n}\n.detail-tabs[_ngcontent-%COMP%]   span.active[_ngcontent-%COMP%] {\n  color: #9fe870;\n  border-bottom: 2px solid #9fe870;\n}\n.detail-content-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.detail-info-card[_ngcontent-%COMP%], \n.events-card[_ngcontent-%COMP%] {\n  padding: 16px;\n}\n.detail-info-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%], \n.events-card[_ngcontent-%COMP%]   h4[_ngcontent-%COMP%] {\n  margin: 0 0 14px;\n  color: #f8fbff;\n  font-size: 14px;\n}\n.events-card__head[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: center;\n}\n.events-card__head[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.events-table[_ngcontent-%COMP%] {\n  overflow-x: auto;\n}\n.events-table__row[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: 110px 130px 110px 150px minmax(220px, 1fr);\n  gap: 12px;\n  min-width: 760px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  padding: 11px 0;\n  color: #b9c7dc;\n  font-size: 12px;\n}\n.events-table__row--head[_ngcontent-%COMP%] {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n.events-table__row[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n}\n.events-table__empty[_ngcontent-%COMP%] {\n  padding: 18px 0 4px;\n  color: #8ea0bb;\n}\n@media (max-width: 1366px) and (min-width: 1081px) {\n  .birth-alerts__grid[_ngcontent-%COMP%], \n   .cross-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(4, minmax(0, 1fr));\n  }\n  .birth-card[_ngcontent-%COMP%], \n   .cross-card[_ngcontent-%COMP%] {\n    min-width: 0;\n  }\n}\n@media (max-width: 1600px) and (min-width: 1081px) {\n  .reproduction-kpis[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(5, minmax(0, 1fr));\n  }\n}\n@media (max-width: 1080px) {\n  .layout[_ngcontent-%COMP%], \n   .tree-columns[_ngcontent-%COMP%], \n   .genealogy-head[_ngcontent-%COMP%], \n   .birth-alerts__header[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n  .birth-alerts__metrics[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr 1fr;\n  }\n  .birth-alerts__grid[_ngcontent-%COMP%], \n   .cross-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n  .cow-detail-modal__body[_ngcontent-%COMP%], \n   .cow-summary-grid[_ngcontent-%COMP%], \n   .detail-content-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .page-head[_ngcontent-%COMP%], \n   .reproduction-head[_ngcontent-%COMP%] {\n    flex-direction: column;\n    align-items: stretch;\n  }\n  .band-head[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .premium-card__top[_ngcontent-%COMP%] {\n    flex-direction: column;\n  }\n  .birth-alerts[_ngcontent-%COMP%] {\n    padding: 16px;\n    border-radius: 22px;\n  }\n  .stats-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr 1fr;\n  }\n  .birth-alerts__title[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .birth-alerts__metrics[_ngcontent-%COMP%], \n   .birth-alerts__grid[_ngcontent-%COMP%], \n   .cross-grid[_ngcontent-%COMP%], \n   .birth-card__metrics[_ngcontent-%COMP%], \n   .birth-alerts__footer[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .birth-metric[_ngcontent-%COMP%]    + .birth-metric[_ngcontent-%COMP%] {\n    border-left: 0;\n    border-top: 1px solid rgba(148, 163, 184, 0.12);\n  }\n  .genealogy-selected[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .genealogy-foot[_ngcontent-%COMP%] {\n    flex-direction: column;\n  }\n  .detail-overlay[_ngcontent-%COMP%] {\n    padding: 10px;\n  }\n  .cow-detail-modal[_ngcontent-%COMP%] {\n    width: 100%;\n    max-height: 96vh;\n  }\n  .cow-detail-modal__body[_ngcontent-%COMP%] {\n    padding: 12px;\n  }\n  .cow-summary-card[_ngcontent-%COMP%]:not(.cow-summary-card--large), \n   .summary-split[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .summary-split[_ngcontent-%COMP%]   div[_ngcontent-%COMP%] {\n    border-right: 0;\n    border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  }\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px;\n  height: 24px;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: contents;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n  text-transform: none;\n  letter-spacing: 0;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: auto;\n  grid-row: auto;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  margin: 0;\n  line-height: 1.2;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n    grid-template-columns: 46px 1fr;\n  }\n  .reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%] {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]    > div[_ngcontent-%COMP%]:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .label[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.reproduction-kpis[_ngcontent-%COMP%]   .metric-card[_ngcontent-%COMP%]   .value[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%] {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%] {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.blue[_ngcontent-%COMP%] {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon.warning[_ngcontent-%COMP%] {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .metric-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%] {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-copy[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.reproduction-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.sanidad-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%], \n.trace-kpis[_ngcontent-%COMP%]   .kpi-card[_ngcontent-%COMP%]    > strong[_ngcontent-%COMP%] {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-reproduccion-page.component.css.map */'] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(GanaderiaReproduccionPageComponent, [{
     type: Component,
-    args: [{ selector: "app-ganaderia-reproduccion-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<div class="page">\r
-  <header class="reproduction-head">\r
-    <div>\r
-      <p class="eyebrow">Campo App \xB7 Ganader\xEDa</p>\r
-      <h2>Reproducci\xF3n y genealog\xEDa</h2>\r
-      <p>Programa reproductivo, pre\xF1ez, partos, pedigree e \xEDndices gen\xE9ticos del rodeo.</p>\r
-    </div>\r
-    <button class="btn-secondary reproduction-action" type="button" (click)="loadAll()">\r
-      <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7" /><path d="M20 4v6h-6" /></svg>\r
-      Actualizar\r
-    </button>\r
-  </header>\r
-\r
-  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>\r
-  <div class="card empty-box" *ngIf="loading()">Cargando reproduccion...</div>\r
-\r
-  <ng-container *ngIf="!loading() && resumen() as data">\r
-    <section class="stats-grid reproduction-kpis">\r
-      <article class="kpi-card" *ngIf="kpiVisible(0)"><div class="metric-icon"><svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="5" /><path d="M14 10l6-6m0 0h-5m5 0v5" /></svg></div><div class="kpi-copy"><span>Montas</span><small>Eventos naturales</small></div><strong>{{ data.dashboard.montasRegistradas }}</strong></article>\r
-      <article class="kpi-card" *ngIf="kpiVisible(1)"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></div><div class="kpi-copy"><span>Inseminaciones</span><small>Protocolos IA</small></div><strong>{{ data.dashboard.inseminacionesRegistradas }}</strong></article>\r
-      <article class="kpi-card" *ngIf="kpiVisible(2)"><div class="metric-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="5" /><path d="M12 14v7m-4-3.5h8" /></svg></div><div class="kpi-copy"><span>Pre\xF1ez activa</span><small>Vacas en seguimiento</small></div><strong>{{ data.dashboard.prenezActivas }}</strong></article>\r
-      <article class="kpi-card" *ngIf="kpiVisible(3)"><div class="metric-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></div><div class="kpi-copy"><span>Partos</span><small>Nacimientos registrados</small></div><strong>{{ data.dashboard.partosRegistrados }}</strong></article>\r
-      <article class="kpi-card" *ngIf="kpiVisible(4)"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg></div><div class="kpi-copy"><span>Tasa pre\xF1ez</span><small>Eficiencia reproductiva</small></div><strong>{{ data.dashboard.tasaPrenez }}%</strong></article>\r
-      <article class="kpi-card" *ngIf="kpiVisible(5)"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="M12 5v14" /><circle cx="12" cy="12" r="9" /></svg></div><div class="kpi-copy"><span>Servicios/pre\xF1ez</span><small>Promedio operativo</small></div><strong>{{ data.dashboard.serviciosPorPrenez }}</strong></article>\r
-    </section>\r
-    <div class="kpi-carousel" *ngIf="showKpiCarousel()">\r
-      <button type="button" aria-label="KPIs anteriores" (click)="previousKpiCards()" [disabled]="kpiOffset() === 0">\r
-        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>\r
-      </button>\r
-      <span>{{ kpiOffset() + 1 }}-{{ kpiOffset() + kpiPageSize }} de 6</span>\r
-      <button type="button" aria-label="KPIs siguientes" (click)="nextKpiCards()" [disabled]="kpiOffset() === maxKpiOffset()">\r
-        <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>\r
-      </button>\r
-    </div>\r
-\r
-    <section class="birth-alerts">\r
-      <div class="birth-alerts__header">\r
-        <div class="birth-alerts__title">\r
-          <div class="birth-alerts__icon" aria-hidden="true">\r
-            <svg viewBox="0 0 24 24" role="img">\r
-              <rect x="4" y="5" width="16" height="15" rx="3" />\r
-              <path d="M8 3v4m8-4v4M4 10h16" />\r
-              <path d="M8 15h3l2-3 3 5 2-3" />\r
-            </svg>\r
-          </div>\r
-          <div>\r
-            <h3>Alertas de proximos partos</h3>\r
-            <p>Monitorea las vacas proximas a parir y anticipate.</p>\r
-          </div>\r
-        </div>\r
-        <div class="birth-alerts__metrics">\r
-          <div class="birth-alerts__metric-icon" aria-hidden="true">\r
-            <svg viewBox="0 0 24 24" role="img">\r
-              <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />\r
-              <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />\r
-            </svg>\r
-          </div>\r
-          <article class="birth-metric birth-metric--green">\r
-            <span>Proximos 30 dias</span>\r
-            <strong>{{ alertasParto().length }}</strong>\r
-          </article>\r
-          <article class="birth-metric birth-metric--orange">\r
-            <span>En riesgo</span>\r
-            <strong>{{ alertasEnRiesgo() }}</strong>\r
-          </article>\r
-        </div>\r
-      </div>\r
-\r
-      <div class="birth-alerts__grid" *ngIf="paginatedAlertas().length; else noAlerts">\r
-        <article class="birth-card" *ngFor="let alerta of paginatedAlertas()" [ngClass]="riesgoClass(alerta)">\r
-          <span class="risk-badge" [ngClass]="riesgoClass(alerta)">{{ riesgoLabel(alerta) }} prioridad</span>\r
-          <div class="birth-card__content">\r
-            <div class="birth-card__top">\r
-              <div class="birth-card__avatar" aria-hidden="true">\r
-                <svg viewBox="0 0 24 24" role="img">\r
-                  <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />\r
-                  <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />\r
-                </svg>\r
-              </div>\r
-              <div>\r
-                <h4>VACA {{ alerta.animalCaravana }}</h4>\r
-                <p>RP {{ alerta.animalCaravana }} \xB7 HBA sin registrar</p>\r
-                <p class="birth-card__lot">\r
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5 9 4l6 2.5 5-2.5v13.5L15 20l-6-2.5L4 20V6.5Z" /><path d="M9 4v13.5M15 6.5V20" /></svg>\r
-                  <span>Lote: {{ alertaLote(alerta) }}</span>\r
-                </p>\r
-              </div>\r
-            </div>\r
-            <div class="birth-card__metrics">\r
-              <div class="birth-data">\r
-                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg>\r
-                <div><span>Fecha estimada</span><strong>{{ alerta.fecha }}</strong></div>\r
-              </div>\r
-              <div class="birth-data">\r
-                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg>\r
-                <div><span>Dias restantes</span><strong>{{ diasRestantes(alerta) }} dias</strong></div>\r
-              </div>\r
-              <div class="birth-data">\r
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3.5 18h17L12 3Z" /><path d="M12 9v4m0 3h.01" /></svg>\r
-                <div><span>Nivel de riesgo</span></div>\r
-                <strong class="inline-risk" [ngClass]="riesgoClass(alerta)">{{ riesgoLabel(alerta) }}</strong>\r
-              </div>\r
-              <div class="birth-data">\r
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 19V7l4-3 4 3v12" /><path d="M6 19h12M10 11h4" /></svg>\r
-                <div><span>Parto</span></div>\r
-                <strong>{{ alertaPartoNumber(alerta) }}\xB0</strong>\r
-              </div>\r
-            </div>\r
-            <button class="birth-card__action" type="button" (click)="viewAlertaDetalle(alerta)">\r
-              <span>Ver detalle</span>\r
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>\r
-            </button>\r
-          </div>\r
-        </article>\r
-      </div>\r
-\r
-      <ng-template #noAlerts><div class="empty-box premium-empty">Sin alertas reproductivas inmediatas.</div></ng-template>\r
-\r
-      <div class="birth-pagination" *ngIf="alertasParto().length > alertPageSize">\r
-        <button class="carousel-arrow" type="button" aria-label="Alertas anteriores" (click)="previousAlertPage()" [disabled]="alertPage() === 1">\r
-          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>\r
-          <span>Anterior</span>\r
-        </button>\r
-        <span>Pagina {{ alertPage() }} de {{ alertTotalPages() }}</span>\r
-        <button type="button" *ngFor="let page of alertPageNumbers()" [class.active]="page === alertPage()" (click)="setAlertPage(page)">{{ page }}</button>\r
-        <button class="carousel-arrow" type="button" aria-label="Alertas siguientes" (click)="nextAlertPage()" [disabled]="alertPage() === alertTotalPages()">\r
-          <span>Siguiente</span>\r
-          <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>\r
-        </button>\r
-      </div>\r
-\r
-      <div class="birth-alerts__footer">\r
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 10v6m0-9h.01" /></svg>\r
-        <span>Las fechas son estimadas en base a los registros del sistema y pueden variar.</span>\r
-        <strong>Ultima actualizacion: {{ today }}</strong>\r
-      </div>\r
-    </section>\r
-\r
-    <div class="layout">\r
-      <section class="card panel">\r
-        <div class="tabs">\r
-          <button type="button" [class.active]="mode() === 'MONTA'" (click)="setMode('MONTA')">Monta</button>\r
-          <button type="button" [class.active]="mode() === 'IA'" (click)="setMode('IA')">IA</button>\r
-          <button type="button" [class.active]="mode() === 'PRENEZ'" (click)="setMode('PRENEZ')">Pre\xF1ez</button>\r
-          <button type="button" [class.active]="mode() === 'PARTO'" (click)="setMode('PARTO')">Parto</button>\r
-          <button type="button" [class.active]="mode() === 'INDICE'" (click)="setMode('INDICE')">Indice</button>\r
-        </div>\r
-\r
-        <div class="form-grid" *ngIf="mode() === 'MONTA'">\r
-          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="hembraAllowedValues" [value]="montaForm().vacaId" (valueChange)="montaForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>\r
-          <app-remote-search-select label="Toro" placeholder="Buscar toro por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="machoAllowedValues" [value]="montaForm().toroId" (valueChange)="montaForm.update(f => ({ ...f, toroId: $event }))"></app-remote-search-select>\r
-          <label><span>Fecha</span><input type="date" [ngModel]="montaForm().fecha" (ngModelChange)="montaForm.update(f => ({ ...f, fecha: $event }))" /></label>\r
-          <label><span>Resultado</span><select [ngModel]="montaForm().resultado" (ngModelChange)="montaForm.update(f => ({ ...f, resultado: $event }))"><option value="PENDIENTE">Pendiente</option><option value="PRENADA">Pre\xF1ada</option><option value="FALLIDA">Fallida</option></select></label>\r
-        </div>\r
-\r
-        <div class="form-grid" *ngIf="mode() === 'IA'">\r
-          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="hembraAllowedValues" [value]="inseminacionForm().vacaId" (valueChange)="inseminacionForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>\r
-          <label><span>Fecha</span><input type="date" [ngModel]="inseminacionForm().fecha" (ngModelChange)="inseminacionForm.update(f => ({ ...f, fecha: $event }))" /></label>\r
-          <label><span>Genetica usada</span><input [ngModel]="inseminacionForm().geneticaUsada" (ngModelChange)="inseminacionForm.update(f => ({ ...f, geneticaUsada: $event }))" /></label>\r
-          <app-remote-search-select label="Tecnico" placeholder="Buscar usuario tecnico" [endpoint]="endpoints.usuarios" [extraParams]="activeUserParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="inseminacionForm().tecnico" (valueChange)="inseminacionForm.update(f => ({ ...f, tecnico: $event }))"></app-remote-search-select>\r
-          <label><span>Costo</span><input type="number" [ngModel]="inseminacionForm().costo" (ngModelChange)="inseminacionForm.update(f => ({ ...f, costo: $event }))" /></label>\r
-        </div>\r
-\r
-        <div class="form-grid" *ngIf="mode() === 'PRENEZ'">\r
-          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="hembraAllowedValues" [value]="prenezForm().vacaId" (valueChange)="prenezForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>\r
-          <label><span>Diagnostico</span><input type="date" [ngModel]="prenezForm().fechaDiagnostico" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>\r
-          <label><span>Estado</span><select [ngModel]="prenezForm().estado" (ngModelChange)="prenezForm.update(f => ({ ...f, estado: $event }))"><option value="PRENADA">Pre\xF1ada</option><option value="VACIA">Vac\xEDa</option><option value="CONTROL">Control</option></select></label>\r
-          <label><span>Parto estimado</span><input type="date" [ngModel]="prenezForm().fechaEstimadaParto" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaEstimadaParto: $event }))" /></label>\r
-          <label><span>Nivel de riesgo del parto</span><select [ngModel]="prenezForm().nivelRiesgoParto" (ngModelChange)="prenezForm.update(f => ({ ...f, nivelRiesgoParto: $event }))"><option value="BAJO">Bajo</option><option value="MEDIO">Medio</option><option value="ALTO">Alto</option></select></label>\r
-          <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [endpoint]="endpoints.usuarios" [extraParams]="veterinarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="prenezForm().veterinario" (valueChange)="prenezForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>\r
-        </div>\r
-\r
-        <div class="form-grid" *ngIf="mode() === 'PARTO'">\r
-          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="hembraAllowedValues" [value]="partoForm().madreId" (valueChange)="partoForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>\r
-          <app-remote-search-select label="Ternero" placeholder="Buscar ternero por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="partoForm().terneroId" (valueChange)="partoForm.update(f => ({ ...f, terneroId: $event }))"></app-remote-search-select>\r
-          <label><span>Fecha</span><input type="date" [ngModel]="partoForm().fecha" (ngModelChange)="partoForm.update(f => ({ ...f, fecha: $event }))" /></label>\r
-          <label><span>Viabilidad</span><select [ngModel]="partoForm().viabilidadTernero" (ngModelChange)="partoForm.update(f => ({ ...f, viabilidadTernero: $event }))"><option value="VIABLE">Viable</option><option value="NO_VIABLE">No viable</option><option value="OBSERVACION">Observacion</option></select></label>\r
-        </div>\r
-\r
-        <div class="form-grid" *ngIf="mode() === 'INDICE'">\r
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="indiceForm().animalId" (valueChange)="indiceForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>\r
-          <label><span>Fecha</span><input type="date" [ngModel]="indiceForm().fechaEvaluacion" (ngModelChange)="indiceForm.update(f => ({ ...f, fechaEvaluacion: $event }))" /></label>\r
-          <label><span>EPD</span><input type="number" [ngModel]="indiceForm().epd" (ngModelChange)="indiceForm.update(f => ({ ...f, epd: $event }))" /></label>\r
-          <label><span>DEP</span><input type="number" [ngModel]="indiceForm().dep" (ngModelChange)="indiceForm.update(f => ({ ...f, dep: $event }))" /></label>\r
-          <label><span>Indice productivo</span><input type="number" [ngModel]="indiceForm().indiceProductivo" (ngModelChange)="indiceForm.update(f => ({ ...f, indiceProductivo: $event }))" /></label>\r
-        </div>\r
-\r
-        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="mode() === 'MONTA' ? montaForm().observaciones : mode() === 'IA' ? inseminacionForm().observaciones : mode() === 'PRENEZ' ? prenezForm().observaciones : mode() === 'PARTO' ? partoForm().observaciones : indiceForm().observaciones" (ngModelChange)="mode() === 'MONTA' ? montaForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'IA' ? inseminacionForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'PRENEZ' ? prenezForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'PARTO' ? partoForm.update(f => ({ ...f, observaciones: $event })) : indiceForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>\r
-        <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitCurrent()">Guardar evento</button>\r
-      </section>\r
-\r
-      <section class="card panel">\r
-        <div class="genealogy-card">\r
-          <div class="genealogy-head">\r
-            <div class="genealogy-title">\r
-              <div class="band-icon band-icon--tree" aria-hidden="true">\r
-                <svg viewBox="0 0 24 24" role="img">\r
-                  <path d="M12 3v4m0 0H7.5A2.5 2.5 0 0 0 5 9.5V12m7-5h4.5A2.5 2.5 0 0 1 19 9.5V12M5 12v2.2m14-2.2v2.2M12 7v7.2" />\r
-                  <circle cx="5" cy="17" r="2.4" />\r
-                  <circle cx="12" cy="17" r="2.4" />\r
-                  <circle cx="19" cy="17" r="2.4" />\r
-                </svg>\r
-              </div>\r
-              <div>\r
-                <h3>Genealogia</h3>\r
-                <p>Arbol genealogico ascendente \xB7 3 generaciones</p>\r
-              </div>\r
-            </div>\r
-            <div class="genealogy-selected" *ngIf="genealogia() as tree">\r
-              <div class="animal-icon" [class.icon-male]="selectedAnimalIsMale()" aria-hidden="true">\r
-                <svg viewBox="0 0 24 24" role="img" *ngIf="selectedAnimalIsMale(); else selectedFemaleIcon">\r
-                  <circle cx="10" cy="14" r="5" />\r
-                  <path d="M14 10l6-6m0 0h-5m5 0v5" />\r
-                </svg>\r
-                <ng-template #selectedFemaleIcon>\r
-                  <svg viewBox="0 0 24 24" role="img">\r
-                    <circle cx="12" cy="9" r="5" />\r
-                    <path d="M12 14v7m-4-3.5h8" />\r
-                  </svg>\r
-                </ng-template>\r
-              </div>\r
-              <div><span>Animal</span><strong>{{ tree.animal.caravana }}</strong></div>\r
-              <div><span>Raza</span><strong>{{ tree.animal.raza }}</strong></div>\r
-            </div>\r
-          </div>\r
-          <div class="form-grid one genealogy-selector">\r
-            <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="selectedGenealogiaId()" (valueChange)="selectedGenealogiaId.set($event); loadGenealogia()"></app-remote-search-select>\r
-          </div>\r
-          <div class="genealogy-tree" *ngIf="genealogia() as tree">\r
-            <div class="genealogy-row genealogy-row--root">\r
-              <article class="pedigree-node pedigree-node--main"><div class="pedigree-icon" [class.icon-male]="selectedAnimalIsMale()" aria-hidden="true">\r
-                  <svg viewBox="0 0 24 24" role="img" *ngIf="selectedAnimalIsMale(); else rootFemaleIcon">\r
-                    <circle cx="10" cy="14" r="5" />\r
-                    <path d="M14 10l6-6m0 0h-5m5 0v5" />\r
-                  </svg>\r
-                  <ng-template #rootFemaleIcon>\r
-                    <svg viewBox="0 0 24 24" role="img">\r
-                      <circle cx="12" cy="9" r="5" />\r
-                      <path d="M12 14v7m-4-3.5h8" />\r
-                    </svg>\r
-                  </ng-template>\r
-                </div><div><strong>{{ tree.animal.caravana }}</strong><span>{{ tree.animal.raza }}</span></div></article>\r
-            </div>\r
-            <div class="genealogy-connector"></div>\r
-            <div class="genealogy-row">\r
-              <p class="generation-label">1 Generacion <span>Padres</span></p>\r
-              <div class="generation-grid">\r
-                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(1)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">\r
-                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon1">\r
-                      <circle cx="10" cy="14" r="5" />\r
-                      <path d="M14 10l6-6m0 0h-5m5 0v5" />\r
-                    </svg>\r
-                    <ng-template #femaleNodeIcon1>\r
-                      <svg viewBox="0 0 24 24" role="img">\r
-                        <circle cx="12" cy="9" r="5" />\r
-                        <path d="M12 14v7m-4-3.5h8" />\r
-                      </svg>\r
-                    </ng-template>\r
-                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>\r
-              </div>\r
-            </div>\r
-            <div class="genealogy-row">\r
-              <p class="generation-label">2 Generacion <span>Abuelos</span></p>\r
-              <div class="generation-grid">\r
-                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(2)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">\r
-                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon2">\r
-                      <circle cx="10" cy="14" r="5" />\r
-                      <path d="M14 10l6-6m0 0h-5m5 0v5" />\r
-                    </svg>\r
-                    <ng-template #femaleNodeIcon2>\r
-                      <svg viewBox="0 0 24 24" role="img">\r
-                        <circle cx="12" cy="9" r="5" />\r
-                        <path d="M12 14v7m-4-3.5h8" />\r
-                      </svg>\r
-                    </ng-template>\r
-                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>\r
-              </div>\r
-            </div>\r
-            <div class="genealogy-row">\r
-              <p class="generation-label">3 Generacion <span>Bisabuelos</span></p>\r
-              <div class="generation-grid">\r
-                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(3)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">\r
-                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon3">\r
-                      <circle cx="10" cy="14" r="5" />\r
-                      <path d="M14 10l6-6m0 0h-5m5 0v5" />\r
-                    </svg>\r
-                    <ng-template #femaleNodeIcon3>\r
-                      <svg viewBox="0 0 24 24" role="img">\r
-                        <circle cx="12" cy="9" r="5" />\r
-                        <path d="M12 14v7m-4-3.5h8" />\r
-                      </svg>\r
-                    </ng-template>\r
-                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>\r
-              </div>\r
-            </div>\r
-            <div class="genealogy-foot"><span>Info basada en animales registrados en el sistema.</span><span>Ultima actualizacion: {{ today }}</span></div>\r
-          </div>\r
-          <div class="empty-box premium-empty" *ngIf="!genealogia()">Selecciona un animal para visualizar genealogia.</div>\r
-        </div>\r
-      </section>\r
-    </div>\r
-\r
-    <section class="cross-panel">\r
-      <div class="birth-alerts__header">\r
-        <div class="birth-alerts__title">\r
-          <div class="birth-alerts__icon" aria-hidden="true">\r
-            <svg viewBox="0 0 24 24" role="img">\r
-              <path d="M6 7c0-2 1.5-3.5 3.5-3.5S13 5 13 7s-1.5 3.5-3.5 3.5S6 9 6 7Z" />\r
-              <path d="M11 11.5c1.5-1 3.5-1 5 0 2 1.3 2.7 4 1.4 6L16 20l-2.2-1.2" />\r
-              <path d="M4 20c.4-3.8 2.5-6.2 5.5-6.2s5.1 2.4 5.5 6.2" />\r
-            </svg>\r
-          </div>\r
-          <div>\r
-            <h3>Recomendaciones de cruzamiento</h3>\r
-            <p>Compatibilidad heuristica por genealogia directa e indices disponibles.</p>\r
-          </div>\r
-        </div>\r
-        <div class="birth-alerts__metrics cross-panel__metrics">\r
-          <div class="birth-alerts__metric-icon" aria-hidden="true">\r
-            <svg viewBox="0 0 24 24" role="img">\r
-              <path d="M5 19c1.6-5.2 4.8-8 9.5-8H20" />\r
-              <path d="M16 7h4v4" />\r
-              <path d="M4 12h4m-2-2v4" />\r
-            </svg>\r
-          </div>\r
-          <article class="birth-metric birth-metric--green">\r
-            <span>Recomendadas</span>\r
-            <strong>{{ recomendaciones().length }}</strong>\r
-          </article>\r
-          <article class="birth-metric birth-metric--orange">\r
-            <span>Score maximo</span>\r
-            <strong>{{ recomendaciones()[0]?.score || 0 }}</strong>\r
-          </article>\r
-        </div>\r
-      </div>\r
-\r
-      <div class="cross-grid" *ngIf="paginatedRecomendaciones().length; else noRecommendations">\r
-        <article class="cross-card" *ngFor="let item of paginatedRecomendaciones()" [ngClass]="recommendationClass(item)">\r
-          <span class="risk-badge" [ngClass]="recommendationClass(item)">{{ recommendationQuality(item) }} compatibilidad</span>\r
-          <div class="cross-card__pair">\r
-            <div class="cross-animal">\r
-              <div class="cross-animal__icon" aria-hidden="true">\r
-                <svg viewBox="0 0 24 24" role="img"><circle cx="12" cy="9" r="5" /><path d="M12 14v7m-4-3.5h8" /></svg>\r
-              </div>\r
-              <div><span>Vaca</span><strong>{{ item.vacaCaravana }}</strong></div>\r
-            </div>\r
-            <div class="cross-link" aria-hidden="true">\r
-              <svg viewBox="0 0 24 24" role="img"><path d="M7 12h10m-4-4 4 4-4 4" /></svg>\r
-            </div>\r
-            <div class="cross-animal">\r
-              <div class="cross-animal__icon cross-animal__icon--male" aria-hidden="true">\r
-                <svg viewBox="0 0 24 24" role="img"><circle cx="10" cy="14" r="5" /><path d="M14 10l6-6m0 0h-5m5 0v5" /></svg>\r
-              </div>\r
-              <div><span>Toro</span><strong>{{ item.toroCaravana }}</strong></div>\r
-            </div>\r
-          </div>\r
-          <div class="cross-card__metrics">\r
-            <div class="birth-data">\r
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg>\r
-              <div><span>Score genetico</span></div>\r
-              <strong>{{ item.score }}</strong>\r
-            </div>\r
-            <div class="birth-data">\r
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /><path d="m9 12 2 2 4-5" /></svg>\r
-              <div><span>Parentesco directo</span></div>\r
-              <strong>Validado</strong>\r
-            </div>\r
-            <div class="birth-data">\r
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18c0-4 2.7-7 6-7s6 3 6 7" /><path d="M9 8a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z" /></svg>\r
-              <div><span>Modelo</span></div>\r
-              <strong>Heuristico</strong>\r
-            </div>\r
-          </div>\r
-          <p class="cross-card__note">{{ item.motivo }}</p>\r
-          <button class="birth-card__action" type="button" (click)="viewRecommendation(item)">\r
-            <span>Ver genealogia</span>\r
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>\r
-          </button>\r
-        </article>\r
-      </div>\r
-\r
-      <ng-template #noRecommendations><div class="empty-box premium-empty">Sin recomendaciones disponibles.</div></ng-template>\r
-\r
-      <div class="birth-pagination" *ngIf="recomendaciones().length > recommendationPageSize">\r
-        <button class="carousel-arrow" type="button" aria-label="Recomendaciones anteriores" (click)="previousRecommendationPage()" [disabled]="recommendationPage() === 1">\r
-          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>\r
-          <span>Anterior</span>\r
-        </button>\r
-        <span>Pagina {{ recommendationPage() }} de {{ recommendationTotalPages() }}</span>\r
-        <button type="button" *ngFor="let page of recommendationPageNumbers()" [class.active]="page === recommendationPage()" (click)="setRecommendationPage(page)">{{ page }}</button>\r
-        <button class="carousel-arrow" type="button" aria-label="Recomendaciones siguientes" (click)="nextRecommendationPage()" [disabled]="recommendationPage() === recommendationTotalPages()">\r
-          <span>Siguiente</span>\r
-          <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>\r
-        </button>\r
-      </div>\r
-    </section>\r
-  </ng-container>\r
-\r
-  <div class="detail-overlay" *ngIf="selectedAlert() as alerta" (click)="closeAlertaDetalle()" (document:keydown.escape)="closeAlertaDetalle()">\r
-    <section class="cow-detail-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">\r
-      <header class="cow-detail-modal__header">\r
-        <div class="cow-detail-modal__eyebrow">\r
-          <span class="birth-alerts__icon detail-title-icon" aria-hidden="true">\r
-            <svg viewBox="0 0 24 24" role="img">\r
-              <path d="M5 5h14v14H5z" />\r
-              <path d="m8 12 2.5 2.5L16 9" />\r
-            </svg>\r
-          </span>\r
-          <strong>Detalle de la vaca</strong>\r
-        </div>\r
-        <button class="detail-close" type="button" aria-label="Cerrar detalle" (click)="closeAlertaDetalle()">\r
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>\r
-        </button>\r
-      </header>\r
-\r
-      <div class="cow-detail-modal__body" *ngIf="selectedAlertAnimal() as animal">\r
-        <aside class="cow-profile-card">\r
-          <div class="cow-profile-card__avatar" aria-hidden="true">\r
-            <svg viewBox="0 0 24 24" role="img">\r
-              <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />\r
-              <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />\r
-            </svg>\r
-          </div>\r
-          <h3>VACA {{ animal.caravana }}</h3>\r
-          <div class="cow-profile-card__badges">\r
-            <span>RP {{ animal.caravana }}</span>\r
-            <span>HBA pendiente</span>\r
-          </div>\r
-          <dl class="cow-profile-list">\r
-            <div><dt>Raza</dt><dd>{{ animal.raza || 'Sin dato' }}</dd></div>\r
-            <div><dt>Fecha de nacimiento</dt><dd>{{ animal.fechaNacimiento || 'Sin dato' }}</dd></div>\r
-            <div><dt>Categoria</dt><dd>{{ animal.sexo || 'Sin dato' }}</dd></div>\r
-            <div><dt>Estado reproductivo</dt><dd><span class="inline-risk risk-low">{{ selectedAlertControl()?.estado || 'Prenada' }}</span></dd></div>\r
-            <div><dt>Registro</dt><dd>{{ animal.estado || 'Sin dato' }}</dd></div>\r
-          </dl>\r
-        </aside>\r
-\r
-        <section class="cow-detail-main">\r
-          <div class="cow-summary-grid">\r
-            <article class="cow-summary-card cow-summary-card--large">\r
-              <span class="summary-label">Proximo parto</span>\r
-              <strong>{{ alerta.fecha }}</strong>\r
-              <small>Fecha estimada</small>\r
-              <div class="summary-split">\r
-                <div><span>Dias restantes</span><b>{{ diasRestantes(alerta) }} dias</b></div>\r
-                <div><span>Nivel de riesgo</span><b class="inline-risk" [ngClass]="riesgoClass(alerta)">{{ selectedAlertRiskLabel() }}</b></div>\r
-                <div><span>Numero de parto</span><b>{{ selectedAlertPartoNumber() }}\xB0</b></div>\r
-              </div>\r
-            </article>\r
-            <article class="cow-summary-card">\r
-              <div><span>Ultimo servicio</span><strong>{{ lastServiceLabel(alerta.animalId) }}</strong></div>\r
-              <div><span>Gestacion</span><strong>{{ selectedAlertControl()?.fechaDiagnostico ? 'En seguimiento' : 'Sin dato' }}</strong></div>\r
-              <div><span>Peso estimado</span><strong>{{ animal.pesoActualKg || 'Sin dato' }}<ng-container *ngIf="animal.pesoActualKg"> kg</ng-container></strong></div>\r
-              <div><span>Ubicacion</span><strong>{{ animal.ubicacionActual || 'Sin potrero' }}</strong></div>\r
-            </article>\r
-          </div>\r
-\r
-          <div class="detail-tabs">\r
-            <span class="active">Informacion general</span>\r
-            <span>Ficha tecnica</span>\r
-            <span>Reproduccion</span>\r
-            <span>Eventos</span>\r
-          </div>\r
-\r
-          <div class="detail-content-grid">\r
-            <article class="detail-info-card">\r
-              <h4>Informacion general</h4>\r
-              <dl>\r
-                <div><dt>Raza</dt><dd>{{ animal.raza || 'Sin dato' }}</dd></div>\r
-                <div><dt>Fecha de nacimiento</dt><dd>{{ animal.fechaNacimiento || 'Sin dato' }}</dd></div>\r
-                <div><dt>Edad</dt><dd>{{ technicalAge(animal) }}</dd></div>\r
-                <div><dt>Madre</dt><dd>{{ animal.madreCaravana || 'Sin dato' }}</dd></div>\r
-                <div><dt>Padre</dt><dd>{{ animal.padreCaravana || 'Sin dato' }}</dd></div>\r
-                <div><dt>Ubicacion actual</dt><dd>{{ animal.ubicacionActual || 'Sin dato' }}</dd></div>\r
-                <div><dt>Observaciones</dt><dd>{{ animal.observaciones || 'Sin observaciones' }}</dd></div>\r
-              </dl>\r
-            </article>\r
-\r
-            <article class="detail-info-card">\r
-              <h4>Resumen reproductivo</h4>\r
-              <dl>\r
-                <div><dt>Estado reproductivo</dt><dd>{{ selectedAlertControl()?.estado || 'Sin dato' }}</dd></div>\r
-                <div><dt>Ultimo servicio</dt><dd>{{ lastServiceLabel(alerta.animalId) }}</dd></div>\r
-                <div><dt>Diagnostico de prenez</dt><dd>{{ selectedAlertControl()?.fechaDiagnostico || 'Sin dato' }}</dd></div>\r
-                <div><dt>Metodo diagnostico</dt><dd>Pendiente de modelo</dd></div>\r
-                <div><dt>Fecha estimada de parto</dt><dd>{{ alerta.fecha }}</dd></div>\r
-                <div><dt>Numero de parto</dt><dd>{{ selectedAlertPartoNumber() }}\xB0</dd></div>\r
-              </dl>\r
-            </article>\r
-          </div>\r
-\r
-          <article class="events-card">\r
-            <div class="events-card__head">\r
-              <h4>Seguimiento de eventos</h4>\r
-              <span>{{ selectedAlertEvents().length }} eventos</span>\r
-            </div>\r
-            <div class="events-table">\r
-              <div class="events-table__row events-table__row--head">\r
-                <span>Fecha</span><span>Tipo</span><span>Estado</span><span>Responsable</span><span>Detalle</span>\r
-              </div>\r
-              <div class="events-table__row" *ngFor="let event of selectedAlertEvents()">\r
-                <span>{{ event.fecha }}</span><strong>{{ event.tipo }}</strong><span>{{ event.estado }}</span><span>{{ event.responsable }}</span><span>{{ event.detalle }}</span>\r
-              </div>\r
-              <div class="events-table__empty" *ngIf="!selectedAlertEvents().length">Sin eventos asociados a esta vaca.</div>\r
-            </div>\r
-          </article>\r
-        </section>\r
-      </div>\r
-\r
-      <footer class="cow-detail-modal__footer">\r
-        <span>Ultima actualizacion: {{ today }}</span>\r
-        <button class="btn-secondary" type="button" (click)="closeAlertaDetalle()">Cerrar</button>\r
-      </footer>\r
-    </section>\r
-  </div>\r
-</div>\r
-\r
-\r
-\r
-\r
-`, styles: ['/* src/app/pages/ganaderia-reproduccion-page/ganaderia-reproduccion-page.component.css */\n.page {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n.page-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 16px;\n}\n.page-head p {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.reproduction-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n  color: #f8fbff;\n}\n.reproduction-head h2 {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.reproduction-head p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  font-weight: 900;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n}\n.reproduction-action {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.reproduction-action svg,\n.metric-icon svg {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(6, minmax(0, 1fr));\n  gap: 10px;\n}\n.metric-card {\n  position: relative;\n  min-height: 82px;\n  overflow: hidden;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 16px;\n  padding: 16px 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.9),\n      rgba(11, 21, 41, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 34%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.metric-card::before {\n  content: "";\n  position: absolute;\n  inset: 0;\n  background:\n    radial-gradient(\n      circle at 18% 0%,\n      rgba(159, 232, 112, 0.08),\n      transparent 42%);\n  pointer-events: none;\n}\n.metric-card .label {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n}\n.metric-card .value {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin: 10px 0 0;\n  color: #f8fbff;\n  font-size: 24px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.03em;\n}\n.metric-card--accent {\n  border-color: rgba(159, 232, 112, 0.16);\n  box-shadow: inset 0 0 28px rgba(159, 232, 112, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.metric-card--accent .value {\n  color: #9fe870;\n}\n.metric-card--warning {\n  border-color: rgba(255, 184, 77, 0.18);\n  box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.065), inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.metric-card--warning .value {\n  color: #ffb84d;\n}\n.reproduction-kpis .metric-card {\n  display: grid;\n  grid-template-columns: 54px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n  min-height: 104px;\n  border-radius: 20px;\n  padding: 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.1),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.reproduction-kpis .metric-card--blue {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%);\n}\n.metric-icon {\n  display: grid;\n  width: 52px;\n  height: 52px;\n  place-items: center;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  border-radius: 18px;\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.metric-icon svg {\n  width: 28px;\n  height: 28px;\n}\n.reproduction-kpis .metric-card .label {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  letter-spacing: 0;\n  text-transform: none;\n}\n.reproduction-kpis .metric-card .value {\n  margin: 4px 0 0;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.04em;\n}\n.reproduction-kpis .metric-card small {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.kpi-carousel {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 10px;\n  margin-top: -8px;\n}\n.kpi-carousel button {\n  width: 42px;\n  height: 38px;\n  border-radius: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.16);\n  color: #dbeafe;\n  background: rgba(7, 15, 31, 0.52);\n  display: grid;\n  place-items: center;\n  cursor: pointer;\n}\n.kpi-carousel button:hover:not(:disabled) {\n  border-color: rgba(159, 232, 112, 0.42);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.08);\n}\n.kpi-carousel button:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.kpi-carousel svg {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.kpi-carousel span {\n  color: #8ea0bb;\n  font-size: 13px;\n  font-weight: 700;\n}\n.layout {\n  display: grid;\n  grid-template-columns: 1.08fr 0.92fr;\n  gap: 18px;\n}\n.panel,\n.premium-band {\n  padding: 20px;\n}\n.premium-band,\n.panel {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 24px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.9),\n      rgba(11, 21, 41, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 30%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.band-head {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  margin-bottom: 16px;\n}\n.band-head.compact {\n  margin-bottom: 14px;\n}\n.band-icon {\n  width: 56px;\n  height: 56px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #f8fbff;\n  font-weight: 800;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(24, 39, 69, 0.9),\n      rgba(13, 24, 47, 0.86));\n}\n.band-icon svg,\n.animal-icon svg,\n.pedigree-icon svg {\n  width: 26px;\n  height: 26px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.band-head h3 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 26px;\n  letter-spacing: 0;\n}\n.band-head p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.premium-list {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.cards-compact {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n}\n.premium-card {\n  display: flex;\n  gap: 16px;\n  padding: 16px;\n  border-radius: 22px;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  background: rgba(9, 18, 36, 0.58);\n}\n.premium-card__icon {\n  width: 54px;\n  height: 54px;\n  flex: 0 0 54px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  background: rgba(110, 168, 255, 0.08);\n}\n.premium-card__body {\n  flex: 1;\n  min-width: 0;\n}\n.premium-card__top {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: flex-start;\n}\n.premium-card h4 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 18px;\n}\n.premium-card p {\n  margin: 6px 0 0;\n  color: #90a1bb;\n}\n.premium-card__note {\n  font-size: 14px;\n}\n.badge {\n  border-radius: 999px;\n  padding: 8px 12px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.12);\n  border: 1px solid rgba(159, 232, 112, 0.2);\n  font-weight: 800;\n  font-size: 12px;\n}\n.badge--danger {\n  color: #fecaca;\n  background: rgba(248, 113, 113, 0.14);\n  border-color: rgba(248, 113, 113, 0.24);\n}\n.birth-alerts {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    radial-gradient(\n      circle at 10% 0%,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%),\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.92),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 22px 44px rgba(2, 8, 23, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.cross-panel {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    radial-gradient(\n      circle at 10% 0%,\n      rgba(159, 232, 112, 0.1),\n      transparent 32%),\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.92),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 22px 44px rgba(2, 8, 23, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.birth-alerts__header {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) auto;\n  gap: 18px;\n  align-items: center;\n  margin-bottom: 14px;\n}\n.birth-alerts__title {\n  display: grid;\n  grid-template-columns: 46px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n}\n.birth-alerts__icon,\n.birth-card__avatar {\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(110, 168, 255, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(25, 43, 76, 0.88),\n      rgba(11, 23, 48, 0.82));\n  color: #9fe870;\n  box-shadow: 0 0 26px rgba(110, 168, 255, 0.1);\n}\n.birth-alerts__icon {\n  width: 46px;\n  height: 46px;\n  border-radius: 13px;\n}\n.birth-alerts svg,\n.birth-card svg,\n.birth-pagination svg,\n.birth-alerts__footer svg {\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.birth-alerts__icon svg {\n  width: 25px;\n  height: 25px;\n}\n.birth-card__avatar svg {\n  width: 31px;\n  height: 31px;\n}\n.birth-alerts__title h3 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 18px;\n  letter-spacing: -0.02em;\n}\n.birth-alerts__title p {\n  margin: 8px 0 0;\n  color: #9caec8;\n  font-size: 13px;\n}\n.birth-alerts__metrics {\n  display: grid;\n  grid-template-columns: 46px repeat(2, minmax(92px, 1fr));\n  align-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  overflow: hidden;\n  background: rgba(7, 15, 31, 0.42);\n}\n.birth-alerts__metric-icon {\n  display: grid;\n  place-items: center;\n  height: 58px;\n  color: #9fe870;\n}\n.birth-alerts__metric-icon svg {\n  width: 30px;\n  height: 30px;\n}\n.birth-metric {\n  padding: 11px 14px;\n}\n.birth-metric + .birth-metric {\n  border-left: 1px solid rgba(148, 163, 184, 0.12);\n}\n.birth-metric strong {\n  display: block;\n  margin-top: 4px;\n  color: #f8fbff;\n  font-size: 18px;\n  line-height: 1;\n}\n.birth-metric span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n}\n.birth-metric--orange strong {\n  color: #ff7a3d;\n}\n.birth-metric--green {\n  box-shadow: inset 0 0 28px rgba(159, 232, 112, 0.06);\n}\n.birth-metric--orange {\n  box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.07);\n}\n.birth-alerts__grid {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.birth-card {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 12px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.88),\n      rgba(8, 18, 37, 0.86));\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.birth-card.risk-high {\n  border-color: rgba(255, 107, 107, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 107, 107, 0.06);\n}\n.birth-card.risk-medium {\n  border-color: rgba(255, 184, 77, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 184, 77, 0.06);\n}\n.birth-card.risk-low {\n  border-color: rgba(159, 232, 112, 0.18);\n  box-shadow: 0 14px 30px rgba(159, 232, 112, 0.05);\n}\n.birth-card__top {\n  display: grid;\n  grid-template-columns: 56px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n  margin-top: 8px;\n}\n.birth-card__avatar {\n  width: 56px;\n  height: 56px;\n  border-radius: 50%;\n  border-color: rgba(159, 232, 112, 0.22);\n  background:\n    radial-gradient(\n      circle at 38% 28%,\n      rgba(255, 255, 255, 0.2),\n      transparent 16%),\n    linear-gradient(\n      145deg,\n      rgba(159, 232, 112, 0.2),\n      rgba(8, 18, 37, 0.9));\n}\n.birth-card__content {\n  min-width: 0;\n}\n.birth-card h4 {\n  margin: 0 0 4px;\n  color: #f8fbff;\n  font-size: 15px;\n  letter-spacing: -0.02em;\n}\n.birth-card p {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.birth-card__lot {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  margin-top: 6px !important;\n  color: #c9d7ec !important;\n  font-size: 10.5px !important;\n}\n.birth-card__lot svg {\n  width: 13px;\n  height: 13px;\n  color: #9fe870;\n  flex: 0 0 16px;\n}\n.risk-badge {\n  display: inline-flex;\n  width: fit-content;\n  border-radius: 999px;\n  padding: 5px 8px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.18);\n  font-size: 10px;\n  font-weight: 900;\n  letter-spacing: -0.01em;\n}\n.risk-badge.risk-high {\n  color: #fecaca;\n  background: rgba(255, 107, 107, 0.12);\n  border-color: rgba(255, 107, 107, 0.24);\n}\n.risk-badge.risk-medium {\n  color: #fde68a;\n  background: rgba(255, 184, 77, 0.12);\n  border-color: rgba(255, 184, 77, 0.24);\n}\n.birth-card__metrics {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 0;\n  margin-top: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 10px;\n  overflow: hidden;\n}\n.birth-data {\n  display: grid;\n  grid-template-columns: 22px minmax(0, 1fr) auto;\n  gap: 8px;\n  align-items: center;\n  border: 0;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 0;\n  padding: 12px 8px;\n  background: rgba(7, 15, 31, 0.42);\n}\n.birth-data:last-child {\n  border-bottom: 0;\n}\n.birth-data svg {\n  width: 17px;\n  height: 17px;\n  color: #b8c6dd;\n}\n.birth-data span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 10.5px;\n}\n.birth-data strong {\n  display: block;\n  color: #f8fbff;\n  font-size: 12px;\n  text-align: right;\n}\n.birth-data:nth-child(2) strong {\n  color: #ffb84d;\n}\n.inline-risk {\n  border-radius: 999px;\n  padding: 5px 8px;\n  font-size: 10px !important;\n  background: rgba(159, 232, 112, 0.12);\n  border: 1px solid rgba(159, 232, 112, 0.14);\n}\n.inline-risk.risk-high {\n  color: #ff6b6b;\n  background: rgba(255, 107, 107, 0.12);\n  border-color: rgba(255, 107, 107, 0.18);\n}\n.inline-risk.risk-medium {\n  color: #ffb84d;\n  background: rgba(255, 184, 77, 0.12);\n  border-color: rgba(255, 184, 77, 0.18);\n}\n.inline-risk.risk-low {\n  color: #9fe870;\n}\n.birth-card__action {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 10px;\n  width: 100%;\n  margin-top: 12px;\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 8px;\n  padding: 10px 12px;\n  color: #9fe870;\n  background: rgba(7, 15, 31, 0.42);\n  font-weight: 900;\n  font-size: 12px;\n  cursor: pointer;\n  transition:\n    border-color 160ms ease,\n    transform 160ms ease,\n    box-shadow 160ms ease;\n}\n.birth-card__action:hover {\n  border-color: rgba(159, 232, 112, 0.48);\n  transform: translateY(-1px);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.birth-card__action svg {\n  width: 18px;\n  height: 18px;\n}\n.birth-pagination {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  flex-wrap: wrap;\n  gap: 10px;\n  margin: 10px -16px 0;\n  padding: 10px 16px;\n  border-top: 1px solid rgba(148, 163, 184, 0.08);\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  background: rgba(7, 15, 31, 0.3);\n}\n.birth-pagination button {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 8px;\n  padding: 10px 14px;\n  color: #dbeafe;\n  background: rgba(7, 15, 31, 0.52);\n  font-weight: 800;\n  cursor: pointer;\n}\n.birth-pagination button.active {\n  color: #081225;\n  background: #9fe870;\n  border-color: #9fe870;\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.22);\n}\n.birth-pagination button:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.birth-pagination span {\n  color: #8ea0bb;\n  font-size: 13px;\n  margin-left: 8px;\n}\n.birth-pagination .carousel-arrow {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 112px;\n  justify-content: center;\n}\n.birth-pagination .carousel-arrow svg {\n  width: 18px;\n  height: 18px;\n}\n.birth-alerts__footer {\n  display: grid;\n  grid-template-columns: 22px minmax(0, 1fr) auto;\n  gap: 10px;\n  align-items: center;\n  margin: 12px -16px -14px;\n  border: 1px solid rgba(148, 163, 184, 0.1);\n  border-radius: 10px;\n  padding: 13px 24px;\n  color: #8ea0bb;\n  background: rgba(7, 15, 31, 0.46);\n}\n.birth-alerts__footer svg {\n  width: 20px;\n  height: 20px;\n  color: #6ea8ff;\n}\n.birth-alerts__footer strong {\n  color: #c9d7ec;\n  font-size: 13px;\n}\n.cross-grid {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.cross-card {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 12px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.88),\n      rgba(8, 18, 37, 0.86));\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.cross-card.risk-low {\n  border-color: rgba(159, 232, 112, 0.18);\n  box-shadow: 0 14px 30px rgba(159, 232, 112, 0.05);\n}\n.cross-card.risk-medium {\n  border-color: rgba(255, 184, 77, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 184, 77, 0.06);\n}\n.cross-card.risk-high {\n  border-color: rgba(255, 107, 107, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 107, 107, 0.06);\n}\n.cross-card__pair {\n  display: flex;\n  flex-direction: column;\n  gap: 9px;\n  margin-top: 4px;\n}\n.cross-animal {\n  display: grid;\n  grid-template-columns: 42px minmax(0, 1fr);\n  gap: 10px;\n  align-items: center;\n}\n.cross-animal__icon {\n  width: 42px;\n  height: 42px;\n  display: grid;\n  place-items: center;\n  border-radius: 50%;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.18);\n}\n.cross-animal__icon--male {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, 0.1);\n  border-color: rgba(110, 168, 255, 0.18);\n}\n.cross-animal__icon svg,\n.cross-link svg,\n.cross-panel svg {\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.cross-animal__icon svg {\n  width: 23px;\n  height: 23px;\n}\n.cross-animal span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 10.5px;\n}\n.cross-animal strong {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n}\n.cross-link {\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  opacity: 0.8;\n}\n.cross-link svg {\n  width: 22px;\n  height: 22px;\n}\n.cross-card__metrics {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 0;\n  border: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 10px;\n  overflow: hidden;\n}\n.cross-card__note {\n  min-height: 48px;\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  line-height: 1.45;\n}\n.tabs {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  margin-bottom: 16px;\n}\n.tabs button {\n  border: 1px solid rgba(148, 163, 184, 0.16);\n  border-radius: 999px;\n  background: rgba(15, 23, 42, 0.54);\n  color: #9bb0cc;\n  padding: 10px 14px;\n  font-weight: 800;\n  cursor: pointer;\n}\n.tabs button.active {\n  color: #081225;\n  background: #9fe870;\n  border-color: #9fe870;\n}\n.form-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.form-grid.one {\n  grid-template-columns: 1fr;\n}\n.form-grid label,\n.textarea-field {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 13px;\n}\n.textarea-field {\n  margin: 12px 0;\n}\n.textarea-field textarea {\n  min-height: 88px;\n}\n.tree {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.tree-columns {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.tree-title {\n  margin: 0 0 8px;\n  color: #8ea0bb;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  font-size: 11px;\n  font-weight: 800;\n}\n.tree-node {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  background: rgba(9, 18, 36, 0.58);\n  padding: 12px 14px;\n  margin-bottom: 8px;\n}\n.tree-node.main {\n  border-color: rgba(159, 232, 112, 0.22);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.06);\n}\n.tree-node strong {\n  display: block;\n  color: #f8fbff;\n}\n.tree-node span {\n  color: #90a1bb;\n  font-size: 13px;\n}\n.genealogy-card {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.genealogy-head {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.72fr);\n  gap: 16px;\n  align-items: center;\n}\n.genealogy-title {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n}\n.genealogy-title h3 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 26px;\n}\n.genealogy-title p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.genealogy-selected {\n  display: grid;\n  grid-template-columns: 54px 1fr 1fr;\n  gap: 16px;\n  align-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background: rgba(9, 18, 36, 0.58);\n}\n.genealogy-selected span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n  margin-bottom: 4px;\n}\n.genealogy-selected strong {\n  color: #f8fbff;\n  font-size: 16px;\n}\n.animal-icon,\n.pedigree-icon {\n  width: 48px;\n  height: 48px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  font-weight: 900;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.16);\n}\n.icon-male {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, 0.1);\n  border-color: rgba(110, 168, 255, 0.18);\n}\n.genealogy-selector {\n  max-width: 420px;\n}\n.genealogy-tree {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 24px;\n  padding: 18px;\n  background:\n    radial-gradient(\n      circle at top,\n      rgba(159, 232, 112, 0.05),\n      transparent 36%),\n    rgba(7, 15, 31, 0.5);\n}\n.genealogy-row {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 10px;\n}\n.genealogy-row--root {\n  padding-top: 4px;\n}\n.genealogy-connector {\n  width: 1px;\n  height: 22px;\n  align-self: center;\n  border-left: 1px dashed rgba(159, 232, 112, 0.6);\n}\n.generation-label {\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 4px;\n  margin: 0;\n  padding: 8px 16px;\n  border-radius: 12px;\n  color: #c6d4ea;\n  font-size: 12px;\n  font-weight: 900;\n  background: rgba(110, 168, 255, 0.06);\n}\n.generation-label span {\n  color: #8ea0bb;\n  font-weight: 700;\n}\n.generation-grid {\n  width: 100%;\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));\n  gap: 10px;\n}\n.pedigree-node {\n  display: grid;\n  grid-template-columns: 48px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n  min-height: 80px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 18px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(17, 32, 60, 0.82),\n      rgba(9, 18, 36, 0.76));\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.pedigree-node--main {\n  min-width: 240px;\n  border-color: rgba(159, 232, 112, 0.45);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.pedigree-node strong {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n}\n.pedigree-node span {\n  display: block;\n  margin-top: 4px;\n  color: #8ea0bb;\n  font-size: 13px;\n}\n.genealogy-foot {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.11);\n  border-radius: 16px;\n  padding: 12px 14px;\n  color: #8ea0bb;\n  background: rgba(9, 18, 36, 0.48);\n  font-size: 12px;\n}\n.premium-empty {\n  padding: 18px;\n  border: 1px dashed rgba(148, 163, 184, 0.22);\n  border-radius: 18px;\n  background: rgba(9, 18, 36, 0.5);\n}\n.error-box {\n  padding: 14px 16px;\n  border: 1px solid rgba(248, 113, 113, 0.3);\n  border-radius: 16px;\n  background: rgba(127, 29, 29, 0.22);\n  color: #fecaca;\n}\n.empty-box {\n  color: var(--muted);\n}\n.detail-overlay {\n  position: fixed;\n  inset: 0;\n  z-index: 80;\n  display: grid;\n  place-items: center;\n  padding: 24px;\n  background: rgba(2, 8, 23, 0.72);\n  -webkit-backdrop-filter: blur(10px);\n  backdrop-filter: blur(10px);\n}\n.cow-detail-modal {\n  width: min(1180px, 96vw);\n  max-height: 92vh;\n  overflow: auto;\n  border: 1px solid rgba(110, 168, 255, 0.18);\n  border-radius: 18px;\n  background:\n    radial-gradient(\n      circle at 18% 0%,\n      rgba(110, 168, 255, 0.15),\n      transparent 28%),\n    linear-gradient(\n      180deg,\n      rgba(12, 25, 50, 0.98),\n      rgba(6, 15, 31, 0.98));\n  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.05);\n}\n.cow-detail-modal__header,\n.cow-detail-modal__footer {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 14px;\n  padding: 14px 18px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n}\n.cow-detail-modal__footer {\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n  border-bottom: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.cow-detail-modal__eyebrow {\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  color: #f8fbff;\n  font-weight: 900;\n}\n.detail-title-icon {\n  width: 34px;\n  height: 34px;\n  border-radius: 10px;\n}\n.detail-title-icon svg {\n  width: 18px;\n  height: 18px;\n}\n.detail-close {\n  width: 34px;\n  height: 34px;\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 10px;\n  color: #9caec8;\n  background: rgba(7, 15, 31, 0.58);\n  cursor: pointer;\n}\n.detail-close svg {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n}\n.cow-detail-modal__body {\n  display: grid;\n  grid-template-columns: 280px minmax(0, 1fr);\n  gap: 18px;\n  padding: 20px;\n}\n.cow-profile-card,\n.cow-summary-card,\n.detail-info-card,\n.events-card {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 14px;\n  background: rgba(8, 18, 37, 0.66);\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.cow-profile-card {\n  padding: 22px 18px;\n  text-align: center;\n}\n.cow-profile-card__avatar {\n  width: 92px;\n  height: 92px;\n  display: grid;\n  place-items: center;\n  margin: 0 auto 16px;\n  border-radius: 50%;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  background:\n    radial-gradient(\n      circle at 35% 22%,\n      rgba(159, 232, 112, 0.22),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 0 34px rgba(159, 232, 112, 0.09);\n}\n.cow-profile-card__avatar svg {\n  width: 48px;\n  height: 48px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.7;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.cow-profile-card h3 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 25px;\n  letter-spacing: -0.03em;\n}\n.cow-profile-card__badges {\n  display: flex;\n  justify-content: center;\n  flex-wrap: wrap;\n  gap: 8px;\n  margin: 12px 0 20px;\n}\n.cow-profile-card__badges span {\n  border-radius: 999px;\n  padding: 6px 9px;\n  color: #a9bad3;\n  background: rgba(110, 168, 255, 0.08);\n  font-size: 11px;\n  font-weight: 800;\n}\n.cow-profile-list,\n.detail-info-card dl {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n  margin: 0;\n}\n.cow-profile-list div,\n.detail-info-card dl div {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  padding-bottom: 9px;\n}\n.cow-profile-list dt,\n.detail-info-card dt {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.cow-profile-list dd,\n.detail-info-card dd {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 12px;\n  text-align: right;\n}\n.cow-detail-main {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.cow-summary-grid {\n  display: grid;\n  grid-template-columns: 1fr 1.15fr;\n  gap: 12px;\n}\n.cow-summary-card {\n  padding: 18px;\n}\n.cow-summary-card--large strong {\n  display: block;\n  margin-top: 18px;\n  color: #f8fbff;\n  font-size: 28px;\n  line-height: 1;\n}\n.summary-label,\n.cow-summary-card span {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n}\n.cow-summary-card small {\n  display: block;\n  margin-top: 8px;\n  color: #8ea0bb;\n}\n.summary-split {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  gap: 10px;\n  margin: 20px -18px -18px;\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n}\n.summary-split div {\n  padding: 13px 18px;\n  border-right: 1px solid rgba(148, 163, 184, 0.1);\n}\n.summary-split div:last-child {\n  border-right: 0;\n}\n.summary-split b {\n  display: block;\n  margin-top: 6px;\n  color: #ffb84d;\n}\n.cow-summary-card:not(.cow-summary-card--large) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.cow-summary-card:not(.cow-summary-card--large) strong {\n  display: block;\n  margin-top: 6px;\n  color: #f8fbff;\n  font-size: 13px;\n}\n.detail-tabs {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n}\n.detail-tabs span {\n  padding: 12px 14px;\n  color: #9caec8;\n  font-size: 12px;\n  font-weight: 800;\n}\n.detail-tabs span.active {\n  color: #9fe870;\n  border-bottom: 2px solid #9fe870;\n}\n.detail-content-grid {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.detail-info-card,\n.events-card {\n  padding: 16px;\n}\n.detail-info-card h4,\n.events-card h4 {\n  margin: 0 0 14px;\n  color: #f8fbff;\n  font-size: 14px;\n}\n.events-card__head {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: center;\n}\n.events-card__head span {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.events-table {\n  overflow-x: auto;\n}\n.events-table__row {\n  display: grid;\n  grid-template-columns: 110px 130px 110px 150px minmax(220px, 1fr);\n  gap: 12px;\n  min-width: 760px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  padding: 11px 0;\n  color: #b9c7dc;\n  font-size: 12px;\n}\n.events-table__row--head {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n.events-table__row strong {\n  color: #f8fbff;\n}\n.events-table__empty {\n  padding: 18px 0 4px;\n  color: #8ea0bb;\n}\n@media (max-width: 1366px) and (min-width: 1081px) {\n  .birth-alerts__grid,\n  .cross-grid {\n    grid-template-columns: repeat(4, minmax(0, 1fr));\n  }\n  .birth-card,\n  .cross-card {\n    min-width: 0;\n  }\n}\n@media (max-width: 1600px) and (min-width: 1081px) {\n  .reproduction-kpis {\n    grid-template-columns: repeat(5, minmax(0, 1fr));\n  }\n}\n@media (max-width: 1080px) {\n  .layout,\n  .tree-columns,\n  .genealogy-head,\n  .birth-alerts__header {\n    grid-template-columns: 1fr;\n  }\n  .stats-grid {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n  .birth-alerts__metrics {\n    grid-template-columns: 1fr 1fr;\n  }\n  .birth-alerts__grid,\n  .cross-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n  .cow-detail-modal__body,\n  .cow-summary-grid,\n  .detail-content-grid {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .page-head,\n  .reproduction-head {\n    flex-direction: column;\n    align-items: stretch;\n  }\n  .band-head {\n    grid-template-columns: 1fr;\n  }\n  .premium-card__top {\n    flex-direction: column;\n  }\n  .birth-alerts {\n    padding: 16px;\n    border-radius: 22px;\n  }\n  .stats-grid {\n    grid-template-columns: 1fr 1fr;\n  }\n  .birth-alerts__title {\n    grid-template-columns: 1fr;\n  }\n  .birth-alerts__metrics,\n  .birth-alerts__grid,\n  .cross-grid,\n  .birth-card__metrics,\n  .birth-alerts__footer {\n    grid-template-columns: 1fr;\n  }\n  .birth-metric + .birth-metric {\n    border-left: 0;\n    border-top: 1px solid rgba(148, 163, 184, 0.12);\n  }\n  .genealogy-selected {\n    grid-template-columns: 1fr;\n  }\n  .genealogy-foot {\n    flex-direction: column;\n  }\n  .detail-overlay {\n    padding: 10px;\n  }\n  .cow-detail-modal {\n    width: 100%;\n    max-height: 96vh;\n  }\n  .cow-detail-modal__body {\n    padding: 12px;\n  }\n  .cow-summary-card:not(.cow-summary-card--large),\n  .summary-split {\n    grid-template-columns: 1fr;\n  }\n  .summary-split div {\n    border-right: 0;\n    border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  }\n}\n.reproduction-kpis .metric-card {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.reproduction-kpis .metric-icon {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.reproduction-kpis .metric-icon svg {\n  width: 24px;\n  height: 24px;\n}\n.reproduction-kpis .metric-card > div:last-child {\n  display: contents;\n}\n.reproduction-kpis .metric-card .label {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n  text-transform: none;\n  letter-spacing: 0;\n}\n.reproduction-kpis .metric-card small {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.reproduction-kpis .metric-card .value {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .reproduction-kpis .metric-card {\n    grid-template-columns: 46px 1fr;\n  }\n  .reproduction-kpis .metric-card .value {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.reproduction-kpis .metric-card {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.reproduction-kpis .metric-card > div:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.reproduction-kpis .metric-card .label,\n.reproduction-kpis .metric-card small,\n.reproduction-kpis .metric-card .value {\n  grid-column: auto;\n  grid-row: auto;\n}\n.reproduction-kpis .metric-card .label {\n  margin: 0;\n  line-height: 1.2;\n}\n.reproduction-kpis .metric-card small {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.reproduction-kpis .metric-card .value {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .reproduction-kpis .metric-card {\n    grid-template-columns: 46px 1fr;\n  }\n  .reproduction-kpis .metric-card .value {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.reproduction-kpis .metric-card {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.reproduction-kpis .metric-card > div:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.reproduction-kpis .metric-icon {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.reproduction-kpis .metric-card .label {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.reproduction-kpis .metric-card small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.reproduction-kpis .metric-card .value {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid .kpi-card,\n.reproduction-kpis .kpi-card,\n.sanidad-kpis .kpi-card,\n.trace-kpis .kpi-card {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid .metric-icon,\n.reproduction-kpis .metric-icon,\n.sanidad-kpis .metric-icon,\n.trace-kpis .metric-icon {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid .metric-icon.blue,\n.reproduction-kpis .metric-icon.blue,\n.sanidad-kpis .metric-icon.blue,\n.trace-kpis .metric-icon.blue {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid .metric-icon.warning,\n.reproduction-kpis .metric-icon.warning,\n.sanidad-kpis .metric-icon.warning,\n.trace-kpis .metric-icon.warning {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid .metric-icon svg,\n.reproduction-kpis .metric-icon svg,\n.sanidad-kpis .metric-icon svg,\n.trace-kpis .metric-icon svg {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid .kpi-copy,\n.reproduction-kpis .kpi-copy,\n.sanidad-kpis .kpi-copy,\n.trace-kpis .kpi-copy {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid .kpi-copy span,\n.reproduction-kpis .kpi-copy span,\n.sanidad-kpis .kpi-copy span,\n.trace-kpis .kpi-copy span {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid .kpi-copy small,\n.reproduction-kpis .kpi-copy small,\n.sanidad-kpis .kpi-copy small,\n.trace-kpis .kpi-copy small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid .kpi-card > strong,\n.reproduction-kpis .kpi-card > strong,\n.sanidad-kpis .kpi-card > strong,\n.trace-kpis .kpi-card > strong {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-reproduccion-page.component.css.map */\n'] }]
+    args: [{ selector: "app-ganaderia-reproduccion-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<div class="page">
+  <header class="reproduction-head">
+    <div>
+      <p class="eyebrow">Campo App \xB7 Ganader\xEDa</p>
+      <h2>Reproducci\xF3n y genealog\xEDa</h2>
+      <p>Programa reproductivo, pre\xF1ez, partos, pedigree e \xEDndices gen\xE9ticos del rodeo.</p>
+    </div>
+    <button class="btn-secondary reproduction-action" type="button" (click)="loadAll()">
+      <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7" /><path d="M20 4v6h-6" /></svg>
+      Actualizar
+    </button>
+  </header>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="card empty-box" *ngIf="loading()">Cargando reproduccion...</div>
+
+  <ng-container *ngIf="!loading() && resumen() as data">
+    <section class="stats-grid reproduction-kpis">
+      <article class="kpi-card" *ngIf="kpiVisible(0)"><div class="metric-icon"><svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="5" /><path d="M14 10l6-6m0 0h-5m5 0v5" /></svg></div><div class="kpi-copy"><span>Montas</span><small>Eventos naturales</small></div><strong>{{ data.dashboard.montasRegistradas }}</strong></article>
+      <article class="kpi-card" *ngIf="kpiVisible(1)"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></div><div class="kpi-copy"><span>Inseminaciones</span><small>Protocolos IA</small></div><strong>{{ data.dashboard.inseminacionesRegistradas }}</strong></article>
+      <article class="kpi-card" *ngIf="kpiVisible(2)"><div class="metric-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="5" /><path d="M12 14v7m-4-3.5h8" /></svg></div><div class="kpi-copy"><span>Pre\xF1ez activa</span><small>Vacas en seguimiento</small></div><strong>{{ data.dashboard.prenezActivas }}</strong></article>
+      <article class="kpi-card" *ngIf="kpiVisible(3)"><div class="metric-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></div><div class="kpi-copy"><span>Partos</span><small>Nacimientos registrados</small></div><strong>{{ data.dashboard.partosRegistrados }}</strong></article>
+      <article class="kpi-card" *ngIf="kpiVisible(4)"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg></div><div class="kpi-copy"><span>Tasa pre\xF1ez</span><small>Eficiencia reproductiva</small></div><strong>{{ data.dashboard.tasaPrenez }}%</strong></article>
+      <article class="kpi-card" *ngIf="kpiVisible(5)"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="M12 5v14" /><circle cx="12" cy="12" r="9" /></svg></div><div class="kpi-copy"><span>Servicios/pre\xF1ez</span><small>Promedio operativo</small></div><strong>{{ data.dashboard.serviciosPorPrenez }}</strong></article>
+    </section>
+    <div class="kpi-carousel" *ngIf="showKpiCarousel()">
+      <button type="button" aria-label="KPIs anteriores" (click)="previousKpiCards()" [disabled]="kpiOffset() === 0">
+        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
+      </button>
+      <span>{{ kpiOffset() + 1 }}-{{ kpiOffset() + kpiPageSize }} de 6</span>
+      <button type="button" aria-label="KPIs siguientes" (click)="nextKpiCards()" [disabled]="kpiOffset() === maxKpiOffset()">
+        <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+      </button>
+    </div>
+
+    <section class="birth-alerts">
+      <div class="birth-alerts__header">
+        <div class="birth-alerts__title">
+          <div class="birth-alerts__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <rect x="4" y="5" width="16" height="15" rx="3" />
+              <path d="M8 3v4m8-4v4M4 10h16" />
+              <path d="M8 15h3l2-3 3 5 2-3" />
+            </svg>
+          </div>
+          <div>
+            <h3>Alertas de proximos partos</h3>
+            <p>Monitorea las vacas proximas a parir y anticipate.</p>
+          </div>
+        </div>
+        <div class="birth-alerts__metrics">
+          <div class="birth-alerts__metric-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />
+              <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />
+            </svg>
+          </div>
+          <article class="birth-metric birth-metric--green">
+            <span>Proximos 30 dias</span>
+            <strong>{{ alertasParto().length }}</strong>
+          </article>
+          <article class="birth-metric birth-metric--orange">
+            <span>En riesgo</span>
+            <strong>{{ alertasEnRiesgo() }}</strong>
+          </article>
+        </div>
+      </div>
+
+      <div class="birth-alerts__table-wrap" *ngIf="paginatedAlertas().length; else noAlerts">
+        <table class="birth-alerts__table">
+          <thead>
+            <tr>
+              <th>Animal</th>
+              <th>Lote</th>
+              <th>Fecha estimada</th>
+              <th>D\xEDas restantes</th>
+              <th>Riesgo</th>
+              <th>Parto</th>
+              <th>Acci\xF3n</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let alerta of paginatedAlertas()" [ngClass]="riesgoClass(alerta)">
+              <td>
+                <div class="birth-table-animal">
+                  <span class="birth-table-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img">
+                      <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />
+                      <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />
+                    </svg>
+                  </span>
+                  <div>
+                    <strong>VACA {{ alerta.animalCaravana }}</strong>
+                    <small>RP {{ alerta.animalCaravana }} \xB7 HBA sin registrar</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="birth-table-location">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5 9 4l6 2.5 5-2.5v13.5L15 20l-6-2.5L4 20V6.5Z" /><path d="M9 4v13.5M15 6.5V20" /></svg>
+                  {{ alertaLote(alerta) }}
+                </span>
+              </td>
+              <td><strong>{{ alerta.fecha }}</strong></td>
+              <td>{{ diasRestantes(alerta) }} d\xEDas</td>
+              <td><span class="risk-badge" [ngClass]="riesgoClass(alerta)">{{ riesgoLabel(alerta) }}</span></td>
+              <td><strong>{{ alertaPartoNumber(alerta) }}\xB0</strong></td>
+              <td>
+                <button class="birth-table-action" type="button" (click)="viewAlertaDetalle(alerta)">
+                  <span>Ver detalle</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #noAlerts><div class="empty-box premium-empty">Sin alertas reproductivas inmediatas.</div></ng-template>
+
+      <div class="birth-pagination" *ngIf="alertasParto().length > alertPageSize">
+        <button class="carousel-arrow" type="button" aria-label="Alertas anteriores" (click)="previousAlertPage()" [disabled]="alertPage() === 1">
+          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
+          <span>Anterior</span>
+        </button>
+        <span>Pagina {{ alertPage() }} de {{ alertTotalPages() }}</span>
+        <button type="button" *ngFor="let page of alertPageNumbers()" [class.active]="page === alertPage()" (click)="setAlertPage(page)">{{ page }}</button>
+        <button class="carousel-arrow" type="button" aria-label="Alertas siguientes" (click)="nextAlertPage()" [disabled]="alertPage() === alertTotalPages()">
+          <span>Siguiente</span>
+          <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
+      </div>
+
+      <div class="birth-alerts__footer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 10v6m0-9h.01" /></svg>
+        <span>Las fechas son estimadas en base a los registros del sistema y pueden variar.</span>
+        <strong>Ultima actualizacion: {{ today }}</strong>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="card panel">
+        <div class="tabs">
+          <button type="button" [class.active]="mode() === 'MONTA'" (click)="setMode('MONTA')">Monta</button>
+          <button type="button" [class.active]="mode() === 'IA'" (click)="setMode('IA')">IA</button>
+          <button type="button" [class.active]="mode() === 'PRENEZ'" (click)="setMode('PRENEZ')">Pre\xF1ez</button>
+          <button type="button" [class.active]="mode() === 'PARTO'" (click)="setMode('PARTO')">Parto</button>
+          <button type="button" [class.active]="mode() === 'INDICE'" (click)="setMode('INDICE')">Indice</button>
+        </div>
+
+        <div class="form-grid" *ngIf="mode() === 'MONTA'">
+          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [allowedValues]="hembraAllowedValues" [value]="montaForm().vacaId" (valueChange)="montaForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Toro" placeholder="Buscar toro por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [allowedValues]="machoAllowedValues" [value]="montaForm().toroId" (valueChange)="montaForm.update(f => ({ ...f, toroId: $event }))"></app-remote-search-select>
+          <label><span>Fecha</span><input type="date" [ngModel]="montaForm().fecha" (ngModelChange)="montaForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Resultado</span><select [ngModel]="montaForm().resultado" (ngModelChange)="montaForm.update(f => ({ ...f, resultado: $event }))"><option value="PENDIENTE">Pendiente</option><option value="PRENADA">Pre\xF1ada</option><option value="FALLIDA">Fallida</option></select></label>
+        </div>
+
+        <div class="form-grid" *ngIf="mode() === 'IA'">
+          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [allowedValues]="hembraAllowedValues" [value]="inseminacionForm().vacaId" (valueChange)="inseminacionForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
+          <label><span>Fecha</span><input type="date" [ngModel]="inseminacionForm().fecha" (ngModelChange)="inseminacionForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Genetica usada</span><input [ngModel]="inseminacionForm().geneticaUsada" (ngModelChange)="inseminacionForm.update(f => ({ ...f, geneticaUsada: $event }))" /></label>
+          <app-remote-search-select label="Tecnico" placeholder="Buscar usuario tecnico" [endpoint]="endpoints.usuarios" [extraParams]="activeUserParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="inseminacionForm().tecnico" (valueChange)="inseminacionForm.update(f => ({ ...f, tecnico: $event }))"></app-remote-search-select>
+          <label><span>Costo</span><input type="number" [ngModel]="inseminacionForm().costo" (ngModelChange)="inseminacionForm.update(f => ({ ...f, costo: $event }))" /></label>
+        </div>
+
+        <div class="form-grid" *ngIf="mode() === 'PRENEZ'">
+          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [allowedValues]="hembraAllowedValues" [value]="prenezForm().vacaId" (valueChange)="prenezForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
+          <label><span>Diagnostico</span><input type="date" [ngModel]="prenezForm().fechaDiagnostico" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
+          <label><span>Estado</span><select [ngModel]="prenezForm().estado" (ngModelChange)="prenezForm.update(f => ({ ...f, estado: $event }))"><option value="PRENADA">Pre\xF1ada</option><option value="VACIA">Vac\xEDa</option><option value="CONTROL">Control</option></select></label>
+          <label><span>Parto estimado</span><input type="date" [ngModel]="prenezForm().fechaEstimadaParto" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaEstimadaParto: $event }))" /></label>
+          <label><span>Nivel de riesgo del parto</span><select [ngModel]="prenezForm().nivelRiesgoParto" (ngModelChange)="prenezForm.update(f => ({ ...f, nivelRiesgoParto: $event }))"><option value="BAJO">Bajo</option><option value="MEDIO">Medio</option><option value="ALTO">Alto</option></select></label>
+          <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [endpoint]="endpoints.usuarios" [extraParams]="veterinarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="prenezForm().veterinario" (valueChange)="prenezForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>
+        </div>
+
+        <div class="form-grid" *ngIf="mode() === 'PARTO'">
+          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [allowedValues]="hembraAllowedValues" [value]="partoForm().madreId" (valueChange)="partoForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Ternero" placeholder="Buscar ternero por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="partoForm().terneroId" (valueChange)="partoForm.update(f => ({ ...f, terneroId: $event }))"></app-remote-search-select>
+          <label><span>Fecha</span><input type="date" [ngModel]="partoForm().fecha" (ngModelChange)="partoForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Viabilidad</span><select [ngModel]="partoForm().viabilidadTernero" (ngModelChange)="partoForm.update(f => ({ ...f, viabilidadTernero: $event }))"><option value="VIABLE">Viable</option><option value="NO_VIABLE">No viable</option><option value="OBSERVACION">Observacion</option></select></label>
+        </div>
+
+        <div class="form-grid" *ngIf="mode() === 'INDICE'">
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="indiceForm().animalId" (valueChange)="indiceForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+          <label><span>Fecha</span><input type="date" [ngModel]="indiceForm().fechaEvaluacion" (ngModelChange)="indiceForm.update(f => ({ ...f, fechaEvaluacion: $event }))" /></label>
+          <label><span>EPD</span><input type="number" [ngModel]="indiceForm().epd" (ngModelChange)="indiceForm.update(f => ({ ...f, epd: $event }))" /></label>
+          <label><span>DEP</span><input type="number" [ngModel]="indiceForm().dep" (ngModelChange)="indiceForm.update(f => ({ ...f, dep: $event }))" /></label>
+          <label><span>Indice productivo</span><input type="number" [ngModel]="indiceForm().indiceProductivo" (ngModelChange)="indiceForm.update(f => ({ ...f, indiceProductivo: $event }))" /></label>
+        </div>
+
+        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="mode() === 'MONTA' ? montaForm().observaciones : mode() === 'IA' ? inseminacionForm().observaciones : mode() === 'PRENEZ' ? prenezForm().observaciones : mode() === 'PARTO' ? partoForm().observaciones : indiceForm().observaciones" (ngModelChange)="mode() === 'MONTA' ? montaForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'IA' ? inseminacionForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'PRENEZ' ? prenezForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'PARTO' ? partoForm.update(f => ({ ...f, observaciones: $event })) : indiceForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+        <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitCurrent()">Guardar evento</button>
+      </section>
+
+      <section class="card panel">
+        <div class="genealogy-card">
+          <div class="genealogy-head">
+            <div class="genealogy-title">
+              <div class="band-icon band-icon--tree" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M12 3v4m0 0H7.5A2.5 2.5 0 0 0 5 9.5V12m7-5h4.5A2.5 2.5 0 0 1 19 9.5V12M5 12v2.2m14-2.2v2.2M12 7v7.2" />
+                  <circle cx="5" cy="17" r="2.4" />
+                  <circle cx="12" cy="17" r="2.4" />
+                  <circle cx="19" cy="17" r="2.4" />
+                </svg>
+              </div>
+              <div>
+                <h3>Genealogia</h3>
+                <p>Arbol genealogico ascendente \xB7 3 generaciones</p>
+              </div>
+            </div>
+            <div class="genealogy-selected" *ngIf="genealogia() as tree">
+              <div class="animal-icon" [class.icon-male]="selectedAnimalIsMale()" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" *ngIf="selectedAnimalIsMale(); else selectedFemaleIcon">
+                  <circle cx="10" cy="14" r="5" />
+                  <path d="M14 10l6-6m0 0h-5m5 0v5" />
+                </svg>
+                <ng-template #selectedFemaleIcon>
+                  <svg viewBox="0 0 24 24" role="img">
+                    <circle cx="12" cy="9" r="5" />
+                    <path d="M12 14v7m-4-3.5h8" />
+                  </svg>
+                </ng-template>
+              </div>
+              <div><span>Animal</span><strong>{{ tree.animal.caravana }}</strong></div>
+              <div><span>Raza</span><strong>{{ tree.animal.raza }}</strong></div>
+            </div>
+          </div>
+          <div class="form-grid one genealogy-selector">
+            <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="selectedGenealogiaId()" (valueChange)="selectedGenealogiaId.set($event); loadGenealogia()"></app-remote-search-select>
+          </div>
+          <div class="genealogy-tree" *ngIf="genealogia() as tree">
+            <div class="genealogy-row genealogy-row--root">
+              <article class="pedigree-node pedigree-node--main"><div class="pedigree-icon" [class.icon-male]="selectedAnimalIsMale()" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img" *ngIf="selectedAnimalIsMale(); else rootFemaleIcon">
+                    <circle cx="10" cy="14" r="5" />
+                    <path d="M14 10l6-6m0 0h-5m5 0v5" />
+                  </svg>
+                  <ng-template #rootFemaleIcon>
+                    <svg viewBox="0 0 24 24" role="img">
+                      <circle cx="12" cy="9" r="5" />
+                      <path d="M12 14v7m-4-3.5h8" />
+                    </svg>
+                  </ng-template>
+                </div><div><strong>{{ tree.animal.caravana }}</strong><span>{{ tree.animal.raza }}</span></div></article>
+            </div>
+            <div class="genealogy-connector"></div>
+            <div class="genealogy-row">
+              <p class="generation-label">1 Generacion <span>Padres</span></p>
+              <div class="generation-grid">
+                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(1)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon1">
+                      <circle cx="10" cy="14" r="5" />
+                      <path d="M14 10l6-6m0 0h-5m5 0v5" />
+                    </svg>
+                    <ng-template #femaleNodeIcon1>
+                      <svg viewBox="0 0 24 24" role="img">
+                        <circle cx="12" cy="9" r="5" />
+                        <path d="M12 14v7m-4-3.5h8" />
+                      </svg>
+                    </ng-template>
+                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>
+              </div>
+            </div>
+            <div class="genealogy-row">
+              <p class="generation-label">2 Generacion <span>Abuelos</span></p>
+              <div class="generation-grid">
+                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(2)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon2">
+                      <circle cx="10" cy="14" r="5" />
+                      <path d="M14 10l6-6m0 0h-5m5 0v5" />
+                    </svg>
+                    <ng-template #femaleNodeIcon2>
+                      <svg viewBox="0 0 24 24" role="img">
+                        <circle cx="12" cy="9" r="5" />
+                        <path d="M12 14v7m-4-3.5h8" />
+                      </svg>
+                    </ng-template>
+                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>
+              </div>
+            </div>
+            <div class="genealogy-row">
+              <p class="generation-label">3 Generacion <span>Bisabuelos</span></p>
+              <div class="generation-grid">
+                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(3)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon3">
+                      <circle cx="10" cy="14" r="5" />
+                      <path d="M14 10l6-6m0 0h-5m5 0v5" />
+                    </svg>
+                    <ng-template #femaleNodeIcon3>
+                      <svg viewBox="0 0 24 24" role="img">
+                        <circle cx="12" cy="9" r="5" />
+                        <path d="M12 14v7m-4-3.5h8" />
+                      </svg>
+                    </ng-template>
+                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>
+              </div>
+            </div>
+            <div class="genealogy-foot"><span>Info basada en animales registrados en el sistema.</span><span>Ultima actualizacion: {{ today }}</span></div>
+          </div>
+          <div class="empty-box premium-empty" *ngIf="!genealogia()">Selecciona un animal para visualizar genealogia.</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="cross-panel">
+      <div class="birth-alerts__header">
+        <div class="birth-alerts__title">
+          <div class="birth-alerts__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M6 7c0-2 1.5-3.5 3.5-3.5S13 5 13 7s-1.5 3.5-3.5 3.5S6 9 6 7Z" />
+              <path d="M11 11.5c1.5-1 3.5-1 5 0 2 1.3 2.7 4 1.4 6L16 20l-2.2-1.2" />
+              <path d="M4 20c.4-3.8 2.5-6.2 5.5-6.2s5.1 2.4 5.5 6.2" />
+            </svg>
+          </div>
+          <div>
+            <h3>Recomendaciones de cruzamiento</h3>
+            <p>Compatibilidad heuristica por genealogia directa e indices disponibles.</p>
+          </div>
+        </div>
+        <div class="birth-alerts__metrics cross-panel__metrics">
+          <div class="birth-alerts__metric-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M5 19c1.6-5.2 4.8-8 9.5-8H20" />
+              <path d="M16 7h4v4" />
+              <path d="M4 12h4m-2-2v4" />
+            </svg>
+          </div>
+          <article class="birth-metric birth-metric--green">
+            <span>Recomendadas</span>
+            <strong>{{ recomendaciones().length }}</strong>
+          </article>
+          <article class="birth-metric birth-metric--orange">
+            <span>Score maximo</span>
+            <strong>{{ recomendaciones()[0]?.score || 0 }}</strong>
+          </article>
+        </div>
+      </div>
+
+      <div class="cross-grid" *ngIf="paginatedRecomendaciones().length; else noRecommendations">
+        <article class="cross-card" *ngFor="let item of paginatedRecomendaciones()" [ngClass]="recommendationClass(item)">
+          <span class="risk-badge" [ngClass]="recommendationClass(item)">{{ recommendationQuality(item) }} compatibilidad</span>
+          <div class="cross-card__pair">
+            <div class="cross-animal">
+              <div class="cross-animal__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img"><circle cx="12" cy="9" r="5" /><path d="M12 14v7m-4-3.5h8" /></svg>
+              </div>
+              <div><span>Vaca</span><strong>{{ item.vacaCaravana }}</strong></div>
+            </div>
+            <div class="cross-link" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img"><path d="M7 12h10m-4-4 4 4-4 4" /></svg>
+            </div>
+            <div class="cross-animal">
+              <div class="cross-animal__icon cross-animal__icon--male" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img"><circle cx="10" cy="14" r="5" /><path d="M14 10l6-6m0 0h-5m5 0v5" /></svg>
+              </div>
+              <div><span>Toro</span><strong>{{ item.toroCaravana }}</strong></div>
+            </div>
+          </div>
+          <div class="cross-card__metrics">
+            <div class="birth-data">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg>
+              <div><span>Score genetico</span></div>
+              <strong>{{ item.score }}</strong>
+            </div>
+            <div class="birth-data">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /><path d="m9 12 2 2 4-5" /></svg>
+              <div><span>Parentesco directo</span></div>
+              <strong>Validado</strong>
+            </div>
+            <div class="birth-data">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18c0-4 2.7-7 6-7s6 3 6 7" /><path d="M9 8a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z" /></svg>
+              <div><span>Modelo</span></div>
+              <strong>Heuristico</strong>
+            </div>
+          </div>
+          <p class="cross-card__note">{{ item.motivo }}</p>
+          <button class="birth-card__action" type="button" (click)="viewRecommendation(item)">
+            <span>Ver genealogia</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+          </button>
+        </article>
+      </div>
+
+      <ng-template #noRecommendations><div class="empty-box premium-empty">Sin recomendaciones disponibles.</div></ng-template>
+
+      <div class="birth-pagination" *ngIf="recomendaciones().length > recommendationPageSize">
+        <button class="carousel-arrow" type="button" aria-label="Recomendaciones anteriores" (click)="previousRecommendationPage()" [disabled]="recommendationPage() === 1">
+          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
+          <span>Anterior</span>
+        </button>
+        <span>Pagina {{ recommendationPage() }} de {{ recommendationTotalPages() }}</span>
+        <button type="button" *ngFor="let page of recommendationPageNumbers()" [class.active]="page === recommendationPage()" (click)="setRecommendationPage(page)">{{ page }}</button>
+        <button class="carousel-arrow" type="button" aria-label="Recomendaciones siguientes" (click)="nextRecommendationPage()" [disabled]="recommendationPage() === recommendationTotalPages()">
+          <span>Siguiente</span>
+          <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
+      </div>
+    </section>
+  </ng-container>
+
+  <div class="detail-overlay" *ngIf="selectedAlert() as alerta" (click)="closeAlertaDetalle()" (document:keydown.escape)="closeAlertaDetalle()">
+    <section class="cow-detail-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <header class="cow-detail-modal__header">
+        <div class="cow-detail-modal__eyebrow">
+          <span class="birth-alerts__icon detail-title-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M5 5h14v14H5z" />
+              <path d="m8 12 2.5 2.5L16 9" />
+            </svg>
+          </span>
+          <strong>Detalle de la vaca</strong>
+        </div>
+        <button class="detail-close" type="button" aria-label="Cerrar detalle" (click)="closeAlertaDetalle()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
+      </header>
+
+      <div class="cow-detail-modal__body" *ngIf="selectedAlertAnimal() as animal">
+        <aside class="cow-profile-card">
+          <div class="cow-profile-card__avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />
+              <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />
+            </svg>
+          </div>
+          <h3>VACA {{ animal.caravana }}</h3>
+          <div class="cow-profile-card__badges">
+            <span>RP {{ animal.caravana }}</span>
+            <span>HBA pendiente</span>
+          </div>
+          <dl class="cow-profile-list">
+            <div><dt>Raza</dt><dd>{{ animal.raza || 'Sin dato' }}</dd></div>
+            <div><dt>Fecha de nacimiento</dt><dd>{{ animal.fechaNacimiento || 'Sin dato' }}</dd></div>
+            <div><dt>Categoria</dt><dd>{{ animal.sexo || 'Sin dato' }}</dd></div>
+            <div><dt>Estado reproductivo</dt><dd><span class="inline-risk risk-low">{{ selectedAlertControl()?.estado || 'Prenada' }}</span></dd></div>
+            <div><dt>Registro</dt><dd>{{ animal.estado || 'Sin dato' }}</dd></div>
+          </dl>
+        </aside>
+
+        <section class="cow-detail-main">
+          <div class="cow-summary-grid">
+            <article class="cow-summary-card cow-summary-card--large">
+              <span class="summary-label">Proximo parto</span>
+              <strong>{{ alerta.fecha }}</strong>
+              <small>Fecha estimada</small>
+              <div class="summary-split">
+                <div><span>Dias restantes</span><b>{{ diasRestantes(alerta) }} dias</b></div>
+                <div><span>Nivel de riesgo</span><b class="inline-risk" [ngClass]="riesgoClass(alerta)">{{ selectedAlertRiskLabel() }}</b></div>
+                <div><span>Numero de parto</span><b>{{ selectedAlertPartoNumber() }}\xB0</b></div>
+              </div>
+            </article>
+            <article class="cow-summary-card">
+              <div><span>Ultimo servicio</span><strong>{{ lastServiceLabel(alerta.animalId) }}</strong></div>
+              <div><span>Gestacion</span><strong>{{ selectedAlertControl()?.fechaDiagnostico ? 'En seguimiento' : 'Sin dato' }}</strong></div>
+              <div><span>Peso estimado</span><strong>{{ animal.pesoActualKg || 'Sin dato' }}<ng-container *ngIf="animal.pesoActualKg"> kg</ng-container></strong></div>
+              <div><span>Ubicacion</span><strong>{{ animal.potreroNombre || 'Sin potrero' }}</strong></div>
+            </article>
+          </div>
+
+          <div class="detail-tabs">
+            <span class="active">Informacion general</span>
+            <span>Ficha tecnica</span>
+            <span>Reproduccion</span>
+            <span>Eventos</span>
+          </div>
+
+          <div class="detail-content-grid">
+            <article class="detail-info-card">
+              <h4>Informacion general</h4>
+              <dl>
+                <div><dt>Raza</dt><dd>{{ animal.raza || 'Sin dato' }}</dd></div>
+                <div><dt>Fecha de nacimiento</dt><dd>{{ animal.fechaNacimiento || 'Sin dato' }}</dd></div>
+                <div><dt>Edad</dt><dd>{{ technicalAge(animal) }}</dd></div>
+                <div><dt>Madre</dt><dd>{{ animal.madreCaravana || 'Sin dato' }}</dd></div>
+                <div><dt>Padre</dt><dd>{{ animal.padreCaravana || 'Sin dato' }}</dd></div>
+                <div><dt>Ubicacion actual</dt><dd>{{ animal.potreroNombre || 'Sin dato' }}</dd></div>
+                <div><dt>Observaciones</dt><dd>{{ animal.observaciones || 'Sin observaciones' }}</dd></div>
+              </dl>
+            </article>
+
+            <article class="detail-info-card">
+              <h4>Resumen reproductivo</h4>
+              <dl>
+                <div><dt>Estado reproductivo</dt><dd>{{ selectedAlertControl()?.estado || 'Sin dato' }}</dd></div>
+                <div><dt>Ultimo servicio</dt><dd>{{ lastServiceLabel(alerta.animalId) }}</dd></div>
+                <div><dt>Diagnostico de prenez</dt><dd>{{ selectedAlertControl()?.fechaDiagnostico || 'Sin dato' }}</dd></div>
+                <div><dt>Metodo diagnostico</dt><dd>Pendiente de modelo</dd></div>
+                <div><dt>Fecha estimada de parto</dt><dd>{{ alerta.fecha }}</dd></div>
+                <div><dt>Numero de parto</dt><dd>{{ selectedAlertPartoNumber() }}\xB0</dd></div>
+              </dl>
+            </article>
+          </div>
+
+          <article class="events-card">
+            <div class="events-card__head">
+              <h4>Seguimiento de eventos</h4>
+              <span>{{ selectedAlertEvents().length }} eventos</span>
+            </div>
+            <div class="events-table">
+              <div class="events-table__row events-table__row--head">
+                <span>Fecha</span><span>Tipo</span><span>Estado</span><span>Responsable</span><span>Detalle</span>
+              </div>
+              <div class="events-table__row" *ngFor="let event of selectedAlertEvents()">
+                <span>{{ event.fecha }}</span><strong>{{ event.tipo }}</strong><span>{{ event.estado }}</span><span>{{ event.responsable }}</span><span>{{ event.detalle }}</span>
+              </div>
+              <div class="events-table__empty" *ngIf="!selectedAlertEvents().length">Sin eventos asociados a esta vaca.</div>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <footer class="cow-detail-modal__footer">
+        <span>Ultima actualizacion: {{ today }}</span>
+        <button class="btn-secondary" type="button" (click)="closeAlertaDetalle()">Cerrar</button>
+      </footer>
+    </section>
+  </div>
+</div>
+
+
+
+
+`, styles: ['/* src/app/pages/ganaderia-reproduccion-page/ganaderia-reproduccion-page.component.css */\n.page {\n  display: flex;\n  flex-direction: column;\n  gap: 20px;\n}\n.page-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 16px;\n}\n.page-head p {\n  margin: 6px 0 0;\n  color: var(--muted);\n}\n.reproduction-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n  color: #f8fbff;\n}\n.reproduction-head h2 {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.reproduction-head p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  font-weight: 900;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n}\n.reproduction-action {\n  display: inline-flex;\n  align-items: center;\n  gap: 9px;\n}\n.reproduction-action svg,\n.metric-icon svg {\n  width: 16px;\n  height: 16px;\n  fill: none;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n}\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(6, minmax(0, 1fr));\n  gap: 10px;\n}\n.metric-card {\n  position: relative;\n  min-height: 82px;\n  overflow: hidden;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 16px;\n  padding: 16px 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.9),\n      rgba(11, 21, 41, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 34%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.metric-card::before {\n  content: "";\n  position: absolute;\n  inset: 0;\n  background:\n    radial-gradient(\n      circle at 18% 0%,\n      rgba(159, 232, 112, 0.08),\n      transparent 42%);\n  pointer-events: none;\n}\n.metric-card .label {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n}\n.metric-card .value {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin: 10px 0 0;\n  color: #f8fbff;\n  font-size: 24px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.03em;\n}\n.metric-card--accent {\n  border-color: rgba(159, 232, 112, 0.16);\n  box-shadow: inset 0 0 28px rgba(159, 232, 112, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.metric-card--accent .value {\n  color: #9fe870;\n}\n.metric-card--warning {\n  border-color: rgba(255, 184, 77, 0.18);\n  box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.065), inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.metric-card--warning .value {\n  color: #ffb84d;\n}\n.reproduction-kpis .metric-card {\n  display: grid;\n  grid-template-columns: 54px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n  min-height: 104px;\n  border-radius: 20px;\n  padding: 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, 0.1),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.reproduction-kpis .metric-card--blue {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 31, 59, 0.88),\n      rgba(8, 18, 37, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%);\n}\n.metric-icon {\n  display: grid;\n  width: 52px;\n  height: 52px;\n  place-items: center;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  border-radius: 18px;\n  background: rgba(159, 232, 112, 0.1);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.metric-icon svg {\n  width: 28px;\n  height: 28px;\n}\n.reproduction-kpis .metric-card .label {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n  letter-spacing: 0;\n  text-transform: none;\n}\n.reproduction-kpis .metric-card .value {\n  margin: 4px 0 0;\n  color: #f8fbff;\n  font-size: 26px;\n  line-height: 1;\n  font-weight: 900;\n  letter-spacing: -0.04em;\n}\n.reproduction-kpis .metric-card small {\n  display: block;\n  margin-top: 5px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.kpi-carousel {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n  gap: 10px;\n  margin-top: -8px;\n}\n.kpi-carousel button {\n  width: 42px;\n  height: 38px;\n  border-radius: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.16);\n  color: #dbeafe;\n  background: rgba(7, 15, 31, 0.52);\n  display: grid;\n  place-items: center;\n  cursor: pointer;\n}\n.kpi-carousel button:hover:not(:disabled) {\n  border-color: rgba(159, 232, 112, 0.42);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.08);\n}\n.kpi-carousel button:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.kpi-carousel svg {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.kpi-carousel span {\n  color: #8ea0bb;\n  font-size: 13px;\n  font-weight: 700;\n}\n.layout {\n  display: grid;\n  grid-template-columns: 1.08fr 0.92fr;\n  gap: 18px;\n}\n.panel,\n.premium-band {\n  padding: 20px;\n}\n.premium-band,\n.panel {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 24px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.9),\n      rgba(11, 21, 41, 0.86)),\n    radial-gradient(\n      circle at top left,\n      rgba(110, 168, 255, 0.08),\n      transparent 30%);\n  box-shadow: 0 16px 30px rgba(2, 8, 23, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.band-head {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n  margin-bottom: 16px;\n}\n.band-head.compact {\n  margin-bottom: 14px;\n}\n.band-icon {\n  width: 56px;\n  height: 56px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #f8fbff;\n  font-weight: 800;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(24, 39, 69, 0.9),\n      rgba(13, 24, 47, 0.86));\n}\n.band-icon svg,\n.animal-icon svg,\n.pedigree-icon svg {\n  width: 26px;\n  height: 26px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.band-head h3 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 26px;\n  letter-spacing: 0;\n}\n.band-head p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.premium-list {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.cards-compact {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n}\n.premium-card {\n  display: flex;\n  gap: 16px;\n  padding: 16px;\n  border-radius: 22px;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  background: rgba(9, 18, 36, 0.58);\n}\n.premium-card__icon {\n  width: 54px;\n  height: 54px;\n  flex: 0 0 54px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  background: rgba(110, 168, 255, 0.08);\n}\n.premium-card__body {\n  flex: 1;\n  min-width: 0;\n}\n.premium-card__top {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: flex-start;\n}\n.premium-card h4 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 18px;\n}\n.premium-card p {\n  margin: 6px 0 0;\n  color: #90a1bb;\n}\n.premium-card__note {\n  font-size: 14px;\n}\n.badge {\n  border-radius: 999px;\n  padding: 8px 12px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.12);\n  border: 1px solid rgba(159, 232, 112, 0.2);\n  font-weight: 800;\n  font-size: 12px;\n}\n.badge--danger {\n  color: #fecaca;\n  background: rgba(248, 113, 113, 0.14);\n  border-color: rgba(248, 113, 113, 0.24);\n}\n.birth-alerts {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    radial-gradient(\n      circle at 10% 0%,\n      rgba(110, 168, 255, 0.14),\n      transparent 34%),\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.92),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 22px 44px rgba(2, 8, 23, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.cross-panel {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background:\n    radial-gradient(\n      circle at 10% 0%,\n      rgba(159, 232, 112, 0.1),\n      transparent 32%),\n    linear-gradient(\n      180deg,\n      rgba(16, 28, 54, 0.92),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 22px 44px rgba(2, 8, 23, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.birth-alerts__header {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) auto;\n  gap: 18px;\n  align-items: center;\n  margin-bottom: 14px;\n}\n.birth-alerts__title {\n  display: grid;\n  grid-template-columns: 46px minmax(0, 1fr);\n  gap: 14px;\n  align-items: center;\n}\n.birth-alerts__icon,\n.birth-card__avatar {\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(110, 168, 255, 0.2);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(25, 43, 76, 0.88),\n      rgba(11, 23, 48, 0.82));\n  color: #9fe870;\n  box-shadow: 0 0 26px rgba(110, 168, 255, 0.1);\n}\n.birth-alerts__icon {\n  width: 46px;\n  height: 46px;\n  border-radius: 13px;\n}\n.birth-alerts svg,\n.birth-card svg,\n.birth-pagination svg,\n.birth-alerts__footer svg {\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.birth-alerts__icon svg {\n  width: 25px;\n  height: 25px;\n}\n.birth-card__avatar svg {\n  width: 31px;\n  height: 31px;\n}\n.birth-alerts__title h3 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 18px;\n  letter-spacing: -0.02em;\n}\n.birth-alerts__title p {\n  margin: 8px 0 0;\n  color: #9caec8;\n  font-size: 13px;\n}\n.birth-alerts__metrics {\n  display: grid;\n  grid-template-columns: 46px repeat(2, minmax(92px, 1fr));\n  align-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  overflow: hidden;\n  background: rgba(7, 15, 31, 0.42);\n}\n.birth-alerts__metric-icon {\n  display: grid;\n  place-items: center;\n  height: 58px;\n  color: #9fe870;\n}\n.birth-alerts__metric-icon svg {\n  width: 30px;\n  height: 30px;\n}\n.birth-metric {\n  padding: 11px 14px;\n}\n.birth-metric + .birth-metric {\n  border-left: 1px solid rgba(148, 163, 184, 0.12);\n}\n.birth-metric strong {\n  display: block;\n  margin-top: 4px;\n  color: #f8fbff;\n  font-size: 18px;\n  line-height: 1;\n}\n.birth-metric span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n}\n.birth-metric--orange strong {\n  color: #ff7a3d;\n}\n.birth-metric--green {\n  box-shadow: inset 0 0 28px rgba(159, 232, 112, 0.06);\n}\n.birth-metric--orange {\n  box-shadow: inset 0 0 28px rgba(255, 184, 77, 0.07);\n}\n.birth-alerts__grid {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.birth-alerts__table-wrap {\n  overflow-x: auto;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  background: rgba(8, 18, 37, 0.68);\n}\n.birth-alerts__table {\n  width: 100%;\n  min-width: 920px;\n  border-collapse: separate;\n  border-spacing: 0;\n}\n.birth-alerts__table th,\n.birth-alerts__table td {\n  padding: 13px 14px;\n  text-align: left;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  color: #dce7f8;\n  font-size: 12px;\n  vertical-align: middle;\n}\n.birth-alerts__table th {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  background: rgba(11, 23, 48, 0.78);\n}\n.birth-alerts__table tr:last-child td {\n  border-bottom: 0;\n}\n.birth-alerts__table tbody tr {\n  transition: background .18s ease, box-shadow .18s ease;\n}\n.birth-alerts__table tbody tr:hover {\n  background: rgba(159, 232, 112, 0.04);\n  box-shadow: inset 2px 0 0 rgba(159, 232, 112, 0.65);\n}\n.birth-alerts__table tbody tr.risk-high:hover {\n  box-shadow: inset 2px 0 0 rgba(255, 107, 107, 0.75);\n}\n.birth-alerts__table tbody tr.risk-medium:hover {\n  box-shadow: inset 2px 0 0 rgba(255, 184, 77, 0.75);\n}\n.birth-table-animal {\n  display: grid;\n  grid-template-columns: 42px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n}\n.birth-table-icon {\n  width: 42px;\n  height: 42px;\n  display: grid;\n  place-items: center;\n  border-radius: 14px;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.16);\n  background: rgba(159, 232, 112, 0.08);\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);\n}\n.birth-table-icon svg {\n  width: 22px;\n  height: 22px;\n}\n.birth-table-animal strong,\n.birth-alerts__table td > strong {\n  color: #f8fbff;\n}\n.birth-table-animal small {\n  display: block;\n  margin-top: 3px;\n  color: #8ea0bb;\n  font-size: 11px;\n}\n.birth-table-location {\n  display: inline-flex;\n  align-items: center;\n  gap: 6px;\n  color: #c9d7ec;\n  white-space: nowrap;\n}\n.birth-table-location svg {\n  width: 15px;\n  height: 15px;\n  color: #9fe870;\n}\n.birth-table-action {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 12px;\n  padding: 9px 12px;\n  color: #9fe870;\n  background: rgba(7, 15, 31, 0.42);\n  font-weight: 800;\n  font-size: 12px;\n  cursor: pointer;\n  white-space: nowrap;\n  transition:\n    border-color 160ms ease,\n    transform 160ms ease,\n    box-shadow 160ms ease;\n}\n.birth-table-action:hover {\n  border-color: rgba(159, 232, 112, 0.48);\n  transform: translateY(-1px);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.birth-table-action svg {\n  width: 16px;\n  height: 16px;\n}\n.birth-card {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 12px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.88),\n      rgba(8, 18, 37, 0.86));\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.birth-card.risk-high {\n  border-color: rgba(255, 107, 107, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 107, 107, 0.06);\n}\n.birth-card.risk-medium {\n  border-color: rgba(255, 184, 77, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 184, 77, 0.06);\n}\n.birth-card.risk-low {\n  border-color: rgba(159, 232, 112, 0.18);\n  box-shadow: 0 14px 30px rgba(159, 232, 112, 0.05);\n}\n.birth-card__top {\n  display: grid;\n  grid-template-columns: 56px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n  margin-top: 8px;\n}\n.birth-card__avatar {\n  width: 56px;\n  height: 56px;\n  border-radius: 50%;\n  border-color: rgba(159, 232, 112, 0.22);\n  background:\n    radial-gradient(\n      circle at 38% 28%,\n      rgba(255, 255, 255, 0.2),\n      transparent 16%),\n    linear-gradient(\n      145deg,\n      rgba(159, 232, 112, 0.2),\n      rgba(8, 18, 37, 0.9));\n}\n.birth-card__content {\n  min-width: 0;\n}\n.birth-card h4 {\n  margin: 0 0 4px;\n  color: #f8fbff;\n  font-size: 15px;\n  letter-spacing: -0.02em;\n}\n.birth-card p {\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.birth-card__lot {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  margin-top: 6px !important;\n  color: #c9d7ec !important;\n  font-size: 10.5px !important;\n}\n.birth-card__lot svg {\n  width: 13px;\n  height: 13px;\n  color: #9fe870;\n  flex: 0 0 16px;\n}\n.risk-badge {\n  display: inline-flex;\n  width: fit-content;\n  border-radius: 999px;\n  padding: 5px 8px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.18);\n  font-size: 10px;\n  font-weight: 900;\n  letter-spacing: -0.01em;\n}\n.risk-badge.risk-high {\n  color: #fecaca;\n  background: rgba(255, 107, 107, 0.12);\n  border-color: rgba(255, 107, 107, 0.24);\n}\n.risk-badge.risk-medium {\n  color: #fde68a;\n  background: rgba(255, 184, 77, 0.12);\n  border-color: rgba(255, 184, 77, 0.24);\n}\n.birth-card__metrics {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 0;\n  margin-top: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 10px;\n  overflow: hidden;\n}\n.birth-data {\n  display: grid;\n  grid-template-columns: 22px minmax(0, 1fr) auto;\n  gap: 8px;\n  align-items: center;\n  border: 0;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 0;\n  padding: 12px 8px;\n  background: rgba(7, 15, 31, 0.42);\n}\n.birth-data:last-child {\n  border-bottom: 0;\n}\n.birth-data svg {\n  width: 17px;\n  height: 17px;\n  color: #b8c6dd;\n}\n.birth-data span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 10.5px;\n}\n.birth-data strong {\n  display: block;\n  color: #f8fbff;\n  font-size: 12px;\n  text-align: right;\n}\n.birth-data:nth-child(2) strong {\n  color: #ffb84d;\n}\n.inline-risk {\n  border-radius: 999px;\n  padding: 5px 8px;\n  font-size: 10px !important;\n  background: rgba(159, 232, 112, 0.12);\n  border: 1px solid rgba(159, 232, 112, 0.14);\n}\n.inline-risk.risk-high {\n  color: #ff6b6b;\n  background: rgba(255, 107, 107, 0.12);\n  border-color: rgba(255, 107, 107, 0.18);\n}\n.inline-risk.risk-medium {\n  color: #ffb84d;\n  background: rgba(255, 184, 77, 0.12);\n  border-color: rgba(255, 184, 77, 0.18);\n}\n.inline-risk.risk-low {\n  color: #9fe870;\n}\n.birth-card__action {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 10px;\n  width: 100%;\n  margin-top: 12px;\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 8px;\n  padding: 10px 12px;\n  color: #9fe870;\n  background: rgba(7, 15, 31, 0.42);\n  font-weight: 900;\n  font-size: 12px;\n  cursor: pointer;\n  transition:\n    border-color 160ms ease,\n    transform 160ms ease,\n    box-shadow 160ms ease;\n}\n.birth-card__action:hover {\n  border-color: rgba(159, 232, 112, 0.48);\n  transform: translateY(-1px);\n  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);\n}\n.birth-card__action svg {\n  width: 18px;\n  height: 18px;\n}\n.birth-pagination {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  flex-wrap: wrap;\n  gap: 10px;\n  margin: 10px -16px 0;\n  padding: 10px 16px;\n  border-top: 1px solid rgba(148, 163, 184, 0.08);\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  background: rgba(7, 15, 31, 0.3);\n}\n.birth-pagination button {\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 8px;\n  padding: 10px 14px;\n  color: #dbeafe;\n  background: rgba(7, 15, 31, 0.52);\n  font-weight: 800;\n  cursor: pointer;\n}\n.birth-pagination button.active {\n  color: #081225;\n  background: #9fe870;\n  border-color: #9fe870;\n  box-shadow: 0 0 18px rgba(159, 232, 112, 0.22);\n}\n.birth-pagination button:disabled {\n  opacity: 0.42;\n  cursor: not-allowed;\n}\n.birth-pagination span {\n  color: #8ea0bb;\n  font-size: 13px;\n  margin-left: 8px;\n}\n.birth-pagination .carousel-arrow {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  min-width: 112px;\n  justify-content: center;\n}\n.birth-pagination .carousel-arrow svg {\n  width: 18px;\n  height: 18px;\n}\n.birth-alerts__footer {\n  display: grid;\n  grid-template-columns: 22px minmax(0, 1fr) auto;\n  gap: 10px;\n  align-items: center;\n  margin: 12px -16px -14px;\n  border: 1px solid rgba(148, 163, 184, 0.1);\n  border-radius: 10px;\n  padding: 13px 24px;\n  color: #8ea0bb;\n  background: rgba(7, 15, 31, 0.46);\n}\n.birth-alerts__footer svg {\n  width: 20px;\n  height: 20px;\n  color: #6ea8ff;\n}\n.birth-alerts__footer strong {\n  color: #c9d7ec;\n  font-size: 13px;\n}\n.cross-grid {\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  gap: 10px;\n}\n.cross-card {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 12px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, 0.88),\n      rgba(8, 18, 37, 0.86));\n  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.22);\n}\n.cross-card.risk-low {\n  border-color: rgba(159, 232, 112, 0.18);\n  box-shadow: 0 14px 30px rgba(159, 232, 112, 0.05);\n}\n.cross-card.risk-medium {\n  border-color: rgba(255, 184, 77, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 184, 77, 0.06);\n}\n.cross-card.risk-high {\n  border-color: rgba(255, 107, 107, 0.2);\n  box-shadow: 0 14px 30px rgba(255, 107, 107, 0.06);\n}\n.cross-card__pair {\n  display: flex;\n  flex-direction: column;\n  gap: 9px;\n  margin-top: 4px;\n}\n.cross-animal {\n  display: grid;\n  grid-template-columns: 42px minmax(0, 1fr);\n  gap: 10px;\n  align-items: center;\n}\n.cross-animal__icon {\n  width: 42px;\n  height: 42px;\n  display: grid;\n  place-items: center;\n  border-radius: 50%;\n  color: #9fe870;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.18);\n}\n.cross-animal__icon--male {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, 0.1);\n  border-color: rgba(110, 168, 255, 0.18);\n}\n.cross-animal__icon svg,\n.cross-link svg,\n.cross-panel svg {\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.cross-animal__icon svg {\n  width: 23px;\n  height: 23px;\n}\n.cross-animal span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 10.5px;\n}\n.cross-animal strong {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n}\n.cross-link {\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  opacity: 0.8;\n}\n.cross-link svg {\n  width: 22px;\n  height: 22px;\n}\n.cross-card__metrics {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 0;\n  border: 1px solid rgba(148, 163, 184, 0.08);\n  border-radius: 10px;\n  overflow: hidden;\n}\n.cross-card__note {\n  min-height: 48px;\n  margin: 0;\n  color: #8ea0bb;\n  font-size: 11px;\n  line-height: 1.45;\n}\n.tabs {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  margin-bottom: 16px;\n}\n.tabs button {\n  border: 1px solid rgba(148, 163, 184, 0.16);\n  border-radius: 999px;\n  background: rgba(15, 23, 42, 0.54);\n  color: #9bb0cc;\n  padding: 10px 14px;\n  font-weight: 800;\n  cursor: pointer;\n}\n.tabs button.active {\n  color: #081225;\n  background: #9fe870;\n  border-color: #9fe870;\n}\n.form-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.form-grid.one {\n  grid-template-columns: 1fr;\n}\n.form-grid label,\n.textarea-field {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 13px;\n}\n.textarea-field {\n  margin: 12px 0;\n}\n.textarea-field textarea {\n  min-height: 88px;\n}\n.tree {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.tree-columns {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.tree-title {\n  margin: 0 0 8px;\n  color: #8ea0bb;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  font-size: 11px;\n  font-weight: 800;\n}\n.tree-node {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 18px;\n  background: rgba(9, 18, 36, 0.58);\n  padding: 12px 14px;\n  margin-bottom: 8px;\n}\n.tree-node.main {\n  border-color: rgba(159, 232, 112, 0.22);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.06);\n}\n.tree-node strong {\n  display: block;\n  color: #f8fbff;\n}\n.tree-node span {\n  color: #90a1bb;\n  font-size: 13px;\n}\n.genealogy-card {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n}\n.genealogy-head {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.72fr);\n  gap: 16px;\n  align-items: center;\n}\n.genealogy-title {\n  display: grid;\n  grid-template-columns: 56px 1fr;\n  gap: 14px;\n  align-items: center;\n}\n.genealogy-title h3 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 26px;\n}\n.genealogy-title p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.genealogy-selected {\n  display: grid;\n  grid-template-columns: 54px 1fr 1fr;\n  gap: 16px;\n  align-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 18px;\n  padding: 14px 16px;\n  background: rgba(9, 18, 36, 0.58);\n}\n.genealogy-selected span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n  margin-bottom: 4px;\n}\n.genealogy-selected strong {\n  color: #f8fbff;\n  font-size: 16px;\n}\n.animal-icon,\n.pedigree-icon {\n  width: 48px;\n  height: 48px;\n  border-radius: 18px;\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  font-weight: 900;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.16);\n}\n.icon-male {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, 0.1);\n  border-color: rgba(110, 168, 255, 0.18);\n}\n.genealogy-selector {\n  max-width: 420px;\n}\n.genealogy-tree {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 24px;\n  padding: 18px;\n  background:\n    radial-gradient(\n      circle at top,\n      rgba(159, 232, 112, 0.05),\n      transparent 36%),\n    rgba(7, 15, 31, 0.5);\n}\n.genealogy-row {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 10px;\n}\n.genealogy-row--root {\n  padding-top: 4px;\n}\n.genealogy-connector {\n  width: 1px;\n  height: 22px;\n  align-self: center;\n  border-left: 1px dashed rgba(159, 232, 112, 0.6);\n}\n.generation-label {\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 4px;\n  margin: 0;\n  padding: 8px 16px;\n  border-radius: 12px;\n  color: #c6d4ea;\n  font-size: 12px;\n  font-weight: 900;\n  background: rgba(110, 168, 255, 0.06);\n}\n.generation-label span {\n  color: #8ea0bb;\n  font-weight: 700;\n}\n.generation-grid {\n  width: 100%;\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));\n  gap: 10px;\n}\n.pedigree-node {\n  display: grid;\n  grid-template-columns: 48px minmax(0, 1fr);\n  gap: 12px;\n  align-items: center;\n  min-height: 80px;\n  border: 1px solid rgba(148, 163, 184, 0.13);\n  border-radius: 18px;\n  padding: 12px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(17, 32, 60, 0.82),\n      rgba(9, 18, 36, 0.76));\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);\n}\n.pedigree-node--main {\n  min-width: 240px;\n  border-color: rgba(159, 232, 112, 0.45);\n  box-shadow: 0 0 24px rgba(159, 232, 112, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.pedigree-node strong {\n  display: block;\n  color: #f8fbff;\n  font-size: 15px;\n}\n.pedigree-node span {\n  display: block;\n  margin-top: 4px;\n  color: #8ea0bb;\n  font-size: 13px;\n}\n.genealogy-foot {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  border: 1px solid rgba(148, 163, 184, 0.11);\n  border-radius: 16px;\n  padding: 12px 14px;\n  color: #8ea0bb;\n  background: rgba(9, 18, 36, 0.48);\n  font-size: 12px;\n}\n.premium-empty {\n  padding: 18px;\n  border: 1px dashed rgba(148, 163, 184, 0.22);\n  border-radius: 18px;\n  background: rgba(9, 18, 36, 0.5);\n}\n.error-box {\n  padding: 14px 16px;\n  border: 1px solid rgba(248, 113, 113, 0.3);\n  border-radius: 16px;\n  background: rgba(127, 29, 29, 0.22);\n  color: #fecaca;\n}\n.empty-box {\n  color: var(--muted);\n}\n.detail-overlay {\n  position: fixed;\n  inset: 0;\n  z-index: 80;\n  display: grid;\n  place-items: center;\n  padding: 24px;\n  background: rgba(2, 8, 23, 0.72);\n  -webkit-backdrop-filter: blur(10px);\n  backdrop-filter: blur(10px);\n}\n.cow-detail-modal {\n  width: min(1180px, 96vw);\n  max-height: 92vh;\n  overflow: auto;\n  border: 1px solid rgba(110, 168, 255, 0.18);\n  border-radius: 18px;\n  background:\n    radial-gradient(\n      circle at 18% 0%,\n      rgba(110, 168, 255, 0.15),\n      transparent 28%),\n    linear-gradient(\n      180deg,\n      rgba(12, 25, 50, 0.98),\n      rgba(6, 15, 31, 0.98));\n  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.05);\n}\n.cow-detail-modal__header,\n.cow-detail-modal__footer {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 14px;\n  padding: 14px 18px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n}\n.cow-detail-modal__footer {\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n  border-bottom: 0;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.cow-detail-modal__eyebrow {\n  display: inline-flex;\n  align-items: center;\n  gap: 10px;\n  color: #f8fbff;\n  font-weight: 900;\n}\n.detail-title-icon {\n  width: 34px;\n  height: 34px;\n  border-radius: 10px;\n}\n.detail-title-icon svg {\n  width: 18px;\n  height: 18px;\n}\n.detail-close {\n  width: 34px;\n  height: 34px;\n  display: grid;\n  place-items: center;\n  border: 1px solid rgba(148, 163, 184, 0.14);\n  border-radius: 10px;\n  color: #9caec8;\n  background: rgba(7, 15, 31, 0.58);\n  cursor: pointer;\n}\n.detail-close svg {\n  width: 18px;\n  height: 18px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n}\n.cow-detail-modal__body {\n  display: grid;\n  grid-template-columns: 280px minmax(0, 1fr);\n  gap: 18px;\n  padding: 20px;\n}\n.cow-profile-card,\n.cow-summary-card,\n.detail-info-card,\n.events-card {\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 14px;\n  background: rgba(8, 18, 37, 0.66);\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);\n}\n.cow-profile-card {\n  padding: 22px 18px;\n  text-align: center;\n}\n.cow-profile-card__avatar {\n  width: 92px;\n  height: 92px;\n  display: grid;\n  place-items: center;\n  margin: 0 auto 16px;\n  border-radius: 50%;\n  color: #9fe870;\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  background:\n    radial-gradient(\n      circle at 35% 22%,\n      rgba(159, 232, 112, 0.22),\n      rgba(8, 18, 37, 0.92));\n  box-shadow: 0 0 34px rgba(159, 232, 112, 0.09);\n}\n.cow-profile-card__avatar svg {\n  width: 48px;\n  height: 48px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.7;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.cow-profile-card h3 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 25px;\n  letter-spacing: -0.03em;\n}\n.cow-profile-card__badges {\n  display: flex;\n  justify-content: center;\n  flex-wrap: wrap;\n  gap: 8px;\n  margin: 12px 0 20px;\n}\n.cow-profile-card__badges span {\n  border-radius: 999px;\n  padding: 6px 9px;\n  color: #a9bad3;\n  background: rgba(110, 168, 255, 0.08);\n  font-size: 11px;\n  font-weight: 800;\n}\n.cow-profile-list,\n.detail-info-card dl {\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n  margin: 0;\n}\n.cow-profile-list div,\n.detail-info-card dl div {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  padding-bottom: 9px;\n}\n.cow-profile-list dt,\n.detail-info-card dt {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.cow-profile-list dd,\n.detail-info-card dd {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 12px;\n  text-align: right;\n}\n.cow-detail-main {\n  display: flex;\n  flex-direction: column;\n  gap: 14px;\n}\n.cow-summary-grid {\n  display: grid;\n  grid-template-columns: 1fr 1.15fr;\n  gap: 12px;\n}\n.cow-summary-card {\n  padding: 18px;\n}\n.cow-summary-card--large strong {\n  display: block;\n  margin-top: 18px;\n  color: #f8fbff;\n  font-size: 28px;\n  line-height: 1;\n}\n.summary-label,\n.cow-summary-card span {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 800;\n}\n.cow-summary-card small {\n  display: block;\n  margin-top: 8px;\n  color: #8ea0bb;\n}\n.summary-split {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  gap: 10px;\n  margin: 20px -18px -18px;\n  border-top: 1px solid rgba(148, 163, 184, 0.1);\n}\n.summary-split div {\n  padding: 13px 18px;\n  border-right: 1px solid rgba(148, 163, 184, 0.1);\n}\n.summary-split div:last-child {\n  border-right: 0;\n}\n.summary-split b {\n  display: block;\n  margin-top: 6px;\n  color: #ffb84d;\n}\n.cow-summary-card:not(.cow-summary-card--large) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.cow-summary-card:not(.cow-summary-card--large) strong {\n  display: block;\n  margin-top: 6px;\n  color: #f8fbff;\n  font-size: 13px;\n}\n.detail-tabs {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n}\n.detail-tabs span {\n  padding: 12px 14px;\n  color: #9caec8;\n  font-size: 12px;\n  font-weight: 800;\n}\n.detail-tabs span.active {\n  color: #9fe870;\n  border-bottom: 2px solid #9fe870;\n}\n.detail-content-grid {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 12px;\n}\n.detail-info-card,\n.events-card {\n  padding: 16px;\n}\n.detail-info-card h4,\n.events-card h4 {\n  margin: 0 0 14px;\n  color: #f8fbff;\n  font-size: 14px;\n}\n.events-card__head {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: center;\n}\n.events-card__head span {\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.events-table {\n  overflow-x: auto;\n}\n.events-table__row {\n  display: grid;\n  grid-template-columns: 110px 130px 110px 150px minmax(220px, 1fr);\n  gap: 12px;\n  min-width: 760px;\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  padding: 11px 0;\n  color: #b9c7dc;\n  font-size: 12px;\n}\n.events-table__row--head {\n  color: #8ea0bb;\n  font-size: 11px;\n  font-weight: 900;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n}\n.events-table__row strong {\n  color: #f8fbff;\n}\n.events-table__empty {\n  padding: 18px 0 4px;\n  color: #8ea0bb;\n}\n@media (max-width: 1366px) and (min-width: 1081px) {\n  .birth-alerts__grid,\n  .cross-grid {\n    grid-template-columns: repeat(4, minmax(0, 1fr));\n  }\n  .birth-card,\n  .cross-card {\n    min-width: 0;\n  }\n}\n@media (max-width: 1600px) and (min-width: 1081px) {\n  .reproduction-kpis {\n    grid-template-columns: repeat(5, minmax(0, 1fr));\n  }\n}\n@media (max-width: 1080px) {\n  .layout,\n  .tree-columns,\n  .genealogy-head,\n  .birth-alerts__header {\n    grid-template-columns: 1fr;\n  }\n  .stats-grid {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n  .birth-alerts__metrics {\n    grid-template-columns: 1fr 1fr;\n  }\n  .birth-alerts__grid,\n  .cross-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n  .cow-detail-modal__body,\n  .cow-summary-grid,\n  .detail-content-grid {\n    grid-template-columns: 1fr;\n  }\n}\n@media (max-width: 720px) {\n  .page-head,\n  .reproduction-head {\n    flex-direction: column;\n    align-items: stretch;\n  }\n  .band-head {\n    grid-template-columns: 1fr;\n  }\n  .premium-card__top {\n    flex-direction: column;\n  }\n  .birth-alerts {\n    padding: 16px;\n    border-radius: 22px;\n  }\n  .stats-grid {\n    grid-template-columns: 1fr 1fr;\n  }\n  .birth-alerts__title {\n    grid-template-columns: 1fr;\n  }\n  .birth-alerts__metrics,\n  .birth-alerts__grid,\n  .cross-grid,\n  .birth-card__metrics,\n  .birth-alerts__footer {\n    grid-template-columns: 1fr;\n  }\n  .birth-metric + .birth-metric {\n    border-left: 0;\n    border-top: 1px solid rgba(148, 163, 184, 0.12);\n  }\n  .genealogy-selected {\n    grid-template-columns: 1fr;\n  }\n  .genealogy-foot {\n    flex-direction: column;\n  }\n  .detail-overlay {\n    padding: 10px;\n  }\n  .cow-detail-modal {\n    width: 100%;\n    max-height: 96vh;\n  }\n  .cow-detail-modal__body {\n    padding: 12px;\n  }\n  .cow-summary-card:not(.cow-summary-card--large),\n  .summary-split {\n    grid-template-columns: 1fr;\n  }\n  .summary-split div {\n    border-right: 0;\n    border-bottom: 1px solid rgba(148, 163, 184, 0.1);\n  }\n}\n.reproduction-kpis .metric-card {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  padding: 14px;\n}\n.reproduction-kpis .metric-icon {\n  width: 46px;\n  height: 46px;\n  border-radius: 16px;\n}\n.reproduction-kpis .metric-icon svg {\n  width: 24px;\n  height: 24px;\n}\n.reproduction-kpis .metric-card > div:last-child {\n  display: contents;\n}\n.reproduction-kpis .metric-card .label {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: end;\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n  text-transform: none;\n  letter-spacing: 0;\n}\n.reproduction-kpis .metric-card small {\n  grid-column: 2;\n  grid-row: 2;\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.reproduction-kpis .metric-card .value {\n  grid-column: 3;\n  grid-row: 1 / span 2;\n  justify-self: end;\n  align-self: center;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n@media (max-width: 760px) {\n  .reproduction-kpis .metric-card {\n    grid-template-columns: 46px 1fr;\n  }\n  .reproduction-kpis .metric-card .value {\n    grid-column: 2;\n    grid-row: 3;\n    justify-self: start;\n  }\n}\n.reproduction-kpis .metric-card {\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  align-items: center;\n}\n.reproduction-kpis .metric-card > div:last-child {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  min-width: 0;\n  align-self: center;\n}\n.reproduction-kpis .metric-card .label,\n.reproduction-kpis .metric-card small,\n.reproduction-kpis .metric-card .value {\n  grid-column: auto;\n  grid-row: auto;\n}\n.reproduction-kpis .metric-card .label {\n  margin: 0;\n  line-height: 1.2;\n}\n.reproduction-kpis .metric-card small {\n  margin-top: 4px;\n  line-height: 1.25;\n}\n.reproduction-kpis .metric-card .value {\n  justify-self: end;\n  align-self: center;\n  line-height: 1;\n}\n@media (max-width: 760px) {\n  .reproduction-kpis .metric-card {\n    grid-template-columns: 46px 1fr;\n  }\n  .reproduction-kpis .metric-card .value {\n    grid-column: 2;\n    justify-self: start;\n  }\n}\n.reproduction-kpis .metric-card {\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  align-items: center !important;\n  gap: 14px !important;\n  min-height: 104px !important;\n  padding: 14px !important;\n}\n.reproduction-kpis .metric-card > div:last-child {\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n  min-width: 0 !important;\n  height: auto !important;\n}\n.reproduction-kpis .metric-icon {\n  grid-column: 1 !important;\n  align-self: center !important;\n  justify-self: start !important;\n  width: 46px !important;\n  height: 46px !important;\n}\n.reproduction-kpis .metric-card .label {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n}\n.reproduction-kpis .metric-card small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.reproduction-kpis .metric-card .value {\n  grid-column: 3 !important;\n  grid-row: 1 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  line-height: 1 !important;\n  white-space: nowrap !important;\n}\n.kpi-grid .kpi-card,\n.reproduction-kpis .kpi-card,\n.sanidad-kpis .kpi-card,\n.trace-kpis .kpi-card {\n  min-height: 104px !important;\n  padding: 14px !important;\n  display: grid !important;\n  grid-template-columns: 46px minmax(0, 1fr) auto !important;\n  gap: 12px !important;\n  align-items: center !important;\n  border: 1px solid rgba(148, 163, 184, .12) !important;\n  border-radius: 20px !important;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%) !important;\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03) !important;\n}\n.kpi-grid .metric-icon,\n.reproduction-kpis .metric-icon,\n.sanidad-kpis .metric-icon,\n.trace-kpis .metric-icon {\n  grid-column: 1 !important;\n  width: 46px !important;\n  height: 46px !important;\n  display: grid !important;\n  place-items: center !important;\n  border-radius: 16px !important;\n  color: #9fe870 !important;\n  background: rgba(159, 232, 112, .1) !important;\n  border: 1px solid rgba(159, 232, 112, .16) !important;\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08) !important;\n  align-self: center !important;\n}\n.kpi-grid .metric-icon.blue,\n.reproduction-kpis .metric-icon.blue,\n.sanidad-kpis .metric-icon.blue,\n.trace-kpis .metric-icon.blue {\n  color: #6ea8ff !important;\n  background: rgba(110, 168, 255, .1) !important;\n  border-color: rgba(110, 168, 255, .18) !important;\n}\n.kpi-grid .metric-icon.warning,\n.reproduction-kpis .metric-icon.warning,\n.sanidad-kpis .metric-icon.warning,\n.trace-kpis .metric-icon.warning {\n  color: #ffb84d !important;\n  background: rgba(255, 184, 77, .1) !important;\n  border-color: rgba(255, 184, 77, .18) !important;\n}\n.kpi-grid .metric-icon svg,\n.reproduction-kpis .metric-icon svg,\n.sanidad-kpis .metric-icon svg,\n.trace-kpis .metric-icon svg {\n  width: 24px !important;\n  height: 24px !important;\n  fill: none !important;\n  stroke: currentColor !important;\n  stroke-width: 1.8 !important;\n  stroke-linecap: round !important;\n  stroke-linejoin: round !important;\n}\n.kpi-grid .kpi-copy,\n.reproduction-kpis .kpi-copy,\n.sanidad-kpis .kpi-copy,\n.trace-kpis .kpi-copy {\n  grid-column: 2 !important;\n  min-width: 0 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  justify-content: center !important;\n  align-self: center !important;\n}\n.kpi-grid .kpi-copy span,\n.reproduction-kpis .kpi-copy span,\n.sanidad-kpis .kpi-copy span,\n.trace-kpis .kpi-copy span {\n  display: block !important;\n  margin: 0 !important;\n  color: #a9bbd4 !important;\n  font-size: 12px !important;\n  font-weight: 400 !important;\n  line-height: 1.2 !important;\n  letter-spacing: 0 !important;\n  text-transform: none !important;\n}\n.kpi-grid .kpi-copy small,\n.reproduction-kpis .kpi-copy small,\n.sanidad-kpis .kpi-copy small,\n.trace-kpis .kpi-copy small {\n  display: block !important;\n  margin: 5px 0 0 !important;\n  color: #9fe870 !important;\n  font-size: 11px !important;\n  line-height: 1.2 !important;\n}\n.kpi-grid .kpi-card > strong,\n.reproduction-kpis .kpi-card > strong,\n.sanidad-kpis .kpi-card > strong,\n.trace-kpis .kpi-card > strong {\n  grid-column: 3 !important;\n  justify-self: end !important;\n  align-self: center !important;\n  display: block !important;\n  margin: 0 !important;\n  color: #fff !important;\n  font-size: 30px !important;\n  font-weight: 900 !important;\n  line-height: 1 !important;\n  letter-spacing: -.04em !important;\n  white-space: nowrap !important;\n}\n/*# sourceMappingURL=ganaderia-reproduccion-page.component.css.map */\n'] }]
   }], null, { onResize: [{
     type: HostListener,
     args: ["window:resize"]
@@ -55906,12 +56111,12 @@ var GanaderiaReproduccionPageComponent = class _GanaderiaReproduccionPageCompone
 var _c06 = () => [];
 var _c15 = () => ["tipo"];
 var _c25 = () => ["label", "tipo"];
-var _c35 = () => ["raza", "ubicacionActual"];
-var _c44 = () => ["caravana", "raza", "ubicacionActual"];
+var _c35 = () => ["raza", "potreroNombre"];
+var _c44 = () => ["caravana", "raza", "potreroNombre"];
 var _c53 = () => ["tipoUso", "estado"];
 var _c62 = () => ["nombre", "tipoUso", "estado"];
-var _c7 = () => ["rolOperativo", "documentoNumero"];
-var _c8 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
+var _c72 = () => ["rolOperativo", "documentoNumero"];
+var _c82 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
 var _c9 = () => ["label"];
 function GanaderiaAlimentacionPageComponent_div_16_Template(rf, ctx) {
   if (rf & 1) {
@@ -56886,7 +57091,7 @@ function GanaderiaAlimentacionPageComponent_div_19_ng_container_6_Template(rf, c
     \u0275\u0275advance();
     \u0275\u0275property("endpoint", ctx_r0.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(29, _c53))("searchFields", \u0275\u0275pureFunction0(30, _c62))("value", ctx_r0.suministroForm().potreroId);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(31, _c7))("searchFields", \u0275\u0275pureFunction0(32, _c8))("value", ctx_r0.suministroForm().responsable);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(31, _c72))("searchFields", \u0275\u0275pureFunction0(32, _c82))("value", ctx_r0.suministroForm().responsable);
     \u0275\u0275advance(4);
     \u0275\u0275property("disabled", ctx_r0.saving());
   }
@@ -56980,7 +57185,7 @@ function GanaderiaAlimentacionPageComponent_div_19_ng_container_7_Template(rf, c
     \u0275\u0275advance();
     \u0275\u0275property("options", ctx_r0.metodoPesajeOptions)("searchFields", \u0275\u0275pureFunction0(19, _c9))("value", ctx_r0.pesajeForm().metodo);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(20, _c7))("searchFields", \u0275\u0275pureFunction0(21, _c8))("value", ctx_r0.pesajeForm().responsable);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(20, _c72))("searchFields", \u0275\u0275pureFunction0(21, _c82))("value", ctx_r0.pesajeForm().responsable);
     \u0275\u0275advance(4);
     \u0275\u0275property("disabled", ctx_r0.saving());
   }
@@ -57346,208 +57551,208 @@ var GanaderiaAlimentacionPageComponent = class _GanaderiaAlimentacionPageCompone
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(GanaderiaAlimentacionPageComponent, [{
     type: Component,
-    args: [{ selector: "app-ganaderia-alimentacion-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<div class="feed-page">\r
-  <header class="feed-head">\r
-    <div>\r
-      <p class="eyebrow">Campo App \xB7 Nutrici\xF3n</p>\r
-      <h2>Alimentaci\xF3n y peso</h2>\r
-      <p>Programas nutricionales, suministros, pesajes, BCS y eficiencia alimenticia del rodeo.</p>\r
-    </div>\r
-    <div class="head-actions">\r
-      <button class="btn-secondary" type="button" (click)="openModal('PESAJE')">Nuevo pesaje</button>\r
-      <button class="btn-secondary" type="button" (click)="openModal('SUMINISTRO')">Registrar suministro</button>\r
-      <button class="btn-primary" type="button" (click)="openModal('DIETA')">Nueva dieta</button>\r
-    </div>\r
-  </header>\r
-\r
-  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>\r
-  <div class="card empty-box" *ngIf="loading()">Cargando nutrici\xF3n...</div>\r
-\r
-  <ng-container *ngIf="!loading() && resumen() as data">\r
-    <section class="kpi-grid">\r
-      <article class="kpi-card">\r
-        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>\r
-        <div class="kpi-copy"><span>Dietas activas</span><small>Planes nutricionales vigentes</small></div>\r
-        <strong>{{ data.dashboard.dietasActivas }}</strong>\r
-      </article>\r
-      <article class="kpi-card">\r
-        <div class="metric-icon blue"><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg></div>\r
-        <div class="kpi-copy"><span>Kg suministrados</span><small>Mes operativo actual</small></div>\r
-        <strong>{{ data.dashboard.kgSuministradosMes || 0 }}</strong>\r
-      </article>\r
-      <article class="kpi-card">\r
-        <div class="metric-icon warning"><svg viewBox="0 0 24 24"><path d="M12 2v20" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H15a3.5 3.5 0 0 1 0 7H6" /></svg></div>\r
-        <div class="kpi-copy"><span>Costo mensual</span><small>Alimentacion registrada</small></div>\r
-        <strong>\${{ data.dashboard.costoMes || 0 }}</strong>\r
-      </article>\r
-      <article class="kpi-card">\r
-        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg></div>\r
-        <div class="kpi-copy"><span>Conversion</span><small>Kg alimento / kg ganado</small></div>\r
-        <strong>{{ data.dashboard.conversionAlimenticia || 0 }}</strong>\r
-      </article>\r
-    </section>\r
-\r
-    <section class="nutrition-layout">\r
-      <article class="card nutrition-panel">\r
-        <div class="tabs-bar">\r
-          <div class="tabs">\r
-            <button type="button" [class.active]="activeTab() === 'DIETAS'" (click)="setTab('DIETAS')">\r
-              <svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg>\r
-              Dietas\r
-            </button>\r
-            <button type="button" [class.active]="activeTab() === 'SUMINISTROS'" (click)="setTab('SUMINISTROS')">\r
-              <svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg>\r
-              Suministros\r
-            </button>\r
-            <button type="button" [class.active]="activeTab() === 'PESAJES'" (click)="setTab('PESAJES')">\r
-              <svg viewBox="0 0 24 24"><path d="M6 3h12" /><path d="M6 21h12" /><path d="M8 3v18" /><path d="M16 3v18" /><path d="M8 8h8" /><path d="M8 16h8" /></svg>\r
-              Pesajes\r
-            </button>\r
-            <button type="button" [class.active]="activeTab() === 'ALERTAS'" (click)="setTab('ALERTAS')">\r
-              <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg>\r
-              Alertas\r
-            </button>\r
-          </div>\r
-          <span>{{ totalItems() }} vigente(s)</span>\r
-        </div>\r
-\r
-        <div class="card-grid" *ngIf="activeTab() === 'DIETAS'">\r
-          <article class="premium-card" [class.card-success]="dieta.activa" [class.card-muted]="!dieta.activa" *ngFor="let dieta of dietasPage()">\r
-            <div class="premium-card__head">\r
-              <div class="premium-card__identity">\r
-                <div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>\r
-                <div><h3>{{ dieta.nombre }}</h3><p>{{ dieta.tipoAnimal }} - {{ dieta.objetivo || 'Sin objetivo' }}</p></div>\r
-              </div>\r
-              <span class="badge" [class.badge-muted]="!dieta.activa">{{ dieta.activa ? 'Activa' : 'Inactiva' }}</span>\r
-            </div>\r
-            <div class="metric-list">\r
-              <div><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg><span>Materia seca</span><strong>{{ dieta.materiaSecaKg || 0 }} kg</strong></div>\r
-              <div><svg viewBox="0 0 24 24"><path d="M12 2v20" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H15a3.5 3.5 0 0 1 0 7H6" /></svg><span>Costo diario</span><strong>\${{ dieta.costoDiario || 0 }}</strong></div>\r
-              <div><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg><span>Ingredientes</span><strong>{{ dieta.ingredientes.length }}</strong></div>\r
-            </div>\r
-            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>\r
-          </article>\r
-          <div class="empty-box premium-empty-box" *ngIf="!data.dietas.length">Sin dietas cargadas.</div>\r
-        </div>\r
-\r
-        <div class="card-grid" *ngIf="activeTab() === 'SUMINISTROS'">\r
-          <article class="premium-card card-success" *ngFor="let item of suministrosPage()">\r
-            <div class="premium-card__head">\r
-              <div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg></div><div><h3>{{ item.animalCaravana || 'Rodeo' }}</h3><p>{{ item.dietaNombre || item.alimento }}</p></div></div>\r
-              <span class="badge">Registrado</span>\r
-            </div>\r
-            <div class="metric-list">\r
-              <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha</span><strong>{{ item.fecha | date:'dd/MM/yyyy' }}</strong></div>\r
-              <div><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg><span>Cantidad</span><strong>{{ item.cantidadKg }} kg</strong></div>\r
-              <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.responsable || 'Sin responsable' }}</strong></div>\r
-            </div>\r
-            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>\r
-          </article>\r
-          <div class="empty-box premium-empty-box" *ngIf="!data.registros.length">Sin suministros registrados.</div>\r
-        </div>\r
-\r
-        <div class="card-grid" *ngIf="activeTab() === 'PESAJES'">\r
-          <article class="premium-card card-success" *ngFor="let item of pesajesPage()">\r
-            <div class="premium-card__head">\r
-              <div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M6 3h12" /><path d="M6 21h12" /><path d="M8 3v18" /><path d="M16 3v18" /><path d="M8 8h8" /><path d="M8 16h8" /></svg></div><div><h3>{{ item.animalCaravana }}</h3><p>{{ item.metodo || 'Sin metodo' }}</p></div></div>\r
-              <span class="badge">Pesaje</span>\r
-            </div>\r
-            <div class="metric-list">\r
-              <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha</span><strong>{{ item.fecha | date:'dd/MM/yyyy' }}</strong></div>\r
-              <div><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg><span>Peso</span><strong>{{ item.pesoKg }} kg</strong></div>\r
-              <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.responsable || 'Sin responsable' }}</strong></div>\r
-            </div>\r
-            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('PESAJE')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>\r
-          </article>\r
-          <div class="empty-box premium-empty-box" *ngIf="!data.pesajes.length">Sin pesajes registrados.</div>\r
-        </div>\r
-\r
-        <div class="card-grid" *ngIf="activeTab() === 'ALERTAS'">\r
-          <article class="premium-card card-warning" *ngFor="let alerta of alertasPage()">\r
-            <div class="premium-card__head">\r
-              <div class="premium-card__identity"><div class="premium-card__icon warning"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg></div><div><h3>{{ alerta.animalCaravana || 'Alerta nutricional' }}</h3><p>{{ alerta.mensaje }}</p></div></div>\r
-              <span class="badge badge-warning">{{ alerta.prioridad }}</span>\r
-            </div>\r
-            <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg><span>Tipo</span><strong>{{ alerta.tipo }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Animal</span><strong>{{ alerta.animalCaravana || 'Rodeo' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M12 9v4" /><path d="M12 17h.01" /><path d="m10 3-8 18h20L14 3z" /></svg><span>Prioridad</span><strong>{{ alerta.prioridad }}</strong></div></div>\r
-            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>\r
-          </article>\r
-          <div class="empty-box premium-empty-box" *ngIf="!data.dashboard.alertas.length">Sin alertas nutricionales.</div>\r
-        </div>\r
-\r
-        <footer class="pagination">\r
-          <span>Mostrando {{ pageStart() }} a {{ pageEnd() }} de {{ totalItems() }} {{ activeTabLabel() }}</span>\r
-          <div>\r
-            <button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>\r
-            <button type="button" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage() === i + 1" (click)="setPage(i + 1)">{{ i + 1 }}</button>\r
-            <button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>\r
-          </div>\r
-        </footer>\r
-      </article>\r
-      <aside class="card context-panel">\r
-        <div class="context-icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>\r
-        <h3>Resumen nutricional</h3>\r
-        <p>La eficiencia combina consumo mensual registrado y ganancia diaria promedio de los \xFAltimos pesajes.</p>\r
-        <div class="context-metrics">\r
-          <div><span>Ganancia diaria</span><strong>{{ data.dashboard.gananciaPromedioKg || 0 }} kg/d\xEDa</strong></div>\r
-          <div><span>Alertas</span><strong>{{ data.dashboard.alertas.length }}</strong></div>\r
-          <div><span>Animales activos</span><strong>{{ animales().length }}</strong></div>\r
-        </div>\r
-      </aside>\r
-    </section>\r
-  </ng-container>\r
-\r
-  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()" (document:keydown.escape)="closeModal()">\r
-    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">\r
-      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>\r
-      <ng-container *ngIf="modal() === 'DIETA'">\r
-        <div class="modal-head"><h3>Nueva dieta</h3></div>\r
-        <div class="form-grid">\r
-          <label><span>Nombre</span><input [ngModel]="dietaForm().nombre" (ngModelChange)="dietaForm.update(f => ({ ...f, nombre: $event }))" /></label>\r
-          <label><span>Tipo animal</span><input [ngModel]="dietaForm().tipoAnimal" (ngModelChange)="dietaForm.update(f => ({ ...f, tipoAnimal: $event }))" /></label>\r
-          <label><span>Materia seca kg</span><input type="number" [ngModel]="dietaForm().materiaSecaKg" (ngModelChange)="dietaForm.update(f => ({ ...f, materiaSecaKg: $event }))" /></label>\r
-          <label><span>Costo diario</span><input type="number" [ngModel]="dietaForm().costoDiario" (ngModelChange)="dietaForm.update(f => ({ ...f, costoDiario: $event }))" /></label>\r
-        </div>\r
-        <label class="textarea-field"><span>Objetivo</span><textarea [ngModel]="dietaForm().objetivo" (ngModelChange)="dietaForm.update(f => ({ ...f, objetivo: $event }))"></textarea></label>\r
-        <div class="ingredient-row" *ngFor="let item of dietaForm().ingredientes; let i = index; trackBy: trackByIndex">\r
-          <app-remote-search-select placeholder="Buscar alimento" [options]="alimentoOptions" valueField="value" labelField="label" [subtitleFields]="['tipo']" [searchFields]="['label','tipo']" [value]="item.ingrediente" (valueChange)="updateIngrediente(i, 'ingrediente', $event)"></app-remote-search-select>\r
-          <input placeholder="%" type="number" [ngModel]="item.proporcionPct" (ngModelChange)="updateIngrediente(i, 'proporcionPct', $event)" />\r
-          <input placeholder="Costo/kg" type="number" [ngModel]="item.costoKg" (ngModelChange)="updateIngrediente(i, 'costoKg', $event)" />\r
-        </div>\r
-        <button class="btn-secondary" type="button" (click)="addIngrediente()">Agregar ingrediente</button>\r
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDieta()">Guardar</button></div>\r
-      </ng-container>\r
-\r
-      <ng-container *ngIf="modal() === 'SUMINISTRO'">\r
-        <div class="modal-head"><h3>Registrar suministro</h3></div>\r
-        <div class="form-grid">\r
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="suministroForm().animalId" (valueChange)="suministroForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>\r
-          <label><span>Dieta</span><select [ngModel]="suministroForm().dietaId" (ngModelChange)="suministroForm.update(f => ({ ...f, dietaId: $event }))"><option value="">Sin dieta</option><option *ngFor="let dieta of resumen()?.dietas ?? []" [value]="dieta.id">{{ dieta.nombre }}</option></select></label>\r
-          <label><span>Fecha</span><input type="date" [ngModel]="suministroForm().fecha" (ngModelChange)="suministroForm.update(f => ({ ...f, fecha: $event }))" /></label>\r
-          <app-remote-search-select label="Alimento" placeholder="Buscar alimento" [options]="alimentoOptions" valueField="value" labelField="label" [subtitleFields]="['tipo']" [searchFields]="['label','tipo']" [value]="suministroForm().alimento" (valueChange)="suministroForm.update(f => ({ ...f, alimento: $event }))"></app-remote-search-select>\r
-          <label><span>Cantidad kg</span><input type="number" [ngModel]="suministroForm().cantidadKg" (ngModelChange)="suministroForm.update(f => ({ ...f, cantidadKg: $event }))" /></label>\r
-          <label><span>Costo total</span><input type="number" [ngModel]="suministroForm().costoTotal" (ngModelChange)="suministroForm.update(f => ({ ...f, costoTotal: $event }))" /></label>\r
-          <app-remote-search-select label="Potrero" placeholder="Buscar potrero" [endpoint]="endpoints.potreros" queryParam="nombre" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="suministroForm().potreroId" (valueChange)="suministroForm.update(f => ({ ...f, potreroId: $event }))"></app-remote-search-select>\r
-          <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="suministroForm().responsable" (valueChange)="suministroForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>\r
-        </div>\r
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitSuministro()">Guardar</button></div>\r
-      </ng-container>\r
-\r
-      <ng-container *ngIf="modal() === 'PESAJE'">\r
-        <div class="modal-head"><h3>Registrar pesaje</h3></div>\r
-        <div class="form-grid">\r
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [value]="pesajeForm().animalId" (valueChange)="pesajeForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>\r
-          <label><span>Fecha</span><input type="date" [ngModel]="pesajeForm().fecha" (ngModelChange)="pesajeForm.update(f => ({ ...f, fecha: $event }))" /></label>\r
-          <label><span>Peso kg</span><input type="number" [ngModel]="pesajeForm().pesoKg" (ngModelChange)="pesajeForm.update(f => ({ ...f, pesoKg: $event }))" /></label>\r
-          <label><span>BCS</span><input type="number" step="0.1" min="1" max="5" [ngModel]="pesajeForm().condicionCorporal" (ngModelChange)="pesajeForm.update(f => ({ ...f, condicionCorporal: $event }))" /></label>\r
-          <app-remote-search-select label="Metodo" placeholder="Seleccionar metodo" [options]="metodoPesajeOptions" valueField="value" labelField="label" [searchFields]="['label']" [value]="pesajeForm().metodo" (valueChange)="pesajeForm.update(f => ({ ...f, metodo: $event }))"></app-remote-search-select>\r
-          <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="pesajeForm().responsable" (valueChange)="pesajeForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>\r
-        </div>\r
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitPesaje()">Guardar</button></div>\r
-      </ng-container>\r
-    </div>\r
-  </div>\r
-</div>\r
-\r
+    args: [{ selector: "app-ganaderia-alimentacion-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<div class="feed-page">
+  <header class="feed-head">
+    <div>
+      <p class="eyebrow">Campo App \xB7 Nutrici\xF3n</p>
+      <h2>Alimentaci\xF3n y peso</h2>
+      <p>Programas nutricionales, suministros, pesajes, BCS y eficiencia alimenticia del rodeo.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-secondary" type="button" (click)="openModal('PESAJE')">Nuevo pesaje</button>
+      <button class="btn-secondary" type="button" (click)="openModal('SUMINISTRO')">Registrar suministro</button>
+      <button class="btn-primary" type="button" (click)="openModal('DIETA')">Nueva dieta</button>
+    </div>
+  </header>
+
+  <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+  <div class="card empty-box" *ngIf="loading()">Cargando nutrici\xF3n...</div>
+
+  <ng-container *ngIf="!loading() && resumen() as data">
+    <section class="kpi-grid">
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>
+        <div class="kpi-copy"><span>Dietas activas</span><small>Planes nutricionales vigentes</small></div>
+        <strong>{{ data.dashboard.dietasActivas }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon blue"><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg></div>
+        <div class="kpi-copy"><span>Kg suministrados</span><small>Mes operativo actual</small></div>
+        <strong>{{ data.dashboard.kgSuministradosMes || 0 }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon warning"><svg viewBox="0 0 24 24"><path d="M12 2v20" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H15a3.5 3.5 0 0 1 0 7H6" /></svg></div>
+        <div class="kpi-copy"><span>Costo mensual</span><small>Alimentacion registrada</small></div>
+        <strong>\${{ data.dashboard.costoMes || 0 }}</strong>
+      </article>
+      <article class="kpi-card">
+        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg></div>
+        <div class="kpi-copy"><span>Conversion</span><small>Kg alimento / kg ganado</small></div>
+        <strong>{{ data.dashboard.conversionAlimenticia || 0 }}</strong>
+      </article>
+    </section>
+
+    <section class="nutrition-layout">
+      <article class="card nutrition-panel">
+        <div class="tabs-bar">
+          <div class="tabs">
+            <button type="button" [class.active]="activeTab() === 'DIETAS'" (click)="setTab('DIETAS')">
+              <svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg>
+              Dietas
+            </button>
+            <button type="button" [class.active]="activeTab() === 'SUMINISTROS'" (click)="setTab('SUMINISTROS')">
+              <svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg>
+              Suministros
+            </button>
+            <button type="button" [class.active]="activeTab() === 'PESAJES'" (click)="setTab('PESAJES')">
+              <svg viewBox="0 0 24 24"><path d="M6 3h12" /><path d="M6 21h12" /><path d="M8 3v18" /><path d="M16 3v18" /><path d="M8 8h8" /><path d="M8 16h8" /></svg>
+              Pesajes
+            </button>
+            <button type="button" [class.active]="activeTab() === 'ALERTAS'" (click)="setTab('ALERTAS')">
+              <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg>
+              Alertas
+            </button>
+          </div>
+          <span>{{ totalItems() }} vigente(s)</span>
+        </div>
+
+        <div class="card-grid" *ngIf="activeTab() === 'DIETAS'">
+          <article class="premium-card" [class.card-success]="dieta.activa" [class.card-muted]="!dieta.activa" *ngFor="let dieta of dietasPage()">
+            <div class="premium-card__head">
+              <div class="premium-card__identity">
+                <div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>
+                <div><h3>{{ dieta.nombre }}</h3><p>{{ dieta.tipoAnimal }} - {{ dieta.objetivo || 'Sin objetivo' }}</p></div>
+              </div>
+              <span class="badge" [class.badge-muted]="!dieta.activa">{{ dieta.activa ? 'Activa' : 'Inactiva' }}</span>
+            </div>
+            <div class="metric-list">
+              <div><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg><span>Materia seca</span><strong>{{ dieta.materiaSecaKg || 0 }} kg</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M12 2v20" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H15a3.5 3.5 0 0 1 0 7H6" /></svg><span>Costo diario</span><strong>\${{ dieta.costoDiario || 0 }}</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg><span>Ingredientes</span><strong>{{ dieta.ingredientes.length }}</strong></div>
+            </div>
+            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
+          </article>
+          <div class="empty-box premium-empty-box" *ngIf="!data.dietas.length">Sin dietas cargadas.</div>
+        </div>
+
+        <div class="card-grid" *ngIf="activeTab() === 'SUMINISTROS'">
+          <article class="premium-card card-success" *ngFor="let item of suministrosPage()">
+            <div class="premium-card__head">
+              <div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg></div><div><h3>{{ item.animalCaravana || 'Rodeo' }}</h3><p>{{ item.dietaNombre || item.alimento }}</p></div></div>
+              <span class="badge">Registrado</span>
+            </div>
+            <div class="metric-list">
+              <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha</span><strong>{{ item.fecha | date:'dd/MM/yyyy' }}</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg><span>Cantidad</span><strong>{{ item.cantidadKg }} kg</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.responsable || 'Sin responsable' }}</strong></div>
+            </div>
+            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
+          </article>
+          <div class="empty-box premium-empty-box" *ngIf="!data.registros.length">Sin suministros registrados.</div>
+        </div>
+
+        <div class="card-grid" *ngIf="activeTab() === 'PESAJES'">
+          <article class="premium-card card-success" *ngFor="let item of pesajesPage()">
+            <div class="premium-card__head">
+              <div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M6 3h12" /><path d="M6 21h12" /><path d="M8 3v18" /><path d="M16 3v18" /><path d="M8 8h8" /><path d="M8 16h8" /></svg></div><div><h3>{{ item.animalCaravana }}</h3><p>{{ item.metodo || 'Sin metodo' }}</p></div></div>
+              <span class="badge">Pesaje</span>
+            </div>
+            <div class="metric-list">
+              <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha</span><strong>{{ item.fecha | date:'dd/MM/yyyy' }}</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg><span>Peso</span><strong>{{ item.pesoKg }} kg</strong></div>
+              <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.responsable || 'Sin responsable' }}</strong></div>
+            </div>
+            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('PESAJE')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
+          </article>
+          <div class="empty-box premium-empty-box" *ngIf="!data.pesajes.length">Sin pesajes registrados.</div>
+        </div>
+
+        <div class="card-grid" *ngIf="activeTab() === 'ALERTAS'">
+          <article class="premium-card card-warning" *ngFor="let alerta of alertasPage()">
+            <div class="premium-card__head">
+              <div class="premium-card__identity"><div class="premium-card__icon warning"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg></div><div><h3>{{ alerta.animalCaravana || 'Alerta nutricional' }}</h3><p>{{ alerta.mensaje }}</p></div></div>
+              <span class="badge badge-warning">{{ alerta.prioridad }}</span>
+            </div>
+            <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg><span>Tipo</span><strong>{{ alerta.tipo }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Animal</span><strong>{{ alerta.animalCaravana || 'Rodeo' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M12 9v4" /><path d="M12 17h.01" /><path d="m10 3-8 18h20L14 3z" /></svg><span>Prioridad</span><strong>{{ alerta.prioridad }}</strong></div></div>
+            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
+          </article>
+          <div class="empty-box premium-empty-box" *ngIf="!data.dashboard.alertas.length">Sin alertas nutricionales.</div>
+        </div>
+
+        <footer class="pagination">
+          <span>Mostrando {{ pageStart() }} a {{ pageEnd() }} de {{ totalItems() }} {{ activeTabLabel() }}</span>
+          <div>
+            <button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
+            <button type="button" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage() === i + 1" (click)="setPage(i + 1)">{{ i + 1 }}</button>
+            <button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
+          </div>
+        </footer>
+      </article>
+      <aside class="card context-panel">
+        <div class="context-icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>
+        <h3>Resumen nutricional</h3>
+        <p>La eficiencia combina consumo mensual registrado y ganancia diaria promedio de los \xFAltimos pesajes.</p>
+        <div class="context-metrics">
+          <div><span>Ganancia diaria</span><strong>{{ data.dashboard.gananciaPromedioKg || 0 }} kg/d\xEDa</strong></div>
+          <div><span>Alertas</span><strong>{{ data.dashboard.alertas.length }}</strong></div>
+          <div><span>Animales activos</span><strong>{{ animales().length }}</strong></div>
+        </div>
+      </aside>
+    </section>
+  </ng-container>
+
+  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()" (document:keydown.escape)="closeModal()">
+    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">
+      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
+      <ng-container *ngIf="modal() === 'DIETA'">
+        <div class="modal-head"><h3>Nueva dieta</h3></div>
+        <div class="form-grid">
+          <label><span>Nombre</span><input [ngModel]="dietaForm().nombre" (ngModelChange)="dietaForm.update(f => ({ ...f, nombre: $event }))" /></label>
+          <label><span>Tipo animal</span><input [ngModel]="dietaForm().tipoAnimal" (ngModelChange)="dietaForm.update(f => ({ ...f, tipoAnimal: $event }))" /></label>
+          <label><span>Materia seca kg</span><input type="number" [ngModel]="dietaForm().materiaSecaKg" (ngModelChange)="dietaForm.update(f => ({ ...f, materiaSecaKg: $event }))" /></label>
+          <label><span>Costo diario</span><input type="number" [ngModel]="dietaForm().costoDiario" (ngModelChange)="dietaForm.update(f => ({ ...f, costoDiario: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Objetivo</span><textarea [ngModel]="dietaForm().objetivo" (ngModelChange)="dietaForm.update(f => ({ ...f, objetivo: $event }))"></textarea></label>
+        <div class="ingredient-row" *ngFor="let item of dietaForm().ingredientes; let i = index; trackBy: trackByIndex">
+          <app-remote-search-select placeholder="Buscar alimento" [options]="alimentoOptions" valueField="value" labelField="label" [subtitleFields]="['tipo']" [searchFields]="['label','tipo']" [value]="item.ingrediente" (valueChange)="updateIngrediente(i, 'ingrediente', $event)"></app-remote-search-select>
+          <input placeholder="%" type="number" [ngModel]="item.proporcionPct" (ngModelChange)="updateIngrediente(i, 'proporcionPct', $event)" />
+          <input placeholder="Costo/kg" type="number" [ngModel]="item.costoKg" (ngModelChange)="updateIngrediente(i, 'costoKg', $event)" />
+        </div>
+        <button class="btn-secondary" type="button" (click)="addIngrediente()">Agregar ingrediente</button>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDieta()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'SUMINISTRO'">
+        <div class="modal-head"><h3>Registrar suministro</h3></div>
+        <div class="form-grid">
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="suministroForm().animalId" (valueChange)="suministroForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+          <label><span>Dieta</span><select [ngModel]="suministroForm().dietaId" (ngModelChange)="suministroForm.update(f => ({ ...f, dietaId: $event }))"><option value="">Sin dieta</option><option *ngFor="let dieta of resumen()?.dietas ?? []" [value]="dieta.id">{{ dieta.nombre }}</option></select></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="suministroForm().fecha" (ngModelChange)="suministroForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <app-remote-search-select label="Alimento" placeholder="Buscar alimento" [options]="alimentoOptions" valueField="value" labelField="label" [subtitleFields]="['tipo']" [searchFields]="['label','tipo']" [value]="suministroForm().alimento" (valueChange)="suministroForm.update(f => ({ ...f, alimento: $event }))"></app-remote-search-select>
+          <label><span>Cantidad kg</span><input type="number" [ngModel]="suministroForm().cantidadKg" (ngModelChange)="suministroForm.update(f => ({ ...f, cantidadKg: $event }))" /></label>
+          <label><span>Costo total</span><input type="number" [ngModel]="suministroForm().costoTotal" (ngModelChange)="suministroForm.update(f => ({ ...f, costoTotal: $event }))" /></label>
+          <app-remote-search-select label="Potrero" placeholder="Buscar potrero" [endpoint]="endpoints.potreros" queryParam="nombre" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="suministroForm().potreroId" (valueChange)="suministroForm.update(f => ({ ...f, potreroId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="suministroForm().responsable" (valueChange)="suministroForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitSuministro()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'PESAJE'">
+        <div class="modal-head"><h3>Registrar pesaje</h3></div>
+        <div class="form-grid">
+          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [endpoint]="endpoints.animales" [extraParams]="activeOperarioParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="pesajeForm().animalId" (valueChange)="pesajeForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+          <label><span>Fecha</span><input type="date" [ngModel]="pesajeForm().fecha" (ngModelChange)="pesajeForm.update(f => ({ ...f, fecha: $event }))" /></label>
+          <label><span>Peso kg</span><input type="number" [ngModel]="pesajeForm().pesoKg" (ngModelChange)="pesajeForm.update(f => ({ ...f, pesoKg: $event }))" /></label>
+          <label><span>BCS</span><input type="number" step="0.1" min="1" max="5" [ngModel]="pesajeForm().condicionCorporal" (ngModelChange)="pesajeForm.update(f => ({ ...f, condicionCorporal: $event }))" /></label>
+          <app-remote-search-select label="Metodo" placeholder="Seleccionar metodo" [options]="metodoPesajeOptions" valueField="value" labelField="label" [searchFields]="['label']" [value]="pesajeForm().metodo" (valueChange)="pesajeForm.update(f => ({ ...f, metodo: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="pesajeForm().responsable" (valueChange)="pesajeForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
+        </div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitPesaje()">Guardar</button></div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
 `, styles: ['/* src/app/pages/ganaderia-alimentacion-page/ganaderia-alimentacion-page.component.css */\n.feed-page {\n  display: flex;\n  flex-direction: column;\n  gap: 18px;\n  color: #f8fbff;\n}\n.feed-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 18px;\n}\n.feed-head h2 {\n  margin: 0;\n  font-size: 34px;\n  letter-spacing: -0.04em;\n}\n.feed-head p {\n  margin: 6px 0 0;\n  color: #8ea0bb;\n}\n.eyebrow {\n  margin: 0 0 8px !important;\n  color: #9fe870 !important;\n  font-size: 11px;\n  letter-spacing: .12em;\n  text-transform: uppercase;\n  font-weight: 900;\n}\n.head-actions,\n.modal-actions {\n  display: flex;\n  gap: 12px;\n  flex-wrap: wrap;\n}\n.kpi-grid {\n  display: grid;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n  gap: 12px;\n}\n.kpi-card,\n.premium-card,\n.context-panel {\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 20px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(13, 27, 52, .92),\n      rgba(8, 18, 37, .9)),\n    radial-gradient(\n      circle at top left,\n      rgba(159, 232, 112, .09),\n      transparent 34%);\n  box-shadow: 0 16px 34px rgba(2, 8, 23, .26), inset 0 1px 0 rgba(255, 255, 255, .03);\n}\n.kpi-card {\n  padding: 18px;\n}\n.kpi-card span,\n.metric-list span,\n.context-metrics span {\n  display: block;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.kpi-card strong {\n  display: block;\n  margin-top: 5px;\n  font-size: 27px;\n  letter-spacing: -.04em;\n}\n.kpi-card small {\n  display: block;\n  margin-top: 6px;\n  color: #9fe870;\n  font-size: 11px;\n}\n.nutrition-layout {\n  display: grid;\n  grid-template-columns: minmax(0, 1.55fr) minmax(320px, .75fr);\n  gap: 14px;\n  align-items: start;\n}\n.nutrition-panel,\n.context-panel {\n  padding: 16px;\n}\n.tabs-bar {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  margin: -16px -16px 16px;\n  padding: 14px 16px;\n  border-bottom: 1px solid rgba(148, 163, 184, .1);\n  background: rgba(7, 15, 31, .36);\n}\n.tabs {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n}\n.tabs button {\n  border: 1px solid rgba(148, 163, 184, .12);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .42);\n  color: #8ea0bb;\n  min-height: 38px;\n  padding: 0 12px;\n  font-weight: 900;\n}\n.tabs button.active {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, .34);\n  background: rgba(159, 232, 112, .1);\n  box-shadow: 0 0 20px rgba(159, 232, 112, .08);\n}\n.tabs-bar > span {\n  color: #8ea0bb;\n  font-size: 12px;\n  font-weight: 800;\n}\n.card-grid {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  gap: 12px;\n}\n.premium-card {\n  min-height: 310px;\n  padding: 16px;\n  display: flex;\n  flex-direction: column;\n}\n.card-top {\n  display: flex;\n  justify-content: space-between;\n  gap: 12px;\n  align-items: flex-start;\n  min-height: 76px;\n}\n.card-top h3 {\n  margin: 0;\n  font-size: 18px;\n  letter-spacing: -.03em;\n}\n.card-top p {\n  margin: 8px 0 0;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.badge {\n  flex-shrink: 0;\n  border: 1px solid rgba(159, 232, 112, .2);\n  border-radius: 999px;\n  padding: 7px 10px;\n  background: rgba(159, 232, 112, .12);\n  color: #9fe870;\n  font-size: 11px;\n  font-weight: 900;\n}\n.badge-muted {\n  color: #a6b3c6;\n  background: rgba(148, 163, 184, .1);\n  border-color: rgba(148, 163, 184, .16);\n}\n.badge-danger {\n  color: #ff9b9b;\n  background: rgba(255, 107, 107, .12);\n  border-color: rgba(255, 107, 107, .2);\n}\n.metric-list {\n  display: flex;\n  flex-direction: column;\n  flex: 1;\n  margin-top: 12px;\n}\n.metric-list div {\n  display: grid;\n  grid-template-columns: 1fr auto;\n  gap: 12px;\n  align-items: center;\n  min-height: 44px;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.metric-list strong {\n  color: #f8fbff;\n  font-size: 13px;\n  text-align: right;\n}\n.detail-btn {\n  width: 100%;\n  min-height: 42px;\n  margin-top: 14px;\n  border: 1px solid rgba(159, 232, 112, .18);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .46);\n  color: #9fe870;\n  font-weight: 900;\n}\n.table-wrap {\n  overflow: auto;\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  background: rgba(7, 15, 31, .34);\n}\ntable {\n  width: 100%;\n  border-collapse: separate;\n  border-spacing: 0;\n  min-width: 760px;\n}\nth {\n  padding: 13px 12px;\n  text-align: left;\n  color: #7f91ac;\n  font-size: 10px;\n  letter-spacing: .08em;\n  text-transform: uppercase;\n  border-bottom: 1px solid rgba(148, 163, 184, .1);\n}\ntd {\n  padding: 14px 12px;\n  color: #b9c7da;\n  font-size: 12px;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\ntbody tr:hover {\n  background: rgba(159, 232, 112, .055);\n}\n.context-panel {\n  position: sticky;\n  top: 18px;\n}\n.context-icon {\n  width: 58px;\n  height: 58px;\n  display: grid;\n  place-items: center;\n  border-radius: 18px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .1);\n  border: 1px solid rgba(159, 232, 112, .16);\n}\n.context-icon svg {\n  width: 32px;\n  height: 32px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.7;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.context-panel h3 {\n  margin: 14px 0 8px;\n  font-size: 22px;\n}\n.context-panel p {\n  margin: 0;\n  color: #8ea0bb;\n  line-height: 1.55;\n}\n.context-metrics {\n  margin-top: 18px;\n  border: 1px solid rgba(148, 163, 184, .1);\n  border-radius: 16px;\n  overflow: hidden;\n}\n.context-metrics div {\n  padding: 14px;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.context-metrics div:last-child {\n  border-bottom: 0;\n}\n.context-metrics strong {\n  display: block;\n  margin-top: 5px;\n  color: #f8fbff;\n  font-size: 15px;\n}\n.panel-narrow {\n  width: min(920px, 100%);\n}\n.modal-head h3 {\n  margin: 0 0 18px;\n}\n.form-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n  gap: 12px;\n}\n.form-grid label,\n.textarea-field {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  color: #8ea0bb;\n  font-size: 12px;\n}\n.form-grid input,\n.form-grid select,\n.textarea-field textarea,\n.ingredient-row input {\n  width: 100%;\n  min-height: 42px;\n  border: 1px solid rgba(148, 163, 184, .14);\n  border-radius: 12px;\n  background: rgba(7, 15, 31, .48);\n  color: #f8fbff;\n  padding: 0 12px;\n}\n.textarea-field {\n  margin-top: 12px;\n}\n.textarea-field textarea {\n  min-height: 92px;\n  padding-top: 10px;\n}\n.ingredient-row {\n  display: grid;\n  grid-template-columns: 1fr 110px 130px;\n  gap: 10px;\n  margin: 12px 0;\n}\n.error-box,\n.premium-empty-box {\n  padding: 16px;\n  border-radius: 16px;\n  background: rgba(127, 29, 29, .18);\n  color: #fecaca;\n  border: 1px solid rgba(248, 113, 113, .25);\n}\n.premium-empty-box {\n  background: rgba(7, 15, 31, .36);\n  color: #8ea0bb;\n  border-color: rgba(148, 163, 184, .14);\n}\n.empty-box {\n  color: #8ea0bb;\n}\n@media (max-width: 1240px) {\n  .nutrition-layout {\n    grid-template-columns: 1fr;\n  }\n  .context-panel {\n    position: static;\n  }\n}\n@media (max-width: 980px) {\n  .kpi-grid,\n  .card-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n}\n@media (max-width: 720px) {\n  .feed-head {\n    flex-direction: column;\n  }\n  .kpi-grid,\n  .card-grid,\n  .ingredient-row {\n    grid-template-columns: 1fr;\n  }\n}\n.kpi-card {\n  min-height: 104px;\n  padding: 14px;\n  display: grid;\n  grid-template-columns: 46px minmax(0, 1fr) auto;\n  gap: 12px;\n  align-items: center;\n}\n.metric-icon {\n  width: 46px;\n  height: 46px;\n  display: grid;\n  place-items: center;\n  border-radius: 16px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .1);\n  border: 1px solid rgba(159, 232, 112, .16);\n  box-shadow: 0 0 24px rgba(159, 232, 112, .08);\n}\n.metric-icon.blue {\n  color: #6ea8ff;\n  background: rgba(110, 168, 255, .1);\n  border-color: rgba(110, 168, 255, .18);\n}\n.metric-icon.warning {\n  color: #ffb84d;\n  background: rgba(255, 184, 77, .1);\n  border-color: rgba(255, 184, 77, .18);\n}\n.metric-icon svg {\n  width: 24px;\n  height: 24px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.kpi-copy {\n  min-width: 0;\n}\n.kpi-card span {\n  color: #a9bbd4;\n  font-size: 12px;\n  font-weight: 400;\n}\n.kpi-card small {\n  color: #9fe870;\n  font-size: 11px;\n  line-height: 1.35;\n}\n.kpi-card strong {\n  justify-self: end;\n  margin: 0;\n  color: #fff;\n  font-size: 28px;\n  white-space: nowrap;\n}\n.nutrition-layout {\n  grid-template-columns: minmax(0, 1fr);\n}\n.context-panel {\n  display: none;\n}\n.nutrition-panel {\n  padding: 0;\n  overflow: hidden;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(11, 28, 54, .84),\n      rgba(8, 18, 37, .88));\n  border-color: rgba(110, 168, 255, .14);\n}\n.tabs-bar {\n  margin: 0;\n  padding: 0 18px;\n  min-height: 68px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(8, 18, 37, .92),\n      rgba(8, 18, 37, .64));\n  border-bottom: 1px solid rgba(110, 168, 255, .12);\n}\n.tabs {\n  gap: 18px;\n  align-items: stretch;\n}\n.tabs button {\n  position: relative;\n  min-height: 68px;\n  border: 0;\n  border-radius: 0;\n  background: transparent;\n  color: #97a8c2;\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n  padding: 0 8px;\n  font-size: 14px;\n  font-weight: 500;\n  box-shadow: none;\n}\n.tabs button svg,\n.metric-list svg,\n.card-action svg,\n.premium-card__icon svg {\n  width: 17px;\n  height: 17px;\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.8;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n.tabs button::after {\n  content: "";\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  height: 1px;\n  background: transparent;\n}\n.tabs button:hover {\n  color: #dbe8fb;\n  text-shadow: 0 0 18px rgba(110, 168, 255, .18);\n}\n.tabs button.active {\n  color: #9fe870;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(159, 232, 112, .08),\n      rgba(159, 232, 112, .02));\n  box-shadow: 0 12px 34px rgba(159, 232, 112, .06);\n}\n.tabs button.active::after {\n  background: #9fe870;\n  box-shadow: 0 0 22px rgba(159, 232, 112, .58);\n}\n.tabs-bar > span {\n  color: #c7d4e8;\n  font-size: 13px;\n  font-weight: 500;\n}\n.card-grid {\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n  gap: 16px;\n  padding: 20px 16px 22px;\n}\n.premium-card {\n  position: relative;\n  min-height: 334px;\n  padding: 22px 18px 20px;\n  border-radius: 18px;\n  background:\n    radial-gradient(\n      circle at 14% 8%,\n      rgba(110, 168, 255, .08),\n      transparent 38%),\n    linear-gradient(\n      180deg,\n      rgba(12, 31, 58, .94),\n      rgba(8, 18, 37, .94));\n  border: 1px solid rgba(110, 168, 255, .12);\n  box-shadow: 0 20px 48px rgba(2, 8, 23, .32), inset 0 1px 0 rgba(255, 255, 255, .035);\n  overflow: hidden;\n}\n.premium-card::after {\n  content: "";\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  height: 1px;\n  background: rgba(110, 168, 255, .2);\n}\n.premium-card.card-success::after {\n  background: #9fe870;\n  box-shadow: 0 0 18px rgba(159, 232, 112, .52);\n}\n.premium-card.card-warning::after {\n  background: #ffb84d;\n  box-shadow: 0 0 18px rgba(255, 184, 77, .46);\n}\n.premium-card.card-muted::after {\n  background: rgba(148, 163, 184, .36);\n}\n.premium-card__head {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 14px;\n  min-height: 72px;\n  padding-bottom: 16px;\n  border-bottom: 1px solid rgba(148, 163, 184, .08);\n}\n.premium-card__identity {\n  display: flex;\n  align-items: center;\n  gap: 14px;\n  min-width: 0;\n}\n.premium-card__identity h3 {\n  margin: 0;\n  color: #f8fbff;\n  font-size: 18px;\n  line-height: 1.1;\n  letter-spacing: -.02em;\n  font-weight: 800;\n}\n.premium-card__identity p {\n  margin: 7px 0 0;\n  color: #a9bbd4;\n  font-size: 13px;\n  line-height: 1.35;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  max-width: 190px;\n}\n.premium-card__icon {\n  width: 52px;\n  height: 52px;\n  flex: 0 0 52px;\n  border-radius: 50%;\n  display: grid;\n  place-items: center;\n  color: #9fe870;\n  background:\n    radial-gradient(\n      circle,\n      rgba(159, 232, 112, .2),\n      rgba(159, 232, 112, .08));\n  border: 1px solid rgba(159, 232, 112, .12);\n  box-shadow: 0 0 30px rgba(159, 232, 112, .1);\n}\n.premium-card__icon.warning {\n  color: #ffb84d;\n  background:\n    radial-gradient(\n      circle,\n      rgba(255, 184, 77, .18),\n      rgba(255, 184, 77, .08));\n  border-color: rgba(255, 184, 77, .14);\n}\n.premium-card__icon svg {\n  width: 25px;\n  height: 25px;\n}\n.badge {\n  padding: 7px 11px;\n  border-radius: 999px;\n  color: #9fe870;\n  background: rgba(159, 232, 112, .11);\n  border-color: rgba(159, 232, 112, .13);\n  font-size: 12px;\n  line-height: 1;\n  font-weight: 800;\n  box-shadow: 0 0 18px rgba(159, 232, 112, .08);\n}\n.badge-warning {\n  color: #ffd166;\n  background: rgba(255, 184, 77, .1);\n  border-color: rgba(255, 184, 77, .15);\n  box-shadow: 0 0 18px rgba(255, 184, 77, .08);\n}\n.badge-muted {\n  color: #a6b3c6;\n  background: rgba(148, 163, 184, .1);\n  border-color: rgba(148, 163, 184, .16);\n}\n.metric-list {\n  margin-top: 0;\n  padding: 8px 0 0;\n  gap: 0;\n}\n.metric-list div {\n  grid-template-columns: 18px minmax(0, 1fr) auto;\n  min-height: 54px;\n  gap: 10px;\n  color: #a9bbd4;\n  border-bottom: 1px solid rgba(148, 163, 184, .075);\n}\n.metric-list div:last-child {\n  border-bottom: 0;\n}\n.metric-list svg {\n  color: #b6c7df;\n  opacity: .92;\n}\n.metric-list span {\n  color: #a9bbd4;\n  font-size: 13px;\n  font-weight: 400;\n}\n.metric-list strong {\n  max-width: 138px;\n  color: #f8fbff;\n  font-size: 13px;\n  font-weight: 800;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.card-actions-inline {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 12px;\n  margin-top: auto;\n  padding-top: 18px;\n}\n.card-action {\n  min-height: 50px;\n  border: 1px solid rgba(110, 168, 255, .13);\n  border-radius: 10px;\n  background: rgba(7, 15, 31, .36);\n  color: #dbe8fb;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 9px;\n  font-size: 14px;\n  font-weight: 700;\n  cursor: pointer;\n  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03);\n  transition:\n    border-color .18s ease,\n    color .18s ease,\n    transform .18s ease,\n    box-shadow .18s ease;\n}\n.card-action:hover {\n  color: #f8fbff;\n  border-color: rgba(159, 232, 112, .32);\n  box-shadow: 0 0 22px rgba(159, 232, 112, .08), inset 0 1px 0 rgba(255, 255, 255, .04);\n  transform: translateY(-1px);\n}\n.card-action--ghost {\n  color: #b7c7de;\n}\n.card-action--ghost svg {\n  margin-left: 4px;\n}\n.pagination {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 12px;\n  margin: 0;\n  padding: 16px 18px;\n  min-height: 72px;\n  border-top: 1px solid rgba(110, 168, 255, .11);\n  background:\n    linear-gradient(\n      180deg,\n      rgba(8, 18, 37, .72),\n      rgba(5, 13, 28, .78));\n  color: #c2d0e4;\n  font-size: 13px;\n}\n.pagination div {\n  display: flex;\n  gap: 10px;\n  flex-wrap: wrap;\n}\n.pagination button {\n  min-width: 42px;\n  min-height: 40px;\n  border-radius: 10px;\n  border: 1px solid rgba(110, 168, 255, .11);\n  background: rgba(7, 15, 31, .45);\n  color: #9cadc7;\n  font-weight: 700;\n  cursor: pointer;\n}\n.pagination button:first-child,\n.pagination button:last-child {\n  min-width: 106px;\n}\n.pagination button.active {\n  color: #9fe870;\n  border-color: rgba(159, 232, 112, .78);\n  background: rgba(159, 232, 112, .06);\n  box-shadow: 0 0 20px rgba(159, 232, 112, .18);\n}\n.pagination button:disabled {\n  opacity: .45;\n  cursor: not-allowed;\n}\n@media (max-width: 1100px) {\n  .card-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n}\n@media (max-width: 720px) {\n  .tabs-bar {\n    align-items: flex-start;\n    flex-direction: column;\n    padding: 12px 14px;\n  }\n  .tabs button {\n    min-height: 42px;\n  }\n  .card-grid {\n    grid-template-columns: 1fr;\n    padding: 14px;\n  }\n  .pagination {\n    flex-direction: column;\n    align-items: flex-start;\n  }\n  .kpi-card {\n    grid-template-columns: 46px 1fr;\n  }\n  .kpi-card strong {\n    justify-self: start;\n    grid-column: 2;\n  }\n}\n/*# sourceMappingURL=ganaderia-alimentacion-page.component.css.map */\n'] }]
   }], null, null);
 })();
@@ -73116,7 +73321,7 @@ var routes = [
       { path: "agricola/analytics", component: AnalyticsPageComponent },
       { path: "agricola/plagas", component: PlagasPageComponent },
       { path: "reportes/agricola", component: ReportesAgricolaPageComponent },
-      { path: "reportes/ganaderia", loadComponent: () => import("./chunk-ONOIFFMP.js").then((m) => m.ReportesGanaderiaPageComponent) },
+      { path: "reportes/ganaderia", loadComponent: () => import("./chunk-M6SQ6NZJ.js").then((m) => m.ReportesGanaderiaPageComponent) },
       { path: "ganaderia/trazabilidad", component: GanaderiaTrazabilidadPageComponent },
       { path: "ganaderia/sanidad", component: GanaderiaSanidadPageComponent },
       { path: "ganaderia/reproduccion", component: GanaderiaReproduccionPageComponent },

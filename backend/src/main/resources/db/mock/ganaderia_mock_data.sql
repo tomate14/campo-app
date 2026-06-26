@@ -7,19 +7,19 @@ START TRANSACTION;
 
 INSERT INTO animales (
     id, caravana, raza, sexo, fecha_nacimiento, fecha_compra, peso_actual_kg,
-    rfid_codigo, qr_codigo, estado, ubicacion_actual, madre_id, padre_id, observaciones
+    rfid_codigo, qr_codigo, estado, madre_id, padre_id, observaciones
 ) VALUES
-    ('10000000-0000-0000-0000-000000000001', '1257', 'Angus Negro', 'Femenino', '2020-08-15', '2021-02-10', 620.00, 'RFID-1257', NULL, 'ACTIVO', 'Potrero 12A', NULL, NULL, 'Vaca adulta prenada. Buena condicion corporal.'),
-    ('10000000-0000-0000-0000-000000000002', '0923', 'Hereford', 'Femenino', '2021-01-20', '2021-08-15', 585.00, 'RFID-0923', NULL, 'ACTIVO', 'Potrero 7B', NULL, NULL, 'Proxima a parir. Seguimiento medio.'),
-    ('10000000-0000-0000-0000-000000000003', '0448', 'Braford', 'Femenino', '2019-11-04', '2020-05-22', 600.00, 'RFID-0448', NULL, 'ACTIVO', 'Potrero 5C', NULL, NULL, 'Rodeo premium. Riesgo bajo.'),
-    ('10000000-0000-0000-0000-000000000004', '0781', 'Angus Colorado', 'Femenino', '2020-03-12', '2020-10-03', 610.00, 'RFID-0781', NULL, 'ACTIVO', 'Potrero 9A', NULL, NULL, 'Control reproductivo mensual.'),
-    ('10000000-0000-0000-0000-000000000005', '1562', 'Brangus', 'Femenino', '2021-06-01', '2022-01-10', 560.00, 'RFID-1562', NULL, 'ACTIVO', 'Potrero 12A', NULL, NULL, 'Animal en programa reproductivo.'),
-    ('10000000-0000-0000-0000-000000000006', '33333', 'Angus Negro', 'Femenino', '2018-05-11', '2019-03-08', 650.00, 'RFID-33333', NULL, 'ACTIVO', 'Potrero Madres', NULL, NULL, 'Madre de referencia genealogica.'),
-    ('10000000-0000-0000-0000-000000000007', '44444', 'Hereford', 'Masculino', '2017-09-09', '2018-04-01', 890.00, 'RFID-44444', NULL, 'ACTIVO', 'Potrero Toros', NULL, NULL, 'Toro padre de referencia.'),
-    ('10000000-0000-0000-0000-000000000008', '55555', 'Angus Negro', 'Masculino', '2023-10-02', NULL, 320.00, 'RFID-55555', NULL, 'ACTIVO', 'Potrero Recria', NULL, NULL, 'Ternero para validar arbol genealogico ascendente.'),
-    ('10000000-0000-0000-0000-000000000009', '0456', 'Angus Negro', 'Femenino', '2016-04-03', '2017-01-17', 640.00, 'RFID-0456', NULL, 'ACTIVO', 'Potrero Madres', NULL, NULL, 'Abuela materna.'),
-    ('10000000-0000-0000-0000-000000000010', '0123', 'Hereford', 'Masculino', '2015-07-18', '2016-02-12', 910.00, 'RFID-0123', NULL, 'ACTIVO', 'Potrero Toros', NULL, NULL, 'Abuelo paterno.'),
-    ('10000000-0000-0000-0000-000000000011', '0789', 'Angus Negro', 'Masculino', '2016-09-22', '2017-04-11', 870.00, 'RFID-0789', NULL, 'ACTIVO', 'Potrero Toros', NULL, NULL, 'Toro usado en servicios recientes.')
+    ('10000000-0000-0000-0000-000000000001', '1257', 'Angus Negro', 'Femenino', '2020-08-15', '2021-02-10', 620.00, 'RFID-1257', NULL, 'ACTIVO', NULL, NULL, 'Vaca adulta prenada. Buena condicion corporal.'),
+    ('10000000-0000-0000-0000-000000000002', '0923', 'Hereford', 'Femenino', '2021-01-20', '2021-08-15', 585.00, 'RFID-0923', NULL, 'ACTIVO', NULL, NULL, 'Proxima a parir. Seguimiento medio.'),
+    ('10000000-0000-0000-0000-000000000003', '0448', 'Braford', 'Femenino', '2019-11-04', '2020-05-22', 600.00, 'RFID-0448', NULL, 'ACTIVO', NULL, NULL, 'Rodeo premium. Riesgo bajo.'),
+    ('10000000-0000-0000-0000-000000000004', '0781', 'Angus Colorado', 'Femenino', '2020-03-12', '2020-10-03', 610.00, 'RFID-0781', NULL, 'ACTIVO', NULL, NULL, 'Control reproductivo mensual.'),
+    ('10000000-0000-0000-0000-000000000005', '1562', 'Brangus', 'Femenino', '2021-06-01', '2022-01-10', 560.00, 'RFID-1562', NULL, 'ACTIVO', NULL, NULL, 'Animal en programa reproductivo.'),
+    ('10000000-0000-0000-0000-000000000006', '33333', 'Angus Negro', 'Femenino', '2018-05-11', '2019-03-08', 650.00, 'RFID-33333', NULL, 'ACTIVO', NULL, NULL, 'Madre de referencia genealogica.'),
+    ('10000000-0000-0000-0000-000000000007', '44444', 'Hereford', 'Masculino', '2017-09-09', '2018-04-01', 890.00, 'RFID-44444', NULL, 'ACTIVO', NULL, NULL, 'Toro padre de referencia.'),
+    ('10000000-0000-0000-0000-000000000008', '55555', 'Angus Negro', 'Masculino', '2023-10-02', NULL, 320.00, 'RFID-55555', NULL, 'ACTIVO', NULL, NULL, 'Ternero para validar arbol genealogico ascendente.'),
+    ('10000000-0000-0000-0000-000000000009', '0456', 'Angus Negro', 'Femenino', '2016-04-03', '2017-01-17', 640.00, 'RFID-0456', NULL, 'ACTIVO', NULL, NULL, 'Abuela materna.'),
+    ('10000000-0000-0000-0000-000000000010', '0123', 'Hereford', 'Masculino', '2015-07-18', '2016-02-12', 910.00, 'RFID-0123', NULL, 'ACTIVO', NULL, NULL, 'Abuelo paterno.'),
+    ('10000000-0000-0000-0000-000000000011', '0789', 'Angus Negro', 'Masculino', '2016-09-22', '2017-04-11', 870.00, 'RFID-0789', NULL, 'ACTIVO', NULL, NULL, 'Toro usado en servicios recientes.')
 ON DUPLICATE KEY UPDATE
     raza = VALUES(raza),
     sexo = VALUES(sexo),
@@ -27,7 +27,6 @@ ON DUPLICATE KEY UPDATE
     fecha_compra = VALUES(fecha_compra),
     peso_actual_kg = VALUES(peso_actual_kg),
     estado = VALUES(estado),
-    ubicacion_actual = VALUES(ubicacion_actual),
     observaciones = VALUES(observaciones),
     deleted_at = NULL;
 
@@ -237,17 +236,17 @@ ON DUPLICATE KEY UPDATE
 
 INSERT INTO animales (
     id, caravana, raza, sexo, fecha_nacimiento, fecha_compra, peso_actual_kg,
-    rfid_codigo, qr_codigo, estado, ubicacion_actual, madre_id, padre_id, observaciones
+    rfid_codigo, qr_codigo, estado, madre_id, padre_id, observaciones
 ) VALUES
-    ('10000000-0000-0000-0000-000000000012', '2010', 'Brangus', 'Masculino', '2024-09-10', NULL, 365.00, 'RFID-2010', NULL, 'ACTIVO', 'Potrero Recria', NULL, NULL, 'Novillo de recria.'),
-    ('10000000-0000-0000-0000-000000000013', '2011', 'Hereford', 'Masculino', '2024-08-18', NULL, 352.00, 'RFID-2011', NULL, 'ACTIVO', 'Potrero Recria', NULL, NULL, 'Novillo en seguimiento de ganancia.'),
-    ('10000000-0000-0000-0000-000000000014', '2012', 'Angus Negro', 'Femenino', '2024-10-02', NULL, 318.00, 'RFID-2012', NULL, 'ACTIVO', 'Potrero 5C', NULL, NULL, 'Vaquillona de reposicion.'),
-    ('10000000-0000-0000-0000-000000000015', '2013', 'Braford', 'Femenino', '2025-09-01', NULL, 205.00, 'RFID-2013', NULL, 'ACTIVO', 'Potrero 7B', NULL, NULL, 'Ternera destete temprano.'),
-    ('10000000-0000-0000-0000-000000000016', '2014', 'Angus Colorado', 'Masculino', '2025-10-12', NULL, 218.00, 'RFID-2014', NULL, 'ACTIVO', 'Potrero 5C', NULL, NULL, 'Ternero en recria.'),
-    ('10000000-0000-0000-0000-000000000017', '2015', 'Brangus', 'Femenino', '2023-02-04', '2023-08-01', 462.00, 'RFID-2015', NULL, 'ACTIVO', 'Potrero 9A', NULL, NULL, 'Vaquillona en control reproductivo.'),
-    ('10000000-0000-0000-0000-000000000018', '2016', 'Angus Negro', 'Femenino', '2020-12-08', '2021-07-01', 598.00, 'RFID-2016', NULL, 'ACTIVO', 'Potrero Madres', NULL, NULL, 'Madre en rodeo elite.'),
-    ('10000000-0000-0000-0000-000000000019', '2017', 'Hereford', 'Masculino', '2018-03-15', '2019-01-20', 905.00, 'RFID-2017', NULL, 'ACTIVO', 'Potrero Toros', NULL, NULL, 'Toro activo de respaldo.'),
-    ('10000000-0000-0000-0000-000000000020', '2018', 'Angus Negro', 'Femenino', '2022-04-15', '2022-11-01', 512.00, 'RFID-2018', NULL, 'ACTIVO', NULL, NULL, NULL, 'Animal mock sin ubicacion para KPI.')
+    ('10000000-0000-0000-0000-000000000012', '2010', 'Brangus', 'Masculino', '2024-09-10', NULL, 365.00, 'RFID-2010', NULL, 'ACTIVO', NULL, NULL, 'Novillo de recria.'),
+    ('10000000-0000-0000-0000-000000000013', '2011', 'Hereford', 'Masculino', '2024-08-18', NULL, 352.00, 'RFID-2011', NULL, 'ACTIVO', NULL, NULL, 'Novillo en seguimiento de ganancia.'),
+    ('10000000-0000-0000-0000-000000000014', '2012', 'Angus Negro', 'Femenino', '2024-10-02', NULL, 318.00, 'RFID-2012', NULL, 'ACTIVO', NULL, NULL, 'Vaquillona de reposicion.'),
+    ('10000000-0000-0000-0000-000000000015', '2013', 'Braford', 'Femenino', '2025-09-01', NULL, 205.00, 'RFID-2013', NULL, 'ACTIVO', NULL, NULL, 'Ternera destete temprano.'),
+    ('10000000-0000-0000-0000-000000000016', '2014', 'Angus Colorado', 'Masculino', '2025-10-12', NULL, 218.00, 'RFID-2014', NULL, 'ACTIVO', NULL, NULL, 'Ternero en recria.'),
+    ('10000000-0000-0000-0000-000000000017', '2015', 'Brangus', 'Femenino', '2023-02-04', '2023-08-01', 462.00, 'RFID-2015', NULL, 'ACTIVO', NULL, NULL, 'Vaquillona en control reproductivo.'),
+    ('10000000-0000-0000-0000-000000000018', '2016', 'Angus Negro', 'Femenino', '2020-12-08', '2021-07-01', 598.00, 'RFID-2016', NULL, 'ACTIVO', NULL, NULL, 'Madre en rodeo elite.'),
+    ('10000000-0000-0000-0000-000000000019', '2017', 'Hereford', 'Masculino', '2018-03-15', '2019-01-20', 905.00, 'RFID-2017', NULL, 'ACTIVO', NULL, NULL, 'Toro activo de respaldo.'),
+    ('10000000-0000-0000-0000-000000000020', '2018', 'Angus Negro', 'Femenino', '2022-04-15', '2022-11-01', 512.00, 'RFID-2018', NULL, 'ACTIVO', NULL, NULL, 'Animal mock sin ubicacion para KPI.')
 ON DUPLICATE KEY UPDATE
     raza = VALUES(raza),
     sexo = VALUES(sexo),
@@ -255,7 +254,6 @@ ON DUPLICATE KEY UPDATE
     fecha_compra = VALUES(fecha_compra),
     peso_actual_kg = VALUES(peso_actual_kg),
     estado = VALUES(estado),
-    ubicacion_actual = VALUES(ubicacion_actual),
     observaciones = VALUES(observaciones),
     deleted_at = NULL;
 
@@ -268,6 +266,92 @@ UPDATE animales SET madre_id = '10000000-0000-0000-0000-000000000006', padre_id 
     '10000000-0000-0000-0000-000000000017',
     '10000000-0000-0000-0000-000000000018'
 );
+
+UPDATE animales a
+JOIN catalogo_razas_bovinas r
+  ON LOWER(TRIM(a.raza)) = LOWER(TRIM(r.nombre))
+  OR LOWER(REPLACE(TRIM(a.raza), ' ', '_')) = LOWER(TRIM(r.codigo))
+SET a.raza_id = r.id
+WHERE a.id IN (
+    '10000000-0000-0000-0000-000000000001',
+    '10000000-0000-0000-0000-000000000002',
+    '10000000-0000-0000-0000-000000000003',
+    '10000000-0000-0000-0000-000000000004',
+    '10000000-0000-0000-0000-000000000005',
+    '10000000-0000-0000-0000-000000000006',
+    '10000000-0000-0000-0000-000000000007',
+    '10000000-0000-0000-0000-000000000008',
+    '10000000-0000-0000-0000-000000000009',
+    '10000000-0000-0000-0000-000000000010',
+    '10000000-0000-0000-0000-000000000011',
+    '10000000-0000-0000-0000-000000000012',
+    '10000000-0000-0000-0000-000000000013',
+    '10000000-0000-0000-0000-000000000014',
+    '10000000-0000-0000-0000-000000000015',
+    '10000000-0000-0000-0000-000000000016',
+    '10000000-0000-0000-0000-000000000017',
+    '10000000-0000-0000-0000-000000000018',
+    '10000000-0000-0000-0000-000000000019',
+    '10000000-0000-0000-0000-000000000020'
+);
+
+UPDATE animales_potreros
+SET activo = b'0',
+    fecha_hasta = NOW(6),
+    updated_at = NOW(6)
+WHERE animal_id IN (
+    '10000000-0000-0000-0000-000000000001',
+    '10000000-0000-0000-0000-000000000002',
+    '10000000-0000-0000-0000-000000000003',
+    '10000000-0000-0000-0000-000000000004',
+    '10000000-0000-0000-0000-000000000005',
+    '10000000-0000-0000-0000-000000000006',
+    '10000000-0000-0000-0000-000000000007',
+    '10000000-0000-0000-0000-000000000008',
+    '10000000-0000-0000-0000-000000000009',
+    '10000000-0000-0000-0000-000000000010',
+    '10000000-0000-0000-0000-000000000011',
+    '10000000-0000-0000-0000-000000000012',
+    '10000000-0000-0000-0000-000000000013',
+    '10000000-0000-0000-0000-000000000014',
+    '10000000-0000-0000-0000-000000000015',
+    '10000000-0000-0000-0000-000000000016',
+    '10000000-0000-0000-0000-000000000017',
+    '10000000-0000-0000-0000-000000000018',
+    '10000000-0000-0000-0000-000000000019'
+);
+
+INSERT INTO animales_potreros (
+    id, animal_id, potrero_id, fecha_desde, fecha_hasta, activo, motivo, responsable, movimiento_id, observaciones, created_at, updated_at, deleted_at
+) VALUES
+    ('16000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '15000000-0000-0000-0000-000000000001', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000002', '15000000-0000-0000-0000-000000000002', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000003', '15000000-0000-0000-0000-000000000003', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000004', '10000000-0000-0000-0000-000000000004', '15000000-0000-0000-0000-000000000004', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000005', '10000000-0000-0000-0000-000000000005', '15000000-0000-0000-0000-000000000001', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000006', '10000000-0000-0000-0000-000000000006', '15000000-0000-0000-0000-000000000005', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000007', '10000000-0000-0000-0000-000000000007', '15000000-0000-0000-0000-000000000006', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000008', '10000000-0000-0000-0000-000000000008', '15000000-0000-0000-0000-000000000007', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000009', '10000000-0000-0000-0000-000000000009', '15000000-0000-0000-0000-000000000005', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000010', '10000000-0000-0000-0000-000000000010', '15000000-0000-0000-0000-000000000006', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000011', '10000000-0000-0000-0000-000000000011', '15000000-0000-0000-0000-000000000006', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000012', '10000000-0000-0000-0000-000000000012', '15000000-0000-0000-0000-000000000007', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000013', '10000000-0000-0000-0000-000000000013', '15000000-0000-0000-0000-000000000007', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000014', '10000000-0000-0000-0000-000000000014', '15000000-0000-0000-0000-000000000003', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000015', '10000000-0000-0000-0000-000000000015', '15000000-0000-0000-0000-000000000002', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000016', '10000000-0000-0000-0000-000000000016', '15000000-0000-0000-0000-000000000003', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000017', '10000000-0000-0000-0000-000000000017', '15000000-0000-0000-0000-000000000004', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000018', '10000000-0000-0000-0000-000000000018', '15000000-0000-0000-0000-000000000005', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL),
+    ('16000000-0000-0000-0000-000000000019', '10000000-0000-0000-0000-000000000019', '15000000-0000-0000-0000-000000000006', NOW(6), NULL, b'1', 'Mock asignacion por id', NULL, NULL, NULL, NOW(6), NOW(6), NULL)
+ON DUPLICATE KEY UPDATE
+    potrero_id = VALUES(potrero_id),
+    fecha_desde = VALUES(fecha_desde),
+    fecha_hasta = NULL,
+    activo = b'1',
+    motivo = VALUES(motivo),
+    updated_at = NOW(6),
+    deleted_at = NULL;
+
 
 INSERT INTO pesajes_animales (
     id, animal_id, fecha, peso_kg, condicion_corporal, metodo, responsable, observaciones

@@ -52,7 +52,7 @@ class ReproduccionServiceTest {
         Animal madre = animal("madre-1", "M001", "HEMBRA");
         Animal hijo = animal("hijo-1", "H001", "MACHO");
         hijo.setMadre(madre);
-        when(animalRepository.findFiltered(null, null, null, "ACTIVO")).thenReturn(List.of(madre, hijo));
+        when(animalRepository.findFiltered(null, null, "ACTIVO")).thenReturn(List.of(madre, hijo));
         when(indiceGeneticoRepository.findAllActive()).thenReturn(List.of());
 
         assertThat(reproduccionService.getRecomendaciones()).isEmpty();
@@ -83,7 +83,7 @@ class ReproduccionServiceTest {
         bisnieta.setMadre(nieto);
         cuarta.setMadre(bisnieta);
         when(animalRepository.findActiveById("vaca-1")).thenReturn(Optional.of(vaca));
-        when(animalRepository.findFiltered(null, null, null, "ACTIVO")).thenReturn(List.of(vaca, hija, nieto, bisnieta, cuarta));
+        when(animalRepository.findFiltered(null, null, "ACTIVO")).thenReturn(List.of(vaca, hija, nieto, bisnieta, cuarta));
 
         var genealogia = reproduccionService.getGenealogia("vaca-1");
 
@@ -106,7 +106,7 @@ class ReproduccionServiceTest {
         ternero.setMadre(madre);
         ternero.setPadre(padre);
         when(animalRepository.findActiveById("ternero-1")).thenReturn(Optional.of(ternero));
-        when(animalRepository.findFiltered(null, null, null, "ACTIVO")).thenReturn(List.of(bisabuela, abuela, madre, padre, ternero));
+        when(animalRepository.findFiltered(null, null, "ACTIVO")).thenReturn(List.of(bisabuela, abuela, madre, padre, ternero));
 
         var genealogia = reproduccionService.getGenealogia("ternero-1");
 

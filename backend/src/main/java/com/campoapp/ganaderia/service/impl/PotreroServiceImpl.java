@@ -4,9 +4,9 @@ import com.campoapp.common.exception.BusinessException;
 import com.campoapp.common.exception.ResourceNotFoundException;
 import com.campoapp.ganaderia.dto.PotreroRequest;
 import com.campoapp.ganaderia.dto.PotreroResponse;
-import com.campoapp.ganaderia.entity.Animal;
+import com.campoapp.ganaderia.entity.AnimalPotrero;
 import com.campoapp.ganaderia.entity.Potrero;
-import com.campoapp.ganaderia.repository.AnimalRepository;
+import com.campoapp.ganaderia.repository.AnimalPotreroRepository;
 import com.campoapp.ganaderia.repository.PotreroRepository;
 import com.campoapp.ganaderia.service.PotreroService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,7 +30,7 @@ public class PotreroServiceImpl implements PotreroService {
     private static final String DEFAULT_ESTADO = "ACTIVO";
 
     private final PotreroRepository potreroRepository;
-    private final AnimalRepository animalRepository;
+    private final AnimalPotreroRepository animalPotreroRepository;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -181,9 +181,9 @@ public class PotreroServiceImpl implements PotreroService {
     }
 
     private Map<String, Long> cargasPorPotrero() {
-        return animalRepository.findFiltered(null, null, null, "ACTIVO").stream()
-                .filter(animal -> !isBlank(animal.getUbicacionActual()))
-                .collect(Collectors.groupingBy(animal -> animal.getUbicacionActual().trim(), Collectors.counting()));
+        return animalPotreroRepository.findAllActiveWithPotrero().stream()
+                .filter(assignment -> assignment.getPotrero() != null)
+                .collect(Collectors.groupingBy(assignment -> assignment.getPotrero().getId(), Collectors.counting()));
     }
 
     private boolean isBlank(String value) {
@@ -191,7 +191,7 @@ public class PotreroServiceImpl implements PotreroService {
     }
 
     private PotreroResponse toResponse(Potrero potrero, Map<String, Long> cargas) {
-        int cargaActual = Math.toIntExact(cargas.getOrDefault(potrero.getNombre(), 0L));
+        int cargaActual = Math.toIntExact(cargas.getOrDefault(potrero.getId(), 0L));
         return new PotreroResponse(
                 potrero.getId(),
                 potrero.getNombre(),

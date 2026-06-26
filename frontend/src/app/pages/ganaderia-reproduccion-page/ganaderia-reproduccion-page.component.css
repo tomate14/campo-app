@@ -322,6 +322,119 @@
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
 }
+.birth-alerts__table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 18px;
+  background: rgba(8, 18, 37, 0.68);
+}
+.birth-alerts__table {
+  width: 100%;
+  min-width: 920px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.birth-alerts__table th,
+.birth-alerts__table td {
+  padding: 13px 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  color: #dce7f8;
+  font-size: 12px;
+  vertical-align: middle;
+}
+.birth-alerts__table th {
+  color: #8ea0bb;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(11, 23, 48, 0.78);
+}
+.birth-alerts__table tr:last-child td {
+  border-bottom: 0;
+}
+.birth-alerts__table tbody tr {
+  transition: background .18s ease, box-shadow .18s ease;
+}
+.birth-alerts__table tbody tr:hover {
+  background: rgba(159, 232, 112, 0.04);
+  box-shadow: inset 2px 0 0 rgba(159, 232, 112, 0.65);
+}
+.birth-alerts__table tbody tr.risk-high:hover {
+  box-shadow: inset 2px 0 0 rgba(255, 107, 107, 0.75);
+}
+.birth-alerts__table tbody tr.risk-medium:hover {
+  box-shadow: inset 2px 0 0 rgba(255, 184, 77, 0.75);
+}
+.birth-table-animal {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+.birth-table-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #9fe870;
+  border: 1px solid rgba(159, 232, 112, 0.16);
+  background: rgba(159, 232, 112, 0.08);
+  box-shadow: 0 0 18px rgba(159, 232, 112, 0.07);
+}
+.birth-table-icon svg {
+  width: 22px;
+  height: 22px;
+}
+.birth-table-animal strong,
+.birth-alerts__table td > strong {
+  color: #f8fbff;
+}
+.birth-table-animal small {
+  display: block;
+  margin-top: 3px;
+  color: #8ea0bb;
+  font-size: 11px;
+}
+.birth-table-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #c9d7ec;
+  white-space: nowrap;
+}
+.birth-table-location svg {
+  width: 15px;
+  height: 15px;
+  color: #9fe870;
+}
+.birth-table-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(159, 232, 112, 0.22);
+  border-radius: 12px;
+  padding: 9px 12px;
+  color: #9fe870;
+  background: rgba(7, 15, 31, 0.42);
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+.birth-table-action:hover {
+  border-color: rgba(159, 232, 112, 0.48);
+  transform: translateY(-1px);
+  box-shadow: 0 0 22px rgba(159, 232, 112, 0.08);
+}
+.birth-table-action svg {
+  width: 16px;
+  height: 16px;
+}
 .birth-card {
   display: flex;
   flex-direction: column;

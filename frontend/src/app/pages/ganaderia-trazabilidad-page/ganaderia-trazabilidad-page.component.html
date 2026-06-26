@@ -59,7 +59,7 @@
               <td>{{ animal.raza }}</td>
               <td><span class="sex-chip" [class.sex-chip--female]="isFemale(animal)">{{ sexoLabel(animal) }}</span></td>
               <td><span class="status-badge" [class.status-badge--muted]="animal.estado !== 'ACTIVO'">{{ animal.estado }}</span></td>
-              <td>{{ animal.potreroNombre || animal.ubicacionActual || 'Sin dato' }}</td>
+              <td>{{ animal.potreroNombre || 'Sin dato' }}</td>
               <td>{{ animal.pesoActualKg ? (animal.pesoActualKg + ' kg') : 'Sin dato' }}</td>
               <td>{{ lastMovement(animal) }}</td>
               <td><span class="risk-badge" [class.risk-badge--medium]="riesgoAnimal(animal) === 'Medio'" [class.risk-badge--high]="riesgoAnimal(animal) === 'Alto'">{{ riesgoAnimal(animal) }}</span></td>
@@ -86,7 +86,7 @@
     <aside class="trace-context card" *ngIf="selected() as detail">
       <div class="context-head">
         <div class="cow-icon"><svg viewBox="0 0 24 24"><path d="M7 8c-2-3-4-3-5-2 0 2 1 4 3 5" /><path d="M17 8c2-3 4-3 5-2 0 2-1 4-3 5" /><path d="M6 10c0-4 2-6 6-6s6 2 6 6v3c0 4-2.5 7-6 7s-6-3-6-7v-3Z" /><path d="M9 11h.01M15 11h.01M10 16h4" /></svg></div>
-        <div><p class="eyebrow">Animal seleccionado</p><h3>{{ detail.animal.caravana }}</h3><p>{{ detail.animal.raza }} · {{ detail.animal.estado }} · {{ detail.animal.potreroNombre || detail.animal.ubicacionActual || 'Sin ubicación' }}</p></div>
+        <div><p class="eyebrow">Animal seleccionado</p><h3>{{ detail.animal.caravana }}</h3><p>{{ detail.animal.raza }} · {{ detail.animal.estado }} · {{ detail.animal.potreroNombre || 'Sin ubicación' }}</p></div>
       </div>
       <div class="context-badges"><span>RP {{ detail.animal.caravana }}</span><span>HBA {{ detail.animal.rfidCodigo || 'Sin asignar' }}</span></div>
 
@@ -101,15 +101,62 @@
 
       <section class="context-content" *ngIf="panelTab() === 'RESUMEN'">
         <article class="info-card"><h4>Información general</h4><p><span>Caravana</span><strong>{{ detail.animal.caravana }}</strong></p><p><span>Raza</span><strong>{{ detail.animal.raza }}</strong></p><p><span>Fecha nacimiento</span><strong>{{ detail.animal.fechaNacimiento || 'Sin dato' }}</strong></p><p><span>Madre</span><strong>{{ detail.animal.madreCaravana || 'Sin dato' }}</strong></p><p><span>Padre</span><strong>{{ detail.animal.padreCaravana || 'Sin dato' }}</strong></p><p><span>Estado reproductivo</span><strong>Apto</strong></p></article>
-        <article class="info-card"><h4>Ubicación actual</h4><p><span>Potrero</span><strong>{{ detail.animal.potreroNombre || detail.animal.ubicacionActual || 'Sin dato' }}</strong></p><p><span>Coordenadas</span><strong>-31.4200, -64.1900</strong></p><p><span>Sector</span><strong>Ganadería</strong></p></article>
+        <article class="info-card"><h4>Ubicación actual</h4><p><span>Potrero</span><strong>{{ detail.animal.potreroNombre || 'Sin dato' }}</strong></p><p><span>Coordenadas</span><strong>-31.4200, -64.1900</strong></p><p><span>Sector</span><strong>Ganadería</strong></p></article>
         <article class="info-card genealogy-card"><h4>Genealogía</h4><svg viewBox="0 0 24 24"><path d="M12 4v6" /><path d="M8 10h8" /><path d="M6 14v6M18 14v6M12 14v6" /><circle cx="12" cy="4" r="2" /><circle cx="6" cy="20" r="2" /><circle cx="12" cy="20" r="2" /><circle cx="18" cy="20" r="2" /></svg><button type="button">Ver árbol genealógico</button></article>
       </section>
 
-      <section class="context-content" *ngIf="panelTab() !== 'RESUMEN'">
-        <article class="info-card timeline-card"><h4>{{ panelTab() === 'MOVIMIENTOS' ? 'Movimientos' : panelTab() === 'MEDICO' ? 'Historial médico' : 'Eventos recientes' }}</h4>
-          <div class="event-item" *ngFor="let movimiento of detail.movimientos.slice(0, 3)"><span class="event-dot"></span><div><strong>{{ movimiento.tipoMovimiento }}</strong><p>{{ movimiento.fecha }} · {{ movimiento.ubicacionOrigen || 'Origen' }} → {{ movimiento.ubicacionDestino || 'Destino' }}</p></div><em>Movimiento</em></div>
-          <div class="event-item" *ngFor="let item of detail.historialMedico.slice(0, 3)"><span class="event-dot event-dot--blue"></span><div><strong>{{ item.diagnostico }}</strong><p>{{ item.fecha }} · {{ item.tratamiento || 'Sin tratamiento' }}</p></div><em>Sanidad</em></div>
-          <div class="empty-box" *ngIf="!detail.movimientos.length && !detail.historialMedico.length">Sin eventos registrados.</div>
+      <section class="context-content" *ngIf="panelTab() === 'MOVIMIENTOS'">
+        <article class="info-card timeline-card">
+          <h4>Movimientos del animal</h4>
+          <div class="event-item" *ngFor="let movimiento of detail.movimientos">
+            <span class="event-dot"></span>
+            <div>
+              <strong>{{ movimiento.tipoMovimiento }}</strong>
+              <p>{{ movimiento.fecha }} · {{ movimiento.ubicacionOrigen || 'Origen' }} → {{ movimiento.ubicacionDestino || 'Destino' }}</p>
+              <p *ngIf="movimiento.motivo">{{ movimiento.motivo }}</p>
+            </div>
+            <em>Movimiento</em>
+          </div>
+          <div class="empty-box" *ngIf="!detail.movimientos.length">Sin movimientos registrados.</div>
+        </article>
+      </section>
+
+      <section class="context-content" *ngIf="panelTab() === 'MEDICO'">
+        <article class="info-card timeline-card">
+          <h4>Historial médico completo</h4>
+          <div class="event-item" *ngFor="let item of historialClinico()">
+            <span class="event-dot" [ngClass]="item.dotClass"></span>
+            <div>
+              <strong>{{ item.titulo }}</strong>
+              <p>{{ item.fecha }} · {{ item.detalle }}</p>
+              <p *ngIf="item.extra">{{ item.extra }}</p>
+            </div>
+            <em>{{ item.badge }}</em>
+          </div>
+          <div class="empty-box" *ngIf="!historialClinico().length">Sin historial médico registrado.</div>
+        </article>
+      </section>
+
+      <section class="context-content" *ngIf="panelTab() === 'VACUNAS'">
+        <article class="info-card timeline-card">
+          <h4>Vacunas del animal</h4>
+          <div class="event-item" *ngFor="let vacuna of selectedAplicaciones()">
+            <span class="event-dot event-dot--green"></span>
+            <div>
+              <strong>{{ vacuna.vacunaNombre }}</strong>
+              <p>{{ vacuna.fechaAplicacion }} · Próxima dosis: {{ vacuna.proximaDosisFecha || 'Sin fecha' }}</p>
+              <p>{{ vacuna.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }} · {{ vacuna.loteMarca || 'Sin lote/serie' }}</p>
+            </div>
+            <em>Vacunación</em>
+          </div>
+          <div class="empty-box" *ngIf="!selectedAplicaciones().length">Sin vacunaciones registradas para este animal.</div>
+        </article>
+      </section>
+
+      <section class="context-content" *ngIf="panelTab() === 'MAS'">
+        <article class="info-card timeline-card">
+          <h4>Más información</h4>
+          <div class="empty-box">Sin información adicional registrada.</div>
         </article>
       </section>
 
@@ -124,15 +171,15 @@
         <div class="modal-head"><h3>Registrar animal</h3></div>
         <div class="form-grid">
           <label><span>Caravana</span><input [(ngModel)]="animalForm().caravana" (ngModelChange)="animalForm.update(f => ({ ...f, caravana: $event }))" /></label>
-          <app-remote-search-select label="Raza" placeholder="Buscar raza" [options]="razaOptions" valueField="value" labelField="label" [value]="animalForm().raza" (valueChange)="animalForm.update(f => ({ ...f, raza: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Raza" placeholder="Buscar raza bovina" [endpoint]="endpoints.razasBovinas" queryParam="search" valueField="id" labelField="nombre" [subtitleFields]="['aptitud','tipoGenetico']" [searchFields]="['nombre','codigo','aptitud','tipoGenetico']" [value]="animalForm().razaId" (valueChange)="updateRazaValue($event)" (itemSelected)="selectRaza($event)"></app-remote-search-select>
           <label><span>Sexo</span><select [(ngModel)]="animalForm().sexo" (ngModelChange)="animalForm.update(f => ({ ...f, sexo: $event }))"><option value="">Seleccionar</option><option *ngFor="let option of sexoOptions" [value]="option.value">{{ option.label }}</option></select></label>
           <label><span>Fecha nacimiento</span><input type="date" [(ngModel)]="animalForm().fechaNacimiento" (ngModelChange)="animalForm.update(f => ({ ...f, fechaNacimiento: $event }))" /></label>
           <label><span>Fecha compra</span><input type="date" [(ngModel)]="animalForm().fechaCompra" (ngModelChange)="animalForm.update(f => ({ ...f, fechaCompra: $event }))" /></label>
           <label><span>Peso actual kg</span><input type="number" [(ngModel)]="animalForm().pesoActualKg" (ngModelChange)="animalForm.update(f => ({ ...f, pesoActualKg: $event }))" /></label>
           <label><span>RFID</span><input [(ngModel)]="animalForm().rfidCodigo" (ngModelChange)="animalForm.update(f => ({ ...f, rfidCodigo: $event }))" /></label>
           <app-remote-search-select label="Potrero actual" placeholder="Buscar potrero" [endpoint]="endpoints.potreros" queryParam="nombre" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="animalForm().potreroId" (valueChange)="animalForm.update(f => ({ ...f, potreroId: $event }))"></app-remote-search-select>
-          <app-remote-search-select label="Madre" placeholder="Buscar madre por caravana, raza o potrero" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="madreAllowedValues" [value]="animalForm().madreId" (valueChange)="animalForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>
-          <app-remote-search-select label="Padre" placeholder="Buscar padre por caravana, raza o potrero" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','ubicacionActual']" [searchFields]="['caravana','raza','ubicacionActual']" [allowedValues]="padreAllowedValues" [value]="animalForm().padreId" (valueChange)="animalForm.update(f => ({ ...f, padreId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Madre" placeholder="Buscar madre por caravana, raza o potrero" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [allowedValues]="madreAllowedValues" [value]="animalForm().madreId" (valueChange)="animalForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>
+          <app-remote-search-select label="Padre" placeholder="Buscar padre por caravana, raza o potrero" [endpoint]="endpoints.animales" [extraParams]="activeAnimalParams" queryParam="caravana" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [allowedValues]="padreAllowedValues" [value]="animalForm().padreId" (valueChange)="animalForm.update(f => ({ ...f, padreId: $event }))"></app-remote-search-select>
         </div>
         <label class="textarea-field"><span>Observaciones</span><textarea [(ngModel)]="animalForm().observaciones" (ngModelChange)="animalForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
         <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAnimal()">Guardar</button></div>
