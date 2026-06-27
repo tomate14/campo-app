@@ -18,11 +18,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 44
-- Realizadas: 22
+- Realizadas: 23
 - Parciales: 0
-- Pendientes: 20
+- Pendientes: 19
 - Saltadas: 2
-- Ultima actualizacion: 2026-06-16
+- Ultima actualizacion: 2026-06-26
 
 ## Registro por Feature
 
@@ -44,7 +44,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 12 | `12_COMPLETA_operarios_gestion_administracion.md` | Operarios | Realizada | Gestion de operarios implementada con backend CRUD, documentacion, cambios de rol, dashboard y pantalla Angular premium. El alta genera usuario automaticamente con password inicial igual al username. |
 | 13 | `13_COMPLETA_operarios_ordenes_trabajo.md` | Operarios | Realizada | Ordenes de trabajo implementadas con backend, frontend, actividades, estados, aceptacion/rechazo e historial. Asignacion de maquinas excluida por pedido explicito. |
 | 14 | `14_operarios_asignaciones_disponibilidad.md` | Operarios | Pendiente | Asignaciones y disponibilidad pendiente. |
-| 15 | `15_inventario_insumos_agricolas.md` | Inventario | Pendiente | Inventario agricola de insumos pendiente; requerido para fitosanitarios avanzados. |
+| 15 | `15_COMPLETA_inventario_insumos_agricolas.md` | Inventario | Realizada | Inventario agricola de insumos implementado con catalogo, stock por deposito/lote, movimientos auditados, alertas de reorden/vencimiento, endpoint REST, pantalla Angular y mock data. |
 | 16 | `16_inventario_stock_control.md` | Inventario | Pendiente | Stock y control centralizado pendiente. |
 | 17 | `17_finanzas_facturacion_ventas.md` | Finanzas | Pendiente | Facturacion y ventas pendiente. |
 | 18 | `18_finanzas_compras_proveedores.md` | Finanzas | Pendiente | Compras y proveedores pendiente. |
@@ -104,7 +104,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 40.
 
 ### Inventario
-- Pendientes: 15, 16.
+- Realizadas: 15.
+- Pendientes: 16.
 
 ### Finanzas
 - Pendientes: 17, 18, 19.
@@ -127,6 +128,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 43.
 
 ## Ultimas Actualizaciones
+- 2026-06-26: Feature 15 realizada con inventario agricola de insumos, stock, movimientos, alertas, backend REST, pantalla Angular y datos mock.
 - 2026-06-16: Feature 43 realizada con `animales_potreros`, movimientos por IDs, dashboard ganadero sin agrupacion por texto y selectores de potrero enviando IDs.
 - 2026-06-09: Feature 43 creada para corregir integridad referencial transversal por ID y evitar joins por nombres/textos libres.
 - 2026-06-08: Feature 42 realizada con Dashboard Ganadero Ejecutivo backend-driven, endpoint de reportes ganaderos y pantalla Angular premium.

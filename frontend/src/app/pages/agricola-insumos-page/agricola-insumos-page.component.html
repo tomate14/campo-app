@@ -1,0 +1,331 @@
+<section class="insumos-page">
+  <header class="page-hero">
+    <div>
+      <p class="eyebrow">Campo App · Agricultura</p>
+      <h1>Inventario de insumos</h1>
+      <p>Stock, vencimientos, reorden y trazabilidad de uso de semillas, fertilizantes y fitosanitarios.</p>
+    </div>
+    <div class="hero-actions">
+      <button class="btn-secondary" type="button" (click)="openStockModal()">Registrar stock</button>
+      <button class="btn-secondary" type="button" (click)="openMovimientoModal()">Registrar uso</button>
+      <button class="btn-primary" type="button" (click)="openInsumoModal()">Nuevo insumo</button>
+    </div>
+  </header>
+
+  <div class="kpi-grid">
+    <article class="kpi-card" *ngFor="let kpi of kpis()" [class]="'kpi-card tone-' + kpi.tone">
+      <span class="kpi-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4Z" /><path d="M4 7v10l8 4 8-4V7" /><path d="M12 11v10" /></svg>
+      </span>
+      <div>
+        <small>{{ kpi.label }}</small>
+        <strong>{{ kpi.value }}</strong>
+        <em>{{ kpi.sub }}</em>
+      </div>
+    </article>
+  </div>
+
+  <section class="filters-card">
+    <label>
+      <span>Buscar</span>
+      <input placeholder="Codigo, nombre, marca o principio activo" [ngModel]="filters().search" (ngModelChange)="filters.update(f => ({ ...f, search: $event }))" />
+    </label>
+    <label>
+      <span>Tipo</span>
+      <select [ngModel]="filters().tipo" (ngModelChange)="filters.update(f => ({ ...f, tipo: $event }))">
+        <option value="">Todos</option>
+        <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
+      </select>
+    </label>
+    <label>
+      <span>Estado</span>
+      <select [ngModel]="filters().activo" (ngModelChange)="filters.update(f => ({ ...f, activo: $event }))">
+        <option value="">Todos</option>
+        <option value="true">Activos</option>
+        <option value="false">Inactivos</option>
+      </select>
+    </label>
+    <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>
+  </section>
+
+  <p class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+  <section class="content-grid catalog-row">
+    <article class="panel">
+      <div class="panel-head">
+        <div class="panel-actions">
+          <button class="btn-secondary compact" type="button" (click)="openStockModal()">Registrar stock</button>
+          <button class="btn-secondary compact" type="button" (click)="openMovimientoModal()">Registrar uso</button>
+          <button class="btn-primary compact" type="button" (click)="openInsumoModal()">Nuevo insumo</button>
+        </div>
+        <div class="table-pager">
+          <label class="page-size-select">
+            <span>Mostrar</span>
+            <select [ngModel]="insumoPageSize()" (ngModelChange)="setInsumoPageSize($event)">
+              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+            </select>
+          </label>
+          <span>{{ insumosPage()?.totalElements || 0 }} registros</span>
+          <button type="button" (click)="changeInsumoPage(-1)" [disabled]="(insumosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+          <button type="button" *ngFor="let page of pageNumbers(insumosPage())" [class.active]="page === ((insumosPage()?.number || 0) + 1)" (click)="setInsumoPage(page)">{{ page }}</button>
+          <button type="button" (click)="changeInsumoPage(1)" [disabled]="((insumosPage()?.number || 0) + 1) >= (insumosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Insumo</th>
+              <th>Tipo</th>
+              <th>Stock</th>
+              <th>Minimo</th>
+              <th>Vencimiento</th>
+              <th>Precio unitario</th>
+              <th>Valor stock</th>
+              <th>Alertas</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let insumo of insumosPage()?.content || []">
+              <td>
+                <strong>{{ insumo.nombre }}</strong>
+                <small>{{ insumo.codigo }} · {{ insumo.marca || 'Sin marca' }}</small>
+              </td>
+              <td><span class="pill">{{ insumo.tipo }}</span></td>
+              <td>{{ number(insumo.stockTotal) }} {{ insumo.unidadMedida }}</td>
+              <td>{{ number(insumo.stockMinimo) }}</td>
+              <td>{{ date(insumo.proximoVencimiento) }}</td>
+              <td>{{ money(insumo.precioUnitario) }}</td>
+              <td>{{ money(insumo.valorStock) }}</td>
+              <td>
+                <span class="status danger" *ngIf="insumo.requiereReorden">Reorden</span>
+                <span class="status warning" *ngIf="insumo.tieneVencimientoProximo">Vence</span>
+                <span class="status ok" *ngIf="!insumo.requiereReorden && !insumo.tieneVencimientoProximo">OK</span>
+              </td>
+              <td class="actions-cell">
+                <button type="button" (click)="openStockModal(insumo)">Stock</button>
+                <button type="button" (click)="openMovimientoModal(insumo)">Uso</button>
+                <button type="button" (click)="openEditInsumoModal(insumo)">Editar</button>
+                <button class="danger-action" type="button" (click)="deleteInsumo(insumo)">Eliminar</button>
+              </td>
+            </tr>
+            <tr *ngIf="!(insumosPage()?.content || []).length">
+              <td colspan="9" class="empty-cell">Sin insumos registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+
+  <section class="content-grid alerts-row">
+    <article class="panel">
+      <div class="panel-head tabbed-head">
+        <div class="table-tabs">
+          <button type="button" [class.active]="activeAlertTab() === 'REORDEN'" (click)="activeAlertTab.set('REORDEN')">Alertas de reorden</button>
+          <button type="button" [class.active]="activeAlertTab() === 'VENCIMIENTOS'" (click)="activeAlertTab.set('VENCIMIENTOS')">Vencimientos proximos</button>
+        </div>
+        <div class="table-pager" *ngIf="activeAlertTab() === 'REORDEN'; else vencimientosPager">
+          <label class="page-size-select">
+            <span>Mostrar</span>
+            <select [ngModel]="reordenPageSize()" (ngModelChange)="setReordenPageSize($event)">
+              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+            </select>
+          </label>
+          <span>{{ reordenPage()?.totalElements || 0 }} registros</span>
+          <button type="button" (click)="changeReordenPage(-1)" [disabled]="(reordenPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+          <button type="button" *ngFor="let page of pageNumbers(reordenPage())" [class.active]="page === ((reordenPage()?.number || 0) + 1)" (click)="setReordenPage(page)">{{ page }}</button>
+          <button type="button" (click)="changeReordenPage(1)" [disabled]="((reordenPage()?.number || 0) + 1) >= (reordenPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+        </div>
+        <ng-template #vencimientosPager>
+          <div class="table-pager">
+            <label class="page-size-select">
+              <span>Mostrar</span>
+              <select [ngModel]="vencimientosPageSize()" (ngModelChange)="setVencimientosPageSize($event)">
+                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+              </select>
+            </label>
+            <span>{{ vencimientosPage()?.totalElements || 0 }} registros</span>
+            <button type="button" (click)="changeVencimientosPage(-1)" [disabled]="(vencimientosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+            <button type="button" *ngFor="let page of pageNumbers(vencimientosPage())" [class.active]="page === ((vencimientosPage()?.number || 0) + 1)" (click)="setVencimientosPage(page)">{{ page }}</button>
+            <button type="button" (click)="changeVencimientosPage(1)" [disabled]="((vencimientosPage()?.number || 0) + 1) >= (vencimientosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+          </div>
+        </ng-template>
+      </div>
+
+      <ng-container *ngIf="activeAlertTab() === 'REORDEN'; else vencimientosTab">
+        <div class="table-wrap small">
+          <table>
+            <thead><tr><th>Insumo</th><th>Tipo</th><th>Stock actual</th><th>Minimo</th><th>Unidad</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let item of reordenPage()?.content || []">
+                <td><strong>{{ item.nombre }}</strong><small>{{ item.codigo }} - {{ item.marca || 'Sin marca' }}</small></td>
+                <td><span class="pill">{{ item.tipo }}</span></td>
+                <td>{{ number(item.stockTotal) }}</td>
+                <td>{{ number(item.stockMinimo) }}</td>
+                <td>{{ item.unidadMedida }}</td>
+                <td><span class="status danger">Reorden</span></td>
+              </tr>
+              <tr *ngIf="!(reordenPage()?.content || []).length">
+                <td colspan="6" class="empty-cell">Sin alertas de reorden.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+      <ng-template #vencimientosTab>
+        <div class="table-wrap small">
+          <table>
+            <thead><tr><th>Insumo</th><th>Lote</th><th>Cantidad</th><th>Deposito</th><th>Responsable</th><th>Vencimiento</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let item of vencimientosPage()?.content || []">
+                <td><strong>{{ item.insumoNombre }}</strong><small>{{ item.insumoCodigo }}</small></td>
+                <td>{{ item.loteStock || 'Sin lote' }}</td>
+                <td>{{ number(item.cantidadDisponible) }}</td>
+                <td>{{ item.ubicacionDeposito || item.deposito || 'Sin dato' }}</td>
+                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>
+                <td><span [class]="item.vencido ? 'status danger' : 'status warning'">{{ date(item.fechaVencimiento) }}</span></td>
+              </tr>
+              <tr *ngIf="!(vencimientosPage()?.content || []).length">
+                <td colspan="6" class="empty-cell">Sin vencimientos proximos.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+    </article>
+  </section>
+  <section class="content-grid detail-row">
+    <article class="panel">
+      <div class="panel-head tabbed-head">
+        <div class="table-tabs">
+          <button type="button" [class.active]="activeDetailTab() === 'STOCK'" (click)="activeDetailTab.set('STOCK')">Stock por lote</button>
+          <button type="button" [class.active]="activeDetailTab() === 'MOVIMIENTOS'" (click)="activeDetailTab.set('MOVIMIENTOS')">Movimientos</button>
+        </div>
+        <div class="table-pager" *ngIf="activeDetailTab() === 'STOCK'; else movimientosPager">
+          <label class="page-size-select">
+            <span>Mostrar</span>
+            <select [ngModel]="stockPageSize()" (ngModelChange)="setStockPageSize($event)">
+              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+            </select>
+          </label>
+          <span>{{ stockPage()?.totalElements || 0 }} registros</span>
+          <button type="button" (click)="changeStockPage(-1)" [disabled]="(stockPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+          <button type="button" *ngFor="let page of pageNumbers(stockPage())" [class.active]="page === ((stockPage()?.number || 0) + 1)" (click)="setStockPage(page)">{{ page }}</button>
+          <button type="button" (click)="changeStockPage(1)" [disabled]="((stockPage()?.number || 0) + 1) >= (stockPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+        </div>
+        <ng-template #movimientosPager>
+          <div class="table-pager">
+            <label class="page-size-select">
+              <span>Mostrar</span>
+              <select [ngModel]="movimientosPageSize()" (ngModelChange)="setMovimientosPageSize($event)">
+                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+              </select>
+            </label>
+            <span>{{ movimientosPage()?.totalElements || 0 }} registros</span>
+            <button type="button" (click)="changeMovimientosPage(-1)" [disabled]="(movimientosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+            <button type="button" *ngFor="let page of pageNumbers(movimientosPage())" [class.active]="page === ((movimientosPage()?.number || 0) + 1)" (click)="setMovimientosPage(page)">{{ page }}</button>
+            <button type="button" (click)="changeMovimientosPage(1)" [disabled]="((movimientosPage()?.number || 0) + 1) >= (movimientosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+          </div>
+        </ng-template>
+      </div>
+
+      <ng-container *ngIf="activeDetailTab() === 'STOCK'; else movimientosTab">
+        <div class="table-wrap small">
+          <table>
+          <thead><tr><th>Insumo</th><th>Lote</th><th>Cantidad</th><th>Deposito</th><th>Responsable</th><th>Vence</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let item of stockPage()?.content || []">
+                <td>{{ item.insumoNombre }}</td>
+                <td>{{ item.loteStock || 'Sin lote' }}</td>
+                <td>{{ number(item.cantidadDisponible) }}</td>
+                <td>{{ item.ubicacionDeposito || item.deposito || 'Sin dato' }}</td>
+                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>
+                <td><span [class]="item.vencido ? 'status danger' : item.vencimientoProximo ? 'status warning' : 'status ok'">{{ date(item.fechaVencimiento) }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+      <ng-template #movimientosTab>
+        <div class="table-wrap small">
+          <table>
+            <thead><tr><th>Fecha</th><th>Tipo</th><th>Insumo</th><th>Lote</th><th>Responsable</th><th>Cantidad</th><th>Costo</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let item of movimientosPage()?.content || []">
+                <td>{{ date(item.fecha) }}</td>
+                <td><span class="pill">{{ item.tipoMovimiento }}</span></td>
+                <td>{{ item.insumoNombre }}</td>
+                <td>{{ item.loteNombre || item.destino || 'Sin lote' }}</td>
+                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>
+                <td>{{ number(item.cantidad) }}</td>
+                <td>{{ item.costoTotal ? money(item.costoTotal) : 'Sin costo' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+    </article>
+  </section>
+</section>
+
+<div class="modal-backdrop" *ngIf="modal()" (click)="closeModal()"></div>
+
+<section class="modal" *ngIf="modal() === 'INSUMO'">
+  <button class="modal-close" type="button" (click)="closeModal()">×</button>
+  <h3>{{ editingInsumoId() ? 'Editar insumo' : 'Nuevo insumo' }}</h3>
+  <div class="form-grid">
+    <label><span>Codigo</span><input [ngModel]="insumoForm().codigo" (ngModelChange)="insumoForm.update(f => ({ ...f, codigo: $event }))" /></label>
+    <label><span>Nombre</span><input [ngModel]="insumoForm().nombre" (ngModelChange)="insumoForm.update(f => ({ ...f, nombre: $event }))" /></label>
+    <label><span>Tipo</span><select [ngModel]="insumoForm().tipo" (ngModelChange)="insumoForm.update(f => ({ ...f, tipo: $event }))"><option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option></select></label>
+    <label><span>Unidad</span><select [ngModel]="insumoForm().unidadMedida" (ngModelChange)="insumoForm.update(f => ({ ...f, unidadMedida: $event }))"><option *ngFor="let unidad of unidadOptions" [value]="unidad">{{ unidad }}</option></select></label>
+    <label><span>Marca</span><input [ngModel]="insumoForm().marca" (ngModelChange)="insumoForm.update(f => ({ ...f, marca: $event }))" /></label>
+    <label><span>Presentacion</span><input [ngModel]="insumoForm().presentacion" (ngModelChange)="insumoForm.update(f => ({ ...f, presentacion: $event }))" /></label>
+    <label><span>Precio unitario</span><input type="number" [ngModel]="insumoForm().precioUnitario" (ngModelChange)="insumoForm.update(f => ({ ...f, precioUnitario: $event }))" /></label>
+    <label><span>Stock minimo</span><input type="number" [ngModel]="insumoForm().stockMinimo" (ngModelChange)="insumoForm.update(f => ({ ...f, stockMinimo: $event }))" /></label>
+    <label><span>Stock maximo</span><input type="number" [ngModel]="insumoForm().stockMaximo" (ngModelChange)="insumoForm.update(f => ({ ...f, stockMaximo: $event }))" /></label>
+    <label><span>Principio activo</span><input [ngModel]="insumoForm().principioActivo" (ngModelChange)="insumoForm.update(f => ({ ...f, principioActivo: $event }))" /></label>
+    <label><span>Proveedor</span><input [ngModel]="insumoForm().proveedor" (ngModelChange)="insumoForm.update(f => ({ ...f, proveedor: $event }))" /></label>
+    <label><span>Origen</span><input [ngModel]="insumoForm().origen" (ngModelChange)="insumoForm.update(f => ({ ...f, origen: $event }))" /></label>
+  </div>
+  <label class="wide"><span>Descripcion</span><textarea [ngModel]="insumoForm().descripcion" (ngModelChange)="insumoForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitInsumo()">{{ editingInsumoId() ? 'Actualizar insumo' : 'Guardar insumo' }}</button>
+</section>
+
+<section class="modal" *ngIf="modal() === 'STOCK'">
+  <button class="modal-close" type="button" (click)="closeModal()">×</button>
+  <h3>Registrar stock</h3>
+  <div class="form-grid">
+    <label><span>Insumo</span><select [ngModel]="stockForm().insumoId" (ngModelChange)="stockForm.update(f => ({ ...f, insumoId: $event }))"><option value="">Seleccionar</option><option *ngFor="let insumo of insumosActivos()" [value]="insumo.id">{{ insumo.nombre }}</option></select></label>
+    <label><span>Lote / partida</span><input [ngModel]="stockForm().loteStock" (ngModelChange)="stockForm.update(f => ({ ...f, loteStock: $event }))" /></label>
+    <label><span>Cantidad</span><input type="number" [ngModel]="stockForm().cantidadDisponible" (ngModelChange)="stockForm.update(f => ({ ...f, cantidadDisponible: $event }))" /></label>
+    <label><span>Vencimiento</span><input type="date" [ngModel]="stockForm().fechaVencimiento" (ngModelChange)="stockForm.update(f => ({ ...f, fechaVencimiento: $event }))" /></label>
+    <label><span>Deposito</span><input [ngModel]="stockForm().deposito" (ngModelChange)="stockForm.update(f => ({ ...f, deposito: $event }))" /></label>
+    <label><span>Ubicacion</span><input [ngModel]="stockForm().ubicacionDeposito" (ngModelChange)="stockForm.update(f => ({ ...f, ubicacionDeposito: $event }))" /></label>
+    <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="stockForm().responsableId" (valueChange)="stockForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>
+  </div>
+  <label class="wide"><span>Observaciones</span><textarea [ngModel]="stockForm().observaciones" (ngModelChange)="stockForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitStock()">Guardar stock</button>
+</section>
+
+<section class="modal" *ngIf="modal() === 'MOVIMIENTO'">
+  <button class="modal-close" type="button" (click)="closeModal()">×</button>
+  <h3>Registrar movimiento</h3>
+  <div class="form-grid">
+    <app-remote-search-select label="Insumo" placeholder="Buscar insumo" [options]="insumosSelectOptions()" valueField="id" labelField="nombre" [subtitleFields]="['codigo','tipo']" [searchFields]="['nombre','codigo','tipo','marca','principioActivo']" [value]="movimientoForm().insumoId" (valueChange)="updateMovimientoInsumo($event)"></app-remote-search-select>
+    <label><span>Lote de stock</span><select [ngModel]="movimientoForm().stockId" (ngModelChange)="movimientoForm.update(f => ({ ...f, stockId: $event }))"><option value="">Sin stock asociado</option><option *ngFor="let stock of stockDisponibleSeleccionado()" [value]="stock.id">{{ stock.loteStock || stock.insumoCodigo }} · {{ number(stock.cantidadDisponible) }}</option></select></label>
+    <label><span>Tipo</span><select [ngModel]="movimientoForm().tipoMovimiento" (ngModelChange)="movimientoForm.update(f => ({ ...f, tipoMovimiento: $event }))"><option *ngFor="let tipo of movimientoOptions" [value]="tipo">{{ tipo }}</option></select></label>
+    <label><span>Fecha</span><input type="datetime-local" [ngModel]="movimientoForm().fecha" (ngModelChange)="movimientoForm.update(f => ({ ...f, fecha: $event }))" /></label>
+    <label><span>Cantidad</span><input type="number" [ngModel]="movimientoForm().cantidad" (ngModelChange)="movimientoForm.update(f => ({ ...f, cantidad: $event }))" /></label>
+    <label><span>Costo unitario</span><input type="number" [ngModel]="movimientoForm().costoUnitario" (ngModelChange)="movimientoForm.update(f => ({ ...f, costoUnitario: $event }))" /></label>
+    <label><span>Lote agricola</span><select [ngModel]="movimientoForm().loteId" (ngModelChange)="movimientoForm.update(f => ({ ...f, loteId: $event }))"><option value="">No aplica</option><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
+    <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="movimientoForm().responsableId" (valueChange)="movimientoForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>
+    <label><span>Tarea referencia</span><input [ngModel]="movimientoForm().tareaReferencia" (ngModelChange)="movimientoForm.update(f => ({ ...f, tareaReferencia: $event }))" /></label>
+    <label><span>Proveedor</span><input [ngModel]="movimientoForm().proveedor" (ngModelChange)="movimientoForm.update(f => ({ ...f, proveedor: $event }))" /></label>
+  </div>
+  <label class="wide"><span>Observaciones</span><textarea [ngModel]="movimientoForm().observaciones" (ngModelChange)="movimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitMovimiento()">Guardar movimiento</button>
+</section>

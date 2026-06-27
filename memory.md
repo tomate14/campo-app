@@ -117,3 +117,9 @@ JWT_REFRESH_EXPIRATION_MS    # default 604800000 (7 dÃ­as)
 - Esta correccion transversal queda documentada en feature 43.
 
 
+
+## Regla Visual de Tablas y Tabs
+- Cuando se pidan tablas nuevas en frontend web, usar como referencia obligatoria el formato de `Animales registrados` en Trazabilidad: card premium, header compacto, contenedor de tabla con borde y radio 16px, `border-collapse: separate`, encabezados chicos uppercase gris azulado, filas con hover verde sutil y barra izquierda verde.
+- Cuando se pidan tabs nuevas en frontend web, usar como referencia obligatoria el formato de tabs de Sanidad: botones independientes dark glass, borde suave, texto fino gris azulado, activo en verde `#9FE870`, glow sutil y sin contenedor tipo Bootstrap.
+- Cuando una tabla tenga paginacion, ubicarla arriba a la derecha del header de la tabla con el estilo de Sanidad: botones compactos dark glass, pagina activa verde `#9FE870`, bordes suaves y glow sutil.
+- Toda tabla paginada debe incluir selector de cantidad de registros por pagina en el mismo bloque de paginacion, y esa paginacion debe estar respaldada por el servicio/backend cuando corresponda.
