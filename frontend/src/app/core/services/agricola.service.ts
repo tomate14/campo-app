@@ -17,10 +17,15 @@ import type {
   EventoSiembraRequest,
   HistoricoCultivo,
   HistoricoCultivoRequest,
+  InsumoAgricola,
+  InsumoAgricolaRequest,
+  InsumosDashboard,
   LoteFilters,
   LoteReporte,
   Lote,
   LoteRequest,
+  MovimientoInsumo,
+  MovimientoInsumoRequest,
   PageResponse,
   PropiedadSuelo,
   PropiedadSueloRequest,
@@ -32,8 +37,11 @@ import type {
   SeguimientoPlaga,
   SeguimientoPlagaRequest,
   SeveridadPlaga,
+  StockInsumo,
+  StockInsumoRequest,
   TipoPlaga,
   TipoEvento,
+  TipoInsumoAgricola,
   PlagasDashboard,
 } from '../models/agricola.models';
 
@@ -265,5 +273,57 @@ export class AgricolaService {
 
   getReporteAgricolaDashboard() {
     return this.http.get<ApiResponse<ReporteAgricolaDashboard> | ReporteAgricolaDashboard>(`${API_BASE_URL}/reportes/agricola/dashboard`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getInsumosDashboard() {
+    return this.http.get<ApiResponse<InsumosDashboard> | InsumosDashboard>(`${API_BASE_URL}/inventario/insumos/dashboard`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getInsumos(params?: { search?: string; tipo?: TipoInsumoAgricola; activo?: boolean; page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<InsumoAgricola>> | PageResponse<InsumoAgricola>>(`${API_BASE_URL}/inventario/insumos`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getInsumosActivos() {
+    return this.http.get<ApiResponse<InsumoAgricola[]> | InsumoAgricola[]>(`${API_BASE_URL}/inventario/insumos/activos`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createInsumo(data: InsumoAgricolaRequest) {
+    return this.http.post<ApiResponse<InsumoAgricola> | InsumoAgricola>(`${API_BASE_URL}/inventario/insumos`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  updateInsumo(id: string, data: InsumoAgricolaRequest) {
+    return this.http.put<ApiResponse<InsumoAgricola> | InsumoAgricola>(`${API_BASE_URL}/inventario/insumos/${id}`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  deleteInsumo(id: string) {
+    return this.http.delete(`${API_BASE_URL}/inventario/insumos/${id}`);
+  }
+
+  getStockInsumos(params?: { page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<StockInsumo>> | PageResponse<StockInsumo>>(`${API_BASE_URL}/inventario/insumos/stock`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getAlertasReordenInsumos(params?: { page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<InsumoAgricola>> | PageResponse<InsumoAgricola>>(`${API_BASE_URL}/inventario/insumos/alertas/reorden`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getVencimientosProximosInsumos(params?: { page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<StockInsumo>> | PageResponse<StockInsumo>>(`${API_BASE_URL}/inventario/insumos/alertas/vencimientos`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getStockPorInsumo(insumoId: string) {
+    return this.http.get<ApiResponse<StockInsumo[]> | StockInsumo[]>(`${API_BASE_URL}/inventario/insumos/${insumoId}/stock`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createStockInsumo(data: StockInsumoRequest) {
+    return this.http.post<ApiResponse<StockInsumo> | StockInsumo>(`${API_BASE_URL}/inventario/insumos/stock`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getMovimientosInsumos(params?: { page?: number; size?: number }) {
+    return this.http.get<ApiResponse<PageResponse<MovimientoInsumo>> | PageResponse<MovimientoInsumo>>(`${API_BASE_URL}/inventario/insumos/movimientos`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createMovimientoInsumo(data: MovimientoInsumoRequest) {
+    return this.http.post<ApiResponse<MovimientoInsumo> | MovimientoInsumo>(`${API_BASE_URL}/inventario/insumos/movimientos`, data).pipe(map((response) => unwrapApiResponse(response)));
   }
 }

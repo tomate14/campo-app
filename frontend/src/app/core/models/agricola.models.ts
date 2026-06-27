@@ -5,6 +5,9 @@ export type SeveridadPlaga = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 export type EstadoDeteccionPlaga = 'ABIERTA' | 'EN_TRATAMIENTO' | 'CONTROLADA' | 'CERRADA'
 export type OrigenGeolocalizacion = 'MOBILE_GPS' | 'WEB_MAPA' | 'MANUAL'
 export type ResultadoSeguimientoPlaga = 'SIN_CAMBIOS' | 'MEJORA' | 'EMPEORA' | 'CONTROLADA'
+export type TipoInsumoAgricola = 'SEMILLA' | 'FERTILIZANTE' | 'FITOSANITARIO' | 'HERBICIDA' | 'FUNGICIDA' | 'INSECTICIDA' | 'COADYUVANTE' | 'COMBUSTIBLE' | 'OTRO'
+export type UnidadMedidaInsumo = 'KG' | 'L' | 'UN' | 'BOLSA' | 'DOSIS' | 'TN'
+export type TipoMovimientoInsumo = 'INGRESO' | 'SALIDA' | 'USO' | 'AJUSTE'
 
 export interface Lote {
   id: string
@@ -192,6 +195,127 @@ export interface PageResponse<T> {
   first: boolean
   last: boolean
   empty: boolean
+}
+
+export interface InsumoAgricola {
+  id: string
+  codigo: string
+  nombre: string
+  tipo: TipoInsumoAgricola
+  marca?: string
+  presentacion?: string
+  unidadMedida: UnidadMedidaInsumo
+  principioActivo?: string
+  proveedor?: string
+  origen?: string
+  descripcion?: string
+  precioUnitario?: number
+  stockMinimo: number
+  stockMaximo?: number
+  activo: boolean
+  stockTotal: number
+  valorStock: number
+  proximoVencimiento?: string
+  requiereReorden: boolean
+  tieneVencimientoProximo: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface InsumoAgricolaRequest {
+  codigo: string
+  nombre: string
+  tipo: TipoInsumoAgricola
+  marca?: string
+  presentacion?: string
+  unidadMedida: UnidadMedidaInsumo
+  principioActivo?: string
+  proveedor?: string
+  origen?: string
+  descripcion?: string
+  precioUnitario?: number
+  stockMinimo?: number
+  stockMaximo?: number
+  activo?: boolean
+}
+
+export interface StockInsumo {
+  id: string
+  insumoId: string
+  insumoNombre: string
+  insumoCodigo: string
+  loteStock?: string
+  cantidadDisponible: number
+  fechaVencimiento?: string
+  ubicacionDeposito?: string
+  deposito?: string
+  responsableId?: string
+  responsableNombre?: string
+  observaciones?: string
+  vencido: boolean
+  vencimientoProximo: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StockInsumoRequest {
+  insumoId: string
+  loteStock?: string
+  cantidadDisponible: number
+  fechaVencimiento?: string
+  ubicacionDeposito?: string
+  deposito?: string
+  responsableId?: string
+  observaciones?: string
+}
+
+export interface MovimientoInsumo {
+  id: string
+  insumoId: string
+  insumoNombre: string
+  stockId?: string
+  loteId?: string
+  loteNombre?: string
+  fecha: string
+  tipoMovimiento: TipoMovimientoInsumo
+  cantidad: number
+  costoUnitario?: number
+  costoTotal?: number
+  responsableId?: string
+  responsableNombre?: string
+  tareaReferencia?: string
+  proveedor?: string
+  origen?: string
+  destino?: string
+  observaciones?: string
+  createdAt: string
+}
+
+export interface MovimientoInsumoRequest {
+  insumoId: string
+  stockId?: string
+  loteId?: string
+  fecha?: string
+  tipoMovimiento: TipoMovimientoInsumo
+  cantidad: number
+  costoUnitario?: number
+  responsableId?: string
+  tareaReferencia?: string
+  proveedor?: string
+  origen?: string
+  destino?: string
+  observaciones?: string
+}
+
+export interface InsumosDashboard {
+  totalInsumos: number
+  insumosActivos: number
+  reordenPendiente: number
+  lotesPorVencer: number
+  stockValorizado: number
+  alertasReorden: InsumoAgricola[]
+  vencimientosProximos: StockInsumo[]
+  ultimosMovimientos: MovimientoInsumo[]
 }
 
 export interface AnalyticsFiltros {

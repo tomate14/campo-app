@@ -31804,7 +31804,7 @@ var AdminMenuService = class _AdminMenuService {
 // src/app/layout/dashboard-shell/dashboard-shell.component.ts
 function DashboardShellComponent_div_9_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 55)(1, "strong");
+    \u0275\u0275elementStart(0, "div", 56)(1, "strong");
     \u0275\u0275text(2, "Campo App");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(3, "span");
@@ -31815,36 +31815,36 @@ function DashboardShellComponent_div_9_Template(rf, ctx) {
 function DashboardShellComponent__svg_path_12_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 56);
+    \u0275\u0275element(0, "path", 57);
   }
 }
 function DashboardShellComponent__svg_path_13_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 57);
+    \u0275\u0275element(0, "path", 58);
   }
 }
 function DashboardShellComponent__svg_path_14_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 58);
+    \u0275\u0275element(0, "path", 59);
   }
 }
 function DashboardShellComponent__svg_path_15_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 59);
+    \u0275\u0275element(0, "path", 60);
   }
 }
 function DashboardShellComponent__svg_path_16_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 60);
+    \u0275\u0275element(0, "path", 61);
   }
 }
 function DashboardShellComponent_div_18_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 61);
+    \u0275\u0275elementStart(0, "div", 62);
     \u0275\u0275text(1, "Dashboard");
     \u0275\u0275elementEnd();
   }
@@ -31858,12 +31858,12 @@ function DashboardShellComponent_a_19_span_7_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_19_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 62);
+    \u0275\u0275elementStart(0, "a", 63);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 63)(3, "path", 64)(4, "path", 65)(5, "path", 66)(6, "path", 67);
+    \u0275\u0275element(2, "path", 64)(3, "path", 65)(4, "path", 66)(5, "path", 67)(6, "path", 68);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(7, DashboardShellComponent_a_19_span_7_Template, 2, 0, "span", 39);
+    \u0275\u0275template(7, DashboardShellComponent_a_19_span_7_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -31882,12 +31882,12 @@ function DashboardShellComponent_a_20_span_9_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_20_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 68);
+    \u0275\u0275elementStart(0, "a", 69);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 69)(3, "path", 70)(4, "path", 71)(5, "path", 72)(6, "path", 73)(7, "path", 74)(8, "path", 75);
+    \u0275\u0275element(2, "path", 70)(3, "path", 71)(4, "path", 72)(5, "path", 73)(6, "path", 74)(7, "path", 75)(8, "path", 76);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(9, DashboardShellComponent_a_20_span_9_Template, 2, 0, "span", 39);
+    \u0275\u0275template(9, DashboardShellComponent_a_20_span_9_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -31906,12 +31906,12 @@ function DashboardShellComponent_a_21_span_9_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_21_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 76);
+    \u0275\u0275elementStart(0, "a", 77);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 77)(3, "path", 78)(4, "path", 79)(5, "path", 80)(6, "path", 81)(7, "path", 82)(8, "path", 83);
+    \u0275\u0275element(2, "path", 78)(3, "path", 79)(4, "path", 80)(5, "path", 81)(6, "path", 82)(7, "path", 83)(8, "path", 84);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(9, DashboardShellComponent_a_21_span_9_Template, 2, 0, "span", 39);
+    \u0275\u0275template(9, DashboardShellComponent_a_21_span_9_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -31923,7 +31923,7 @@ function DashboardShellComponent_a_21_Template(rf, ctx) {
 }
 function DashboardShellComponent_div_22_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 61);
+    \u0275\u0275elementStart(0, "div", 62);
     \u0275\u0275text(1, "Agricultura");
     \u0275\u0275elementEnd();
   }
@@ -31937,12 +31937,12 @@ function DashboardShellComponent_a_23_span_5_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_23_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 84);
+    \u0275\u0275elementStart(0, "a", 85);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 85)(3, "path", 86)(4, "path", 87);
+    \u0275\u0275element(2, "path", 86)(3, "path", 87)(4, "path", 88);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_23_span_5_Template, 2, 0, "span", 39);
+    \u0275\u0275template(5, DashboardShellComponent_a_23_span_5_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -31961,12 +31961,12 @@ function DashboardShellComponent_a_24_span_8_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_24_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 88);
+    \u0275\u0275elementStart(0, "a", 89);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 89)(3, "path", 90)(4, "path", 91)(5, "path", 92)(6, "path", 93)(7, "path", 94);
+    \u0275\u0275element(2, "path", 90)(3, "path", 91)(4, "path", 92)(5, "path", 93)(6, "path", 94)(7, "path", 95);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(8, DashboardShellComponent_a_24_span_8_Template, 2, 0, "span", 39);
+    \u0275\u0275template(8, DashboardShellComponent_a_24_span_8_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -31985,12 +31985,12 @@ function DashboardShellComponent_a_25_span_6_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_25_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 95);
+    \u0275\u0275elementStart(0, "a", 96);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 63)(3, "path", 96)(4, "path", 97)(5, "path", 98);
+    \u0275\u0275element(2, "path", 64)(3, "path", 97)(4, "path", 98)(5, "path", 99);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_25_span_6_Template, 2, 0, "span", 39);
+    \u0275\u0275template(6, DashboardShellComponent_a_25_span_6_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32009,12 +32009,12 @@ function DashboardShellComponent_a_26_span_5_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_26_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 99);
+    \u0275\u0275elementStart(0, "a", 100);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 100)(3, "path", 101)(4, "path", 102);
+    \u0275\u0275element(2, "path", 101)(3, "path", 102)(4, "path", 103);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_26_span_5_Template, 2, 0, "span", 39);
+    \u0275\u0275template(5, DashboardShellComponent_a_26_span_5_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32027,18 +32027,42 @@ function DashboardShellComponent_a_26_Template(rf, ctx) {
 function DashboardShellComponent_a_27_span_5_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
-    \u0275\u0275text(1, "Clima");
+    \u0275\u0275text(1, "Insumos");
     \u0275\u0275elementEnd();
   }
 }
 function DashboardShellComponent_a_27_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 103);
+    \u0275\u0275elementStart(0, "a", 104);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 104)(3, "path", 105)(4, "path", 106);
+    \u0275\u0275element(2, "path", 105)(3, "path", 106)(4, "path", 107);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_27_span_5_Template, 2, 0, "span", 39);
+    \u0275\u0275template(5, DashboardShellComponent_a_27_span_5_Template, 2, 0, "span", 40);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r0 = \u0275\u0275nextContext();
+    \u0275\u0275property("title", ctx_r0.collapsed() ? "Insumos" : "");
+    \u0275\u0275advance(5);
+    \u0275\u0275property("ngIf", !ctx_r0.collapsed());
+  }
+}
+function DashboardShellComponent_a_28_span_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span");
+    \u0275\u0275text(1, "Clima");
+    \u0275\u0275elementEnd();
+  }
+}
+function DashboardShellComponent_a_28_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "a", 108);
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(1, "svg", 4);
+    \u0275\u0275element(2, "path", 109)(3, "path", 110)(4, "path", 111);
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(5, DashboardShellComponent_a_28_span_5_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32048,28 +32072,28 @@ function DashboardShellComponent_a_27_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent_div_28_Template(rf, ctx) {
+function DashboardShellComponent_div_29_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 61);
+    \u0275\u0275elementStart(0, "div", 62);
     \u0275\u0275text(1, "Ganader\xEDa");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_a_29_span_8_Template(rf, ctx) {
+function DashboardShellComponent_a_30_span_8_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Trazabilidad");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_a_29_Template(rf, ctx) {
+function DashboardShellComponent_a_30_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 107);
+    \u0275\u0275elementStart(0, "a", 112);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 69)(3, "path", 70)(4, "path", 71)(5, "path", 108)(6, "path", 109)(7, "path", 72);
+    \u0275\u0275element(2, "path", 70)(3, "path", 71)(4, "path", 72)(5, "path", 113)(6, "path", 114)(7, "path", 73);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(8, DashboardShellComponent_a_29_span_8_Template, 2, 0, "span", 39);
+    \u0275\u0275template(8, DashboardShellComponent_a_30_span_8_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32079,21 +32103,21 @@ function DashboardShellComponent_a_29_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent_a_30_span_5_Template(rf, ctx) {
+function DashboardShellComponent_a_31_span_5_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Sanidad");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_a_30_Template(rf, ctx) {
+function DashboardShellComponent_a_31_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 110);
+    \u0275\u0275elementStart(0, "a", 115);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 111)(3, "path", 112)(4, "path", 113);
+    \u0275\u0275element(2, "path", 116)(3, "path", 117)(4, "path", 118);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_30_span_5_Template, 2, 0, "span", 39);
+    \u0275\u0275template(5, DashboardShellComponent_a_31_span_5_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32103,21 +32127,21 @@ function DashboardShellComponent_a_30_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent_a_31_span_7_Template(rf, ctx) {
+function DashboardShellComponent_a_32_span_7_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Reproducci\xF3n");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_a_31_Template(rf, ctx) {
+function DashboardShellComponent_a_32_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 114);
+    \u0275\u0275elementStart(0, "a", 119);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 115)(3, "path", 116)(4, "path", 117)(5, "path", 118)(6, "path", 119);
+    \u0275\u0275element(2, "path", 120)(3, "path", 121)(4, "path", 122)(5, "path", 123)(6, "path", 124);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(7, DashboardShellComponent_a_31_span_7_Template, 2, 0, "span", 39);
+    \u0275\u0275template(7, DashboardShellComponent_a_32_span_7_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32127,21 +32151,21 @@ function DashboardShellComponent_a_31_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent_a_32_span_6_Template(rf, ctx) {
+function DashboardShellComponent_a_33_span_6_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Alimentaci\xF3n");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_a_32_Template(rf, ctx) {
+function DashboardShellComponent_a_33_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 120);
+    \u0275\u0275elementStart(0, "a", 125);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 121)(3, "path", 122)(4, "path", 123)(5, "path", 124);
+    \u0275\u0275element(2, "path", 126)(3, "path", 127)(4, "path", 128)(5, "path", 129);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_32_span_6_Template, 2, 0, "span", 39);
+    \u0275\u0275template(6, DashboardShellComponent_a_33_span_6_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32151,21 +32175,21 @@ function DashboardShellComponent_a_32_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent_a_33_span_6_Template(rf, ctx) {
+function DashboardShellComponent_a_34_span_6_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Potreros");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_a_33_Template(rf, ctx) {
+function DashboardShellComponent_a_34_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 125);
+    \u0275\u0275elementStart(0, "a", 130);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 85)(3, "path", 86)(4, "path", 87)(5, "path", 126);
+    \u0275\u0275element(2, "path", 86)(3, "path", 87)(4, "path", 88)(5, "path", 131);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_33_span_6_Template, 2, 0, "span", 39);
+    \u0275\u0275template(6, DashboardShellComponent_a_34_span_6_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32175,28 +32199,28 @@ function DashboardShellComponent_a_33_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent_div_34_Template(rf, ctx) {
+function DashboardShellComponent_div_35_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 61);
+    \u0275\u0275elementStart(0, "div", 62);
     \u0275\u0275text(1, "Maquinaria");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_a_35_span_6_Template(rf, ctx) {
+function DashboardShellComponent_a_36_span_6_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Inventario");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_a_35_Template(rf, ctx) {
+function DashboardShellComponent_a_36_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 127);
+    \u0275\u0275elementStart(0, "a", 132);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 128)(3, "path", 129)(4, "path", 130)(5, "path", 131);
+    \u0275\u0275element(2, "path", 133)(3, "path", 134)(4, "path", 135)(5, "path", 136);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_35_span_6_Template, 2, 0, "span", 39);
+    \u0275\u0275template(6, DashboardShellComponent_a_36_span_6_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32206,21 +32230,21 @@ function DashboardShellComponent_a_35_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent_a_36_span_5_Template(rf, ctx) {
+function DashboardShellComponent_a_37_span_5_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Mantenimiento");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_a_36_Template(rf, ctx) {
+function DashboardShellComponent_a_37_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 132);
+    \u0275\u0275elementStart(0, "a", 137);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 133)(3, "path", 134)(4, "path", 135);
+    \u0275\u0275element(2, "path", 138)(3, "path", 139)(4, "path", 140);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_36_span_5_Template, 2, 0, "span", 39);
+    \u0275\u0275template(5, DashboardShellComponent_a_37_span_5_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32230,41 +32254,17 @@ function DashboardShellComponent_a_36_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent_div_37_Template(rf, ctx) {
+function DashboardShellComponent_div_38_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 61);
+    \u0275\u0275elementStart(0, "div", 62);
     \u0275\u0275text(1, "Operarios");
     \u0275\u0275elementEnd();
-  }
-}
-function DashboardShellComponent_a_38_span_6_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "span");
-    \u0275\u0275text(1, "Gesti\xF3n de operarios");
-    \u0275\u0275elementEnd();
-  }
-}
-function DashboardShellComponent_a_38_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 136);
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 137)(3, "path", 138)(4, "path", 139)(5, "path", 140);
-    \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_38_span_6_Template, 2, 0, "span", 39);
-    \u0275\u0275elementEnd();
-  }
-  if (rf & 2) {
-    const ctx_r0 = \u0275\u0275nextContext();
-    \u0275\u0275property("title", ctx_r0.collapsed() ? "Gesti\xF3n de operarios" : "");
-    \u0275\u0275advance(6);
-    \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
 function DashboardShellComponent_a_39_span_6_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
-    \u0275\u0275text(1, "\xD3rdenes de trabajo");
+    \u0275\u0275text(1, "Gesti\xF3n de operarios");
     \u0275\u0275elementEnd();
   }
 }
@@ -32275,7 +32275,31 @@ function DashboardShellComponent_a_39_Template(rf, ctx) {
     \u0275\u0275elementStart(1, "svg", 4);
     \u0275\u0275element(2, "path", 142)(3, "path", 143)(4, "path", 144)(5, "path", 145);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_39_span_6_Template, 2, 0, "span", 39);
+    \u0275\u0275template(6, DashboardShellComponent_a_39_span_6_Template, 2, 0, "span", 40);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r0 = \u0275\u0275nextContext();
+    \u0275\u0275property("title", ctx_r0.collapsed() ? "Gesti\xF3n de operarios" : "");
+    \u0275\u0275advance(6);
+    \u0275\u0275property("ngIf", !ctx_r0.collapsed());
+  }
+}
+function DashboardShellComponent_a_40_span_6_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span");
+    \u0275\u0275text(1, "\xD3rdenes de trabajo");
+    \u0275\u0275elementEnd();
+  }
+}
+function DashboardShellComponent_a_40_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "a", 146);
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(1, "svg", 4);
+    \u0275\u0275element(2, "path", 147)(3, "path", 148)(4, "path", 149)(5, "path", 150);
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(6, DashboardShellComponent_a_40_span_6_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32285,21 +32309,21 @@ function DashboardShellComponent_a_39_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent_a_40_span_5_Template(rf, ctx) {
+function DashboardShellComponent_a_41_span_5_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Roles y men\xFA");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_a_40_Template(rf, ctx) {
+function DashboardShellComponent_a_41_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 146);
+    \u0275\u0275elementStart(0, "a", 151);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 147)(3, "path", 148)(4, "path", 149);
+    \u0275\u0275element(2, "path", 152)(3, "path", 153)(4, "path", 154);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_40_span_5_Template, 2, 0, "span", 39);
+    \u0275\u0275template(5, DashboardShellComponent_a_41_span_5_Template, 2, 0, "span", 40);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32309,33 +32333,33 @@ function DashboardShellComponent_a_40_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent__svg_path_44_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 150);
-  }
-}
 function DashboardShellComponent__svg_path_45_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 60);
+    \u0275\u0275element(0, "path", 155);
   }
 }
-function DashboardShellComponent_span_46_Template(rf, ctx) {
+function DashboardShellComponent__svg_path_46_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275element(0, "path", 61);
+  }
+}
+function DashboardShellComponent_span_47_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Colapsar");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_span_52_Template(rf, ctx) {
+function DashboardShellComponent_span_53_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Centro de ayuda");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_span_58_Template(rf, ctx) {
+function DashboardShellComponent_span_59_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Salir");
@@ -32388,7 +32412,7 @@ var DashboardShellComponent = class _DashboardShellComponent {
   static \u0275fac = function DashboardShellComponent_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _DashboardShellComponent)();
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DashboardShellComponent, selectors: [["app-dashboard-shell"]], decls: 73, vars: 41, consts: [[1, "shell"], [1, "sidebar"], [1, "brand-row"], ["aria-hidden", "true", 1, "brand-mark"], ["viewBox", "0 0 24 24"], ["d", "M5 18c7 0 12-5 12-12-7 0-12 5-12 12Z"], ["d", "M5 18c0-6 4-10 10-12"], ["d", "M12 19v-7"], ["d", "M12 14h6"], ["class", "brand-copy", 4, "ngIf"], ["type", "button", 1, "brand-toggle", 3, "click", "title"], ["class", "mobile-menu-line", "d", "M4 7h16", 4, "ngIf"], ["class", "mobile-menu-line", "d", "M4 12h16", 4, "ngIf"], ["class", "mobile-menu-line", "d", "M4 17h16", 4, "ngIf"], ["class", "desktop-collapse-line", "d", "M9 6l6 6-6 6", 4, "ngIf"], ["d", "M15 6l-6 6 6 6", 4, "ngIf"], ["aria-label", "Menu principal", 1, "nav-section"], ["class", "section-title", 4, "ngIf"], ["routerLink", "/reportes/agricola", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/reportes/ganaderia", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operaciones/calendario", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/lotes", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/siembra", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/analytics", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/plagas", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/clima", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/trazabilidad", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/sanidad", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/reproduccion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/alimentacion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/potreros", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/maquinaria/inventario", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/maquinaria/mantenimiento", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operarios/gestion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operarios/ordenes", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/admin/roles-menu", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], [1, "sidebar-footer"], ["type", "button", 1, "footer-action", 3, "click", "title"], ["d", "M9 6l6 6-6 6", 4, "ngIf"], [4, "ngIf"], ["type", "button", "title", "Centro de ayuda", 1, "footer-action"], ["d", "M12 18h.01"], ["d", "M9.5 9a2.7 2.7 0 1 1 4.7 1.8c-.9.8-1.7 1.4-1.9 2.7"], ["d", "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"], ["type", "button", "title", "Salir", 1, "footer-action", "logout-action", 3, "click"], ["d", "M10 17l5-5-5-5"], ["d", "M15 12H3"], ["d", "M21 4v16"], [1, "main-panel"], [1, "topbar"], [1, "user-chip"], [1, "user-avatar"], [1, "user-copy"], ["d", "M6 9l6 6 6-6"], [1, "content-area"], [1, "brand-copy"], ["d", "M4 7h16", 1, "mobile-menu-line"], ["d", "M4 12h16", 1, "mobile-menu-line"], ["d", "M4 17h16", 1, "mobile-menu-line"], ["d", "M9 6l6 6-6 6", 1, "desktop-collapse-line"], ["d", "M15 6l-6 6 6 6"], [1, "section-title"], ["routerLink", "/reportes/agricola", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 19h16"], ["d", "M7 16v-5"], ["d", "M12 16V7"], ["d", "M17 16v-8"], ["d", "M5 10l4-4 4 3 5-6"], ["routerLink", "/reportes/ganaderia", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M5 8c0-3 3-5 7-5s7 2 7 5c0 4-3 7-7 7S5 12 5 8Z"], ["d", "M8 5L5 3"], ["d", "M16 5l3-2"], ["d", "M10 15v4h4v-4"], ["d", "M16 19h5"], ["d", "M18 19v-5"], ["d", "M20 19v-8"], ["routerLink", "/operaciones/calendario", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M8 2v4"], ["d", "M16 2v4"], ["d", "M3 10h18"], ["d", "M5 5h14v16H5z"], ["d", "M8 14h3"], ["d", "M13 14h3"], ["d", "M8 17h3"], ["routerLink", "/agricola/lotes", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 7l8-3 8 3v10l-8 3-8-3V7Z"], ["d", "M12 4v16"], ["d", "M4 7l8 3 8-3"], ["routerLink", "/agricola/siembra", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M6 20V8"], ["d", "M10 20V5"], ["d", "M14 20V7"], ["d", "M18 20V9"], ["d", "M4 20h16"], ["d", "M12 21V8"], ["routerLink", "/agricola/analytics", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 16V9"], ["d", "M12 16V5"], ["d", "M17 16v-4"], ["routerLink", "/agricola/plagas", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"], ["d", "M12 9v8"], ["d", "M8 13h8"], ["routerLink", "/clima", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.6 1.8A3.5 3.5 0 0 0 7 18Z"], ["d", "M12 3v2"], ["d", "M20 5l-1.5 1.5"], ["routerLink", "/ganaderia/trazabilidad", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M9 11h.01"], ["d", "M15 11h.01"], ["routerLink", "/ganaderia/sanidad", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 21s7-4 7-11V5l-7-3-7 3v5c0 7 7 11 7 11Z"], ["d", "M12 8v6"], ["d", "M9 11h6"], ["routerLink", "/ganaderia/reproduccion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"], ["d", "M11 11v10"], ["d", "M7 17h8"], ["d", "M17 4h3v3"], ["d", "M20 4l-5 5"], ["routerLink", "/ganaderia/alimentacion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 19c6-9 12-9 16 0"], ["d", "M8 13c2-4 6-4 8 0"], ["d", "M12 5v15"], ["d", "M7 7h10"], ["routerLink", "/ganaderia/potreros", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M8 12h8"], ["routerLink", "/maquinaria/inventario", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M5 15h12l2 4H3l2-4Z"], ["d", "M6 15V9h7l4 6"], ["d", "M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"], ["d", "M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"], ["routerLink", "/maquinaria/mantenimiento", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "m14 7 3 3"], ["d", "M5 19 16 8l-3-3L2 16v3h3Z"], ["d", "M12 19h9"], ["routerLink", "/operarios/gestion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 19v-2a5 5 0 0 1 10 0v2"], ["d", "M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0"], ["d", "M17 11h4"], ["d", "M19 9v4"], ["routerLink", "/operarios/ordenes", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 3h10v18H7z"], ["d", "M10 8h4"], ["d", "M10 12h4"], ["d", "M10 16h2"], ["routerLink", "/admin/roles-menu", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 3 4 7v10l8 4 8-4V7l-8-4Z"], ["d", "M9 12h6"], ["d", "M12 9v6"], ["d", "M9 6l6 6-6 6"]], template: function DashboardShellComponent_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DashboardShellComponent, selectors: [["app-dashboard-shell"]], decls: 74, vars: 42, consts: [[1, "shell"], [1, "sidebar"], [1, "brand-row"], ["aria-hidden", "true", 1, "brand-mark"], ["viewBox", "0 0 24 24"], ["d", "M5 18c7 0 12-5 12-12-7 0-12 5-12 12Z"], ["d", "M5 18c0-6 4-10 10-12"], ["d", "M12 19v-7"], ["d", "M12 14h6"], ["class", "brand-copy", 4, "ngIf"], ["type", "button", 1, "brand-toggle", 3, "click", "title"], ["class", "mobile-menu-line", "d", "M4 7h16", 4, "ngIf"], ["class", "mobile-menu-line", "d", "M4 12h16", 4, "ngIf"], ["class", "mobile-menu-line", "d", "M4 17h16", 4, "ngIf"], ["class", "desktop-collapse-line", "d", "M9 6l6 6-6 6", 4, "ngIf"], ["d", "M15 6l-6 6 6 6", 4, "ngIf"], ["aria-label", "Menu principal", 1, "nav-section"], ["class", "section-title", 4, "ngIf"], ["routerLink", "/reportes/agricola", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/reportes/ganaderia", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operaciones/calendario", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/lotes", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/siembra", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/analytics", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/plagas", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/insumos", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/clima", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/trazabilidad", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/sanidad", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/reproduccion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/alimentacion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/potreros", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/maquinaria/inventario", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/maquinaria/mantenimiento", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operarios/gestion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operarios/ordenes", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/admin/roles-menu", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], [1, "sidebar-footer"], ["type", "button", 1, "footer-action", 3, "click", "title"], ["d", "M9 6l6 6-6 6", 4, "ngIf"], [4, "ngIf"], ["type", "button", "title", "Centro de ayuda", 1, "footer-action"], ["d", "M12 18h.01"], ["d", "M9.5 9a2.7 2.7 0 1 1 4.7 1.8c-.9.8-1.7 1.4-1.9 2.7"], ["d", "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"], ["type", "button", "title", "Salir", 1, "footer-action", "logout-action", 3, "click"], ["d", "M10 17l5-5-5-5"], ["d", "M15 12H3"], ["d", "M21 4v16"], [1, "main-panel"], [1, "topbar"], [1, "user-chip"], [1, "user-avatar"], [1, "user-copy"], ["d", "M6 9l6 6 6-6"], [1, "content-area"], [1, "brand-copy"], ["d", "M4 7h16", 1, "mobile-menu-line"], ["d", "M4 12h16", 1, "mobile-menu-line"], ["d", "M4 17h16", 1, "mobile-menu-line"], ["d", "M9 6l6 6-6 6", 1, "desktop-collapse-line"], ["d", "M15 6l-6 6 6 6"], [1, "section-title"], ["routerLink", "/reportes/agricola", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 19h16"], ["d", "M7 16v-5"], ["d", "M12 16V7"], ["d", "M17 16v-8"], ["d", "M5 10l4-4 4 3 5-6"], ["routerLink", "/reportes/ganaderia", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M5 8c0-3 3-5 7-5s7 2 7 5c0 4-3 7-7 7S5 12 5 8Z"], ["d", "M8 5L5 3"], ["d", "M16 5l3-2"], ["d", "M10 15v4h4v-4"], ["d", "M16 19h5"], ["d", "M18 19v-5"], ["d", "M20 19v-8"], ["routerLink", "/operaciones/calendario", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M8 2v4"], ["d", "M16 2v4"], ["d", "M3 10h18"], ["d", "M5 5h14v16H5z"], ["d", "M8 14h3"], ["d", "M13 14h3"], ["d", "M8 17h3"], ["routerLink", "/agricola/lotes", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 7l8-3 8 3v10l-8 3-8-3V7Z"], ["d", "M12 4v16"], ["d", "M4 7l8 3 8-3"], ["routerLink", "/agricola/siembra", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M6 20V8"], ["d", "M10 20V5"], ["d", "M14 20V7"], ["d", "M18 20V9"], ["d", "M4 20h16"], ["d", "M12 21V8"], ["routerLink", "/agricola/analytics", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 16V9"], ["d", "M12 16V5"], ["d", "M17 16v-4"], ["routerLink", "/agricola/plagas", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"], ["d", "M12 9v8"], ["d", "M8 13h8"], ["routerLink", "/agricola/insumos", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 7l8-4 8 4-8 4-8-4Z"], ["d", "M4 7v10l8 4 8-4V7"], ["d", "M12 11v10"], ["routerLink", "/clima", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.6 1.8A3.5 3.5 0 0 0 7 18Z"], ["d", "M12 3v2"], ["d", "M20 5l-1.5 1.5"], ["routerLink", "/ganaderia/trazabilidad", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M9 11h.01"], ["d", "M15 11h.01"], ["routerLink", "/ganaderia/sanidad", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 21s7-4 7-11V5l-7-3-7 3v5c0 7 7 11 7 11Z"], ["d", "M12 8v6"], ["d", "M9 11h6"], ["routerLink", "/ganaderia/reproduccion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"], ["d", "M11 11v10"], ["d", "M7 17h8"], ["d", "M17 4h3v3"], ["d", "M20 4l-5 5"], ["routerLink", "/ganaderia/alimentacion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 19c6-9 12-9 16 0"], ["d", "M8 13c2-4 6-4 8 0"], ["d", "M12 5v15"], ["d", "M7 7h10"], ["routerLink", "/ganaderia/potreros", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M8 12h8"], ["routerLink", "/maquinaria/inventario", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M5 15h12l2 4H3l2-4Z"], ["d", "M6 15V9h7l4 6"], ["d", "M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"], ["d", "M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"], ["routerLink", "/maquinaria/mantenimiento", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "m14 7 3 3"], ["d", "M5 19 16 8l-3-3L2 16v3h3Z"], ["d", "M12 19h9"], ["routerLink", "/operarios/gestion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 19v-2a5 5 0 0 1 10 0v2"], ["d", "M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0"], ["d", "M17 11h4"], ["d", "M19 9v4"], ["routerLink", "/operarios/ordenes", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 3h10v18H7z"], ["d", "M10 8h4"], ["d", "M10 12h4"], ["d", "M10 16h2"], ["routerLink", "/admin/roles-menu", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 3 4 7v10l8 4 8-4V7l-8-4Z"], ["d", "M9 12h6"], ["d", "M12 9v6"], ["d", "M9 6l6 6-6 6"]], template: function DashboardShellComponent_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "div", 0)(1, "aside", 1)(2, "div", 2)(3, "div", 3);
       \u0275\u0275namespaceSVG();
@@ -32407,54 +32431,54 @@ var DashboardShellComponent = class _DashboardShellComponent {
       \u0275\u0275elementEnd()()();
       \u0275\u0275namespaceHTML();
       \u0275\u0275elementStart(17, "nav", 16);
-      \u0275\u0275template(18, DashboardShellComponent_div_18_Template, 2, 0, "div", 17)(19, DashboardShellComponent_a_19_Template, 8, 2, "a", 18)(20, DashboardShellComponent_a_20_Template, 10, 2, "a", 19)(21, DashboardShellComponent_a_21_Template, 10, 2, "a", 20)(22, DashboardShellComponent_div_22_Template, 2, 0, "div", 17)(23, DashboardShellComponent_a_23_Template, 6, 2, "a", 21)(24, DashboardShellComponent_a_24_Template, 9, 2, "a", 22)(25, DashboardShellComponent_a_25_Template, 7, 2, "a", 23)(26, DashboardShellComponent_a_26_Template, 6, 2, "a", 24)(27, DashboardShellComponent_a_27_Template, 6, 2, "a", 25)(28, DashboardShellComponent_div_28_Template, 2, 0, "div", 17)(29, DashboardShellComponent_a_29_Template, 9, 2, "a", 26)(30, DashboardShellComponent_a_30_Template, 6, 2, "a", 27)(31, DashboardShellComponent_a_31_Template, 8, 2, "a", 28)(32, DashboardShellComponent_a_32_Template, 7, 2, "a", 29)(33, DashboardShellComponent_a_33_Template, 7, 2, "a", 30)(34, DashboardShellComponent_div_34_Template, 2, 0, "div", 17)(35, DashboardShellComponent_a_35_Template, 7, 2, "a", 31)(36, DashboardShellComponent_a_36_Template, 6, 2, "a", 32)(37, DashboardShellComponent_div_37_Template, 2, 0, "div", 17)(38, DashboardShellComponent_a_38_Template, 7, 2, "a", 33)(39, DashboardShellComponent_a_39_Template, 7, 2, "a", 34)(40, DashboardShellComponent_a_40_Template, 6, 2, "a", 35);
+      \u0275\u0275template(18, DashboardShellComponent_div_18_Template, 2, 0, "div", 17)(19, DashboardShellComponent_a_19_Template, 8, 2, "a", 18)(20, DashboardShellComponent_a_20_Template, 10, 2, "a", 19)(21, DashboardShellComponent_a_21_Template, 10, 2, "a", 20)(22, DashboardShellComponent_div_22_Template, 2, 0, "div", 17)(23, DashboardShellComponent_a_23_Template, 6, 2, "a", 21)(24, DashboardShellComponent_a_24_Template, 9, 2, "a", 22)(25, DashboardShellComponent_a_25_Template, 7, 2, "a", 23)(26, DashboardShellComponent_a_26_Template, 6, 2, "a", 24)(27, DashboardShellComponent_a_27_Template, 6, 2, "a", 25)(28, DashboardShellComponent_a_28_Template, 6, 2, "a", 26)(29, DashboardShellComponent_div_29_Template, 2, 0, "div", 17)(30, DashboardShellComponent_a_30_Template, 9, 2, "a", 27)(31, DashboardShellComponent_a_31_Template, 6, 2, "a", 28)(32, DashboardShellComponent_a_32_Template, 8, 2, "a", 29)(33, DashboardShellComponent_a_33_Template, 7, 2, "a", 30)(34, DashboardShellComponent_a_34_Template, 7, 2, "a", 31)(35, DashboardShellComponent_div_35_Template, 2, 0, "div", 17)(36, DashboardShellComponent_a_36_Template, 7, 2, "a", 32)(37, DashboardShellComponent_a_37_Template, 6, 2, "a", 33)(38, DashboardShellComponent_div_38_Template, 2, 0, "div", 17)(39, DashboardShellComponent_a_39_Template, 7, 2, "a", 34)(40, DashboardShellComponent_a_40_Template, 7, 2, "a", 35)(41, DashboardShellComponent_a_41_Template, 6, 2, "a", 36);
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(41, "div", 36)(42, "button", 37);
-      \u0275\u0275listener("click", function DashboardShellComponent_Template_button_click_42_listener() {
+      \u0275\u0275elementStart(42, "div", 37)(43, "button", 38);
+      \u0275\u0275listener("click", function DashboardShellComponent_Template_button_click_43_listener() {
         return ctx.toggleSidebar();
       });
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(43, "svg", 4);
-      \u0275\u0275template(44, DashboardShellComponent__svg_path_44_Template, 1, 0, "path", 38)(45, DashboardShellComponent__svg_path_45_Template, 1, 0, "path", 15);
+      \u0275\u0275elementStart(44, "svg", 4);
+      \u0275\u0275template(45, DashboardShellComponent__svg_path_45_Template, 1, 0, "path", 39)(46, DashboardShellComponent__svg_path_46_Template, 1, 0, "path", 15);
       \u0275\u0275elementEnd();
-      \u0275\u0275template(46, DashboardShellComponent_span_46_Template, 2, 0, "span", 39);
+      \u0275\u0275template(47, DashboardShellComponent_span_47_Template, 2, 0, "span", 40);
       \u0275\u0275elementEnd();
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(47, "button", 40);
+      \u0275\u0275elementStart(48, "button", 41);
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(48, "svg", 4);
-      \u0275\u0275element(49, "path", 41)(50, "path", 42)(51, "path", 43);
+      \u0275\u0275elementStart(49, "svg", 4);
+      \u0275\u0275element(50, "path", 42)(51, "path", 43)(52, "path", 44);
       \u0275\u0275elementEnd();
-      \u0275\u0275template(52, DashboardShellComponent_span_52_Template, 2, 0, "span", 39);
+      \u0275\u0275template(53, DashboardShellComponent_span_53_Template, 2, 0, "span", 40);
       \u0275\u0275elementEnd();
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(53, "button", 44);
-      \u0275\u0275listener("click", function DashboardShellComponent_Template_button_click_53_listener() {
+      \u0275\u0275elementStart(54, "button", 45);
+      \u0275\u0275listener("click", function DashboardShellComponent_Template_button_click_54_listener() {
         return ctx.logout();
       });
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(54, "svg", 4);
-      \u0275\u0275element(55, "path", 45)(56, "path", 46)(57, "path", 47);
+      \u0275\u0275elementStart(55, "svg", 4);
+      \u0275\u0275element(56, "path", 46)(57, "path", 47)(58, "path", 48);
       \u0275\u0275elementEnd();
-      \u0275\u0275template(58, DashboardShellComponent_span_58_Template, 2, 0, "span", 39);
+      \u0275\u0275template(59, DashboardShellComponent_span_59_Template, 2, 0, "span", 40);
       \u0275\u0275elementEnd()()();
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(59, "main", 48)(60, "header", 49)(61, "div", 50)(62, "span", 51);
-      \u0275\u0275text(63);
+      \u0275\u0275elementStart(60, "main", 49)(61, "header", 50)(62, "div", 51)(63, "span", 52);
+      \u0275\u0275text(64);
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(64, "span", 52)(65, "strong");
-      \u0275\u0275text(66);
+      \u0275\u0275elementStart(65, "span", 53)(66, "strong");
+      \u0275\u0275text(67);
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(67, "small");
-      \u0275\u0275text(68);
+      \u0275\u0275elementStart(68, "small");
+      \u0275\u0275text(69);
       \u0275\u0275elementEnd()();
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(69, "svg", 4);
-      \u0275\u0275element(70, "path", 53);
+      \u0275\u0275elementStart(70, "svg", 4);
+      \u0275\u0275element(71, "path", 54);
       \u0275\u0275elementEnd()()();
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(71, "section", 54);
-      \u0275\u0275element(72, "router-outlet");
+      \u0275\u0275elementStart(72, "section", 55);
+      \u0275\u0275element(73, "router-outlet");
       \u0275\u0275elementEnd()()();
     }
     if (rf & 2) {
@@ -32492,6 +32516,8 @@ var DashboardShellComponent = class _DashboardShellComponent {
       \u0275\u0275property("ngIf", ctx.isMenuVisible("agricola-analytics"));
       \u0275\u0275advance();
       \u0275\u0275property("ngIf", ctx.isMenuVisible("agricola-plagas"));
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.isMenuVisible("agricola-insumos"));
       \u0275\u0275advance();
       \u0275\u0275property("ngIf", ctx.isMenuVisible("clima"));
       \u0275\u0275advance();
@@ -32605,15 +32631,20 @@ var DashboardShellComponent = class _DashboardShellComponent {
         <span *ngIf="!collapsed()">Analytics</span>\r
       </a>\r
 \r
-      <a *ngIf="isMenuVisible('agricola-plagas')" routerLink="/agricola/plagas" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Plagas' : ''">\r
-        <svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z" /><path d="M12 9v8" /><path d="M8 13h8" /></svg>\r
-        <span *ngIf="!collapsed()">Plagas</span>\r
-      </a>\r
-\r
-      <a *ngIf="isMenuVisible('clima')" routerLink="/clima" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Clima' : ''">\r
-        <svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.6 1.8A3.5 3.5 0 0 0 7 18Z" /><path d="M12 3v2" /><path d="M20 5l-1.5 1.5" /></svg>\r
-        <span *ngIf="!collapsed()">Clima</span>\r
-      </a>\r
+      <a *ngIf="isMenuVisible('agricola-plagas')" routerLink="/agricola/plagas" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Plagas' : ''">
+        <svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z" /><path d="M12 9v8" /><path d="M8 13h8" /></svg>
+        <span *ngIf="!collapsed()">Plagas</span>
+      </a>
+
+      <a *ngIf="isMenuVisible('agricola-insumos')" routerLink="/agricola/insumos" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Insumos' : ''">
+        <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4Z" /><path d="M4 7v10l8 4 8-4V7" /><path d="M12 11v10" /></svg>
+        <span *ngIf="!collapsed()">Insumos</span>
+      </a>
+
+      <a *ngIf="isMenuVisible('clima')" routerLink="/clima" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Clima' : ''">
+        <svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.6 1.8A3.5 3.5 0 0 0 7 18Z" /><path d="M12 3v2" /><path d="M20 5l-1.5 1.5" /></svg>
+        <span *ngIf="!collapsed()">Clima</span>
+      </a>
 \r
       <div class="section-title" *ngIf="!collapsed()">Ganader\xEDa</div>\r
 \r
@@ -37692,6 +37723,45 @@ var AgricolaService = class _AgricolaService {
   }
   getReporteAgricolaDashboard() {
     return this.http.get(`${API_BASE_URL}/reportes/agricola/dashboard`).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  getInsumosDashboard() {
+    return this.http.get(`${API_BASE_URL}/inventario/insumos/dashboard`).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  getInsumos(params) {
+    return this.http.get(`${API_BASE_URL}/inventario/insumos`, { params: cleanParams(params) }).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  getInsumosActivos() {
+    return this.http.get(`${API_BASE_URL}/inventario/insumos/activos`).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  createInsumo(data) {
+    return this.http.post(`${API_BASE_URL}/inventario/insumos`, data).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  updateInsumo(id, data) {
+    return this.http.put(`${API_BASE_URL}/inventario/insumos/${id}`, data).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  deleteInsumo(id) {
+    return this.http.delete(`${API_BASE_URL}/inventario/insumos/${id}`);
+  }
+  getStockInsumos(params) {
+    return this.http.get(`${API_BASE_URL}/inventario/insumos/stock`, { params: cleanParams(params) }).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  getAlertasReordenInsumos(params) {
+    return this.http.get(`${API_BASE_URL}/inventario/insumos/alertas/reorden`, { params: cleanParams(params) }).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  getVencimientosProximosInsumos(params) {
+    return this.http.get(`${API_BASE_URL}/inventario/insumos/alertas/vencimientos`, { params: cleanParams(params) }).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  getStockPorInsumo(insumoId) {
+    return this.http.get(`${API_BASE_URL}/inventario/insumos/${insumoId}/stock`).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  createStockInsumo(data) {
+    return this.http.post(`${API_BASE_URL}/inventario/insumos/stock`, data).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  getMovimientosInsumos(params) {
+    return this.http.get(`${API_BASE_URL}/inventario/insumos/movimientos`, { params: cleanParams(params) }).pipe(map((response) => unwrapApiResponse2(response)));
+  }
+  createMovimientoInsumo(data) {
+    return this.http.post(`${API_BASE_URL}/inventario/insumos/movimientos`, data).pipe(map((response) => unwrapApiResponse2(response)));
   }
   static \u0275fac = function AgricolaService_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _AgricolaService)();
@@ -48204,12 +48274,2600 @@ var RemoteSearchSelectComponent = class _RemoteSearchSelectComponent {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(RemoteSearchSelectComponent, { className: "RemoteSearchSelectComponent", filePath: "src/app/shared/remote-search-select/remote-search-select.component.ts", lineNumber: 33 });
 })();
 
+// src/app/pages/agricola-insumos-page/agricola-insumos-page.component.ts
+var _c03 = () => [];
+var _c12 = () => ["rolOperativo", "documentoNumero"];
+var _c22 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
+var _c32 = () => ["codigo", "tipo"];
+var _c42 = () => ["nombre", "codigo", "tipo", "marca", "principioActivo"];
+function AgricolaInsumosPageComponent_article_17_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "article", 46)(1, "span", 47);
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(2, "svg", 29);
+    \u0275\u0275element(3, "path", 48)(4, "path", 49)(5, "path", 50);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275namespaceHTML();
+    \u0275\u0275elementStart(6, "div")(7, "small");
+    \u0275\u0275text(8);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "strong");
+    \u0275\u0275text(10);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "em");
+    \u0275\u0275text(12);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const kpi_r1 = ctx.$implicit;
+    \u0275\u0275classMap("kpi-card tone-" + kpi_r1.tone);
+    \u0275\u0275advance(8);
+    \u0275\u0275textInterpolate(kpi_r1.label);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(kpi_r1.value);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(kpi_r1.sub);
+  }
+}
+function AgricolaInsumosPageComponent_option_29_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const tipo_r2 = ctx.$implicit;
+    \u0275\u0275property("value", tipo_r2);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(tipo_r2);
+  }
+}
+function AgricolaInsumosPageComponent_p_42_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p", 52);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r2.errorMessage());
+  }
+}
+function AgricolaInsumosPageComponent_option_58_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const size_r4 = ctx.$implicit;
+    \u0275\u0275property("value", size_r4);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(size_r4);
+  }
+}
+function AgricolaInsumosPageComponent_button_64_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r5 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "button", 40);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_button_64_Template_button_click_0_listener() {
+      const page_r6 = \u0275\u0275restoreView(_r5).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.setInsumoPage(page_r6));
+    });
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    let tmp_6_0;
+    const page_r6 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275classProp("active", page_r6 === (((tmp_6_0 = ctx_r2.insumosPage()) == null ? null : tmp_6_0.number) || 0) + 1);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(page_r6);
+  }
+}
+function AgricolaInsumosPageComponent_tr_90_span_20_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 59);
+    \u0275\u0275text(1, "Reorden");
+    \u0275\u0275elementEnd();
+  }
+}
+function AgricolaInsumosPageComponent_tr_90_span_21_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 60);
+    \u0275\u0275text(1, "Vence");
+    \u0275\u0275elementEnd();
+  }
+}
+function AgricolaInsumosPageComponent_tr_90_span_22_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 61);
+    \u0275\u0275text(1, "OK");
+    \u0275\u0275elementEnd();
+  }
+}
+function AgricolaInsumosPageComponent_tr_90_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r7 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "strong");
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "small");
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "td")(7, "span", 53);
+    \u0275\u0275text(8);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(9, "td");
+    \u0275\u0275text(10);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "td");
+    \u0275\u0275text(12);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "td");
+    \u0275\u0275text(14);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(15, "td");
+    \u0275\u0275text(16);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(17, "td");
+    \u0275\u0275text(18);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(19, "td");
+    \u0275\u0275template(20, AgricolaInsumosPageComponent_tr_90_span_20_Template, 2, 0, "span", 54)(21, AgricolaInsumosPageComponent_tr_90_span_21_Template, 2, 0, "span", 55)(22, AgricolaInsumosPageComponent_tr_90_span_22_Template, 2, 0, "span", 56);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(23, "td", 57)(24, "button", 40);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_tr_90_Template_button_click_24_listener() {
+      const insumo_r8 = \u0275\u0275restoreView(_r7).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.openStockModal(insumo_r8));
+    });
+    \u0275\u0275text(25, "Stock");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(26, "button", 40);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_tr_90_Template_button_click_26_listener() {
+      const insumo_r8 = \u0275\u0275restoreView(_r7).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.openMovimientoModal(insumo_r8));
+    });
+    \u0275\u0275text(27, "Uso");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(28, "button", 40);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_tr_90_Template_button_click_28_listener() {
+      const insumo_r8 = \u0275\u0275restoreView(_r7).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.openEditInsumoModal(insumo_r8));
+    });
+    \u0275\u0275text(29, "Editar");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(30, "button", 58);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_tr_90_Template_button_click_30_listener() {
+      const insumo_r8 = \u0275\u0275restoreView(_r7).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.deleteInsumo(insumo_r8));
+    });
+    \u0275\u0275text(31, "Eliminar");
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const insumo_r8 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(insumo_r8.nombre);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate2("", insumo_r8.codigo, " \xB7 ", insumo_r8.marca || "Sin marca");
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(insumo_r8.tipo);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate2("", ctx_r2.number(insumo_r8.stockTotal), " ", insumo_r8.unidadMedida);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r2.number(insumo_r8.stockMinimo));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r2.date(insumo_r8.proximoVencimiento));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r2.money(insumo_r8.precioUnitario));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r2.money(insumo_r8.valorStock));
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", insumo_r8.requiereReorden);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", insumo_r8.tieneVencimientoProximo);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !insumo_r8.requiereReorden && !insumo_r8.tieneVencimientoProximo);
+  }
+}
+function AgricolaInsumosPageComponent_tr_91_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td", 62);
+    \u0275\u0275text(2, "Sin insumos registrados.");
+    \u0275\u0275elementEnd()();
+  }
+}
+function AgricolaInsumosPageComponent_div_100_option_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const size_r10 = ctx.$implicit;
+    \u0275\u0275property("value", size_r10);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(size_r10);
+  }
+}
+function AgricolaInsumosPageComponent_div_100_button_11_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r11 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "button", 40);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_div_100_button_11_Template_button_click_0_listener() {
+      const page_r12 = \u0275\u0275restoreView(_r11).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r2.setReordenPage(page_r12));
+    });
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    let tmp_7_0;
+    const page_r12 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275classProp("active", page_r12 === (((tmp_7_0 = ctx_r2.reordenPage()) == null ? null : tmp_7_0.number) || 0) + 1);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(page_r12);
+  }
+}
+function AgricolaInsumosPageComponent_div_100_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r9 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 26)(1, "label", 27)(2, "span");
+    \u0275\u0275text(3, "Mostrar");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "select", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_div_100_Template_select_ngModelChange_4_listener($event) {
+      \u0275\u0275restoreView(_r9);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.setReordenPageSize($event));
+    });
+    \u0275\u0275template(5, AgricolaInsumosPageComponent_div_100_option_5_Template, 2, 2, "option", 16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "span");
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "button", 28);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_div_100_Template_button_click_8_listener() {
+      \u0275\u0275restoreView(_r9);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.changeReordenPage(-1));
+    });
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(9, "svg", 29);
+    \u0275\u0275element(10, "path", 30);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(11, AgricolaInsumosPageComponent_div_100_button_11_Template, 2, 3, "button", 31);
+    \u0275\u0275namespaceHTML();
+    \u0275\u0275elementStart(12, "button", 32);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_div_100_Template_button_click_12_listener() {
+      \u0275\u0275restoreView(_r9);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.changeReordenPage(1));
+    });
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(13, "svg", 29);
+    \u0275\u0275element(14, "path", 33);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_7_0;
+    let tmp_8_0;
+    let tmp_10_0;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.reordenPageSize());
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r2.pageSizeOptions);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate1("", ((tmp_7_0 = ctx_r2.reordenPage()) == null ? null : tmp_7_0.totalElements) || 0, " registros");
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", (((tmp_8_0 = ctx_r2.reordenPage()) == null ? null : tmp_8_0.number) || 0) === 0);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngForOf", ctx_r2.pageNumbers(ctx_r2.reordenPage()));
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", (((tmp_10_0 = ctx_r2.reordenPage()) == null ? null : tmp_10_0.number) || 0) + 1 >= (((tmp_10_0 = ctx_r2.reordenPage()) == null ? null : tmp_10_0.totalPages) || 1));
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_101_option_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const size_r14 = ctx.$implicit;
+    \u0275\u0275property("value", size_r14);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(size_r14);
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_101_button_11_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r15 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "button", 40);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_ng_template_101_button_11_Template_button_click_0_listener() {
+      const page_r16 = \u0275\u0275restoreView(_r15).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r2.setVencimientosPage(page_r16));
+    });
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    let tmp_7_0;
+    const page_r16 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275classProp("active", page_r16 === (((tmp_7_0 = ctx_r2.vencimientosPage()) == null ? null : tmp_7_0.number) || 0) + 1);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(page_r16);
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_101_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r13 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 26)(1, "label", 27)(2, "span");
+    \u0275\u0275text(3, "Mostrar");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "select", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_ng_template_101_Template_select_ngModelChange_4_listener($event) {
+      \u0275\u0275restoreView(_r13);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.setVencimientosPageSize($event));
+    });
+    \u0275\u0275template(5, AgricolaInsumosPageComponent_ng_template_101_option_5_Template, 2, 2, "option", 16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "span");
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "button", 28);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_ng_template_101_Template_button_click_8_listener() {
+      \u0275\u0275restoreView(_r13);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.changeVencimientosPage(-1));
+    });
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(9, "svg", 29);
+    \u0275\u0275element(10, "path", 30);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(11, AgricolaInsumosPageComponent_ng_template_101_button_11_Template, 2, 3, "button", 31);
+    \u0275\u0275namespaceHTML();
+    \u0275\u0275elementStart(12, "button", 32);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_ng_template_101_Template_button_click_12_listener() {
+      \u0275\u0275restoreView(_r13);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.changeVencimientosPage(1));
+    });
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(13, "svg", 29);
+    \u0275\u0275element(14, "path", 33);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_7_0;
+    let tmp_8_0;
+    let tmp_10_0;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.vencimientosPageSize());
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r2.pageSizeOptions);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate1("", ((tmp_7_0 = ctx_r2.vencimientosPage()) == null ? null : tmp_7_0.totalElements) || 0, " registros");
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", (((tmp_8_0 = ctx_r2.vencimientosPage()) == null ? null : tmp_8_0.number) || 0) === 0);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngForOf", ctx_r2.pageNumbers(ctx_r2.vencimientosPage()));
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", (((tmp_10_0 = ctx_r2.vencimientosPage()) == null ? null : tmp_10_0.number) || 0) + 1 >= (((tmp_10_0 = ctx_r2.vencimientosPage()) == null ? null : tmp_10_0.totalPages) || 1));
+  }
+}
+function AgricolaInsumosPageComponent_ng_container_103_tr_18_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "strong");
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "small");
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "td")(7, "span", 53);
+    \u0275\u0275text(8);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(9, "td");
+    \u0275\u0275text(10);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "td");
+    \u0275\u0275text(12);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "td");
+    \u0275\u0275text(14);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(15, "td")(16, "span", 59);
+    \u0275\u0275text(17, "Reorden");
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const item_r17 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(item_r17.nombre);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate2("", item_r17.codigo, " - ", item_r17.marca || "Sin marca");
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(item_r17.tipo);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r2.number(item_r17.stockTotal));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r2.number(item_r17.stockMinimo));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r17.unidadMedida);
+  }
+}
+function AgricolaInsumosPageComponent_ng_container_103_tr_19_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td", 64);
+    \u0275\u0275text(2, "Sin alertas de reorden.");
+    \u0275\u0275elementEnd()();
+  }
+}
+function AgricolaInsumosPageComponent_ng_container_103_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementContainerStart(0);
+    \u0275\u0275elementStart(1, "div", 63)(2, "table")(3, "thead")(4, "tr")(5, "th");
+    \u0275\u0275text(6, "Insumo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "th");
+    \u0275\u0275text(8, "Tipo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "th");
+    \u0275\u0275text(10, "Stock actual");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "th");
+    \u0275\u0275text(12, "Minimo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "th");
+    \u0275\u0275text(14, "Unidad");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(15, "th");
+    \u0275\u0275text(16, "Estado");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(17, "tbody");
+    \u0275\u0275template(18, AgricolaInsumosPageComponent_ng_container_103_tr_18_Template, 18, 7, "tr", 35)(19, AgricolaInsumosPageComponent_ng_container_103_tr_19_Template, 3, 0, "tr", 36);
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementContainerEnd();
+  }
+  if (rf & 2) {
+    let tmp_5_0;
+    let tmp_6_0;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(18);
+    \u0275\u0275property("ngForOf", ((tmp_5_0 = ctx_r2.reordenPage()) == null ? null : tmp_5_0.content) || \u0275\u0275pureFunction0(2, _c03));
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !(((tmp_6_0 = ctx_r2.reordenPage()) == null ? null : tmp_6_0.content) || \u0275\u0275pureFunction0(3, _c03)).length);
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_104_tr_17_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "strong");
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "small");
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "td");
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "td");
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "td");
+    \u0275\u0275text(11);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "td");
+    \u0275\u0275text(13);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "td")(15, "span");
+    \u0275\u0275text(16);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const item_r18 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(item_r18.insumoNombre);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r18.insumoCodigo);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r18.loteStock || "Sin lote");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r2.number(item_r18.cantidadDisponible));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r18.ubicacionDeposito || item_r18.deposito || "Sin dato");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r18.responsableNombre || "Sin responsable");
+    \u0275\u0275advance(2);
+    \u0275\u0275classMap(item_r18.vencido ? "status danger" : "status warning");
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r2.date(item_r18.fechaVencimiento));
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_104_tr_18_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td", 64);
+    \u0275\u0275text(2, "Sin vencimientos proximos.");
+    \u0275\u0275elementEnd()();
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_104_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 63)(1, "table")(2, "thead")(3, "tr")(4, "th");
+    \u0275\u0275text(5, "Insumo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "th");
+    \u0275\u0275text(7, "Lote");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "th");
+    \u0275\u0275text(9, "Cantidad");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "th");
+    \u0275\u0275text(11, "Deposito");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "th");
+    \u0275\u0275text(13, "Responsable");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "th");
+    \u0275\u0275text(15, "Vencimiento");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(16, "tbody");
+    \u0275\u0275template(17, AgricolaInsumosPageComponent_ng_template_104_tr_17_Template, 17, 9, "tr", 35)(18, AgricolaInsumosPageComponent_ng_template_104_tr_18_Template, 3, 0, "tr", 36);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_5_0;
+    let tmp_6_0;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(17);
+    \u0275\u0275property("ngForOf", ((tmp_5_0 = ctx_r2.vencimientosPage()) == null ? null : tmp_5_0.content) || \u0275\u0275pureFunction0(2, _c03));
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !(((tmp_6_0 = ctx_r2.vencimientosPage()) == null ? null : tmp_6_0.content) || \u0275\u0275pureFunction0(3, _c03)).length);
+  }
+}
+function AgricolaInsumosPageComponent_div_114_option_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const size_r20 = ctx.$implicit;
+    \u0275\u0275property("value", size_r20);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(size_r20);
+  }
+}
+function AgricolaInsumosPageComponent_div_114_button_11_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r21 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "button", 40);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_div_114_button_11_Template_button_click_0_listener() {
+      const page_r22 = \u0275\u0275restoreView(_r21).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r2.setStockPage(page_r22));
+    });
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    let tmp_7_0;
+    const page_r22 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275classProp("active", page_r22 === (((tmp_7_0 = ctx_r2.stockPage()) == null ? null : tmp_7_0.number) || 0) + 1);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(page_r22);
+  }
+}
+function AgricolaInsumosPageComponent_div_114_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r19 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 26)(1, "label", 27)(2, "span");
+    \u0275\u0275text(3, "Mostrar");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "select", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_div_114_Template_select_ngModelChange_4_listener($event) {
+      \u0275\u0275restoreView(_r19);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.setStockPageSize($event));
+    });
+    \u0275\u0275template(5, AgricolaInsumosPageComponent_div_114_option_5_Template, 2, 2, "option", 16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "span");
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "button", 28);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_div_114_Template_button_click_8_listener() {
+      \u0275\u0275restoreView(_r19);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.changeStockPage(-1));
+    });
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(9, "svg", 29);
+    \u0275\u0275element(10, "path", 30);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(11, AgricolaInsumosPageComponent_div_114_button_11_Template, 2, 3, "button", 31);
+    \u0275\u0275namespaceHTML();
+    \u0275\u0275elementStart(12, "button", 32);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_div_114_Template_button_click_12_listener() {
+      \u0275\u0275restoreView(_r19);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.changeStockPage(1));
+    });
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(13, "svg", 29);
+    \u0275\u0275element(14, "path", 33);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_7_0;
+    let tmp_8_0;
+    let tmp_10_0;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.stockPageSize());
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r2.pageSizeOptions);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate1("", ((tmp_7_0 = ctx_r2.stockPage()) == null ? null : tmp_7_0.totalElements) || 0, " registros");
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", (((tmp_8_0 = ctx_r2.stockPage()) == null ? null : tmp_8_0.number) || 0) === 0);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngForOf", ctx_r2.pageNumbers(ctx_r2.stockPage()));
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", (((tmp_10_0 = ctx_r2.stockPage()) == null ? null : tmp_10_0.number) || 0) + 1 >= (((tmp_10_0 = ctx_r2.stockPage()) == null ? null : tmp_10_0.totalPages) || 1));
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_115_option_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const size_r24 = ctx.$implicit;
+    \u0275\u0275property("value", size_r24);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(size_r24);
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_115_button_11_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r25 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "button", 40);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_ng_template_115_button_11_Template_button_click_0_listener() {
+      const page_r26 = \u0275\u0275restoreView(_r25).$implicit;
+      const ctx_r2 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r2.setMovimientosPage(page_r26));
+    });
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    let tmp_7_0;
+    const page_r26 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275classProp("active", page_r26 === (((tmp_7_0 = ctx_r2.movimientosPage()) == null ? null : tmp_7_0.number) || 0) + 1);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(page_r26);
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_115_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r23 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 26)(1, "label", 27)(2, "span");
+    \u0275\u0275text(3, "Mostrar");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "select", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_ng_template_115_Template_select_ngModelChange_4_listener($event) {
+      \u0275\u0275restoreView(_r23);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.setMovimientosPageSize($event));
+    });
+    \u0275\u0275template(5, AgricolaInsumosPageComponent_ng_template_115_option_5_Template, 2, 2, "option", 16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "span");
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "button", 28);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_ng_template_115_Template_button_click_8_listener() {
+      \u0275\u0275restoreView(_r23);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.changeMovimientosPage(-1));
+    });
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(9, "svg", 29);
+    \u0275\u0275element(10, "path", 30);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275template(11, AgricolaInsumosPageComponent_ng_template_115_button_11_Template, 2, 3, "button", 31);
+    \u0275\u0275namespaceHTML();
+    \u0275\u0275elementStart(12, "button", 32);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_ng_template_115_Template_button_click_12_listener() {
+      \u0275\u0275restoreView(_r23);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.changeMovimientosPage(1));
+    });
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(13, "svg", 29);
+    \u0275\u0275element(14, "path", 33);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_7_0;
+    let tmp_8_0;
+    let tmp_10_0;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.movimientosPageSize());
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r2.pageSizeOptions);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate1("", ((tmp_7_0 = ctx_r2.movimientosPage()) == null ? null : tmp_7_0.totalElements) || 0, " registros");
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", (((tmp_8_0 = ctx_r2.movimientosPage()) == null ? null : tmp_8_0.number) || 0) === 0);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngForOf", ctx_r2.pageNumbers(ctx_r2.movimientosPage()));
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", (((tmp_10_0 = ctx_r2.movimientosPage()) == null ? null : tmp_10_0.number) || 0) + 1 >= (((tmp_10_0 = ctx_r2.movimientosPage()) == null ? null : tmp_10_0.totalPages) || 1));
+  }
+}
+function AgricolaInsumosPageComponent_ng_container_117_tr_18_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td");
+    \u0275\u0275text(2);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "td");
+    \u0275\u0275text(4);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "td");
+    \u0275\u0275text(6);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "td");
+    \u0275\u0275text(8);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "td");
+    \u0275\u0275text(10);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "td")(12, "span");
+    \u0275\u0275text(13);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const item_r27 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r27.insumoNombre);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r27.loteStock || "Sin lote");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r2.number(item_r27.cantidadDisponible));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r27.ubicacionDeposito || item_r27.deposito || "Sin dato");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r27.responsableNombre || "Sin responsable");
+    \u0275\u0275advance(2);
+    \u0275\u0275classMap(item_r27.vencido ? "status danger" : item_r27.vencimientoProximo ? "status warning" : "status ok");
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r2.date(item_r27.fechaVencimiento));
+  }
+}
+function AgricolaInsumosPageComponent_ng_container_117_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementContainerStart(0);
+    \u0275\u0275elementStart(1, "div", 63)(2, "table")(3, "thead")(4, "tr")(5, "th");
+    \u0275\u0275text(6, "Insumo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "th");
+    \u0275\u0275text(8, "Lote");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "th");
+    \u0275\u0275text(10, "Cantidad");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "th");
+    \u0275\u0275text(12, "Deposito");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "th");
+    \u0275\u0275text(14, "Responsable");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(15, "th");
+    \u0275\u0275text(16, "Vence");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(17, "tbody");
+    \u0275\u0275template(18, AgricolaInsumosPageComponent_ng_container_117_tr_18_Template, 14, 8, "tr", 35);
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementContainerEnd();
+  }
+  if (rf & 2) {
+    let tmp_5_0;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(18);
+    \u0275\u0275property("ngForOf", ((tmp_5_0 = ctx_r2.stockPage()) == null ? null : tmp_5_0.content) || \u0275\u0275pureFunction0(1, _c03));
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_118_tr_19_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td");
+    \u0275\u0275text(2);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "td")(4, "span", 53);
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "td");
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "td");
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "td");
+    \u0275\u0275text(11);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "td");
+    \u0275\u0275text(13);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "td");
+    \u0275\u0275text(15);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const item_r28 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r2.date(item_r28.fecha));
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(item_r28.tipoMovimiento);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r28.insumoNombre);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r28.loteNombre || item_r28.destino || "Sin lote");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r28.responsableNombre || "Sin responsable");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r2.number(item_r28.cantidad));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(item_r28.costoTotal ? ctx_r2.money(item_r28.costoTotal) : "Sin costo");
+  }
+}
+function AgricolaInsumosPageComponent_ng_template_118_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 63)(1, "table")(2, "thead")(3, "tr")(4, "th");
+    \u0275\u0275text(5, "Fecha");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "th");
+    \u0275\u0275text(7, "Tipo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "th");
+    \u0275\u0275text(9, "Insumo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "th");
+    \u0275\u0275text(11, "Lote");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "th");
+    \u0275\u0275text(13, "Responsable");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "th");
+    \u0275\u0275text(15, "Cantidad");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "th");
+    \u0275\u0275text(17, "Costo");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(18, "tbody");
+    \u0275\u0275template(19, AgricolaInsumosPageComponent_ng_template_118_tr_19_Template, 16, 7, "tr", 35);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_5_0;
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(19);
+    \u0275\u0275property("ngForOf", ((tmp_5_0 = ctx_r2.movimientosPage()) == null ? null : tmp_5_0.content) || \u0275\u0275pureFunction0(1, _c03));
+  }
+}
+function AgricolaInsumosPageComponent_div_120_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r29 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 65);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_div_120_Template_div_click_0_listener() {
+      \u0275\u0275restoreView(_r29);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.closeModal());
+    });
+    \u0275\u0275elementEnd();
+  }
+}
+function AgricolaInsumosPageComponent_section_121_option_18_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const tipo_r31 = ctx.$implicit;
+    \u0275\u0275property("value", tipo_r31);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(tipo_r31);
+  }
+}
+function AgricolaInsumosPageComponent_section_121_option_23_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const unidad_r32 = ctx.$implicit;
+    \u0275\u0275property("value", unidad_r32);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(unidad_r32);
+  }
+}
+function AgricolaInsumosPageComponent_section_121_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r30 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "section", 66)(1, "button", 67);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_section_121_Template_button_click_1_listener() {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.closeModal());
+    });
+    \u0275\u0275text(2, "\xD7");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "h3");
+    \u0275\u0275text(4);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "div", 68)(6, "label")(7, "span");
+    \u0275\u0275text(8, "Codigo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_input_ngModelChange_9_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { codigo: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(10, "label")(11, "span");
+    \u0275\u0275text(12, "Nombre");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_input_ngModelChange_13_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { nombre: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(14, "label")(15, "span");
+    \u0275\u0275text(16, "Tipo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(17, "select", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_select_ngModelChange_17_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { tipo: $event })));
+    });
+    \u0275\u0275template(18, AgricolaInsumosPageComponent_section_121_option_18_Template, 2, 2, "option", 16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(19, "label")(20, "span");
+    \u0275\u0275text(21, "Unidad");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(22, "select", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_select_ngModelChange_22_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { unidadMedida: $event })));
+    });
+    \u0275\u0275template(23, AgricolaInsumosPageComponent_section_121_option_23_Template, 2, 2, "option", 16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(24, "label")(25, "span");
+    \u0275\u0275text(26, "Marca");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(27, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_input_ngModelChange_27_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { marca: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(28, "label")(29, "span");
+    \u0275\u0275text(30, "Presentacion");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(31, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_input_ngModelChange_31_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { presentacion: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(32, "label")(33, "span");
+    \u0275\u0275text(34, "Precio unitario");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(35, "input", 69);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_input_ngModelChange_35_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { precioUnitario: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(36, "label")(37, "span");
+    \u0275\u0275text(38, "Stock minimo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(39, "input", 69);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_input_ngModelChange_39_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { stockMinimo: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(40, "label")(41, "span");
+    \u0275\u0275text(42, "Stock maximo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(43, "input", 69);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_input_ngModelChange_43_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { stockMaximo: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(44, "label")(45, "span");
+    \u0275\u0275text(46, "Principio activo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(47, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_input_ngModelChange_47_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { principioActivo: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(48, "label")(49, "span");
+    \u0275\u0275text(50, "Proveedor");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(51, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_input_ngModelChange_51_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { proveedor: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(52, "label")(53, "span");
+    \u0275\u0275text(54, "Origen");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(55, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_input_ngModelChange_55_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { origen: $event })));
+    });
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(56, "label", 70)(57, "span");
+    \u0275\u0275text(58, "Descripcion");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(59, "textarea", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_121_Template_textarea_ngModelChange_59_listener($event) {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.insumoForm.update((f) => __spreadProps(__spreadValues({}, f), { descripcion: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(60, "button", 71);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_section_121_Template_button_click_60_listener() {
+      \u0275\u0275restoreView(_r30);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.submitInsumo());
+    });
+    \u0275\u0275text(61);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r2.editingInsumoId() ? "Editar insumo" : "Nuevo insumo");
+    \u0275\u0275advance(5);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().codigo);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().nombre);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().tipo);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r2.tipoOptions);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().unidadMedida);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r2.unidadOptions);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().marca);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().presentacion);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().precioUnitario);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().stockMinimo);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().stockMaximo);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().principioActivo);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().proveedor);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().origen);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.insumoForm().descripcion);
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", ctx_r2.saving());
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r2.editingInsumoId() ? "Actualizar insumo" : "Guardar insumo");
+  }
+}
+function AgricolaInsumosPageComponent_section_122_option_12_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const insumo_r34 = ctx.$implicit;
+    \u0275\u0275property("value", insumo_r34.id);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(insumo_r34.nombre);
+  }
+}
+function AgricolaInsumosPageComponent_section_122_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r33 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "section", 66)(1, "button", 67);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_section_122_Template_button_click_1_listener() {
+      \u0275\u0275restoreView(_r33);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.closeModal());
+    });
+    \u0275\u0275text(2, "\xD7");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "h3");
+    \u0275\u0275text(4, "Registrar stock");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "div", 68)(6, "label")(7, "span");
+    \u0275\u0275text(8, "Insumo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "select", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_122_Template_select_ngModelChange_9_listener($event) {
+      \u0275\u0275restoreView(_r33);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.stockForm.update((f) => __spreadProps(__spreadValues({}, f), { insumoId: $event })));
+    });
+    \u0275\u0275elementStart(10, "option", 15);
+    \u0275\u0275text(11, "Seleccionar");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(12, AgricolaInsumosPageComponent_section_122_option_12_Template, 2, 2, "option", 16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(13, "label")(14, "span");
+    \u0275\u0275text(15, "Lote / partida");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_122_Template_input_ngModelChange_16_listener($event) {
+      \u0275\u0275restoreView(_r33);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.stockForm.update((f) => __spreadProps(__spreadValues({}, f), { loteStock: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(17, "label")(18, "span");
+    \u0275\u0275text(19, "Cantidad");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(20, "input", 69);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_122_Template_input_ngModelChange_20_listener($event) {
+      \u0275\u0275restoreView(_r33);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.stockForm.update((f) => __spreadProps(__spreadValues({}, f), { cantidadDisponible: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(21, "label")(22, "span");
+    \u0275\u0275text(23, "Vencimiento");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(24, "input", 72);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_122_Template_input_ngModelChange_24_listener($event) {
+      \u0275\u0275restoreView(_r33);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.stockForm.update((f) => __spreadProps(__spreadValues({}, f), { fechaVencimiento: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(25, "label")(26, "span");
+    \u0275\u0275text(27, "Deposito");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(28, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_122_Template_input_ngModelChange_28_listener($event) {
+      \u0275\u0275restoreView(_r33);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.stockForm.update((f) => __spreadProps(__spreadValues({}, f), { deposito: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(29, "label")(30, "span");
+    \u0275\u0275text(31, "Ubicacion");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(32, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_122_Template_input_ngModelChange_32_listener($event) {
+      \u0275\u0275restoreView(_r33);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.stockForm.update((f) => __spreadProps(__spreadValues({}, f), { ubicacionDeposito: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(33, "app-remote-search-select", 73);
+    \u0275\u0275listener("valueChange", function AgricolaInsumosPageComponent_section_122_Template_app_remote_search_select_valueChange_33_listener($event) {
+      \u0275\u0275restoreView(_r33);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.stockForm.update((f) => __spreadProps(__spreadValues({}, f), { responsableId: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(34, "label", 70)(35, "span");
+    \u0275\u0275text(36, "Observaciones");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(37, "textarea", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_122_Template_textarea_ngModelChange_37_listener($event) {
+      \u0275\u0275restoreView(_r33);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.stockForm.update((f) => __spreadProps(__spreadValues({}, f), { observaciones: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(38, "button", 71);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_section_122_Template_button_click_38_listener() {
+      \u0275\u0275restoreView(_r33);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.submitStock());
+    });
+    \u0275\u0275text(39, "Guardar stock");
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(9);
+    \u0275\u0275property("ngModel", ctx_r2.stockForm().insumoId);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngForOf", ctx_r2.insumosActivos());
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.stockForm().loteStock);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.stockForm().cantidadDisponible);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.stockForm().fechaVencimiento);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.stockForm().deposito);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.stockForm().ubicacionDeposito);
+    \u0275\u0275advance();
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.operarios)("extraParams", ctx_r2.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(14, _c12))("searchFields", \u0275\u0275pureFunction0(15, _c22))("value", ctx_r2.stockForm().responsableId);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.stockForm().observaciones);
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", ctx_r2.saving());
+  }
+}
+function AgricolaInsumosPageComponent_section_123_option_13_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const stock_r36 = ctx.$implicit;
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275property("value", stock_r36.id);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate2("", stock_r36.loteStock || stock_r36.insumoCodigo, " \xB7 ", ctx_r2.number(stock_r36.cantidadDisponible));
+  }
+}
+function AgricolaInsumosPageComponent_section_123_option_18_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const tipo_r37 = ctx.$implicit;
+    \u0275\u0275property("value", tipo_r37);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(tipo_r37);
+  }
+}
+function AgricolaInsumosPageComponent_section_123_option_37_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 51);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const lote_r38 = ctx.$implicit;
+    \u0275\u0275property("value", lote_r38.id);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(lote_r38.nombre);
+  }
+}
+function AgricolaInsumosPageComponent_section_123_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r35 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "section", 66)(1, "button", 67);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_section_123_Template_button_click_1_listener() {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.closeModal());
+    });
+    \u0275\u0275text(2, "\xD7");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "h3");
+    \u0275\u0275text(4, "Registrar movimiento");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "div", 68)(6, "app-remote-search-select", 74);
+    \u0275\u0275listener("valueChange", function AgricolaInsumosPageComponent_section_123_Template_app_remote_search_select_valueChange_6_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.updateMovimientoInsumo($event));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "label")(8, "span");
+    \u0275\u0275text(9, "Lote de stock");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "select", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_123_Template_select_ngModelChange_10_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { stockId: $event })));
+    });
+    \u0275\u0275elementStart(11, "option", 15);
+    \u0275\u0275text(12, "Sin stock asociado");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(13, AgricolaInsumosPageComponent_section_123_option_13_Template, 2, 3, "option", 16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(14, "label")(15, "span");
+    \u0275\u0275text(16, "Tipo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(17, "select", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_123_Template_select_ngModelChange_17_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { tipoMovimiento: $event })));
+    });
+    \u0275\u0275template(18, AgricolaInsumosPageComponent_section_123_option_18_Template, 2, 2, "option", 16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(19, "label")(20, "span");
+    \u0275\u0275text(21, "Fecha");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(22, "input", 75);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_123_Template_input_ngModelChange_22_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { fecha: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(23, "label")(24, "span");
+    \u0275\u0275text(25, "Cantidad");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(26, "input", 69);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_123_Template_input_ngModelChange_26_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { cantidad: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(27, "label")(28, "span");
+    \u0275\u0275text(29, "Costo unitario");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(30, "input", 69);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_123_Template_input_ngModelChange_30_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { costoUnitario: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(31, "label")(32, "span");
+    \u0275\u0275text(33, "Lote agricola");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(34, "select", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_123_Template_select_ngModelChange_34_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { loteId: $event })));
+    });
+    \u0275\u0275elementStart(35, "option", 15);
+    \u0275\u0275text(36, "No aplica");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(37, AgricolaInsumosPageComponent_section_123_option_37_Template, 2, 2, "option", 16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(38, "app-remote-search-select", 73);
+    \u0275\u0275listener("valueChange", function AgricolaInsumosPageComponent_section_123_Template_app_remote_search_select_valueChange_38_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { responsableId: $event })));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(39, "label")(40, "span");
+    \u0275\u0275text(41, "Tarea referencia");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(42, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_123_Template_input_ngModelChange_42_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { tareaReferencia: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(43, "label")(44, "span");
+    \u0275\u0275text(45, "Proveedor");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(46, "input", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_123_Template_input_ngModelChange_46_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { proveedor: $event })));
+    });
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(47, "label", 70)(48, "span");
+    \u0275\u0275text(49, "Observaciones");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(50, "textarea", 14);
+    \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_section_123_Template_textarea_ngModelChange_50_listener($event) {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.movimientoForm.update((f) => __spreadProps(__spreadValues({}, f), { observaciones: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(51, "button", 71);
+    \u0275\u0275listener("click", function AgricolaInsumosPageComponent_section_123_Template_button_click_51_listener() {
+      \u0275\u0275restoreView(_r35);
+      const ctx_r2 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r2.submitMovimiento());
+    });
+    \u0275\u0275text(52, "Guardar movimiento");
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r2 = \u0275\u0275nextContext();
+    \u0275\u0275advance(6);
+    \u0275\u0275property("options", ctx_r2.insumosSelectOptions())("subtitleFields", \u0275\u0275pureFunction0(22, _c32))("searchFields", \u0275\u0275pureFunction0(23, _c42))("value", ctx_r2.movimientoForm().insumoId);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.movimientoForm().stockId);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngForOf", ctx_r2.stockDisponibleSeleccionado());
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.movimientoForm().tipoMovimiento);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r2.movimientoOptions);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.movimientoForm().fecha);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.movimientoForm().cantidad);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.movimientoForm().costoUnitario);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.movimientoForm().loteId);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngForOf", ctx_r2.lotes());
+    \u0275\u0275advance();
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.operarios)("extraParams", ctx_r2.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(24, _c12))("searchFields", \u0275\u0275pureFunction0(25, _c22))("value", ctx_r2.movimientoForm().responsableId);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.movimientoForm().tareaReferencia);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.movimientoForm().proveedor);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r2.movimientoForm().observaciones);
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", ctx_r2.saving());
+  }
+}
+var AgricolaInsumosPageComponent = class _AgricolaInsumosPageComponent {
+  agricolaService = inject(AgricolaService);
+  dashboard = signal(null, ...ngDevMode ? [{ debugName: "dashboard" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  insumosPage = signal(null, ...ngDevMode ? [{ debugName: "insumosPage" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  stockPage = signal(null, ...ngDevMode ? [{ debugName: "stockPage" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  movimientosPage = signal(null, ...ngDevMode ? [{ debugName: "movimientosPage" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  reordenPage = signal(null, ...ngDevMode ? [{ debugName: "reordenPage" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  vencimientosPage = signal(null, ...ngDevMode ? [{ debugName: "vencimientosPage" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  lotes = signal([], ...ngDevMode ? [{ debugName: "lotes" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  insumosActivos = signal([], ...ngDevMode ? [{ debugName: "insumosActivos" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  loading = signal(false, ...ngDevMode ? [{ debugName: "loading" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  saving = signal(false, ...ngDevMode ? [{ debugName: "saving" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  modal = signal(null, ...ngDevMode ? [{ debugName: "modal" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  editingInsumoId = signal(null, ...ngDevMode ? [{ debugName: "editingInsumoId" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  activeDetailTab = signal("STOCK", ...ngDevMode ? [{ debugName: "activeDetailTab" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  activeAlertTab = signal("REORDEN", ...ngDevMode ? [{ debugName: "activeAlertTab" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  errorMessage = signal("", ...ngDevMode ? [{ debugName: "errorMessage" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  endpoints = {
+    operarios: `${API_BASE_URL}/operarios/gestion/operarios`
+  };
+  activeOperarioParams = { estado: "ACTIVO" };
+  filters = signal({ search: "", tipo: "", activo: "" }, ...ngDevMode ? [{ debugName: "filters" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  insumoPageIndex = signal(0, ...ngDevMode ? [{ debugName: "insumoPageIndex" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  stockPageIndex = signal(0, ...ngDevMode ? [{ debugName: "stockPageIndex" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  movimientosPageIndex = signal(0, ...ngDevMode ? [{ debugName: "movimientosPageIndex" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  reordenPageIndex = signal(0, ...ngDevMode ? [{ debugName: "reordenPageIndex" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  vencimientosPageIndex = signal(0, ...ngDevMode ? [{ debugName: "vencimientosPageIndex" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  insumoPageSize = signal(8, ...ngDevMode ? [{ debugName: "insumoPageSize" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  stockPageSize = signal(8, ...ngDevMode ? [{ debugName: "stockPageSize" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  movimientosPageSize = signal(8, ...ngDevMode ? [{ debugName: "movimientosPageSize" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  reordenPageSize = signal(8, ...ngDevMode ? [{ debugName: "reordenPageSize" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  vencimientosPageSize = signal(8, ...ngDevMode ? [{ debugName: "vencimientosPageSize" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  pageSizeOptions = [5, 8, 10, 20, 50];
+  tipoOptions = ["SEMILLA", "FERTILIZANTE", "FITOSANITARIO", "HERBICIDA", "FUNGICIDA", "INSECTICIDA", "COADYUVANTE", "COMBUSTIBLE", "OTRO"];
+  unidadOptions = ["KG", "L", "UN", "BOLSA", "DOSIS", "TN"];
+  movimientoOptions = ["INGRESO", "USO", "SALIDA", "AJUSTE"];
+  insumosSelectOptions = computed(() => this.insumosActivos(), ...ngDevMode ? [{ debugName: "insumosSelectOptions" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  insumoForm = signal({
+    codigo: "",
+    nombre: "",
+    tipo: "SEMILLA",
+    marca: "",
+    presentacion: "",
+    unidadMedida: "KG",
+    principioActivo: "",
+    proveedor: "",
+    origen: "",
+    descripcion: "",
+    precioUnitario: void 0,
+    stockMinimo: 0,
+    stockMaximo: void 0,
+    activo: true
+  }, ...ngDevMode ? [{ debugName: "insumoForm" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  stockForm = signal({
+    insumoId: "",
+    loteStock: "",
+    cantidadDisponible: 0,
+    fechaVencimiento: "",
+    ubicacionDeposito: "",
+    deposito: "",
+    responsableId: "",
+    observaciones: ""
+  }, ...ngDevMode ? [{ debugName: "stockForm" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  movimientoForm = signal({
+    insumoId: "",
+    stockId: "",
+    loteId: "",
+    fecha: (/* @__PURE__ */ new Date()).toISOString().slice(0, 16),
+    tipoMovimiento: "USO",
+    cantidad: 0,
+    costoUnitario: void 0,
+    responsableId: "",
+    tareaReferencia: "",
+    proveedor: "",
+    origen: "",
+    destino: "",
+    observaciones: ""
+  }, ...ngDevMode ? [{ debugName: "movimientoForm" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  stockDisponibleSeleccionado = signal([], ...ngDevMode ? [{ debugName: "stockDisponibleSeleccionado" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  kpis = computed(() => {
+    const dashboard = this.dashboard();
+    return [
+      { label: "Insumos activos", value: dashboard?.insumosActivos ?? 0, sub: "Catalogo operativo", tone: "green" },
+      { label: "Reorden pendiente", value: dashboard?.reordenPendiente ?? 0, sub: "Bajo minimo", tone: "orange" },
+      { label: "Vencimientos", value: dashboard?.lotesPorVencer ?? 0, sub: "Proximos 30 dias", tone: "red" },
+      { label: "Stock valorizado", value: this.money(dashboard?.stockValorizado ?? 0), sub: "Costo inventariado", tone: "blue" }
+    ];
+  }, ...ngDevMode ? [{ debugName: "kpis" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  ngOnInit() {
+    this.loadAll();
+  }
+  loadAll() {
+    this.loadDashboard();
+    this.loadInsumos();
+    this.loadAlertasReorden();
+    this.loadVencimientosProximos();
+    this.loadStock();
+    this.loadMovimientos();
+    this.agricolaService.getLotes().subscribe({ next: (lotes) => this.lotes.set(lotes), error: () => void 0 });
+    this.agricolaService.getInsumosActivos().subscribe({ next: (insumos) => this.insumosActivos.set(insumos), error: () => void 0 });
+  }
+  loadDashboard() {
+    this.agricolaService.getInsumosDashboard().subscribe({ next: (dashboard) => this.dashboard.set(dashboard), error: () => void 0 });
+  }
+  loadInsumos() {
+    this.loading.set(true);
+    const filters = this.filters();
+    this.agricolaService.getInsumos({
+      search: filters.search,
+      tipo: filters.tipo || void 0,
+      activo: filters.activo === "" ? void 0 : filters.activo === "true",
+      page: this.insumoPageIndex(),
+      size: this.insumoPageSize()
+    }).subscribe({
+      next: (page) => {
+        this.insumosPage.set(page);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.errorMessage.set("No se pudo cargar el inventario de insumos.");
+        this.loading.set(false);
+      }
+    });
+  }
+  loadStock() {
+    this.agricolaService.getStockInsumos({ page: this.stockPageIndex(), size: this.stockPageSize() }).subscribe({ next: (page) => this.stockPage.set(page), error: () => void 0 });
+  }
+  loadMovimientos() {
+    this.agricolaService.getMovimientosInsumos({ page: this.movimientosPageIndex(), size: this.movimientosPageSize() }).subscribe({ next: (page) => this.movimientosPage.set(page), error: () => void 0 });
+  }
+  loadAlertasReorden() {
+    this.agricolaService.getAlertasReordenInsumos({ page: this.reordenPageIndex(), size: this.reordenPageSize() }).subscribe({ next: (page) => this.reordenPage.set(page), error: () => void 0 });
+  }
+  loadVencimientosProximos() {
+    this.agricolaService.getVencimientosProximosInsumos({ page: this.vencimientosPageIndex(), size: this.vencimientosPageSize() }).subscribe({ next: (page) => this.vencimientosPage.set(page), error: () => void 0 });
+  }
+  applyFilters() {
+    this.insumoPageIndex.set(0);
+    this.loadInsumos();
+  }
+  openInsumoModal() {
+    this.editingInsumoId.set(null);
+    this.insumoForm.set({
+      codigo: "",
+      nombre: "",
+      tipo: "SEMILLA",
+      marca: "",
+      presentacion: "",
+      unidadMedida: "KG",
+      principioActivo: "",
+      proveedor: "",
+      origen: "",
+      descripcion: "",
+      precioUnitario: void 0,
+      stockMinimo: 0,
+      stockMaximo: void 0,
+      activo: true
+    });
+    this.modal.set("INSUMO");
+  }
+  openEditInsumoModal(insumo) {
+    this.editingInsumoId.set(insumo.id);
+    this.insumoForm.set({
+      codigo: insumo.codigo,
+      nombre: insumo.nombre,
+      tipo: insumo.tipo,
+      marca: insumo.marca || "",
+      presentacion: insumo.presentacion || "",
+      unidadMedida: insumo.unidadMedida,
+      principioActivo: insumo.principioActivo || "",
+      proveedor: insumo.proveedor || "",
+      origen: insumo.origen || "",
+      descripcion: insumo.descripcion || "",
+      precioUnitario: insumo.precioUnitario,
+      stockMinimo: insumo.stockMinimo,
+      stockMaximo: insumo.stockMaximo,
+      activo: insumo.activo
+    });
+    this.modal.set("INSUMO");
+  }
+  openStockModal(insumo) {
+    this.stockForm.set({
+      insumoId: insumo?.id ?? "",
+      loteStock: "",
+      cantidadDisponible: 0,
+      fechaVencimiento: "",
+      ubicacionDeposito: "",
+      deposito: "",
+      responsableId: "",
+      observaciones: ""
+    });
+    this.modal.set("STOCK");
+  }
+  openMovimientoModal(insumo) {
+    const insumoId = insumo?.id ?? "";
+    this.movimientoForm.set({
+      insumoId,
+      stockId: "",
+      loteId: "",
+      fecha: (/* @__PURE__ */ new Date()).toISOString().slice(0, 16),
+      tipoMovimiento: "USO",
+      cantidad: 0,
+      costoUnitario: insumo?.precioUnitario,
+      responsableId: "",
+      tareaReferencia: "",
+      proveedor: "",
+      origen: "",
+      destino: "",
+      observaciones: ""
+    });
+    this.stockDisponibleSeleccionado.set([]);
+    if (insumoId) {
+      this.loadStockForMovimiento(insumoId);
+    }
+    this.modal.set("MOVIMIENTO");
+  }
+  closeModal() {
+    this.modal.set(null);
+  }
+  updateMovimientoInsumo(insumoId) {
+    this.movimientoForm.update((form) => __spreadProps(__spreadValues({}, form), { insumoId, stockId: "" }));
+    this.loadStockForMovimiento(insumoId);
+  }
+  loadStockForMovimiento(insumoId) {
+    if (!insumoId) {
+      this.stockDisponibleSeleccionado.set([]);
+      return;
+    }
+    this.agricolaService.getStockPorInsumo(insumoId).subscribe({
+      next: (stock) => this.stockDisponibleSeleccionado.set(stock.filter((item) => Number(item.cantidadDisponible) > 0)),
+      error: () => this.stockDisponibleSeleccionado.set([])
+    });
+  }
+  submitInsumo() {
+    this.saving.set(true);
+    const id = this.editingInsumoId();
+    const request = this.normalizeInsumo(this.insumoForm());
+    const operation = id ? this.agricolaService.updateInsumo(id, request) : this.agricolaService.createInsumo(request);
+    operation.subscribe({
+      next: () => this.afterSave(),
+      error: () => this.failSave("No se pudo registrar el insumo.")
+    });
+  }
+  deleteInsumo(insumo) {
+    const confirmed = window.confirm(`Eliminar el insumo "${insumo.nombre}"? Esta accion no se puede deshacer.`);
+    if (!confirmed) {
+      return;
+    }
+    this.saving.set(true);
+    this.agricolaService.deleteInsumo(insumo.id).subscribe({
+      next: () => this.afterSave(),
+      error: () => this.failSave("No se pudo eliminar el insumo.")
+    });
+  }
+  submitStock() {
+    this.saving.set(true);
+    this.agricolaService.createStockInsumo(this.normalizeStock(this.stockForm())).subscribe({
+      next: () => this.afterSave(),
+      error: () => this.failSave("No se pudo registrar el stock.")
+    });
+  }
+  submitMovimiento() {
+    this.saving.set(true);
+    this.agricolaService.createMovimientoInsumo(this.normalizeMovimiento(this.movimientoForm())).subscribe({
+      next: () => this.afterSave(),
+      error: () => this.failSave("No se pudo registrar el movimiento.")
+    });
+  }
+  changeInsumoPage(delta) {
+    const page = this.insumosPage();
+    const next = Math.max(0, Math.min((page?.totalPages ?? 1) - 1, this.insumoPageIndex() + delta));
+    this.insumoPageIndex.set(next);
+    this.loadInsumos();
+  }
+  changeStockPage(delta) {
+    const page = this.stockPage();
+    const next = Math.max(0, Math.min((page?.totalPages ?? 1) - 1, this.stockPageIndex() + delta));
+    this.stockPageIndex.set(next);
+    this.loadStock();
+  }
+  changeMovimientosPage(delta) {
+    const page = this.movimientosPage();
+    const next = Math.max(0, Math.min((page?.totalPages ?? 1) - 1, this.movimientosPageIndex() + delta));
+    this.movimientosPageIndex.set(next);
+    this.loadMovimientos();
+  }
+  changeReordenPage(delta) {
+    const page = this.reordenPage();
+    const next = Math.max(0, Math.min((page?.totalPages ?? 1) - 1, this.reordenPageIndex() + delta));
+    this.reordenPageIndex.set(next);
+    this.loadAlertasReorden();
+  }
+  changeVencimientosPage(delta) {
+    const page = this.vencimientosPage();
+    const next = Math.max(0, Math.min((page?.totalPages ?? 1) - 1, this.vencimientosPageIndex() + delta));
+    this.vencimientosPageIndex.set(next);
+    this.loadVencimientosProximos();
+  }
+  pageNumbers(page) {
+    const total = page?.totalPages || 1;
+    const current = (page?.number || 0) + 1;
+    const start = Math.max(1, current - 2);
+    const end = Math.min(total, start + 4);
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+  }
+  setInsumoPage(pageNumber) {
+    this.insumoPageIndex.set(pageNumber - 1);
+    this.loadInsumos();
+  }
+  setStockPage(pageNumber) {
+    this.stockPageIndex.set(pageNumber - 1);
+    this.loadStock();
+  }
+  setMovimientosPage(pageNumber) {
+    this.movimientosPageIndex.set(pageNumber - 1);
+    this.loadMovimientos();
+  }
+  setReordenPage(pageNumber) {
+    this.reordenPageIndex.set(pageNumber - 1);
+    this.loadAlertasReorden();
+  }
+  setVencimientosPage(pageNumber) {
+    this.vencimientosPageIndex.set(pageNumber - 1);
+    this.loadVencimientosProximos();
+  }
+  setInsumoPageSize(size) {
+    this.insumoPageSize.set(Number(size));
+    this.insumoPageIndex.set(0);
+    this.loadInsumos();
+  }
+  setStockPageSize(size) {
+    this.stockPageSize.set(Number(size));
+    this.stockPageIndex.set(0);
+    this.loadStock();
+  }
+  setMovimientosPageSize(size) {
+    this.movimientosPageSize.set(Number(size));
+    this.movimientosPageIndex.set(0);
+    this.loadMovimientos();
+  }
+  setReordenPageSize(size) {
+    this.reordenPageSize.set(Number(size));
+    this.reordenPageIndex.set(0);
+    this.loadAlertasReorden();
+  }
+  setVencimientosPageSize(size) {
+    this.vencimientosPageSize.set(Number(size));
+    this.vencimientosPageIndex.set(0);
+    this.loadVencimientosProximos();
+  }
+  money(value) {
+    return new Intl.NumberFormat("es-AR", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(Number(value ?? 0));
+  }
+  number(value) {
+    return new Intl.NumberFormat("es-AR", { maximumFractionDigits: 2 }).format(Number(value ?? 0));
+  }
+  date(value) {
+    return value ? value.slice(0, 10) : "Sin fecha";
+  }
+  afterSave() {
+    this.saving.set(false);
+    this.editingInsumoId.set(null);
+    this.closeModal();
+    this.loadAll();
+  }
+  failSave(message) {
+    this.saving.set(false);
+    this.errorMessage.set(message);
+  }
+  normalizeInsumo(form) {
+    return __spreadProps(__spreadValues({}, form), {
+      marca: form.marca || void 0,
+      presentacion: form.presentacion || void 0,
+      principioActivo: form.principioActivo || void 0,
+      proveedor: form.proveedor || void 0,
+      origen: form.origen || void 0,
+      descripcion: form.descripcion || void 0,
+      precioUnitario: form.precioUnitario === void 0 || form.precioUnitario === null ? void 0 : Number(form.precioUnitario),
+      stockMinimo: form.stockMinimo === void 0 || form.stockMinimo === null ? 0 : Number(form.stockMinimo),
+      stockMaximo: form.stockMaximo === void 0 || form.stockMaximo === null ? void 0 : Number(form.stockMaximo)
+    });
+  }
+  normalizeStock(form) {
+    return __spreadProps(__spreadValues({}, form), {
+      cantidadDisponible: Number(form.cantidadDisponible ?? 0),
+      fechaVencimiento: form.fechaVencimiento || void 0,
+      loteStock: form.loteStock || void 0,
+      ubicacionDeposito: form.ubicacionDeposito || void 0,
+      deposito: form.deposito || void 0,
+      responsableId: form.responsableId || void 0,
+      observaciones: form.observaciones || void 0
+    });
+  }
+  normalizeMovimiento(form) {
+    return __spreadProps(__spreadValues({}, form), {
+      stockId: form.stockId || void 0,
+      loteId: form.loteId || void 0,
+      fecha: form.fecha || void 0,
+      cantidad: Number(form.cantidad ?? 0),
+      costoUnitario: form.costoUnitario === void 0 || form.costoUnitario === null ? void 0 : Number(form.costoUnitario),
+      responsableId: form.responsableId || void 0,
+      tareaReferencia: form.tareaReferencia || void 0,
+      proveedor: form.proveedor || void 0,
+      origen: form.origen || void 0,
+      destino: form.destino || void 0,
+      observaciones: form.observaciones || void 0
+    });
+  }
+  static \u0275fac = function AgricolaInsumosPageComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _AgricolaInsumosPageComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _AgricolaInsumosPageComponent, selectors: [["app-agricola-insumos-page"]], decls: 124, vars: 36, consts: [["vencimientosPager", ""], ["vencimientosTab", ""], ["movimientosPager", ""], ["movimientosTab", ""], [1, "insumos-page"], [1, "page-hero"], [1, "eyebrow"], [1, "hero-actions"], ["type", "button", 1, "btn-secondary", 3, "click"], ["type", "button", 1, "btn-primary", 3, "click"], [1, "kpi-grid"], ["class", "kpi-card", 3, "class", 4, "ngFor", "ngForOf"], [1, "filters-card"], ["placeholder", "Codigo, nombre, marca o principio activo", 3, "ngModelChange", "ngModel"], [3, "ngModelChange", "ngModel"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["value", "true"], ["value", "false"], ["class", "error-box", 4, "ngIf"], [1, "content-grid", "catalog-row"], [1, "panel"], [1, "panel-head"], [1, "panel-actions"], ["type", "button", 1, "btn-secondary", "compact", 3, "click"], ["type", "button", 1, "btn-primary", "compact", 3, "click"], [1, "table-pager"], [1, "page-size-select"], ["type", "button", "aria-label", "Anterior", 3, "click", "disabled"], ["viewBox", "0 0 24 24"], ["d", "m15 18-6-6 6-6"], ["type", "button", 3, "active", "click", 4, "ngFor", "ngForOf"], ["type", "button", "aria-label", "Siguiente", 3, "click", "disabled"], ["d", "m9 18 6-6-6-6"], [1, "table-wrap"], [4, "ngFor", "ngForOf"], [4, "ngIf"], [1, "content-grid", "alerts-row"], [1, "panel-head", "tabbed-head"], [1, "table-tabs"], ["type", "button", 3, "click"], ["class", "table-pager", 4, "ngIf", "ngIfElse"], [4, "ngIf", "ngIfElse"], [1, "content-grid", "detail-row"], ["class", "modal-backdrop", 3, "click", 4, "ngIf"], ["class", "modal", 4, "ngIf"], [1, "kpi-card"], [1, "kpi-icon"], ["d", "M4 7l8-4 8 4-8 4-8-4Z"], ["d", "M4 7v10l8 4 8-4V7"], ["d", "M12 11v10"], [3, "value"], [1, "error-box"], [1, "pill"], ["class", "status danger", 4, "ngIf"], ["class", "status warning", 4, "ngIf"], ["class", "status ok", 4, "ngIf"], [1, "actions-cell"], ["type", "button", 1, "danger-action", 3, "click"], [1, "status", "danger"], [1, "status", "warning"], [1, "status", "ok"], ["colspan", "9", 1, "empty-cell"], [1, "table-wrap", "small"], ["colspan", "6", 1, "empty-cell"], [1, "modal-backdrop", 3, "click"], [1, "modal"], ["type", "button", 1, "modal-close", 3, "click"], [1, "form-grid"], ["type", "number", 3, "ngModelChange", "ngModel"], [1, "wide"], ["type", "button", 1, "btn-primary", "modal-submit", 3, "click", "disabled"], ["type", "date", 3, "ngModelChange", "ngModel"], ["label", "Responsable", "placeholder", "Buscar operario responsable", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], ["label", "Insumo", "placeholder", "Buscar insumo", "valueField", "id", "labelField", "nombre", 3, "valueChange", "options", "subtitleFields", "searchFields", "value"], ["type", "datetime-local", 3, "ngModelChange", "ngModel"]], template: function AgricolaInsumosPageComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275elementStart(0, "section", 4)(1, "header", 5)(2, "div")(3, "p", 6);
+      \u0275\u0275text(4, "Campo App \xB7 Agricultura");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(5, "h1");
+      \u0275\u0275text(6, "Inventario de insumos");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(7, "p");
+      \u0275\u0275text(8, "Stock, vencimientos, reorden y trazabilidad de uso de semillas, fertilizantes y fitosanitarios.");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(9, "div", 7)(10, "button", 8);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_10_listener() {
+        return ctx.openStockModal();
+      });
+      \u0275\u0275text(11, "Registrar stock");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(12, "button", 8);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_12_listener() {
+        return ctx.openMovimientoModal();
+      });
+      \u0275\u0275text(13, "Registrar uso");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(14, "button", 9);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_14_listener() {
+        return ctx.openInsumoModal();
+      });
+      \u0275\u0275text(15, "Nuevo insumo");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(16, "div", 10);
+      \u0275\u0275template(17, AgricolaInsumosPageComponent_article_17_Template, 13, 5, "article", 11);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(18, "section", 12)(19, "label")(20, "span");
+      \u0275\u0275text(21, "Buscar");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(22, "input", 13);
+      \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_Template_input_ngModelChange_22_listener($event) {
+        return ctx.filters.update((f) => __spreadProps(__spreadValues({}, f), { search: $event }));
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(23, "label")(24, "span");
+      \u0275\u0275text(25, "Tipo");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(26, "select", 14);
+      \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_Template_select_ngModelChange_26_listener($event) {
+        return ctx.filters.update((f) => __spreadProps(__spreadValues({}, f), { tipo: $event }));
+      });
+      \u0275\u0275elementStart(27, "option", 15);
+      \u0275\u0275text(28, "Todos");
+      \u0275\u0275elementEnd();
+      \u0275\u0275template(29, AgricolaInsumosPageComponent_option_29_Template, 2, 2, "option", 16);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(30, "label")(31, "span");
+      \u0275\u0275text(32, "Estado");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(33, "select", 14);
+      \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_Template_select_ngModelChange_33_listener($event) {
+        return ctx.filters.update((f) => __spreadProps(__spreadValues({}, f), { activo: $event }));
+      });
+      \u0275\u0275elementStart(34, "option", 15);
+      \u0275\u0275text(35, "Todos");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(36, "option", 17);
+      \u0275\u0275text(37, "Activos");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(38, "option", 18);
+      \u0275\u0275text(39, "Inactivos");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(40, "button", 9);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_40_listener() {
+        return ctx.applyFilters();
+      });
+      \u0275\u0275text(41, "Aplicar filtros");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275template(42, AgricolaInsumosPageComponent_p_42_Template, 2, 1, "p", 19);
+      \u0275\u0275elementStart(43, "section", 20)(44, "article", 21)(45, "div", 22)(46, "div", 23)(47, "button", 24);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_47_listener() {
+        return ctx.openStockModal();
+      });
+      \u0275\u0275text(48, "Registrar stock");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(49, "button", 24);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_49_listener() {
+        return ctx.openMovimientoModal();
+      });
+      \u0275\u0275text(50, "Registrar uso");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(51, "button", 25);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_51_listener() {
+        return ctx.openInsumoModal();
+      });
+      \u0275\u0275text(52, "Nuevo insumo");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(53, "div", 26)(54, "label", 27)(55, "span");
+      \u0275\u0275text(56, "Mostrar");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(57, "select", 14);
+      \u0275\u0275listener("ngModelChange", function AgricolaInsumosPageComponent_Template_select_ngModelChange_57_listener($event) {
+        return ctx.setInsumoPageSize($event);
+      });
+      \u0275\u0275template(58, AgricolaInsumosPageComponent_option_58_Template, 2, 2, "option", 16);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(59, "span");
+      \u0275\u0275text(60);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(61, "button", 28);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_61_listener() {
+        return ctx.changeInsumoPage(-1);
+      });
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(62, "svg", 29);
+      \u0275\u0275element(63, "path", 30);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275template(64, AgricolaInsumosPageComponent_button_64_Template, 2, 3, "button", 31);
+      \u0275\u0275namespaceHTML();
+      \u0275\u0275elementStart(65, "button", 32);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_65_listener() {
+        return ctx.changeInsumoPage(1);
+      });
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(66, "svg", 29);
+      \u0275\u0275element(67, "path", 33);
+      \u0275\u0275elementEnd()()()();
+      \u0275\u0275namespaceHTML();
+      \u0275\u0275elementStart(68, "div", 34)(69, "table")(70, "thead")(71, "tr")(72, "th");
+      \u0275\u0275text(73, "Insumo");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(74, "th");
+      \u0275\u0275text(75, "Tipo");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(76, "th");
+      \u0275\u0275text(77, "Stock");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(78, "th");
+      \u0275\u0275text(79, "Minimo");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(80, "th");
+      \u0275\u0275text(81, "Vencimiento");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(82, "th");
+      \u0275\u0275text(83, "Precio unitario");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(84, "th");
+      \u0275\u0275text(85, "Valor stock");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(86, "th");
+      \u0275\u0275text(87, "Alertas");
+      \u0275\u0275elementEnd();
+      \u0275\u0275element(88, "th");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(89, "tbody");
+      \u0275\u0275template(90, AgricolaInsumosPageComponent_tr_90_Template, 32, 13, "tr", 35)(91, AgricolaInsumosPageComponent_tr_91_Template, 3, 0, "tr", 36);
+      \u0275\u0275elementEnd()()()()();
+      \u0275\u0275elementStart(92, "section", 37)(93, "article", 21)(94, "div", 38)(95, "div", 39)(96, "button", 40);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_96_listener() {
+        return ctx.activeAlertTab.set("REORDEN");
+      });
+      \u0275\u0275text(97, "Alertas de reorden");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(98, "button", 40);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_98_listener() {
+        return ctx.activeAlertTab.set("VENCIMIENTOS");
+      });
+      \u0275\u0275text(99, "Vencimientos proximos");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275template(100, AgricolaInsumosPageComponent_div_100_Template, 15, 6, "div", 41)(101, AgricolaInsumosPageComponent_ng_template_101_Template, 15, 6, "ng-template", null, 0, \u0275\u0275templateRefExtractor);
+      \u0275\u0275elementEnd();
+      \u0275\u0275template(103, AgricolaInsumosPageComponent_ng_container_103_Template, 20, 4, "ng-container", 42)(104, AgricolaInsumosPageComponent_ng_template_104_Template, 19, 4, "ng-template", null, 1, \u0275\u0275templateRefExtractor);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(106, "section", 43)(107, "article", 21)(108, "div", 38)(109, "div", 39)(110, "button", 40);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_110_listener() {
+        return ctx.activeDetailTab.set("STOCK");
+      });
+      \u0275\u0275text(111, "Stock por lote");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(112, "button", 40);
+      \u0275\u0275listener("click", function AgricolaInsumosPageComponent_Template_button_click_112_listener() {
+        return ctx.activeDetailTab.set("MOVIMIENTOS");
+      });
+      \u0275\u0275text(113, "Movimientos");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275template(114, AgricolaInsumosPageComponent_div_114_Template, 15, 6, "div", 41)(115, AgricolaInsumosPageComponent_ng_template_115_Template, 15, 6, "ng-template", null, 2, \u0275\u0275templateRefExtractor);
+      \u0275\u0275elementEnd();
+      \u0275\u0275template(117, AgricolaInsumosPageComponent_ng_container_117_Template, 19, 2, "ng-container", 42)(118, AgricolaInsumosPageComponent_ng_template_118_Template, 20, 2, "ng-template", null, 3, \u0275\u0275templateRefExtractor);
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275template(120, AgricolaInsumosPageComponent_div_120_Template, 1, 0, "div", 44)(121, AgricolaInsumosPageComponent_section_121_Template, 62, 18, "section", 45)(122, AgricolaInsumosPageComponent_section_122_Template, 40, 16, "section", 45)(123, AgricolaInsumosPageComponent_section_123_Template, 53, 26, "section", 45);
+    }
+    if (rf & 2) {
+      let tmp_12_0;
+      let tmp_13_0;
+      let tmp_15_0;
+      let tmp_16_0;
+      let tmp_17_0;
+      const vencimientosPager_r39 = \u0275\u0275reference(102);
+      const vencimientosTab_r40 = \u0275\u0275reference(105);
+      const movimientosPager_r41 = \u0275\u0275reference(116);
+      const movimientosTab_r42 = \u0275\u0275reference(119);
+      \u0275\u0275advance(17);
+      \u0275\u0275property("ngForOf", ctx.kpis());
+      \u0275\u0275advance(5);
+      \u0275\u0275property("ngModel", ctx.filters().search);
+      \u0275\u0275advance(4);
+      \u0275\u0275property("ngModel", ctx.filters().tipo);
+      \u0275\u0275advance(3);
+      \u0275\u0275property("ngForOf", ctx.tipoOptions);
+      \u0275\u0275advance(4);
+      \u0275\u0275property("ngModel", ctx.filters().activo);
+      \u0275\u0275advance(9);
+      \u0275\u0275property("ngIf", ctx.errorMessage());
+      \u0275\u0275advance(15);
+      \u0275\u0275property("ngModel", ctx.insumoPageSize());
+      \u0275\u0275advance();
+      \u0275\u0275property("ngForOf", ctx.pageSizeOptions);
+      \u0275\u0275advance(2);
+      \u0275\u0275textInterpolate1("", ((tmp_12_0 = ctx.insumosPage()) == null ? null : tmp_12_0.totalElements) || 0, " registros");
+      \u0275\u0275advance();
+      \u0275\u0275property("disabled", (((tmp_13_0 = ctx.insumosPage()) == null ? null : tmp_13_0.number) || 0) === 0);
+      \u0275\u0275advance(3);
+      \u0275\u0275property("ngForOf", ctx.pageNumbers(ctx.insumosPage()));
+      \u0275\u0275advance();
+      \u0275\u0275property("disabled", (((tmp_15_0 = ctx.insumosPage()) == null ? null : tmp_15_0.number) || 0) + 1 >= (((tmp_15_0 = ctx.insumosPage()) == null ? null : tmp_15_0.totalPages) || 1));
+      \u0275\u0275advance(25);
+      \u0275\u0275property("ngForOf", ((tmp_16_0 = ctx.insumosPage()) == null ? null : tmp_16_0.content) || \u0275\u0275pureFunction0(34, _c03));
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", !(((tmp_17_0 = ctx.insumosPage()) == null ? null : tmp_17_0.content) || \u0275\u0275pureFunction0(35, _c03)).length);
+      \u0275\u0275advance(5);
+      \u0275\u0275classProp("active", ctx.activeAlertTab() === "REORDEN");
+      \u0275\u0275advance(2);
+      \u0275\u0275classProp("active", ctx.activeAlertTab() === "VENCIMIENTOS");
+      \u0275\u0275advance(2);
+      \u0275\u0275property("ngIf", ctx.activeAlertTab() === "REORDEN")("ngIfElse", vencimientosPager_r39);
+      \u0275\u0275advance(3);
+      \u0275\u0275property("ngIf", ctx.activeAlertTab() === "REORDEN")("ngIfElse", vencimientosTab_r40);
+      \u0275\u0275advance(7);
+      \u0275\u0275classProp("active", ctx.activeDetailTab() === "STOCK");
+      \u0275\u0275advance(2);
+      \u0275\u0275classProp("active", ctx.activeDetailTab() === "MOVIMIENTOS");
+      \u0275\u0275advance(2);
+      \u0275\u0275property("ngIf", ctx.activeDetailTab() === "STOCK")("ngIfElse", movimientosPager_r41);
+      \u0275\u0275advance(3);
+      \u0275\u0275property("ngIf", ctx.activeDetailTab() === "STOCK")("ngIfElse", movimientosTab_r42);
+      \u0275\u0275advance(3);
+      \u0275\u0275property("ngIf", ctx.modal());
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.modal() === "INSUMO");
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.modal() === "STOCK");
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.modal() === "MOVIMIENTO");
+    }
+  }, dependencies: [CommonModule, NgForOf, NgIf, FormsModule, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, SelectControlValueAccessor, NgControlStatus, NgModel, RemoteSearchSelectComponent], styles: ["\n[_nghost-%COMP%] {\n  display: block;\n  color: #fff;\n}\n.insumos-page[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 24px;\n  padding-bottom: 36px;\n}\n.page-hero[_ngcontent-%COMP%] {\n  align-items: flex-start;\n  display: flex;\n  justify-content: space-between;\n  gap: 24px;\n}\n.eyebrow[_ngcontent-%COMP%] {\n  color: #9fe870;\n  font-size: 0.78rem;\n  font-weight: 800;\n  letter-spacing: 0.14em;\n  margin: 0 0 10px;\n  text-transform: uppercase;\n}\n.page-hero[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: clamp(2.4rem, 5vw, 4.2rem);\n  letter-spacing: -0.06em;\n  line-height: 0.95;\n  margin: 0;\n}\n.page-hero[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n  font-size: 1.08rem;\n  line-height: 1.6;\n  margin: 14px 0 0;\n  max-width: 760px;\n}\n.hero-actions[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 12px;\n  justify-content: flex-end;\n}\nbutton[_ngcontent-%COMP%] {\n  border: 0;\n  cursor: pointer;\n  font: inherit;\n}\n.btn-primary[_ngcontent-%COMP%], \n.btn-secondary[_ngcontent-%COMP%] {\n  align-items: center;\n  border-radius: 16px;\n  display: inline-flex;\n  font-weight: 700;\n  min-height: 52px;\n  padding: 0 20px;\n}\n.btn-primary[_ngcontent-%COMP%] {\n  background: #4f8a05;\n  color: #fff;\n  box-shadow: 0 18px 42px rgba(79, 138, 5, 0.24);\n}\n.btn-secondary[_ngcontent-%COMP%] {\n  background: rgba(255, 255, 255, 0.07);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  color: #fff;\n}\n.compact[_ngcontent-%COMP%] {\n  border-radius: 14px;\n  font-size: 0.92rem;\n  min-height: 42px;\n  padding: 0 14px;\n}\n.kpi-grid[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 16px;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n}\n.kpi-card[_ngcontent-%COMP%], \n.filters-card[_ngcontent-%COMP%], \n.panel[_ngcontent-%COMP%], \n.modal[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      145deg,\n      rgba(16, 31, 59, 0.92),\n      rgba(8, 18, 37, 0.96));\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 24px;\n  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.kpi-card[_ngcontent-%COMP%] {\n  align-items: center;\n  display: flex;\n  gap: 16px;\n  min-height: 112px;\n  padding: 22px;\n}\n.kpi-icon[_ngcontent-%COMP%] {\n  align-items: center;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 18px;\n  color: #9fe870;\n  display: grid;\n  height: 58px;\n  place-items: center;\n  width: 58px;\n}\n.kpi-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.nav-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  fill: none;\n  height: 24px;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 2;\n  width: 24px;\n}\n.kpi-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n  display: block;\n  font-size: 0.88rem;\n}\n.kpi-card[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  font-size: 2rem;\n  letter-spacing: -0.04em;\n  margin-top: 2px;\n}\n.kpi-card[_ngcontent-%COMP%]   em[_ngcontent-%COMP%] {\n  color: #9fe870;\n  display: block;\n  font-style: normal;\n  margin-top: 4px;\n}\n.tone-orange[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%], \n.tone-orange[_ngcontent-%COMP%]   em[_ngcontent-%COMP%] {\n  color: #ffb84d;\n}\n.tone-red[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%], \n.tone-red[_ngcontent-%COMP%]   em[_ngcontent-%COMP%] {\n  color: #ff6b6b;\n}\n.tone-blue[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%], \n.tone-blue[_ngcontent-%COMP%]   em[_ngcontent-%COMP%] {\n  color: #6ea8ff;\n}\n.filters-card[_ngcontent-%COMP%] {\n  align-items: end;\n  display: grid;\n  gap: 14px;\n  grid-template-columns: 1.8fr 1fr 1fr auto;\n  padding: 22px;\n}\nlabel[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n  display: grid;\n  font-size: 0.9rem;\n  gap: 8px;\n}\ninput[_ngcontent-%COMP%], \nselect[_ngcontent-%COMP%], \ntextarea[_ngcontent-%COMP%] {\n  background: #081225;\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 16px;\n  color: #fff;\n  min-height: 48px;\n  outline: none;\n  padding: 0 14px;\n}\ntextarea[_ngcontent-%COMP%] {\n  min-height: 96px;\n  padding-top: 14px;\n  resize: vertical;\n}\n.content-grid[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 18px;\n  grid-template-columns: minmax(0, 1fr);\n}\n.panel[_ngcontent-%COMP%] {\n  min-width: 0;\n  overflow: hidden;\n}\n.panel-head[_ngcontent-%COMP%] {\n  align-items: center;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n  display: flex;\n  justify-content: space-between;\n  padding: 18px 22px;\n}\n.panel-head[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  font-size: 1rem;\n  margin: 0;\n}\n.panel-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n  margin: 4px 0 0;\n}\n.panel-actions[_ngcontent-%COMP%] {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 10px;\n  justify-content: flex-start;\n}\n.tabbed-head[_ngcontent-%COMP%] {\n  align-items: center;\n  gap: 18px;\n  justify-content: space-between;\n}\n.table-tabs[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 8px;\n}\n.table-tabs[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  background: rgba(7, 15, 31, 0.42);\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #a6b0cf;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 12px;\n  font-weight: 800;\n  gap: 9px;\n  min-height: 40px;\n  padding: 10px 12px;\n}\n.table-tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  background: rgba(159, 232, 112, 0.1);\n  border-color: rgba(159, 232, 112, 0.34);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.table-pager[_ngcontent-%COMP%] {\n  align-items: center;\n  color: #8ea0bb;\n  display: flex;\n  flex-wrap: wrap;\n  font-size: 12px;\n  font-weight: 800;\n  gap: 8px;\n  justify-content: flex-end;\n  white-space: nowrap;\n}\n.table-pager[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  align-items: center;\n  background: rgba(7, 15, 31, 0.42);\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #8ea0bb;\n  display: inline-flex;\n  font-size: 12px;\n  font-weight: 800;\n  height: 38px;\n  justify-content: center;\n  min-width: 38px;\n  padding: 0;\n}\n.table-pager[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  background: rgba(159, 232, 112, 0.1);\n  border-color: rgba(159, 232, 112, 0.34);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.table-pager[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:disabled {\n  cursor: not-allowed;\n  opacity: 0.42;\n}\n.table-pager[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  fill: none;\n  height: 18px;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n  width: 18px;\n}\n.page-size-select[_ngcontent-%COMP%] {\n  align-items: center;\n  display: inline-flex;\n  gap: 8px;\n}\n.page-size-select[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #7f91ac;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n}\n.page-size-select[_ngcontent-%COMP%]   select[_ngcontent-%COMP%] {\n  background: rgba(7, 15, 31, 0.42);\n  border-color: rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #dbe7f6;\n  font-size: 12px;\n  font-weight: 800;\n  min-height: 38px;\n  min-width: 70px;\n  padding: 0 10px;\n}\n.table-wrap[_ngcontent-%COMP%] {\n  background: rgba(7, 15, 31, 0.34);\n  border: 1px solid rgba(148, 163, 184, 0.1);\n  border-radius: 16px;\n  margin: 0 18px 18px;\n  overflow: auto;\n}\ntable[_ngcontent-%COMP%] {\n  border-collapse: separate;\n  border-spacing: 0;\n  min-width: 980px;\n  width: 100%;\n}\n.small[_ngcontent-%COMP%]   table[_ngcontent-%COMP%] {\n  min-width: 620px;\n}\nth[_ngcontent-%COMP%], \ntd[_ngcontent-%COMP%] {\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  color: #b9c7da;\n  font-size: 12px;\n  padding: 13px 10px;\n  text-align: left;\n  vertical-align: middle;\n}\nth[_ngcontent-%COMP%] {\n  border-bottom-color: rgba(148, 163, 184, 0.1);\n  color: #7f91ac;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n}\ntbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%] {\n  transition: background 0.16s ease, box-shadow 0.16s ease;\n}\ntbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover {\n  background: rgba(159, 232, 112, 0.055);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, 0.78);\n}\ntbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:last-child   td[_ngcontent-%COMP%] {\n  border-bottom: 0;\n}\ntd[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n}\ntd[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n  display: block;\n  margin-top: 4px;\n}\n.pill[_ngcontent-%COMP%], \n.status[_ngcontent-%COMP%] {\n  border-radius: 999px;\n  display: inline-flex;\n  font-size: 0.78rem;\n  font-weight: 700;\n  padding: 6px 10px;\n}\n.pill[_ngcontent-%COMP%] {\n  background: rgba(110, 168, 255, 0.11);\n  color: #6ea8ff;\n}\n.status.ok[_ngcontent-%COMP%] {\n  background: rgba(159, 232, 112, 0.1);\n  color: #9fe870;\n}\n.status.warning[_ngcontent-%COMP%] {\n  background: rgba(255, 184, 77, 0.12);\n  color: #ffb84d;\n}\n.status.danger[_ngcontent-%COMP%] {\n  background: rgba(255, 107, 107, 0.12);\n  color: #ff6b6b;\n}\n.actions-cell[_ngcontent-%COMP%] {\n  white-space: nowrap;\n}\n.actions-cell[_ngcontent-%COMP%]   button[_ngcontent-%COMP%], \n.pager[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  background: rgba(255, 255, 255, 0.06);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 12px;\n  color: #fff;\n  margin-left: 6px;\n  min-height: 36px;\n  padding: 0 12px;\n}\n.actions-cell[_ngcontent-%COMP%]   button.danger-action[_ngcontent-%COMP%] {\n  background: rgba(255, 107, 107, 0.1);\n  border-color: rgba(255, 107, 107, 0.24);\n  color: #ff8f8f;\n}\n.pager[_ngcontent-%COMP%] {\n  align-items: center;\n  color: #a6b0cf;\n  display: flex;\n  justify-content: space-between;\n  padding: 16px 22px;\n}\n.mini-list[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 10px;\n  padding: 18px;\n}\n.mini-row[_ngcontent-%COMP%] {\n  align-items: center;\n  background: rgba(8, 18, 37, 0.68);\n  border: 1px solid rgba(255, 255, 255, 0.06);\n  border-radius: 16px;\n  display: flex;\n  gap: 12px;\n  padding: 14px;\n}\n.mini-row[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.empty-box[_ngcontent-%COMP%], \n.empty-cell[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n}\n.dot[_ngcontent-%COMP%] {\n  border-radius: 999px;\n  height: 10px;\n  width: 10px;\n}\n.dot.red[_ngcontent-%COMP%] {\n  background: #ff6b6b;\n  box-shadow: 0 0 16px rgba(255, 107, 107, 0.55);\n}\n.dot.orange[_ngcontent-%COMP%] {\n  background: #ffb84d;\n  box-shadow: 0 0 16px rgba(255, 184, 77, 0.55);\n}\n.empty-box[_ngcontent-%COMP%], \n.empty-cell[_ngcontent-%COMP%] {\n  padding: 18px;\n}\n.error-box[_ngcontent-%COMP%] {\n  background: rgba(255, 107, 107, 0.12);\n  border: 1px solid rgba(255, 107, 107, 0.22);\n  border-radius: 16px;\n  color: #ffb3b3;\n  margin: 0;\n  padding: 14px 18px;\n}\n.modal-backdrop[_ngcontent-%COMP%] {\n  background: rgba(0, 0, 0, 0.55);\n  inset: 0;\n  position: fixed;\n  z-index: 60;\n}\n.modal[_ngcontent-%COMP%] {\n  left: 50%;\n  max-height: 88vh;\n  max-width: 880px;\n  overflow-y: auto;\n  padding: 26px;\n  position: fixed;\n  top: 50%;\n  transform: translate(-50%, -50%);\n  width: min(92vw, 880px);\n  z-index: 70;\n}\n.modal[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 1.5rem;\n  margin: 0 0 20px;\n}\n.modal-close[_ngcontent-%COMP%] {\n  align-items: center;\n  background: rgba(255, 255, 255, 0.08);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  border-radius: 999px;\n  color: #fff;\n  display: grid;\n  font-size: 1.2rem;\n  height: 34px;\n  place-items: center;\n  position: absolute;\n  right: 18px;\n  top: 18px;\n  width: 34px;\n}\n.form-grid[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 14px;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n.wide[_ngcontent-%COMP%] {\n  margin-top: 14px;\n}\n.modal-submit[_ngcontent-%COMP%] {\n  justify-content: center;\n  margin-top: 18px;\n  width: 100%;\n}\n@media (max-width: 1280px) {\n  .kpi-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n}\n@media (max-width: 780px) {\n  .page-hero[_ngcontent-%COMP%], \n   .hero-actions[_ngcontent-%COMP%], \n   .panel-actions[_ngcontent-%COMP%], \n   .tabbed-head[_ngcontent-%COMP%], \n   .pager[_ngcontent-%COMP%] {\n    align-items: stretch;\n    flex-direction: column;\n  }\n  .table-pager[_ngcontent-%COMP%] {\n    justify-content: flex-start;\n    white-space: normal;\n  }\n  .kpi-grid[_ngcontent-%COMP%], \n   .filters-card[_ngcontent-%COMP%], \n   .content-grid.alerts-row[_ngcontent-%COMP%], \n   .form-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .table-tabs[_ngcontent-%COMP%] {\n    display: grid;\n    width: 100%;\n  }\n}\n/*# sourceMappingURL=agricola-insumos-page.component.css.map */"] });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AgricolaInsumosPageComponent, [{
+    type: Component,
+    args: [{ selector: "app-agricola-insumos-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<section class="insumos-page">
+  <header class="page-hero">
+    <div>
+      <p class="eyebrow">Campo App \xB7 Agricultura</p>
+      <h1>Inventario de insumos</h1>
+      <p>Stock, vencimientos, reorden y trazabilidad de uso de semillas, fertilizantes y fitosanitarios.</p>
+    </div>
+    <div class="hero-actions">
+      <button class="btn-secondary" type="button" (click)="openStockModal()">Registrar stock</button>
+      <button class="btn-secondary" type="button" (click)="openMovimientoModal()">Registrar uso</button>
+      <button class="btn-primary" type="button" (click)="openInsumoModal()">Nuevo insumo</button>
+    </div>
+  </header>
+
+  <div class="kpi-grid">
+    <article class="kpi-card" *ngFor="let kpi of kpis()" [class]="'kpi-card tone-' + kpi.tone">
+      <span class="kpi-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4Z" /><path d="M4 7v10l8 4 8-4V7" /><path d="M12 11v10" /></svg>
+      </span>
+      <div>
+        <small>{{ kpi.label }}</small>
+        <strong>{{ kpi.value }}</strong>
+        <em>{{ kpi.sub }}</em>
+      </div>
+    </article>
+  </div>
+
+  <section class="filters-card">
+    <label>
+      <span>Buscar</span>
+      <input placeholder="Codigo, nombre, marca o principio activo" [ngModel]="filters().search" (ngModelChange)="filters.update(f => ({ ...f, search: $event }))" />
+    </label>
+    <label>
+      <span>Tipo</span>
+      <select [ngModel]="filters().tipo" (ngModelChange)="filters.update(f => ({ ...f, tipo: $event }))">
+        <option value="">Todos</option>
+        <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
+      </select>
+    </label>
+    <label>
+      <span>Estado</span>
+      <select [ngModel]="filters().activo" (ngModelChange)="filters.update(f => ({ ...f, activo: $event }))">
+        <option value="">Todos</option>
+        <option value="true">Activos</option>
+        <option value="false">Inactivos</option>
+      </select>
+    </label>
+    <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>
+  </section>
+
+  <p class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+  <section class="content-grid catalog-row">
+    <article class="panel">
+      <div class="panel-head">
+        <div class="panel-actions">
+          <button class="btn-secondary compact" type="button" (click)="openStockModal()">Registrar stock</button>
+          <button class="btn-secondary compact" type="button" (click)="openMovimientoModal()">Registrar uso</button>
+          <button class="btn-primary compact" type="button" (click)="openInsumoModal()">Nuevo insumo</button>
+        </div>
+        <div class="table-pager">
+          <label class="page-size-select">
+            <span>Mostrar</span>
+            <select [ngModel]="insumoPageSize()" (ngModelChange)="setInsumoPageSize($event)">
+              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+            </select>
+          </label>
+          <span>{{ insumosPage()?.totalElements || 0 }} registros</span>
+          <button type="button" (click)="changeInsumoPage(-1)" [disabled]="(insumosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+          <button type="button" *ngFor="let page of pageNumbers(insumosPage())" [class.active]="page === ((insumosPage()?.number || 0) + 1)" (click)="setInsumoPage(page)">{{ page }}</button>
+          <button type="button" (click)="changeInsumoPage(1)" [disabled]="((insumosPage()?.number || 0) + 1) >= (insumosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Insumo</th>
+              <th>Tipo</th>
+              <th>Stock</th>
+              <th>Minimo</th>
+              <th>Vencimiento</th>
+              <th>Precio unitario</th>
+              <th>Valor stock</th>
+              <th>Alertas</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let insumo of insumosPage()?.content || []">
+              <td>
+                <strong>{{ insumo.nombre }}</strong>
+                <small>{{ insumo.codigo }} \xB7 {{ insumo.marca || 'Sin marca' }}</small>
+              </td>
+              <td><span class="pill">{{ insumo.tipo }}</span></td>
+              <td>{{ number(insumo.stockTotal) }} {{ insumo.unidadMedida }}</td>
+              <td>{{ number(insumo.stockMinimo) }}</td>
+              <td>{{ date(insumo.proximoVencimiento) }}</td>
+              <td>{{ money(insumo.precioUnitario) }}</td>
+              <td>{{ money(insumo.valorStock) }}</td>
+              <td>
+                <span class="status danger" *ngIf="insumo.requiereReorden">Reorden</span>
+                <span class="status warning" *ngIf="insumo.tieneVencimientoProximo">Vence</span>
+                <span class="status ok" *ngIf="!insumo.requiereReorden && !insumo.tieneVencimientoProximo">OK</span>
+              </td>
+              <td class="actions-cell">
+                <button type="button" (click)="openStockModal(insumo)">Stock</button>
+                <button type="button" (click)="openMovimientoModal(insumo)">Uso</button>
+                <button type="button" (click)="openEditInsumoModal(insumo)">Editar</button>
+                <button class="danger-action" type="button" (click)="deleteInsumo(insumo)">Eliminar</button>
+              </td>
+            </tr>
+            <tr *ngIf="!(insumosPage()?.content || []).length">
+              <td colspan="9" class="empty-cell">Sin insumos registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+
+  <section class="content-grid alerts-row">
+    <article class="panel">
+      <div class="panel-head tabbed-head">
+        <div class="table-tabs">
+          <button type="button" [class.active]="activeAlertTab() === 'REORDEN'" (click)="activeAlertTab.set('REORDEN')">Alertas de reorden</button>
+          <button type="button" [class.active]="activeAlertTab() === 'VENCIMIENTOS'" (click)="activeAlertTab.set('VENCIMIENTOS')">Vencimientos proximos</button>
+        </div>
+        <div class="table-pager" *ngIf="activeAlertTab() === 'REORDEN'; else vencimientosPager">
+          <label class="page-size-select">
+            <span>Mostrar</span>
+            <select [ngModel]="reordenPageSize()" (ngModelChange)="setReordenPageSize($event)">
+              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+            </select>
+          </label>
+          <span>{{ reordenPage()?.totalElements || 0 }} registros</span>
+          <button type="button" (click)="changeReordenPage(-1)" [disabled]="(reordenPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+          <button type="button" *ngFor="let page of pageNumbers(reordenPage())" [class.active]="page === ((reordenPage()?.number || 0) + 1)" (click)="setReordenPage(page)">{{ page }}</button>
+          <button type="button" (click)="changeReordenPage(1)" [disabled]="((reordenPage()?.number || 0) + 1) >= (reordenPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+        </div>
+        <ng-template #vencimientosPager>
+          <div class="table-pager">
+            <label class="page-size-select">
+              <span>Mostrar</span>
+              <select [ngModel]="vencimientosPageSize()" (ngModelChange)="setVencimientosPageSize($event)">
+                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+              </select>
+            </label>
+            <span>{{ vencimientosPage()?.totalElements || 0 }} registros</span>
+            <button type="button" (click)="changeVencimientosPage(-1)" [disabled]="(vencimientosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+            <button type="button" *ngFor="let page of pageNumbers(vencimientosPage())" [class.active]="page === ((vencimientosPage()?.number || 0) + 1)" (click)="setVencimientosPage(page)">{{ page }}</button>
+            <button type="button" (click)="changeVencimientosPage(1)" [disabled]="((vencimientosPage()?.number || 0) + 1) >= (vencimientosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+          </div>
+        </ng-template>
+      </div>
+
+      <ng-container *ngIf="activeAlertTab() === 'REORDEN'; else vencimientosTab">
+        <div class="table-wrap small">
+          <table>
+            <thead><tr><th>Insumo</th><th>Tipo</th><th>Stock actual</th><th>Minimo</th><th>Unidad</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let item of reordenPage()?.content || []">
+                <td><strong>{{ item.nombre }}</strong><small>{{ item.codigo }} - {{ item.marca || 'Sin marca' }}</small></td>
+                <td><span class="pill">{{ item.tipo }}</span></td>
+                <td>{{ number(item.stockTotal) }}</td>
+                <td>{{ number(item.stockMinimo) }}</td>
+                <td>{{ item.unidadMedida }}</td>
+                <td><span class="status danger">Reorden</span></td>
+              </tr>
+              <tr *ngIf="!(reordenPage()?.content || []).length">
+                <td colspan="6" class="empty-cell">Sin alertas de reorden.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+      <ng-template #vencimientosTab>
+        <div class="table-wrap small">
+          <table>
+            <thead><tr><th>Insumo</th><th>Lote</th><th>Cantidad</th><th>Deposito</th><th>Responsable</th><th>Vencimiento</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let item of vencimientosPage()?.content || []">
+                <td><strong>{{ item.insumoNombre }}</strong><small>{{ item.insumoCodigo }}</small></td>
+                <td>{{ item.loteStock || 'Sin lote' }}</td>
+                <td>{{ number(item.cantidadDisponible) }}</td>
+                <td>{{ item.ubicacionDeposito || item.deposito || 'Sin dato' }}</td>
+                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>
+                <td><span [class]="item.vencido ? 'status danger' : 'status warning'">{{ date(item.fechaVencimiento) }}</span></td>
+              </tr>
+              <tr *ngIf="!(vencimientosPage()?.content || []).length">
+                <td colspan="6" class="empty-cell">Sin vencimientos proximos.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+    </article>
+  </section>
+  <section class="content-grid detail-row">
+    <article class="panel">
+      <div class="panel-head tabbed-head">
+        <div class="table-tabs">
+          <button type="button" [class.active]="activeDetailTab() === 'STOCK'" (click)="activeDetailTab.set('STOCK')">Stock por lote</button>
+          <button type="button" [class.active]="activeDetailTab() === 'MOVIMIENTOS'" (click)="activeDetailTab.set('MOVIMIENTOS')">Movimientos</button>
+        </div>
+        <div class="table-pager" *ngIf="activeDetailTab() === 'STOCK'; else movimientosPager">
+          <label class="page-size-select">
+            <span>Mostrar</span>
+            <select [ngModel]="stockPageSize()" (ngModelChange)="setStockPageSize($event)">
+              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+            </select>
+          </label>
+          <span>{{ stockPage()?.totalElements || 0 }} registros</span>
+          <button type="button" (click)="changeStockPage(-1)" [disabled]="(stockPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+          <button type="button" *ngFor="let page of pageNumbers(stockPage())" [class.active]="page === ((stockPage()?.number || 0) + 1)" (click)="setStockPage(page)">{{ page }}</button>
+          <button type="button" (click)="changeStockPage(1)" [disabled]="((stockPage()?.number || 0) + 1) >= (stockPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+        </div>
+        <ng-template #movimientosPager>
+          <div class="table-pager">
+            <label class="page-size-select">
+              <span>Mostrar</span>
+              <select [ngModel]="movimientosPageSize()" (ngModelChange)="setMovimientosPageSize($event)">
+                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+              </select>
+            </label>
+            <span>{{ movimientosPage()?.totalElements || 0 }} registros</span>
+            <button type="button" (click)="changeMovimientosPage(-1)" [disabled]="(movimientosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
+            <button type="button" *ngFor="let page of pageNumbers(movimientosPage())" [class.active]="page === ((movimientosPage()?.number || 0) + 1)" (click)="setMovimientosPage(page)">{{ page }}</button>
+            <button type="button" (click)="changeMovimientosPage(1)" [disabled]="((movimientosPage()?.number || 0) + 1) >= (movimientosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
+          </div>
+        </ng-template>
+      </div>
+
+      <ng-container *ngIf="activeDetailTab() === 'STOCK'; else movimientosTab">
+        <div class="table-wrap small">
+          <table>
+          <thead><tr><th>Insumo</th><th>Lote</th><th>Cantidad</th><th>Deposito</th><th>Responsable</th><th>Vence</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let item of stockPage()?.content || []">
+                <td>{{ item.insumoNombre }}</td>
+                <td>{{ item.loteStock || 'Sin lote' }}</td>
+                <td>{{ number(item.cantidadDisponible) }}</td>
+                <td>{{ item.ubicacionDeposito || item.deposito || 'Sin dato' }}</td>
+                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>
+                <td><span [class]="item.vencido ? 'status danger' : item.vencimientoProximo ? 'status warning' : 'status ok'">{{ date(item.fechaVencimiento) }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+      <ng-template #movimientosTab>
+        <div class="table-wrap small">
+          <table>
+            <thead><tr><th>Fecha</th><th>Tipo</th><th>Insumo</th><th>Lote</th><th>Responsable</th><th>Cantidad</th><th>Costo</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let item of movimientosPage()?.content || []">
+                <td>{{ date(item.fecha) }}</td>
+                <td><span class="pill">{{ item.tipoMovimiento }}</span></td>
+                <td>{{ item.insumoNombre }}</td>
+                <td>{{ item.loteNombre || item.destino || 'Sin lote' }}</td>
+                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>
+                <td>{{ number(item.cantidad) }}</td>
+                <td>{{ item.costoTotal ? money(item.costoTotal) : 'Sin costo' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+    </article>
+  </section>
+</section>
+
+<div class="modal-backdrop" *ngIf="modal()" (click)="closeModal()"></div>
+
+<section class="modal" *ngIf="modal() === 'INSUMO'">
+  <button class="modal-close" type="button" (click)="closeModal()">\xD7</button>
+  <h3>{{ editingInsumoId() ? 'Editar insumo' : 'Nuevo insumo' }}</h3>
+  <div class="form-grid">
+    <label><span>Codigo</span><input [ngModel]="insumoForm().codigo" (ngModelChange)="insumoForm.update(f => ({ ...f, codigo: $event }))" /></label>
+    <label><span>Nombre</span><input [ngModel]="insumoForm().nombre" (ngModelChange)="insumoForm.update(f => ({ ...f, nombre: $event }))" /></label>
+    <label><span>Tipo</span><select [ngModel]="insumoForm().tipo" (ngModelChange)="insumoForm.update(f => ({ ...f, tipo: $event }))"><option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option></select></label>
+    <label><span>Unidad</span><select [ngModel]="insumoForm().unidadMedida" (ngModelChange)="insumoForm.update(f => ({ ...f, unidadMedida: $event }))"><option *ngFor="let unidad of unidadOptions" [value]="unidad">{{ unidad }}</option></select></label>
+    <label><span>Marca</span><input [ngModel]="insumoForm().marca" (ngModelChange)="insumoForm.update(f => ({ ...f, marca: $event }))" /></label>
+    <label><span>Presentacion</span><input [ngModel]="insumoForm().presentacion" (ngModelChange)="insumoForm.update(f => ({ ...f, presentacion: $event }))" /></label>
+    <label><span>Precio unitario</span><input type="number" [ngModel]="insumoForm().precioUnitario" (ngModelChange)="insumoForm.update(f => ({ ...f, precioUnitario: $event }))" /></label>
+    <label><span>Stock minimo</span><input type="number" [ngModel]="insumoForm().stockMinimo" (ngModelChange)="insumoForm.update(f => ({ ...f, stockMinimo: $event }))" /></label>
+    <label><span>Stock maximo</span><input type="number" [ngModel]="insumoForm().stockMaximo" (ngModelChange)="insumoForm.update(f => ({ ...f, stockMaximo: $event }))" /></label>
+    <label><span>Principio activo</span><input [ngModel]="insumoForm().principioActivo" (ngModelChange)="insumoForm.update(f => ({ ...f, principioActivo: $event }))" /></label>
+    <label><span>Proveedor</span><input [ngModel]="insumoForm().proveedor" (ngModelChange)="insumoForm.update(f => ({ ...f, proveedor: $event }))" /></label>
+    <label><span>Origen</span><input [ngModel]="insumoForm().origen" (ngModelChange)="insumoForm.update(f => ({ ...f, origen: $event }))" /></label>
+  </div>
+  <label class="wide"><span>Descripcion</span><textarea [ngModel]="insumoForm().descripcion" (ngModelChange)="insumoForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitInsumo()">{{ editingInsumoId() ? 'Actualizar insumo' : 'Guardar insumo' }}</button>
+</section>
+
+<section class="modal" *ngIf="modal() === 'STOCK'">
+  <button class="modal-close" type="button" (click)="closeModal()">\xD7</button>
+  <h3>Registrar stock</h3>
+  <div class="form-grid">
+    <label><span>Insumo</span><select [ngModel]="stockForm().insumoId" (ngModelChange)="stockForm.update(f => ({ ...f, insumoId: $event }))"><option value="">Seleccionar</option><option *ngFor="let insumo of insumosActivos()" [value]="insumo.id">{{ insumo.nombre }}</option></select></label>
+    <label><span>Lote / partida</span><input [ngModel]="stockForm().loteStock" (ngModelChange)="stockForm.update(f => ({ ...f, loteStock: $event }))" /></label>
+    <label><span>Cantidad</span><input type="number" [ngModel]="stockForm().cantidadDisponible" (ngModelChange)="stockForm.update(f => ({ ...f, cantidadDisponible: $event }))" /></label>
+    <label><span>Vencimiento</span><input type="date" [ngModel]="stockForm().fechaVencimiento" (ngModelChange)="stockForm.update(f => ({ ...f, fechaVencimiento: $event }))" /></label>
+    <label><span>Deposito</span><input [ngModel]="stockForm().deposito" (ngModelChange)="stockForm.update(f => ({ ...f, deposito: $event }))" /></label>
+    <label><span>Ubicacion</span><input [ngModel]="stockForm().ubicacionDeposito" (ngModelChange)="stockForm.update(f => ({ ...f, ubicacionDeposito: $event }))" /></label>
+    <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="stockForm().responsableId" (valueChange)="stockForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>
+  </div>
+  <label class="wide"><span>Observaciones</span><textarea [ngModel]="stockForm().observaciones" (ngModelChange)="stockForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitStock()">Guardar stock</button>
+</section>
+
+<section class="modal" *ngIf="modal() === 'MOVIMIENTO'">
+  <button class="modal-close" type="button" (click)="closeModal()">\xD7</button>
+  <h3>Registrar movimiento</h3>
+  <div class="form-grid">
+    <app-remote-search-select label="Insumo" placeholder="Buscar insumo" [options]="insumosSelectOptions()" valueField="id" labelField="nombre" [subtitleFields]="['codigo','tipo']" [searchFields]="['nombre','codigo','tipo','marca','principioActivo']" [value]="movimientoForm().insumoId" (valueChange)="updateMovimientoInsumo($event)"></app-remote-search-select>
+    <label><span>Lote de stock</span><select [ngModel]="movimientoForm().stockId" (ngModelChange)="movimientoForm.update(f => ({ ...f, stockId: $event }))"><option value="">Sin stock asociado</option><option *ngFor="let stock of stockDisponibleSeleccionado()" [value]="stock.id">{{ stock.loteStock || stock.insumoCodigo }} \xB7 {{ number(stock.cantidadDisponible) }}</option></select></label>
+    <label><span>Tipo</span><select [ngModel]="movimientoForm().tipoMovimiento" (ngModelChange)="movimientoForm.update(f => ({ ...f, tipoMovimiento: $event }))"><option *ngFor="let tipo of movimientoOptions" [value]="tipo">{{ tipo }}</option></select></label>
+    <label><span>Fecha</span><input type="datetime-local" [ngModel]="movimientoForm().fecha" (ngModelChange)="movimientoForm.update(f => ({ ...f, fecha: $event }))" /></label>
+    <label><span>Cantidad</span><input type="number" [ngModel]="movimientoForm().cantidad" (ngModelChange)="movimientoForm.update(f => ({ ...f, cantidad: $event }))" /></label>
+    <label><span>Costo unitario</span><input type="number" [ngModel]="movimientoForm().costoUnitario" (ngModelChange)="movimientoForm.update(f => ({ ...f, costoUnitario: $event }))" /></label>
+    <label><span>Lote agricola</span><select [ngModel]="movimientoForm().loteId" (ngModelChange)="movimientoForm.update(f => ({ ...f, loteId: $event }))"><option value="">No aplica</option><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
+    <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="movimientoForm().responsableId" (valueChange)="movimientoForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>
+    <label><span>Tarea referencia</span><input [ngModel]="movimientoForm().tareaReferencia" (ngModelChange)="movimientoForm.update(f => ({ ...f, tareaReferencia: $event }))" /></label>
+    <label><span>Proveedor</span><input [ngModel]="movimientoForm().proveedor" (ngModelChange)="movimientoForm.update(f => ({ ...f, proveedor: $event }))" /></label>
+  </div>
+  <label class="wide"><span>Observaciones</span><textarea [ngModel]="movimientoForm().observaciones" (ngModelChange)="movimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitMovimiento()">Guardar movimiento</button>
+</section>
+`, styles: ["/* src/app/pages/agricola-insumos-page/agricola-insumos-page.component.css */\n:host {\n  display: block;\n  color: #fff;\n}\n.insumos-page {\n  display: grid;\n  gap: 24px;\n  padding-bottom: 36px;\n}\n.page-hero {\n  align-items: flex-start;\n  display: flex;\n  justify-content: space-between;\n  gap: 24px;\n}\n.eyebrow {\n  color: #9fe870;\n  font-size: 0.78rem;\n  font-weight: 800;\n  letter-spacing: 0.14em;\n  margin: 0 0 10px;\n  text-transform: uppercase;\n}\n.page-hero h1 {\n  font-size: clamp(2.4rem, 5vw, 4.2rem);\n  letter-spacing: -0.06em;\n  line-height: 0.95;\n  margin: 0;\n}\n.page-hero p {\n  color: #a6b0cf;\n  font-size: 1.08rem;\n  line-height: 1.6;\n  margin: 14px 0 0;\n  max-width: 760px;\n}\n.hero-actions {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 12px;\n  justify-content: flex-end;\n}\nbutton {\n  border: 0;\n  cursor: pointer;\n  font: inherit;\n}\n.btn-primary,\n.btn-secondary {\n  align-items: center;\n  border-radius: 16px;\n  display: inline-flex;\n  font-weight: 700;\n  min-height: 52px;\n  padding: 0 20px;\n}\n.btn-primary {\n  background: #4f8a05;\n  color: #fff;\n  box-shadow: 0 18px 42px rgba(79, 138, 5, 0.24);\n}\n.btn-secondary {\n  background: rgba(255, 255, 255, 0.07);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  color: #fff;\n}\n.compact {\n  border-radius: 14px;\n  font-size: 0.92rem;\n  min-height: 42px;\n  padding: 0 14px;\n}\n.kpi-grid {\n  display: grid;\n  gap: 16px;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n}\n.kpi-card,\n.filters-card,\n.panel,\n.modal {\n  background:\n    linear-gradient(\n      145deg,\n      rgba(16, 31, 59, 0.92),\n      rgba(8, 18, 37, 0.96));\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 24px;\n  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.kpi-card {\n  align-items: center;\n  display: flex;\n  gap: 16px;\n  min-height: 112px;\n  padding: 22px;\n}\n.kpi-icon {\n  align-items: center;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 18px;\n  color: #9fe870;\n  display: grid;\n  height: 58px;\n  place-items: center;\n  width: 58px;\n}\n.kpi-icon svg,\n.nav-icon svg {\n  fill: none;\n  height: 24px;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 2;\n  width: 24px;\n}\n.kpi-card small {\n  color: #a6b0cf;\n  display: block;\n  font-size: 0.88rem;\n}\n.kpi-card strong {\n  display: block;\n  font-size: 2rem;\n  letter-spacing: -0.04em;\n  margin-top: 2px;\n}\n.kpi-card em {\n  color: #9fe870;\n  display: block;\n  font-style: normal;\n  margin-top: 4px;\n}\n.tone-orange .kpi-icon,\n.tone-orange em {\n  color: #ffb84d;\n}\n.tone-red .kpi-icon,\n.tone-red em {\n  color: #ff6b6b;\n}\n.tone-blue .kpi-icon,\n.tone-blue em {\n  color: #6ea8ff;\n}\n.filters-card {\n  align-items: end;\n  display: grid;\n  gap: 14px;\n  grid-template-columns: 1.8fr 1fr 1fr auto;\n  padding: 22px;\n}\nlabel {\n  color: #a6b0cf;\n  display: grid;\n  font-size: 0.9rem;\n  gap: 8px;\n}\ninput,\nselect,\ntextarea {\n  background: #081225;\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 16px;\n  color: #fff;\n  min-height: 48px;\n  outline: none;\n  padding: 0 14px;\n}\ntextarea {\n  min-height: 96px;\n  padding-top: 14px;\n  resize: vertical;\n}\n.content-grid {\n  display: grid;\n  gap: 18px;\n  grid-template-columns: minmax(0, 1fr);\n}\n.panel {\n  min-width: 0;\n  overflow: hidden;\n}\n.panel-head {\n  align-items: center;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n  display: flex;\n  justify-content: space-between;\n  padding: 18px 22px;\n}\n.panel-head h2 {\n  font-size: 1rem;\n  margin: 0;\n}\n.panel-head p {\n  color: #a6b0cf;\n  margin: 4px 0 0;\n}\n.panel-actions {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 10px;\n  justify-content: flex-start;\n}\n.tabbed-head {\n  align-items: center;\n  gap: 18px;\n  justify-content: space-between;\n}\n.table-tabs {\n  display: inline-flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 8px;\n}\n.table-tabs button {\n  background: rgba(7, 15, 31, 0.42);\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #a6b0cf;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 12px;\n  font-weight: 800;\n  gap: 9px;\n  min-height: 40px;\n  padding: 10px 12px;\n}\n.table-tabs button.active {\n  background: rgba(159, 232, 112, 0.1);\n  border-color: rgba(159, 232, 112, 0.34);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.table-pager {\n  align-items: center;\n  color: #8ea0bb;\n  display: flex;\n  flex-wrap: wrap;\n  font-size: 12px;\n  font-weight: 800;\n  gap: 8px;\n  justify-content: flex-end;\n  white-space: nowrap;\n}\n.table-pager button {\n  align-items: center;\n  background: rgba(7, 15, 31, 0.42);\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #8ea0bb;\n  display: inline-flex;\n  font-size: 12px;\n  font-weight: 800;\n  height: 38px;\n  justify-content: center;\n  min-width: 38px;\n  padding: 0;\n}\n.table-pager button.active {\n  background: rgba(159, 232, 112, 0.1);\n  border-color: rgba(159, 232, 112, 0.34);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.table-pager button:disabled {\n  cursor: not-allowed;\n  opacity: 0.42;\n}\n.table-pager svg {\n  fill: none;\n  height: 18px;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n  width: 18px;\n}\n.page-size-select {\n  align-items: center;\n  display: inline-flex;\n  gap: 8px;\n}\n.page-size-select span {\n  color: #7f91ac;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n}\n.page-size-select select {\n  background: rgba(7, 15, 31, 0.42);\n  border-color: rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #dbe7f6;\n  font-size: 12px;\n  font-weight: 800;\n  min-height: 38px;\n  min-width: 70px;\n  padding: 0 10px;\n}\n.table-wrap {\n  background: rgba(7, 15, 31, 0.34);\n  border: 1px solid rgba(148, 163, 184, 0.1);\n  border-radius: 16px;\n  margin: 0 18px 18px;\n  overflow: auto;\n}\ntable {\n  border-collapse: separate;\n  border-spacing: 0;\n  min-width: 980px;\n  width: 100%;\n}\n.small table {\n  min-width: 620px;\n}\nth,\ntd {\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  color: #b9c7da;\n  font-size: 12px;\n  padding: 13px 10px;\n  text-align: left;\n  vertical-align: middle;\n}\nth {\n  border-bottom-color: rgba(148, 163, 184, 0.1);\n  color: #7f91ac;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n}\ntbody tr {\n  transition: background 0.16s ease, box-shadow 0.16s ease;\n}\ntbody tr:hover {\n  background: rgba(159, 232, 112, 0.055);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, 0.78);\n}\ntbody tr:last-child td {\n  border-bottom: 0;\n}\ntd strong {\n  color: #f8fbff;\n}\ntd small {\n  color: #a6b0cf;\n  display: block;\n  margin-top: 4px;\n}\n.pill,\n.status {\n  border-radius: 999px;\n  display: inline-flex;\n  font-size: 0.78rem;\n  font-weight: 700;\n  padding: 6px 10px;\n}\n.pill {\n  background: rgba(110, 168, 255, 0.11);\n  color: #6ea8ff;\n}\n.status.ok {\n  background: rgba(159, 232, 112, 0.1);\n  color: #9fe870;\n}\n.status.warning {\n  background: rgba(255, 184, 77, 0.12);\n  color: #ffb84d;\n}\n.status.danger {\n  background: rgba(255, 107, 107, 0.12);\n  color: #ff6b6b;\n}\n.actions-cell {\n  white-space: nowrap;\n}\n.actions-cell button,\n.pager button {\n  background: rgba(255, 255, 255, 0.06);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 12px;\n  color: #fff;\n  margin-left: 6px;\n  min-height: 36px;\n  padding: 0 12px;\n}\n.actions-cell button.danger-action {\n  background: rgba(255, 107, 107, 0.1);\n  border-color: rgba(255, 107, 107, 0.24);\n  color: #ff8f8f;\n}\n.pager {\n  align-items: center;\n  color: #a6b0cf;\n  display: flex;\n  justify-content: space-between;\n  padding: 16px 22px;\n}\n.mini-list {\n  display: grid;\n  gap: 10px;\n  padding: 18px;\n}\n.mini-row {\n  align-items: center;\n  background: rgba(8, 18, 37, 0.68);\n  border: 1px solid rgba(255, 255, 255, 0.06);\n  border-radius: 16px;\n  display: flex;\n  gap: 12px;\n  padding: 14px;\n}\n.mini-row small,\n.empty-box,\n.empty-cell {\n  color: #a6b0cf;\n}\n.dot {\n  border-radius: 999px;\n  height: 10px;\n  width: 10px;\n}\n.dot.red {\n  background: #ff6b6b;\n  box-shadow: 0 0 16px rgba(255, 107, 107, 0.55);\n}\n.dot.orange {\n  background: #ffb84d;\n  box-shadow: 0 0 16px rgba(255, 184, 77, 0.55);\n}\n.empty-box,\n.empty-cell {\n  padding: 18px;\n}\n.error-box {\n  background: rgba(255, 107, 107, 0.12);\n  border: 1px solid rgba(255, 107, 107, 0.22);\n  border-radius: 16px;\n  color: #ffb3b3;\n  margin: 0;\n  padding: 14px 18px;\n}\n.modal-backdrop {\n  background: rgba(0, 0, 0, 0.55);\n  inset: 0;\n  position: fixed;\n  z-index: 60;\n}\n.modal {\n  left: 50%;\n  max-height: 88vh;\n  max-width: 880px;\n  overflow-y: auto;\n  padding: 26px;\n  position: fixed;\n  top: 50%;\n  transform: translate(-50%, -50%);\n  width: min(92vw, 880px);\n  z-index: 70;\n}\n.modal h3 {\n  font-size: 1.5rem;\n  margin: 0 0 20px;\n}\n.modal-close {\n  align-items: center;\n  background: rgba(255, 255, 255, 0.08);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  border-radius: 999px;\n  color: #fff;\n  display: grid;\n  font-size: 1.2rem;\n  height: 34px;\n  place-items: center;\n  position: absolute;\n  right: 18px;\n  top: 18px;\n  width: 34px;\n}\n.form-grid {\n  display: grid;\n  gap: 14px;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n.wide {\n  margin-top: 14px;\n}\n.modal-submit {\n  justify-content: center;\n  margin-top: 18px;\n  width: 100%;\n}\n@media (max-width: 1280px) {\n  .kpi-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n}\n@media (max-width: 780px) {\n  .page-hero,\n  .hero-actions,\n  .panel-actions,\n  .tabbed-head,\n  .pager {\n    align-items: stretch;\n    flex-direction: column;\n  }\n  .table-pager {\n    justify-content: flex-start;\n    white-space: normal;\n  }\n  .kpi-grid,\n  .filters-card,\n  .content-grid.alerts-row,\n  .form-grid {\n    grid-template-columns: 1fr;\n  }\n  .table-tabs {\n    display: grid;\n    width: 100%;\n  }\n}\n/*# sourceMappingURL=agricola-insumos-page.component.css.map */\n"] }]
+  }], null, null);
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AgricolaInsumosPageComponent, { className: "AgricolaInsumosPageComponent", filePath: "src/app/pages/agricola-insumos-page/agricola-insumos-page.component.ts", lineNumber: 31 });
+})();
+
 // src/app/pages/ganaderia-trazabilidad-page/ganaderia-trazabilidad-page.component.ts
-var _c03 = () => ["aptitud", "tipoGenetico"];
-var _c12 = () => ["nombre", "codigo", "aptitud", "tipoGenetico"];
-var _c22 = () => ["tipoUso", "estado"];
-var _c32 = () => ["nombre", "tipoUso", "estado"];
-var _c42 = () => ["raza", "potreroNombre"];
+var _c04 = () => ["aptitud", "tipoGenetico"];
+var _c13 = () => ["nombre", "codigo", "aptitud", "tipoGenetico"];
+var _c23 = () => ["tipoUso", "estado"];
+var _c33 = () => ["nombre", "tipoUso", "estado"];
+var _c43 = () => ["raza", "potreroNombre"];
 var _c5 = () => ["caravana", "raza", "potreroNombre"];
 var _c6 = () => ["rolOperativo", "documentoNumero"];
 var _c7 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
@@ -49101,7 +51759,7 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, 
     \u0275\u0275advance(8);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.animalForm().caravana);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.razasBovinas)("subtitleFields", \u0275\u0275pureFunction0(29, _c03))("searchFields", \u0275\u0275pureFunction0(30, _c12))("value", ctx_r2.animalForm().razaId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.razasBovinas)("subtitleFields", \u0275\u0275pureFunction0(29, _c04))("searchFields", \u0275\u0275pureFunction0(30, _c13))("value", ctx_r2.animalForm().razaId);
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.animalForm().sexo);
     \u0275\u0275advance(3);
@@ -49115,11 +51773,11 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_5_Template(rf, 
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.animalForm().rfidCodigo);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(31, _c22))("searchFields", \u0275\u0275pureFunction0(32, _c32))("value", ctx_r2.animalForm().potreroId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(31, _c23))("searchFields", \u0275\u0275pureFunction0(32, _c33))("value", ctx_r2.animalForm().potreroId);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.animales)("extraParams", ctx_r2.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(33, _c42))("searchFields", \u0275\u0275pureFunction0(34, _c5))("allowedValues", ctx_r2.madreAllowedValues)("value", ctx_r2.animalForm().madreId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.animales)("extraParams", ctx_r2.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(33, _c43))("searchFields", \u0275\u0275pureFunction0(34, _c5))("allowedValues", ctx_r2.madreAllowedValues)("value", ctx_r2.animalForm().madreId);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.animales)("extraParams", ctx_r2.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(35, _c42))("searchFields", \u0275\u0275pureFunction0(36, _c5))("allowedValues", ctx_r2.padreAllowedValues)("value", ctx_r2.animalForm().padreId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.animales)("extraParams", ctx_r2.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(35, _c43))("searchFields", \u0275\u0275pureFunction0(36, _c5))("allowedValues", ctx_r2.padreAllowedValues)("value", ctx_r2.animalForm().padreId);
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.animalForm().observaciones);
     \u0275\u0275advance(4);
@@ -49257,9 +51915,9 @@ function GanaderiaTrazabilidadPageComponent_div_116_ng_container_6_Template(rf, 
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.movimientoForm().tipoMovimiento);
     \u0275\u0275advance(11);
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(18, _c22))("searchFields", \u0275\u0275pureFunction0(19, _c32))("value", ctx_r2.movimientoForm().potreroOrigenId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(18, _c23))("searchFields", \u0275\u0275pureFunction0(19, _c33))("value", ctx_r2.movimientoForm().potreroOrigenId);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(20, _c22))("searchFields", \u0275\u0275pureFunction0(21, _c32))("value", ctx_r2.movimientoForm().potreroDestinoId);
+    \u0275\u0275property("endpoint", ctx_r2.endpoints.potreros)("subtitleFields", \u0275\u0275pureFunction0(20, _c23))("searchFields", \u0275\u0275pureFunction0(21, _c33))("value", ctx_r2.movimientoForm().potreroDestinoId);
     \u0275\u0275advance(4);
     \u0275\u0275twoWayProperty("ngModel", ctx_r2.movimientoForm().motivo);
     \u0275\u0275advance();
@@ -50375,11 +53033,11 @@ var GanaderiaTrazabilidadPageComponent = class _GanaderiaTrazabilidadPageCompone
 })();
 
 // src/app/pages/ganaderia-sanidad-page/ganaderia-sanidad-page.component.ts
-var _c04 = () => ["raza", "potreroNombre"];
-var _c13 = () => ["caravana", "raza", "potreroNombre"];
-var _c23 = () => ["codigo", "laboratorio"];
-var _c33 = () => ["nombre", "codigo", "laboratorio"];
-var _c43 = () => ["rolOperativo", "documentoNumero"];
+var _c05 = () => ["raza", "potreroNombre"];
+var _c14 = () => ["caravana", "raza", "potreroNombre"];
+var _c24 = () => ["codigo", "laboratorio"];
+var _c34 = () => ["nombre", "codigo", "laboratorio"];
+var _c44 = () => ["rolOperativo", "documentoNumero"];
 var _c52 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
 function GanaderiaSanidadPageComponent_div_26_Template(rf, ctx) {
   if (rf & 1) {
@@ -51719,15 +54377,15 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_6_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r1.endpoints.animales)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(20, _c04))("searchFields", \u0275\u0275pureFunction0(21, _c13))("value", ctx_r1.aplicacionForm().animalId);
+    \u0275\u0275property("endpoint", ctx_r1.endpoints.animales)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(20, _c05))("searchFields", \u0275\u0275pureFunction0(21, _c14))("value", ctx_r1.aplicacionForm().animalId);
     \u0275\u0275advance();
-    \u0275\u0275property("options", ctx_r1.vacunas())("subtitleFields", \u0275\u0275pureFunction0(22, _c23))("searchFields", \u0275\u0275pureFunction0(23, _c33))("value", ctx_r1.aplicacionForm().vacunaId);
+    \u0275\u0275property("options", ctx_r1.vacunas())("subtitleFields", \u0275\u0275pureFunction0(22, _c24))("searchFields", \u0275\u0275pureFunction0(23, _c34))("value", ctx_r1.aplicacionForm().vacunaId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r1.aplicacionForm().fechaAplicacion);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r1.aplicacionForm().proximaDosisFecha);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r1.endpoints.operarios)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(24, _c43))("searchFields", \u0275\u0275pureFunction0(25, _c52))("value", ctx_r1.aplicacionForm().operario);
+    \u0275\u0275property("endpoint", ctx_r1.endpoints.operarios)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(24, _c44))("searchFields", \u0275\u0275pureFunction0(25, _c52))("value", ctx_r1.aplicacionForm().operario);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r1.aplicacionForm().loteMarca);
     \u0275\u0275advance(4);
@@ -51860,7 +54518,7 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r1.endpoints.animales)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(19, _c04))("searchFields", \u0275\u0275pureFunction0(20, _c13))("value", ctx_r1.tratamientoForm().animalId);
+    \u0275\u0275property("endpoint", ctx_r1.endpoints.animales)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(19, _c05))("searchFields", \u0275\u0275pureFunction0(20, _c14))("value", ctx_r1.tratamientoForm().animalId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r1.tratamientoForm().medicamento);
     \u0275\u0275advance(4);
@@ -51872,7 +54530,7 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_7_Template(rf, ctx) {
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r1.tratamientoForm().viaAplicacion);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r1.endpoints.operarios)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(21, _c43))("searchFields", \u0275\u0275pureFunction0(22, _c52))("value", ctx_r1.tratamientoForm().responsable);
+    \u0275\u0275property("endpoint", ctx_r1.endpoints.operarios)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(21, _c44))("searchFields", \u0275\u0275pureFunction0(22, _c52))("value", ctx_r1.tratamientoForm().responsable);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r1.tratamientoForm().costo);
     \u0275\u0275advance(4);
@@ -52004,7 +54662,7 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r1.endpoints.animales)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(17, _c04))("searchFields", \u0275\u0275pureFunction0(18, _c13))("value", ctx_r1.diagnosticoForm().animalId);
+    \u0275\u0275property("endpoint", ctx_r1.endpoints.animales)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(17, _c05))("searchFields", \u0275\u0275pureFunction0(18, _c14))("value", ctx_r1.diagnosticoForm().animalId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r1.diagnosticoForm().enfermedad);
     \u0275\u0275advance(4);
@@ -52014,7 +54672,7 @@ function GanaderiaSanidadPageComponent_div_68_ng_container_8_Template(rf, ctx) {
     \u0275\u0275advance(12);
     \u0275\u0275property("ngModel", ctx_r1.diagnosticoForm().estado);
     \u0275\u0275advance(7);
-    \u0275\u0275property("endpoint", ctx_r1.endpoints.operarios)("extraParams", ctx_r1.veterinarioParams)("subtitleFields", \u0275\u0275pureFunction0(19, _c43))("searchFields", \u0275\u0275pureFunction0(20, _c52))("value", ctx_r1.diagnosticoForm().veterinario);
+    \u0275\u0275property("endpoint", ctx_r1.endpoints.operarios)("extraParams", ctx_r1.veterinarioParams)("subtitleFields", \u0275\u0275pureFunction0(19, _c44))("searchFields", \u0275\u0275pureFunction0(20, _c52))("value", ctx_r1.diagnosticoForm().veterinario);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r1.diagnosticoForm().tratamientoIndicado);
     \u0275\u0275advance(4);
@@ -53185,10 +55843,10 @@ var GanaderiaSanidadPageComponent = class _GanaderiaSanidadPageComponent {
 })();
 
 // src/app/pages/ganaderia-reproduccion-page/ganaderia-reproduccion-page.component.ts
-var _c05 = () => ["raza", "potreroNombre"];
-var _c14 = () => ["caravana", "raza", "potreroNombre"];
-var _c24 = () => ["rolOperativo", "documentoNumero"];
-var _c34 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
+var _c06 = () => ["raza", "potreroNombre"];
+var _c15 = () => ["caravana", "raza", "potreroNombre"];
+var _c25 = () => ["rolOperativo", "documentoNumero"];
+var _c35 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
 function GanaderiaReproduccionPageComponent_div_14_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 18);
@@ -53617,9 +56275,9 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_62_Template(rf, 
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(14, _c05))("searchFields", \u0275\u0275pureFunction0(15, _c14))("allowedValues", ctx_r0.hembraAllowedValues)("value", ctx_r0.montaForm().vacaId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(14, _c06))("searchFields", \u0275\u0275pureFunction0(15, _c15))("allowedValues", ctx_r0.hembraAllowedValues)("value", ctx_r0.montaForm().vacaId);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(16, _c05))("searchFields", \u0275\u0275pureFunction0(17, _c14))("allowedValues", ctx_r0.machoAllowedValues)("value", ctx_r0.montaForm().toroId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(16, _c06))("searchFields", \u0275\u0275pureFunction0(17, _c15))("allowedValues", ctx_r0.machoAllowedValues)("value", ctx_r0.montaForm().toroId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.montaForm().fecha);
     \u0275\u0275advance(4);
@@ -53677,13 +56335,13 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_63_Template(rf, 
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(14, _c05))("searchFields", \u0275\u0275pureFunction0(15, _c14))("allowedValues", ctx_r0.hembraAllowedValues)("value", ctx_r0.inseminacionForm().vacaId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(14, _c06))("searchFields", \u0275\u0275pureFunction0(15, _c15))("allowedValues", ctx_r0.hembraAllowedValues)("value", ctx_r0.inseminacionForm().vacaId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.inseminacionForm().fecha);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.inseminacionForm().geneticaUsada);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.usuarios)("extraParams", ctx_r0.activeUserParams)("subtitleFields", \u0275\u0275pureFunction0(16, _c24))("searchFields", \u0275\u0275pureFunction0(17, _c34))("value", ctx_r0.inseminacionForm().tecnico);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.usuarios)("extraParams", ctx_r0.activeUserParams)("subtitleFields", \u0275\u0275pureFunction0(16, _c25))("searchFields", \u0275\u0275pureFunction0(17, _c35))("value", ctx_r0.inseminacionForm().tecnico);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.inseminacionForm().costo);
   }
@@ -53765,7 +56423,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template(rf, 
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(15, _c05))("searchFields", \u0275\u0275pureFunction0(16, _c14))("allowedValues", ctx_r0.hembraAllowedValues)("value", ctx_r0.prenezForm().vacaId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(15, _c06))("searchFields", \u0275\u0275pureFunction0(16, _c15))("allowedValues", ctx_r0.hembraAllowedValues)("value", ctx_r0.prenezForm().vacaId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.prenezForm().fechaDiagnostico);
     \u0275\u0275advance(4);
@@ -53775,7 +56433,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_64_Template(rf, 
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.prenezForm().nivelRiesgoParto);
     \u0275\u0275advance(7);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.usuarios)("extraParams", ctx_r0.veterinarioParams)("subtitleFields", \u0275\u0275pureFunction0(17, _c24))("searchFields", \u0275\u0275pureFunction0(18, _c34))("value", ctx_r0.prenezForm().veterinario);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.usuarios)("extraParams", ctx_r0.veterinarioParams)("subtitleFields", \u0275\u0275pureFunction0(17, _c25))("searchFields", \u0275\u0275pureFunction0(18, _c35))("value", ctx_r0.prenezForm().veterinario);
   }
 }
 function GanaderiaReproduccionPageComponent_ng_container_16_div_65_Template(rf, ctx) {
@@ -53827,9 +56485,9 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_65_Template(rf, 
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(13, _c05))("searchFields", \u0275\u0275pureFunction0(14, _c14))("allowedValues", ctx_r0.hembraAllowedValues)("value", ctx_r0.partoForm().madreId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(13, _c06))("searchFields", \u0275\u0275pureFunction0(14, _c15))("allowedValues", ctx_r0.hembraAllowedValues)("value", ctx_r0.partoForm().madreId);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(15, _c05))("searchFields", \u0275\u0275pureFunction0(16, _c14))("value", ctx_r0.partoForm().terneroId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(15, _c06))("searchFields", \u0275\u0275pureFunction0(16, _c15))("value", ctx_r0.partoForm().terneroId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.partoForm().fecha);
     \u0275\u0275advance(4);
@@ -53890,7 +56548,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_div_66_Template(rf, 
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(9, _c05))("searchFields", \u0275\u0275pureFunction0(10, _c14))("value", ctx_r0.indiceForm().animalId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(9, _c06))("searchFields", \u0275\u0275pureFunction0(10, _c15))("value", ctx_r0.indiceForm().animalId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.indiceForm().fechaEvaluacion);
     \u0275\u0275advance(4);
@@ -54580,7 +57238,7 @@ function GanaderiaReproduccionPageComponent_ng_container_16_Template(rf, ctx) {
     \u0275\u0275advance(17);
     \u0275\u0275property("ngIf", ctx_r0.genealogia());
     \u0275\u0275advance(2);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(43, _c05))("searchFields", \u0275\u0275pureFunction0(44, _c14))("value", ctx_r0.selectedGenealogiaId());
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeAnimalParams)("subtitleFields", \u0275\u0275pureFunction0(43, _c06))("searchFields", \u0275\u0275pureFunction0(44, _c15))("value", ctx_r0.selectedGenealogiaId());
     \u0275\u0275advance();
     \u0275\u0275property("ngIf", ctx_r0.genealogia());
     \u0275\u0275advance();
@@ -56108,11 +58766,11 @@ var GanaderiaReproduccionPageComponent = class _GanaderiaReproduccionPageCompone
 })();
 
 // src/app/pages/ganaderia-alimentacion-page/ganaderia-alimentacion-page.component.ts
-var _c06 = () => [];
-var _c15 = () => ["tipo"];
-var _c25 = () => ["label", "tipo"];
-var _c35 = () => ["raza", "potreroNombre"];
-var _c44 = () => ["caravana", "raza", "potreroNombre"];
+var _c07 = () => [];
+var _c16 = () => ["tipo"];
+var _c26 = () => ["label", "tipo"];
+var _c36 = () => ["raza", "potreroNombre"];
+var _c45 = () => ["caravana", "raza", "potreroNombre"];
 var _c53 = () => ["tipoUso", "estado"];
 var _c62 = () => ["nombre", "tipoUso", "estado"];
 var _c72 = () => ["rolOperativo", "documentoNumero"];
@@ -56812,7 +59470,7 @@ function GanaderiaAlimentacionPageComponent_ng_container_18_Template(rf, ctx) {
     \u0275\u0275advance(2);
     \u0275\u0275property("disabled", ctx_r0.currentPage() === 1);
     \u0275\u0275advance(2);
-    \u0275\u0275property("ngForOf", \u0275\u0275pureFunction0(27, _c06).constructor(ctx_r0.totalPages()));
+    \u0275\u0275property("ngForOf", \u0275\u0275pureFunction0(27, _c07).constructor(ctx_r0.totalPages()));
     \u0275\u0275advance();
     \u0275\u0275property("disabled", ctx_r0.currentPage() === ctx_r0.totalPages());
     \u0275\u0275advance(17);
@@ -56852,7 +59510,7 @@ function GanaderiaAlimentacionPageComponent_div_19_ng_container_5_div_25_Templat
     const item_r18 = ctx.$implicit;
     const ctx_r0 = \u0275\u0275nextContext(3);
     \u0275\u0275advance();
-    \u0275\u0275property("options", ctx_r0.alimentoOptions)("subtitleFields", \u0275\u0275pureFunction0(6, _c15))("searchFields", \u0275\u0275pureFunction0(7, _c25))("value", item_r18.ingrediente);
+    \u0275\u0275property("options", ctx_r0.alimentoOptions)("subtitleFields", \u0275\u0275pureFunction0(6, _c16))("searchFields", \u0275\u0275pureFunction0(7, _c26))("value", item_r18.ingrediente);
     \u0275\u0275advance();
     \u0275\u0275property("ngModel", item_r18.proporcionPct);
     \u0275\u0275advance();
@@ -57075,15 +59733,15 @@ function GanaderiaAlimentacionPageComponent_div_19_ng_container_6_Template(rf, c
     let tmp_8_0;
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(24, _c35))("searchFields", \u0275\u0275pureFunction0(25, _c44))("value", ctx_r0.suministroForm().animalId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(24, _c36))("searchFields", \u0275\u0275pureFunction0(25, _c45))("value", ctx_r0.suministroForm().animalId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.suministroForm().dietaId);
     \u0275\u0275advance(3);
-    \u0275\u0275property("ngForOf", ((tmp_8_0 = ctx_r0.resumen()) == null ? null : tmp_8_0.dietas) ?? \u0275\u0275pureFunction0(26, _c06));
+    \u0275\u0275property("ngForOf", ((tmp_8_0 = ctx_r0.resumen()) == null ? null : tmp_8_0.dietas) ?? \u0275\u0275pureFunction0(26, _c07));
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.suministroForm().fecha);
     \u0275\u0275advance();
-    \u0275\u0275property("options", ctx_r0.alimentoOptions)("subtitleFields", \u0275\u0275pureFunction0(27, _c15))("searchFields", \u0275\u0275pureFunction0(28, _c25))("value", ctx_r0.suministroForm().alimento);
+    \u0275\u0275property("options", ctx_r0.alimentoOptions)("subtitleFields", \u0275\u0275pureFunction0(27, _c16))("searchFields", \u0275\u0275pureFunction0(28, _c26))("value", ctx_r0.suministroForm().alimento);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.suministroForm().cantidadKg);
     \u0275\u0275advance(4);
@@ -57175,7 +59833,7 @@ function GanaderiaAlimentacionPageComponent_div_19_ng_container_7_Template(rf, c
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(17, _c35))("searchFields", \u0275\u0275pureFunction0(18, _c44))("value", ctx_r0.pesajeForm().animalId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.animales)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(17, _c36))("searchFields", \u0275\u0275pureFunction0(18, _c45))("value", ctx_r0.pesajeForm().animalId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.pesajeForm().fecha);
     \u0275\u0275advance(4);
@@ -57761,11 +60419,11 @@ var GanaderiaAlimentacionPageComponent = class _GanaderiaAlimentacionPageCompone
 })();
 
 // src/app/pages/ganaderia-potreros-page/ganaderia-potreros-page.component.ts
-var _c07 = () => ["get", "color"];
-var _c16 = (a0) => ({ "fill-color": a0, "fill-opacity": 0.38 });
-var _c26 = (a0) => ({ "line-color": a0, "line-width": 2.2, "line-opacity": 0.95 });
-var _c36 = () => ({ "fill-color": "#9FE870", "fill-opacity": 0.18 });
-var _c45 = () => [1.2, 1];
+var _c08 = () => ["get", "color"];
+var _c17 = (a0) => ({ "fill-color": a0, "fill-opacity": 0.38 });
+var _c27 = (a0) => ({ "line-color": a0, "line-width": 2.2, "line-opacity": 0.95 });
+var _c37 = () => ({ "fill-color": "#9FE870", "fill-opacity": 0.18 });
+var _c46 = () => [1.2, 1];
 var _c54 = (a0) => ({ "line-color": "#9FE870", "line-width": 2.8, "line-dasharray": a0, "line-opacity": 1 });
 var _c63 = (a0, a1) => [a0, a1];
 function GanaderiaPotrerosPageComponent_article_30_Template(rf, ctx) {
@@ -58924,15 +61582,15 @@ var GanaderiaPotrerosPageComponent = class _GanaderiaPotrerosPageComponent {
       \u0275\u0275advance();
       \u0275\u0275property("data", ctx.potrerosData());
       \u0275\u0275advance();
-      \u0275\u0275property("paint", \u0275\u0275pureFunction1(29, _c16, \u0275\u0275pureFunction0(28, _c07)));
+      \u0275\u0275property("paint", \u0275\u0275pureFunction1(29, _c17, \u0275\u0275pureFunction0(28, _c08)));
       \u0275\u0275advance();
-      \u0275\u0275property("paint", \u0275\u0275pureFunction1(32, _c26, \u0275\u0275pureFunction0(31, _c07)));
+      \u0275\u0275property("paint", \u0275\u0275pureFunction1(32, _c27, \u0275\u0275pureFunction0(31, _c08)));
       \u0275\u0275advance();
       \u0275\u0275property("data", ctx.draftData());
       \u0275\u0275advance();
-      \u0275\u0275property("paint", \u0275\u0275pureFunction0(34, _c36));
+      \u0275\u0275property("paint", \u0275\u0275pureFunction0(34, _c37));
       \u0275\u0275advance();
-      \u0275\u0275property("paint", \u0275\u0275pureFunction1(36, _c54, \u0275\u0275pureFunction0(35, _c45)));
+      \u0275\u0275property("paint", \u0275\u0275pureFunction1(36, _c54, \u0275\u0275pureFunction0(35, _c46)));
       \u0275\u0275advance();
       \u0275\u0275property("ngForOf", ctx.drawingPoints());
       \u0275\u0275advance();
@@ -59378,11 +62036,11 @@ var MaquinariaService = class _MaquinariaService {
 })();
 
 // src/app/pages/maquinaria-inventario-page/maquinaria-inventario-page.component.ts
-var _c08 = () => [];
-var _c17 = () => ["marca", "modelo", "estado"];
-var _c27 = () => ["codigo", "marca", "modelo", "estado", "tipo"];
-var _c37 = () => ["cultivo", "temporada"];
-var _c46 = () => ["nombre", "cultivo", "temporada"];
+var _c09 = () => [];
+var _c18 = () => ["marca", "modelo", "estado"];
+var _c28 = () => ["codigo", "marca", "modelo", "estado", "tipo"];
+var _c38 = () => ["cultivo", "temporada"];
+var _c47 = () => ["nombre", "cultivo", "temporada"];
 var _c55 = () => ["rolOperativo", "documentoNumero"];
 var _c64 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
 function MaquinariaInventarioPageComponent_div_22_Template(rf, ctx) {
@@ -59939,7 +62597,7 @@ function MaquinariaInventarioPageComponent_ng_container_24_Template(rf, ctx) {
     \u0275\u0275advance(2);
     \u0275\u0275property("disabled", ctx_r0.currentPage() === 1);
     \u0275\u0275advance(2);
-    \u0275\u0275property("ngForOf", \u0275\u0275pureFunction0(17, _c08).constructor(ctx_r0.totalPages()));
+    \u0275\u0275property("ngForOf", \u0275\u0275pureFunction0(17, _c09).constructor(ctx_r0.totalPages()));
     \u0275\u0275advance();
     \u0275\u0275property("disabled", ctx_r0.currentPage() === ctx_r0.totalPages());
     \u0275\u0275advance(2);
@@ -60278,13 +62936,13 @@ function MaquinariaInventarioPageComponent_div_25_ng_container_6_Template(rf, ct
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.maquinas)("subtitleFields", \u0275\u0275pureFunction0(19, _c17))("searchFields", \u0275\u0275pureFunction0(20, _c27))("value", ctx_r0.usoForm().maquinariaId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.maquinas)("subtitleFields", \u0275\u0275pureFunction0(19, _c18))("searchFields", \u0275\u0275pureFunction0(20, _c28))("value", ctx_r0.usoForm().maquinariaId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.usoForm().fecha);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.usoForm().actividad);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.lotes)("subtitleFields", \u0275\u0275pureFunction0(21, _c37))("searchFields", \u0275\u0275pureFunction0(22, _c46))("value", ctx_r0.usoForm().loteNombre);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.lotes)("subtitleFields", \u0275\u0275pureFunction0(21, _c38))("searchFields", \u0275\u0275pureFunction0(22, _c47))("value", ctx_r0.usoForm().loteNombre);
     \u0275\u0275advance();
     \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(23, _c55))("searchFields", \u0275\u0275pureFunction0(24, _c64))("value", ctx_r0.usoForm().operario);
     \u0275\u0275advance(4);
@@ -60391,7 +63049,7 @@ function MaquinariaInventarioPageComponent_div_25_ng_container_7_Template(rf, ct
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.maquinas)("subtitleFields", \u0275\u0275pureFunction0(10, _c17))("searchFields", \u0275\u0275pureFunction0(11, _c27))("value", ctx_r0.documentoForm().maquinariaId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.maquinas)("subtitleFields", \u0275\u0275pureFunction0(10, _c18))("searchFields", \u0275\u0275pureFunction0(11, _c28))("value", ctx_r0.documentoForm().maquinariaId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.documentoForm().tipoDocumento);
     \u0275\u0275advance(4);
@@ -61169,11 +63827,11 @@ var MaquinariaInventarioPageComponent = class _MaquinariaInventarioPageComponent
 })();
 
 // src/app/pages/maquinaria-mantenimiento-page/maquinaria-mantenimiento-page.component.ts
-var _c09 = () => [];
-var _c18 = () => ["marca", "modelo", "estado"];
-var _c28 = () => ["codigo", "marca", "modelo", "estado", "tipo"];
-var _c38 = () => ["rolOperativo", "documentoNumero"];
-var _c47 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
+var _c010 = () => [];
+var _c19 = () => ["marca", "modelo", "estado"];
+var _c29 = () => ["codigo", "marca", "modelo", "estado", "tipo"];
+var _c39 = () => ["rolOperativo", "documentoNumero"];
+var _c48 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
 function MaquinariaMantenimientoPageComponent_div_29_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 21);
@@ -61905,7 +64563,7 @@ function MaquinariaMantenimientoPageComponent_ng_container_31_Template(rf, ctx) 
     \u0275\u0275advance(2);
     \u0275\u0275property("disabled", ctx_r0.currentPage() === 1);
     \u0275\u0275advance(2);
-    \u0275\u0275property("ngForOf", \u0275\u0275pureFunction0(27, _c09).constructor(ctx_r0.totalPages()));
+    \u0275\u0275property("ngForOf", \u0275\u0275pureFunction0(27, _c010).constructor(ctx_r0.totalPages()));
     \u0275\u0275advance();
     \u0275\u0275property("disabled", ctx_r0.currentPage() === ctx_r0.totalPages());
   }
@@ -62023,7 +64681,7 @@ function MaquinariaMantenimientoPageComponent_div_32_ng_container_5_Template(rf,
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.maquinas)("subtitleFields", \u0275\u0275pureFunction0(12, _c18))("searchFields", \u0275\u0275pureFunction0(13, _c28))("value", ctx_r0.planForm().maquinariaId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.maquinas)("subtitleFields", \u0275\u0275pureFunction0(12, _c19))("searchFields", \u0275\u0275pureFunction0(13, _c29))("value", ctx_r0.planForm().maquinariaId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.planForm().tipoMaquinaria);
     \u0275\u0275advance(4);
@@ -62142,17 +64800,17 @@ function MaquinariaMantenimientoPageComponent_div_32_ng_container_6_Template(rf,
     let tmp_7_0;
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.maquinas)("subtitleFields", \u0275\u0275pureFunction0(15, _c18))("searchFields", \u0275\u0275pureFunction0(16, _c28))("value", ctx_r0.programacionForm().maquinariaId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.maquinas)("subtitleFields", \u0275\u0275pureFunction0(15, _c19))("searchFields", \u0275\u0275pureFunction0(16, _c29))("value", ctx_r0.programacionForm().maquinariaId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.programacionForm().planId);
     \u0275\u0275advance(3);
-    \u0275\u0275property("ngForOf", ((tmp_7_0 = ctx_r0.resumen()) == null ? null : tmp_7_0.planes) ?? \u0275\u0275pureFunction0(17, _c09));
+    \u0275\u0275property("ngForOf", ((tmp_7_0 = ctx_r0.resumen()) == null ? null : tmp_7_0.planes) ?? \u0275\u0275pureFunction0(17, _c010));
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.programacionForm().fechaProgramada);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.programacionForm().horometroObjetivo);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(18, _c38))("searchFields", \u0275\u0275pureFunction0(19, _c47))("value", ctx_r0.programacionForm().responsable);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(18, _c39))("searchFields", \u0275\u0275pureFunction0(19, _c48))("value", ctx_r0.programacionForm().responsable);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.programacionForm().observaciones);
     \u0275\u0275advance(4);
@@ -62393,17 +65051,17 @@ function MaquinariaMantenimientoPageComponent_div_32_ng_container_7_Template(rf,
     let tmp_24_0;
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.maquinas)("subtitleFields", \u0275\u0275pureFunction0(24, _c18))("searchFields", \u0275\u0275pureFunction0(25, _c28))("value", ctx_r0.intervencionForm().maquinariaId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.maquinas)("subtitleFields", \u0275\u0275pureFunction0(24, _c19))("searchFields", \u0275\u0275pureFunction0(25, _c29))("value", ctx_r0.intervencionForm().maquinariaId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.intervencionForm().planId);
     \u0275\u0275advance(3);
-    \u0275\u0275property("ngForOf", ((tmp_7_0 = ctx_r0.resumen()) == null ? null : tmp_7_0.planes) ?? \u0275\u0275pureFunction0(26, _c09));
+    \u0275\u0275property("ngForOf", ((tmp_7_0 = ctx_r0.resumen()) == null ? null : tmp_7_0.planes) ?? \u0275\u0275pureFunction0(26, _c010));
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.intervencionForm().fecha);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.intervencionForm().tipo);
     \u0275\u0275advance(7);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(27, _c38))("searchFields", \u0275\u0275pureFunction0(28, _c47))("value", ctx_r0.intervencionForm().operario);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(27, _c39))("searchFields", \u0275\u0275pureFunction0(28, _c48))("value", ctx_r0.intervencionForm().operario);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.intervencionForm().horasMaquina);
     \u0275\u0275advance(4);
@@ -63142,11 +65800,11 @@ var MaquinariaMantenimientoPageComponent = class _MaquinariaMantenimientoPageCom
 })();
 
 // src/app/pages/plagas-page/plagas-page.component.ts
-var _c010 = () => ["get", "color"];
-var _c19 = (a0) => ({ "fill-color": a0, "fill-opacity": 0.24 });
-var _c29 = (a0) => ({ "line-color": a0, "line-width": 2.4, "line-opacity": 0.92 });
-var _c39 = (a0, a1) => [a0, a1];
-var _c48 = () => ["rolOperativo", "documentoNumero"];
+var _c011 = () => ["get", "color"];
+var _c110 = (a0) => ({ "fill-color": a0, "fill-opacity": 0.24 });
+var _c210 = (a0) => ({ "line-color": a0, "line-width": 2.4, "line-opacity": 0.92 });
+var _c310 = (a0, a1) => [a0, a1];
+var _c49 = () => ["rolOperativo", "documentoNumero"];
 var _c56 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
 function PlagasPageComponent_div_14_Template(rf, ctx) {
   if (rf & 1) {
@@ -63358,7 +66016,7 @@ function PlagasPageComponent_ng_container_16_mgl_marker_48_Template(rf, ctx) {
   if (rf & 2) {
     const pin_r9 = ctx.$implicit;
     const ctx_r0 = \u0275\u0275nextContext(2);
-    \u0275\u0275property("lngLat", \u0275\u0275pureFunction2(8, _c39, pin_r9.longitud, pin_r9.latitud));
+    \u0275\u0275property("lngLat", \u0275\u0275pureFunction2(8, _c310, pin_r9.longitud, pin_r9.latitud));
     \u0275\u0275advance();
     \u0275\u0275styleProp("--pin-color", ctx_r0.pinColor(pin_r9.detecciones[0].severidad));
     \u0275\u0275advance(3);
@@ -64116,9 +66774,9 @@ function PlagasPageComponent_ng_container_16_Template(rf, ctx) {
     \u0275\u0275advance();
     \u0275\u0275property("data", ctx_r0.mapData());
     \u0275\u0275advance();
-    \u0275\u0275property("paint", \u0275\u0275pureFunction1(47, _c19, \u0275\u0275pureFunction0(46, _c010)));
+    \u0275\u0275property("paint", \u0275\u0275pureFunction1(47, _c110, \u0275\u0275pureFunction0(46, _c011)));
     \u0275\u0275advance();
-    \u0275\u0275property("paint", \u0275\u0275pureFunction1(50, _c29, \u0275\u0275pureFunction0(49, _c010)));
+    \u0275\u0275property("paint", \u0275\u0275pureFunction1(50, _c210, \u0275\u0275pureFunction0(49, _c011)));
     \u0275\u0275advance();
     \u0275\u0275property("ngForOf", ctx_r0.pins());
     \u0275\u0275advance();
@@ -64387,7 +67045,7 @@ function PlagasPageComponent_div_17_ng_container_5_Template(rf, ctx) {
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.deteccionForm().porcentajeAfectado);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.operariosEndpoint)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(21, _c48))("searchFields", \u0275\u0275pureFunction0(22, _c56))("value", ctx_r0.deteccionForm().responsableId);
+    \u0275\u0275property("endpoint", ctx_r0.operariosEndpoint)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(21, _c49))("searchFields", \u0275\u0275pureFunction0(22, _c56))("value", ctx_r0.deteccionForm().responsableId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.deteccionForm().descripcion);
     \u0275\u0275advance(4);
@@ -64531,7 +67189,7 @@ function PlagasPageComponent_div_17_ng_container_6_Template(rf, ctx) {
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.aplicacionForm().periodoReingresoHoras);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.operariosEndpoint)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(15, _c48))("searchFields", \u0275\u0275pureFunction0(16, _c56))("value", ctx_r0.aplicacionForm().operarioResponsableId);
+    \u0275\u0275property("endpoint", ctx_r0.operariosEndpoint)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(15, _c49))("searchFields", \u0275\u0275pureFunction0(16, _c56))("value", ctx_r0.aplicacionForm().operarioResponsableId);
     \u0275\u0275advance(4);
     \u0275\u0275property("disabled", ctx_r0.saving());
   }
@@ -64655,7 +67313,7 @@ function PlagasPageComponent_div_17_ng_container_7_Template(rf, ctx) {
     \u0275\u0275advance();
     \u0275\u0275property("ngForOf", ctx_r0.severidades);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.operariosEndpoint)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(13, _c48))("searchFields", \u0275\u0275pureFunction0(14, _c56))("value", ctx_r0.seguimientoForm().responsableId);
+    \u0275\u0275property("endpoint", ctx_r0.operariosEndpoint)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(13, _c49))("searchFields", \u0275\u0275pureFunction0(14, _c56))("value", ctx_r0.seguimientoForm().responsableId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.seguimientoForm().observaciones);
     \u0275\u0275advance(4);
@@ -66616,10 +69274,10 @@ var MaterialLineChartComponent = class _MaterialLineChartComponent {
 })();
 
 // src/app/pages/reportes-agricola-page/reportes-agricola-page.component.ts
-var _c011 = () => [];
-var _c110 = () => ["get", "color"];
-var _c210 = (a0) => ({ "fill-color": a0, "fill-opacity": 0.68 });
-var _c310 = () => ({ "line-color": "#d9ff99", "line-width": 1.6, "line-opacity": 0.86 });
+var _c012 = () => [];
+var _c111 = () => ["get", "color"];
+var _c211 = (a0) => ({ "fill-color": a0, "fill-opacity": 0.68 });
+var _c311 = () => ({ "line-color": "#d9ff99", "line-width": 1.6, "line-opacity": 0.86 });
 function ReportesAgricolaPageComponent_section_25_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "section", 21);
@@ -67055,7 +69713,7 @@ function ReportesAgricolaPageComponent_ng_container_27_Template(rf, ctx) {
     \u0275\u0275advance(4);
     \u0275\u0275textInterpolate1(" Cosechado ", ctx_r0.campaign());
     \u0275\u0275advance(4);
-    \u0275\u0275property("primary", ((tmp_11_0 = ctx_r0.rendimiento()) == null ? null : tmp_11_0.actual) ?? \u0275\u0275pureFunction0(27, _c011))("secondary", ((tmp_12_0 = ctx_r0.rendimiento()) == null ? null : tmp_12_0.historico) ?? \u0275\u0275pureFunction0(28, _c011));
+    \u0275\u0275property("primary", ((tmp_11_0 = ctx_r0.rendimiento()) == null ? null : tmp_11_0.actual) ?? \u0275\u0275pureFunction0(27, _c012))("secondary", ((tmp_12_0 = ctx_r0.rendimiento()) == null ? null : tmp_12_0.historico) ?? \u0275\u0275pureFunction0(28, _c012));
     \u0275\u0275advance(5);
     \u0275\u0275property("ngIf", ctx_r0.distribucion().length)("ngIfElse", emptyDistribution_r11);
     \u0275\u0275advance(8);
@@ -67063,9 +69721,9 @@ function ReportesAgricolaPageComponent_ng_container_27_Template(rf, ctx) {
     \u0275\u0275advance();
     \u0275\u0275property("data", ctx_r0.mapData());
     \u0275\u0275advance();
-    \u0275\u0275property("paint", \u0275\u0275pureFunction1(30, _c210, \u0275\u0275pureFunction0(29, _c110)));
+    \u0275\u0275property("paint", \u0275\u0275pureFunction1(30, _c211, \u0275\u0275pureFunction0(29, _c111)));
     \u0275\u0275advance();
-    \u0275\u0275property("paint", \u0275\u0275pureFunction0(32, _c310));
+    \u0275\u0275property("paint", \u0275\u0275pureFunction0(32, _c311));
     \u0275\u0275advance();
     \u0275\u0275property("ngIf", ctx_r0.mapTooltip());
     \u0275\u0275advance(19);
@@ -67668,9 +70326,9 @@ var OperariosService = class _OperariosService {
 })();
 
 // src/app/pages/operarios-gestion-page/operarios-gestion-page.component.ts
-var _c012 = () => [];
-var _c111 = () => ["rolOperativo", "documentoNumero"];
-var _c211 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
+var _c013 = () => [];
+var _c112 = () => ["rolOperativo", "documentoNumero"];
+var _c212 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
 function OperariosGestionPageComponent_div_15_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 13);
@@ -68227,7 +70885,7 @@ function OperariosGestionPageComponent_ng_container_17_Template(rf, ctx) {
     \u0275\u0275advance(2);
     \u0275\u0275property("disabled", ctx_r0.currentPage() === 1);
     \u0275\u0275advance(2);
-    \u0275\u0275property("ngForOf", \u0275\u0275pureFunction0(17, _c012).constructor(ctx_r0.totalPages()));
+    \u0275\u0275property("ngForOf", \u0275\u0275pureFunction0(17, _c013).constructor(ctx_r0.totalPages()));
     \u0275\u0275advance();
     \u0275\u0275property("disabled", ctx_r0.currentPage() === ctx_r0.totalPages());
     \u0275\u0275advance(2);
@@ -68637,7 +71295,7 @@ function OperariosGestionPageComponent_div_18_ng_container_7_Template(rf, ctx) {
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.rolForm().fecha);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.operariosEndpoint)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(10, _c111))("searchFields", \u0275\u0275pureFunction0(11, _c211))("value", ctx_r0.rolForm().responsable);
+    \u0275\u0275property("endpoint", ctx_r0.operariosEndpoint)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(10, _c112))("searchFields", \u0275\u0275pureFunction0(11, _c212))("value", ctx_r0.rolForm().responsable);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.rolForm().motivo);
     \u0275\u0275advance(4);
@@ -69295,11 +71953,11 @@ var OrdenesTrabajoService = class _OrdenesTrabajoService {
 })();
 
 // src/app/pages/ordenes-trabajo-page/ordenes-trabajo-page.component.ts
-var _c013 = () => [];
-var _c112 = () => ["rolOperativo", "documentoNumero"];
-var _c212 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
-var _c311 = () => ["cultivo", "temporada"];
-var _c49 = () => ["nombre", "cultivo", "temporada"];
+var _c014 = () => [];
+var _c113 = () => ["rolOperativo", "documentoNumero"];
+var _c213 = () => ["nombreCompleto", "username", "documentoNumero", "rolOperativo"];
+var _c312 = () => ["cultivo", "temporada"];
+var _c410 = () => ["nombre", "cultivo", "temporada"];
 function OrdenesTrabajoPageComponent_div_15_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 13);
@@ -70012,7 +72670,7 @@ function OrdenesTrabajoPageComponent_ng_container_17_Template(rf, ctx) {
     \u0275\u0275advance(2);
     \u0275\u0275property("disabled", ctx_r0.currentPage() === 1);
     \u0275\u0275advance(2);
-    \u0275\u0275property("ngForOf", \u0275\u0275pureFunction0(29, _c013).constructor(ctx_r0.totalPages()));
+    \u0275\u0275property("ngForOf", \u0275\u0275pureFunction0(29, _c014).constructor(ctx_r0.totalPages()));
     \u0275\u0275advance();
     \u0275\u0275property("disabled", ctx_r0.currentPage() === ctx_r0.totalPages());
     \u0275\u0275advance(2);
@@ -70168,9 +72826,9 @@ function OrdenesTrabajoPageComponent_div_18_ng_container_5_Template(rf, ctx) {
     \u0275\u0275advance(8);
     \u0275\u0275property("ngModel", ctx_r0.ordenForm().titulo);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(18, _c112))("searchFields", \u0275\u0275pureFunction0(19, _c212))("value", ctx_r0.ordenForm().operarioId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(18, _c113))("searchFields", \u0275\u0275pureFunction0(19, _c213))("value", ctx_r0.ordenForm().operarioId);
     \u0275\u0275advance();
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.lotes)("subtitleFields", \u0275\u0275pureFunction0(20, _c311))("searchFields", \u0275\u0275pureFunction0(21, _c49))("value", ctx_r0.ordenForm().loteId);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.lotes)("subtitleFields", \u0275\u0275pureFunction0(20, _c312))("searchFields", \u0275\u0275pureFunction0(21, _c410))("value", ctx_r0.ordenForm().loteId);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.ordenForm().zona);
     \u0275\u0275advance(4);
@@ -70335,7 +72993,7 @@ function OrdenesTrabajoPageComponent_div_18_ng_container_7_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(8, _c112))("searchFields", \u0275\u0275pureFunction0(9, _c212))("value", ctx_r0.cierreForm().responsable);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(8, _c113))("searchFields", \u0275\u0275pureFunction0(9, _c213))("value", ctx_r0.cierreForm().responsable);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.cierreForm().duracionRealMin);
     \u0275\u0275advance(4);
@@ -70399,7 +73057,7 @@ function OrdenesTrabajoPageComponent_div_18_ng_container_8_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r0 = \u0275\u0275nextContext(2);
     \u0275\u0275advance(5);
-    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(8, _c112))("searchFields", \u0275\u0275pureFunction0(9, _c212))("value", ctx_r0.cierreForm().responsable);
+    \u0275\u0275property("endpoint", ctx_r0.endpoints.operarios)("extraParams", ctx_r0.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(8, _c113))("searchFields", \u0275\u0275pureFunction0(9, _c213))("value", ctx_r0.cierreForm().responsable);
     \u0275\u0275advance(4);
     \u0275\u0275property("ngModel", ctx_r0.cierreForm().duracionRealMin);
     \u0275\u0275advance(4);
@@ -73320,6 +75978,7 @@ var routes = [
       { path: "agricola/cosecha", redirectTo: "agricola/siembra" },
       { path: "agricola/analytics", component: AnalyticsPageComponent },
       { path: "agricola/plagas", component: PlagasPageComponent },
+      { path: "agricola/insumos", component: AgricolaInsumosPageComponent },
       { path: "reportes/agricola", component: ReportesAgricolaPageComponent },
       { path: "reportes/ganaderia", loadComponent: () => import("./chunk-M6SQ6NZJ.js").then((m) => m.ReportesGanaderiaPageComponent) },
       { path: "ganaderia/trazabilidad", component: GanaderiaTrazabilidadPageComponent },
