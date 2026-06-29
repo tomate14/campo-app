@@ -262,3 +262,99 @@ maplibre-map, mgl-map {
   width: 100%;
   height: 100%;
 }
+
+/* Campo App premium tabs standard.
+   Applies the Ciclo Agricola operational tabs style across existing page-specific tab classes. */
+:where(.tabs-bar, .cycle-tabs-bar, .sanitary-tabs-bar, .tabbed-head) {
+  align-items: center !important;
+  background: linear-gradient(180deg, rgba(8, 18, 37, .92), rgba(8, 18, 37, .64)) !important;
+  border-bottom: 1px solid rgba(110, 168, 255, .12) !important;
+  display: flex !important;
+  gap: 12px !important;
+  justify-content: space-between !important;
+  margin: 0 !important;
+  min-height: 68px !important;
+  padding: 0 18px !important;
+}
+
+:where(.tabs, .cycle-tabs, .sanitary-tabs, .table-tabs, .context-tabs, .detail-tabs) {
+  align-items: stretch !important;
+  border: 0 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 18px !important;
+  margin: 0 !important;
+}
+
+:where(.tabs, .cycle-tabs, .sanitary-tabs, .table-tabs, .context-tabs) button,
+:where(.detail-tabs) span {
+  align-items: center !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: #97a8c2 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  gap: 8px !important;
+  justify-content: center !important;
+  min-height: 68px !important;
+  padding: 0 8px !important;
+  position: relative !important;
+}
+
+:where(.tabs, .cycle-tabs, .sanitary-tabs, .table-tabs, .context-tabs) button::after,
+:where(.detail-tabs) span::after {
+  background: transparent !important;
+  bottom: 0 !important;
+  content: '' !important;
+  height: 1px !important;
+  left: 0 !important;
+  position: absolute !important;
+  right: 0 !important;
+}
+
+:where(.tabs, .cycle-tabs, .sanitary-tabs, .table-tabs, .context-tabs) button:hover,
+:where(.detail-tabs) span:hover {
+  color: #dbe8fb !important;
+  text-shadow: 0 0 18px rgba(110, 168, 255, .18) !important;
+}
+
+:where(.tabs, .cycle-tabs, .sanitary-tabs, .table-tabs, .context-tabs) button.active,
+:where(.detail-tabs) span.active {
+  background: linear-gradient(180deg, rgba(159, 232, 112, .08), rgba(159, 232, 112, .02)) !important;
+  box-shadow: 0 12px 34px rgba(159, 232, 112, .06) !important;
+  color: #9fe870 !important;
+}
+
+:where(.tabs, .cycle-tabs, .sanitary-tabs, .table-tabs, .context-tabs) button.active::after,
+:where(.detail-tabs) span.active::after {
+  background: #9fe870 !important;
+  box-shadow: 0 0 22px rgba(159, 232, 112, .58) !important;
+}
+
+:where(.tabs-bar, .cycle-tabs-bar, .sanitary-tabs-bar, .tabbed-head) > span {
+  color: #c7d4e8 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+@media (max-width: 720px) {
+  :where(.tabs-bar, .cycle-tabs-bar, .sanitary-tabs-bar, .tabbed-head) {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    min-height: auto !important;
+    padding: 12px 14px !important;
+  }
+
+  :where(.tabs, .cycle-tabs, .sanitary-tabs, .table-tabs, .context-tabs, .detail-tabs) {
+    gap: 10px !important;
+  }
+
+  :where(.tabs, .cycle-tabs, .sanitary-tabs, .table-tabs, .context-tabs) button,
+  :where(.detail-tabs) span {
+    min-height: 42px !important;
+  }
+}

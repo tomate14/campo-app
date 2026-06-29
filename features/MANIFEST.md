@@ -1,4 +1,4 @@
-ï»¿# Manifest de Features - Campo App
+# Manifest de Features - Campo App
 
 ## Proposito
 Este archivo es el registro operativo de features de Campo App. Debe indicar que historias existen, cuales estan realizadas, cuales estan pendientes y cuales quedaron diferidas o saltadas.
@@ -18,11 +18,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 44
-- Realizadas: 23
+- Realizadas: 24
 - Parciales: 0
-- Pendientes: 19
+- Pendientes: 18
 - Saltadas: 2
-- Ultima actualizacion: 2026-06-26
+- Ultima actualizacion: 2026-06-29
 
 ## Registro por Feature
 
@@ -46,7 +46,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 14 | `14_operarios_asignaciones_disponibilidad.md` | Operarios | Pendiente | Asignaciones y disponibilidad pendiente. |
 | 15 | `15_COMPLETA_inventario_insumos_agricolas.md` | Inventario | Realizada | Inventario agricola de insumos implementado con catalogo, stock por deposito/lote, movimientos auditados, alertas de reorden/vencimiento, endpoint REST, pantalla Angular y mock data. |
 | 16 | `16_inventario_stock_control.md` | Inventario | Pendiente | Stock y control centralizado pendiente. |
-| 17 | `17_finanzas_facturacion_ventas.md` | Finanzas | Pendiente | Facturacion y ventas pendiente. |
+| 17 | `17_COMPLETA_finanzas_facturacion_ventas.md` | Finanzas | Realizada | Facturacion y ventas implementada con clientes fiscales, facturas, CAE simulado, cobros, notas de credito, dashboard, REST paginado, pantalla Angular premium y datos iniciales. |
 | 18 | `18_finanzas_compras_proveedores.md` | Finanzas | Pendiente | Compras y proveedores pendiente. |
 | 19 | `19_finanzas_reportes_financieros.md` | Finanzas | Pendiente | Reportes financieros pendiente. |
 | 20 | `20_geo_mapas_lotes.md` | Geolocalizacion | Pendiente | Mapas/geolocalizacion avanzada pendiente; el mapa de lotes operativo existe de forma parcial en agricultura. |
@@ -68,7 +68,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 36 | `36_maquinaria_mantenimiento_offline_notificaciones_avanzadas.md` | Maquinaria | Pendiente | Mantenimiento avanzado offline/notificaciones pendiente. |
 | 37 | `37_COMPLETA_agricultura_control_plagas_fitosanitarios.md` | Agricultura | Realizada | Core operativo de plagas y aplicaciones fitosanitarias implementado: backend, web, mobile base, mapa con pins y tests. |
 | 38 | `38_COMPLETA_ganaderia_potreros_mapa_interactivo.md` | Ganaderia | Realizada | Pantalla de potreros con mapa interactivo, dibujo de multiples poligonos, popup de alta y persistencia implementada. |
-| 39 | `39_mobile_primer_login_cambio_password_obligatorio.md` | Seguridad/Mobile | Pendiente | Cambio obligatorio de contraseÃ±a en primer login mobile para usuarios creados automaticamente desde operarios. |
+| 39 | `39_mobile_primer_login_cambio_password_obligatorio.md` | Seguridad/Mobile | Pendiente | Cambio obligatorio de contraseña en primer login mobile para usuarios creados automaticamente desde operarios. |
 | 40 | `40_COMPLETA_operaciones_calendario_operaciones.md` | Operaciones | Realizada | Calendario semanal operativo para ordenes de trabajo, con filtros, chips de operarios, popup de seguimiento, cambio de estado y registro de actividad. |
 | 41 | `41_COMPLETA_roles_menu_permisos.md` | Seguridad/Frontend | Realizada | Pantalla administrativa para definir opciones de menu visibles por rol, con backend persistido y sidebar filtrado por permisos. |
 | 42 | `42_COMPLETA_dashboard_ganadero_ejecutivo.md` | Ganaderia/Reportes | Realizada | Dashboard Ganadero Ejecutivo implementado con endpoint backend-driven, KPIs, graficos, alertas operativas y analitica del rodeo. |
@@ -108,7 +108,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 16.
 
 ### Finanzas
-- Pendientes: 17, 18, 19.
+- Realizadas: 17.
+- Pendientes: 18, 19.
 
 ### Geolocalizacion
 - Pendientes: 20, 21.
@@ -128,6 +129,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 43.
 
 ## Ultimas Actualizaciones
+- 2026-06-29: Feature 17 realizada con facturacion y ventas, clientes, comprobantes, cobros, notas de credito, dashboard financiero y UI Angular premium.
 - 2026-06-26: Feature 15 realizada con inventario agricola de insumos, stock, movimientos, alertas, backend REST, pantalla Angular y datos mock.
 - 2026-06-16: Feature 43 realizada con `animales_potreros`, movimientos por IDs, dashboard ganadero sin agrupacion por texto y selectores de potrero enviando IDs.
 - 2026-06-09: Feature 43 creada para corregir integridad referencial transversal por ID y evitar joins por nombres/textos libres.
@@ -136,7 +138,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - 2026-06-06: Feature 31 realizada con componente generico de select buscador aplicado a animales, potreros, operarios, veterinarios, responsables, plagas, sanidad y alimentacion.
 - 2026-06-06: Feature 40 realizada con Calendario de Operaciones semanal basado en ordenes de trabajo, filtros, chips, popup de detalle y acciones de seguimiento.
 - 2026-06-05: Feature 13 realizada con ordenes de trabajo, actividades, estados, aceptacion/rechazo e historial. Tarea 4 de asignacion de maquinas excluida.
-- 2026-06-05: Feature 39 creada para cambio obligatorio de contraseÃ±a en primer login mobile de usuarios generados desde operarios.
+- 2026-06-05: Feature 39 creada para cambio obligatorio de contraseña en primer login mobile de usuarios generados desde operarios.
 - 2026-06-05: Feature 12 ajustada para eliminar jornadas y evaluaciones de operarios del backend, frontend y migracion.
 - 2026-06-05: Feature 12 ajustada para generar usuario automaticamente en alta de operario y eliminar legajo/email/contrato/jornada/area/ubicacion del registro.
 - 2026-06-05: Feature 12 realizada con backend de operarios, documentacion, historial de roles y pantalla Angular de gestion.

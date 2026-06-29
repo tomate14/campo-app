@@ -10,7 +10,13 @@ function unwrapResponse(response: unknown): RemoteItem[] {
   if (Array.isArray(response)) return response as RemoteItem[]
   if (response && typeof response === 'object' && 'data' in response) {
     const data = (response as { data?: unknown }).data
+    if (data && typeof data === 'object' && 'content' in data && Array.isArray((data as { content?: unknown }).content)) {
+      return (data as { content: RemoteItem[] }).content
+    }
     return Array.isArray(data) ? data as RemoteItem[] : []
+  }
+  if (response && typeof response === 'object' && 'content' in response && Array.isArray((response as { content?: unknown }).content)) {
+    return (response as { content: RemoteItem[] }).content
   }
   return []
 }

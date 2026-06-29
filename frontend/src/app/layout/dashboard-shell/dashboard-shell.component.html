@@ -129,7 +129,12 @@
         <svg viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>
         <span *ngIf="!collapsed()">Roles y menú</span>
       </a>
+      <div class="section-title" *ngIf="!collapsed()">Finanzas</div>
 
+      <a *ngIf="isMenuVisible('finanzas-facturacion')" routerLink="/finanzas/facturacion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Facturacion' : ''">
+        <svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z" /><path d="M10 8h4" /><path d="M10 12h4" /><path d="M9 17h6" /></svg>
+        <span *ngIf="!collapsed()">Facturacion</span>
+      </a>
     </nav>
 
     <div class="sidebar-footer">
