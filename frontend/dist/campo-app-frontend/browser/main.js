@@ -31804,7 +31804,7 @@ var AdminMenuService = class _AdminMenuService {
 // src/app/layout/dashboard-shell/dashboard-shell.component.ts
 function DashboardShellComponent_div_9_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 56)(1, "strong");
+    \u0275\u0275elementStart(0, "div", 57)(1, "strong");
     \u0275\u0275text(2, "Campo App");
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(3, "span");
@@ -31815,36 +31815,36 @@ function DashboardShellComponent_div_9_Template(rf, ctx) {
 function DashboardShellComponent__svg_path_12_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 57);
+    \u0275\u0275element(0, "path", 58);
   }
 }
 function DashboardShellComponent__svg_path_13_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 58);
+    \u0275\u0275element(0, "path", 59);
   }
 }
 function DashboardShellComponent__svg_path_14_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 59);
+    \u0275\u0275element(0, "path", 60);
   }
 }
 function DashboardShellComponent__svg_path_15_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 60);
+    \u0275\u0275element(0, "path", 61);
   }
 }
 function DashboardShellComponent__svg_path_16_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 61);
+    \u0275\u0275element(0, "path", 62);
   }
 }
 function DashboardShellComponent_div_18_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 62);
+    \u0275\u0275elementStart(0, "div", 63);
     \u0275\u0275text(1, "Dashboard");
     \u0275\u0275elementEnd();
   }
@@ -31858,12 +31858,12 @@ function DashboardShellComponent_a_19_span_7_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_19_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 63);
+    \u0275\u0275elementStart(0, "a", 64);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 64)(3, "path", 65)(4, "path", 66)(5, "path", 67)(6, "path", 68);
+    \u0275\u0275element(2, "path", 65)(3, "path", 66)(4, "path", 67)(5, "path", 68)(6, "path", 69);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(7, DashboardShellComponent_a_19_span_7_Template, 2, 0, "span", 40);
+    \u0275\u0275template(7, DashboardShellComponent_a_19_span_7_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -31882,12 +31882,12 @@ function DashboardShellComponent_a_20_span_9_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_20_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 69);
+    \u0275\u0275elementStart(0, "a", 70);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 70)(3, "path", 71)(4, "path", 72)(5, "path", 73)(6, "path", 74)(7, "path", 75)(8, "path", 76);
+    \u0275\u0275element(2, "path", 71)(3, "path", 72)(4, "path", 73)(5, "path", 74)(6, "path", 75)(7, "path", 76)(8, "path", 77);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(9, DashboardShellComponent_a_20_span_9_Template, 2, 0, "span", 40);
+    \u0275\u0275template(9, DashboardShellComponent_a_20_span_9_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -31906,12 +31906,12 @@ function DashboardShellComponent_a_21_span_9_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_21_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 77);
+    \u0275\u0275elementStart(0, "a", 78);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 78)(3, "path", 79)(4, "path", 80)(5, "path", 81)(6, "path", 82)(7, "path", 83)(8, "path", 84);
+    \u0275\u0275element(2, "path", 79)(3, "path", 80)(4, "path", 81)(5, "path", 82)(6, "path", 83)(7, "path", 84)(8, "path", 85);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(9, DashboardShellComponent_a_21_span_9_Template, 2, 0, "span", 40);
+    \u0275\u0275template(9, DashboardShellComponent_a_21_span_9_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -31923,7 +31923,7 @@ function DashboardShellComponent_a_21_Template(rf, ctx) {
 }
 function DashboardShellComponent_div_22_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 62);
+    \u0275\u0275elementStart(0, "div", 63);
     \u0275\u0275text(1, "Agricultura");
     \u0275\u0275elementEnd();
   }
@@ -31937,12 +31937,12 @@ function DashboardShellComponent_a_23_span_5_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_23_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 85);
+    \u0275\u0275elementStart(0, "a", 86);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 86)(3, "path", 87)(4, "path", 88);
+    \u0275\u0275element(2, "path", 87)(3, "path", 88)(4, "path", 89);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_23_span_5_Template, 2, 0, "span", 40);
+    \u0275\u0275template(5, DashboardShellComponent_a_23_span_5_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -31961,12 +31961,12 @@ function DashboardShellComponent_a_24_span_8_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_24_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 89);
+    \u0275\u0275elementStart(0, "a", 90);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 90)(3, "path", 91)(4, "path", 92)(5, "path", 93)(6, "path", 94)(7, "path", 95);
+    \u0275\u0275element(2, "path", 91)(3, "path", 92)(4, "path", 93)(5, "path", 94)(6, "path", 95)(7, "path", 96);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(8, DashboardShellComponent_a_24_span_8_Template, 2, 0, "span", 40);
+    \u0275\u0275template(8, DashboardShellComponent_a_24_span_8_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -31985,12 +31985,12 @@ function DashboardShellComponent_a_25_span_6_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_25_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 96);
+    \u0275\u0275elementStart(0, "a", 97);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 64)(3, "path", 97)(4, "path", 98)(5, "path", 99);
+    \u0275\u0275element(2, "path", 65)(3, "path", 98)(4, "path", 99)(5, "path", 100);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_25_span_6_Template, 2, 0, "span", 40);
+    \u0275\u0275template(6, DashboardShellComponent_a_25_span_6_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32009,12 +32009,12 @@ function DashboardShellComponent_a_26_span_5_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_26_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 100);
+    \u0275\u0275elementStart(0, "a", 101);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 101)(3, "path", 102)(4, "path", 103);
+    \u0275\u0275element(2, "path", 102)(3, "path", 103)(4, "path", 104);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_26_span_5_Template, 2, 0, "span", 40);
+    \u0275\u0275template(5, DashboardShellComponent_a_26_span_5_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32033,12 +32033,12 @@ function DashboardShellComponent_a_27_span_5_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_27_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 104);
+    \u0275\u0275elementStart(0, "a", 105);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 105)(3, "path", 106)(4, "path", 107);
+    \u0275\u0275element(2, "path", 106)(3, "path", 107)(4, "path", 108);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_27_span_5_Template, 2, 0, "span", 40);
+    \u0275\u0275template(5, DashboardShellComponent_a_27_span_5_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32057,12 +32057,12 @@ function DashboardShellComponent_a_28_span_5_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_28_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 108);
+    \u0275\u0275elementStart(0, "a", 109);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 109)(3, "path", 110)(4, "path", 111);
+    \u0275\u0275element(2, "path", 110)(3, "path", 111)(4, "path", 112);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_28_span_5_Template, 2, 0, "span", 40);
+    \u0275\u0275template(5, DashboardShellComponent_a_28_span_5_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32074,7 +32074,7 @@ function DashboardShellComponent_a_28_Template(rf, ctx) {
 }
 function DashboardShellComponent_div_29_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 62);
+    \u0275\u0275elementStart(0, "div", 63);
     \u0275\u0275text(1, "Ganader\xEDa");
     \u0275\u0275elementEnd();
   }
@@ -32088,12 +32088,12 @@ function DashboardShellComponent_a_30_span_8_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_30_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 112);
+    \u0275\u0275elementStart(0, "a", 113);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 70)(3, "path", 71)(4, "path", 72)(5, "path", 113)(6, "path", 114)(7, "path", 73);
+    \u0275\u0275element(2, "path", 71)(3, "path", 72)(4, "path", 73)(5, "path", 114)(6, "path", 115)(7, "path", 74);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(8, DashboardShellComponent_a_30_span_8_Template, 2, 0, "span", 40);
+    \u0275\u0275template(8, DashboardShellComponent_a_30_span_8_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32112,12 +32112,12 @@ function DashboardShellComponent_a_31_span_5_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_31_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 115);
+    \u0275\u0275elementStart(0, "a", 116);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 116)(3, "path", 117)(4, "path", 118);
+    \u0275\u0275element(2, "path", 117)(3, "path", 118)(4, "path", 119);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_31_span_5_Template, 2, 0, "span", 40);
+    \u0275\u0275template(5, DashboardShellComponent_a_31_span_5_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32136,12 +32136,12 @@ function DashboardShellComponent_a_32_span_7_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_32_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 119);
+    \u0275\u0275elementStart(0, "a", 120);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 120)(3, "path", 121)(4, "path", 122)(5, "path", 123)(6, "path", 124);
+    \u0275\u0275element(2, "path", 121)(3, "path", 122)(4, "path", 123)(5, "path", 124)(6, "path", 125);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(7, DashboardShellComponent_a_32_span_7_Template, 2, 0, "span", 40);
+    \u0275\u0275template(7, DashboardShellComponent_a_32_span_7_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32160,12 +32160,12 @@ function DashboardShellComponent_a_33_span_6_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_33_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 125);
+    \u0275\u0275elementStart(0, "a", 126);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 126)(3, "path", 127)(4, "path", 128)(5, "path", 129);
+    \u0275\u0275element(2, "path", 127)(3, "path", 128)(4, "path", 129)(5, "path", 130);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_33_span_6_Template, 2, 0, "span", 40);
+    \u0275\u0275template(6, DashboardShellComponent_a_33_span_6_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32184,12 +32184,12 @@ function DashboardShellComponent_a_34_span_6_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_34_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 130);
+    \u0275\u0275elementStart(0, "a", 131);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 86)(3, "path", 87)(4, "path", 88)(5, "path", 131);
+    \u0275\u0275element(2, "path", 87)(3, "path", 88)(4, "path", 89)(5, "path", 132);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_34_span_6_Template, 2, 0, "span", 40);
+    \u0275\u0275template(6, DashboardShellComponent_a_34_span_6_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32201,7 +32201,7 @@ function DashboardShellComponent_a_34_Template(rf, ctx) {
 }
 function DashboardShellComponent_div_35_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 62);
+    \u0275\u0275elementStart(0, "div", 63);
     \u0275\u0275text(1, "Maquinaria");
     \u0275\u0275elementEnd();
   }
@@ -32215,12 +32215,12 @@ function DashboardShellComponent_a_36_span_6_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_36_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 132);
+    \u0275\u0275elementStart(0, "a", 133);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 133)(3, "path", 134)(4, "path", 135)(5, "path", 136);
+    \u0275\u0275element(2, "path", 134)(3, "path", 135)(4, "path", 136)(5, "path", 137);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_36_span_6_Template, 2, 0, "span", 40);
+    \u0275\u0275template(6, DashboardShellComponent_a_36_span_6_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32239,12 +32239,12 @@ function DashboardShellComponent_a_37_span_5_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_37_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 137);
+    \u0275\u0275elementStart(0, "a", 138);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 138)(3, "path", 139)(4, "path", 140);
+    \u0275\u0275element(2, "path", 139)(3, "path", 140)(4, "path", 141);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_37_span_5_Template, 2, 0, "span", 40);
+    \u0275\u0275template(5, DashboardShellComponent_a_37_span_5_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32256,7 +32256,7 @@ function DashboardShellComponent_a_37_Template(rf, ctx) {
 }
 function DashboardShellComponent_div_38_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 62);
+    \u0275\u0275elementStart(0, "div", 63);
     \u0275\u0275text(1, "Operarios");
     \u0275\u0275elementEnd();
   }
@@ -32270,12 +32270,12 @@ function DashboardShellComponent_a_39_span_6_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_39_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 141);
+    \u0275\u0275elementStart(0, "a", 142);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 142)(3, "path", 143)(4, "path", 144)(5, "path", 145);
+    \u0275\u0275element(2, "path", 143)(3, "path", 144)(4, "path", 145)(5, "path", 146);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_39_span_6_Template, 2, 0, "span", 40);
+    \u0275\u0275template(6, DashboardShellComponent_a_39_span_6_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32294,12 +32294,12 @@ function DashboardShellComponent_a_40_span_6_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_40_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 146);
+    \u0275\u0275elementStart(0, "a", 147);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 147)(3, "path", 148)(4, "path", 149)(5, "path", 150);
+    \u0275\u0275element(2, "path", 148)(3, "path", 149)(4, "path", 150)(5, "path", 151);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(6, DashboardShellComponent_a_40_span_6_Template, 2, 0, "span", 40);
+    \u0275\u0275template(6, DashboardShellComponent_a_40_span_6_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32318,12 +32318,12 @@ function DashboardShellComponent_a_41_span_5_Template(rf, ctx) {
 }
 function DashboardShellComponent_a_41_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "a", 151);
+    \u0275\u0275elementStart(0, "a", 152);
     \u0275\u0275namespaceSVG();
     \u0275\u0275elementStart(1, "svg", 4);
-    \u0275\u0275element(2, "path", 152)(3, "path", 153)(4, "path", 154);
+    \u0275\u0275element(2, "path", 153)(3, "path", 154)(4, "path", 155);
     \u0275\u0275elementEnd();
-    \u0275\u0275template(5, DashboardShellComponent_a_41_span_5_Template, 2, 0, "span", 40);
+    \u0275\u0275template(5, DashboardShellComponent_a_41_span_5_Template, 2, 0, "span", 41);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -32333,33 +32333,64 @@ function DashboardShellComponent_a_41_Template(rf, ctx) {
     \u0275\u0275property("ngIf", !ctx_r0.collapsed());
   }
 }
-function DashboardShellComponent__svg_path_45_Template(rf, ctx) {
+function DashboardShellComponent_div_42_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 155);
+    \u0275\u0275elementStart(0, "div", 63);
+    \u0275\u0275text(1, "Finanzas");
+    \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent__svg_path_46_Template(rf, ctx) {
+function DashboardShellComponent_a_43_span_6_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275namespaceSVG();
-    \u0275\u0275element(0, "path", 61);
+    \u0275\u0275elementStart(0, "span");
+    \u0275\u0275text(1, "Facturacion");
+    \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_span_47_Template(rf, ctx) {
+function DashboardShellComponent_a_43_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "a", 156);
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275elementStart(1, "svg", 4);
+    \u0275\u0275element(2, "path", 148)(3, "path", 149)(4, "path", 150)(5, "path", 157);
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(6, DashboardShellComponent_a_43_span_6_Template, 2, 0, "span", 41);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r0 = \u0275\u0275nextContext();
+    \u0275\u0275property("title", ctx_r0.collapsed() ? "Facturacion" : "");
+    \u0275\u0275advance(6);
+    \u0275\u0275property("ngIf", !ctx_r0.collapsed());
+  }
+}
+function DashboardShellComponent__svg_path_47_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275element(0, "path", 158);
+  }
+}
+function DashboardShellComponent__svg_path_48_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275namespaceSVG();
+    \u0275\u0275element(0, "path", 62);
+  }
+}
+function DashboardShellComponent_span_49_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Colapsar");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_span_53_Template(rf, ctx) {
+function DashboardShellComponent_span_55_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Centro de ayuda");
     \u0275\u0275elementEnd();
   }
 }
-function DashboardShellComponent_span_59_Template(rf, ctx) {
+function DashboardShellComponent_span_61_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "span");
     \u0275\u0275text(1, "Salir");
@@ -32412,7 +32443,7 @@ var DashboardShellComponent = class _DashboardShellComponent {
   static \u0275fac = function DashboardShellComponent_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _DashboardShellComponent)();
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DashboardShellComponent, selectors: [["app-dashboard-shell"]], decls: 74, vars: 42, consts: [[1, "shell"], [1, "sidebar"], [1, "brand-row"], ["aria-hidden", "true", 1, "brand-mark"], ["viewBox", "0 0 24 24"], ["d", "M5 18c7 0 12-5 12-12-7 0-12 5-12 12Z"], ["d", "M5 18c0-6 4-10 10-12"], ["d", "M12 19v-7"], ["d", "M12 14h6"], ["class", "brand-copy", 4, "ngIf"], ["type", "button", 1, "brand-toggle", 3, "click", "title"], ["class", "mobile-menu-line", "d", "M4 7h16", 4, "ngIf"], ["class", "mobile-menu-line", "d", "M4 12h16", 4, "ngIf"], ["class", "mobile-menu-line", "d", "M4 17h16", 4, "ngIf"], ["class", "desktop-collapse-line", "d", "M9 6l6 6-6 6", 4, "ngIf"], ["d", "M15 6l-6 6 6 6", 4, "ngIf"], ["aria-label", "Menu principal", 1, "nav-section"], ["class", "section-title", 4, "ngIf"], ["routerLink", "/reportes/agricola", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/reportes/ganaderia", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operaciones/calendario", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/lotes", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/siembra", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/analytics", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/plagas", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/insumos", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/clima", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/trazabilidad", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/sanidad", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/reproduccion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/alimentacion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/potreros", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/maquinaria/inventario", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/maquinaria/mantenimiento", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operarios/gestion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operarios/ordenes", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/admin/roles-menu", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], [1, "sidebar-footer"], ["type", "button", 1, "footer-action", 3, "click", "title"], ["d", "M9 6l6 6-6 6", 4, "ngIf"], [4, "ngIf"], ["type", "button", "title", "Centro de ayuda", 1, "footer-action"], ["d", "M12 18h.01"], ["d", "M9.5 9a2.7 2.7 0 1 1 4.7 1.8c-.9.8-1.7 1.4-1.9 2.7"], ["d", "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"], ["type", "button", "title", "Salir", 1, "footer-action", "logout-action", 3, "click"], ["d", "M10 17l5-5-5-5"], ["d", "M15 12H3"], ["d", "M21 4v16"], [1, "main-panel"], [1, "topbar"], [1, "user-chip"], [1, "user-avatar"], [1, "user-copy"], ["d", "M6 9l6 6 6-6"], [1, "content-area"], [1, "brand-copy"], ["d", "M4 7h16", 1, "mobile-menu-line"], ["d", "M4 12h16", 1, "mobile-menu-line"], ["d", "M4 17h16", 1, "mobile-menu-line"], ["d", "M9 6l6 6-6 6", 1, "desktop-collapse-line"], ["d", "M15 6l-6 6 6 6"], [1, "section-title"], ["routerLink", "/reportes/agricola", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 19h16"], ["d", "M7 16v-5"], ["d", "M12 16V7"], ["d", "M17 16v-8"], ["d", "M5 10l4-4 4 3 5-6"], ["routerLink", "/reportes/ganaderia", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M5 8c0-3 3-5 7-5s7 2 7 5c0 4-3 7-7 7S5 12 5 8Z"], ["d", "M8 5L5 3"], ["d", "M16 5l3-2"], ["d", "M10 15v4h4v-4"], ["d", "M16 19h5"], ["d", "M18 19v-5"], ["d", "M20 19v-8"], ["routerLink", "/operaciones/calendario", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M8 2v4"], ["d", "M16 2v4"], ["d", "M3 10h18"], ["d", "M5 5h14v16H5z"], ["d", "M8 14h3"], ["d", "M13 14h3"], ["d", "M8 17h3"], ["routerLink", "/agricola/lotes", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 7l8-3 8 3v10l-8 3-8-3V7Z"], ["d", "M12 4v16"], ["d", "M4 7l8 3 8-3"], ["routerLink", "/agricola/siembra", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M6 20V8"], ["d", "M10 20V5"], ["d", "M14 20V7"], ["d", "M18 20V9"], ["d", "M4 20h16"], ["d", "M12 21V8"], ["routerLink", "/agricola/analytics", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 16V9"], ["d", "M12 16V5"], ["d", "M17 16v-4"], ["routerLink", "/agricola/plagas", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"], ["d", "M12 9v8"], ["d", "M8 13h8"], ["routerLink", "/agricola/insumos", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 7l8-4 8 4-8 4-8-4Z"], ["d", "M4 7v10l8 4 8-4V7"], ["d", "M12 11v10"], ["routerLink", "/clima", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.6 1.8A3.5 3.5 0 0 0 7 18Z"], ["d", "M12 3v2"], ["d", "M20 5l-1.5 1.5"], ["routerLink", "/ganaderia/trazabilidad", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M9 11h.01"], ["d", "M15 11h.01"], ["routerLink", "/ganaderia/sanidad", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 21s7-4 7-11V5l-7-3-7 3v5c0 7 7 11 7 11Z"], ["d", "M12 8v6"], ["d", "M9 11h6"], ["routerLink", "/ganaderia/reproduccion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"], ["d", "M11 11v10"], ["d", "M7 17h8"], ["d", "M17 4h3v3"], ["d", "M20 4l-5 5"], ["routerLink", "/ganaderia/alimentacion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 19c6-9 12-9 16 0"], ["d", "M8 13c2-4 6-4 8 0"], ["d", "M12 5v15"], ["d", "M7 7h10"], ["routerLink", "/ganaderia/potreros", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M8 12h8"], ["routerLink", "/maquinaria/inventario", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M5 15h12l2 4H3l2-4Z"], ["d", "M6 15V9h7l4 6"], ["d", "M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"], ["d", "M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"], ["routerLink", "/maquinaria/mantenimiento", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "m14 7 3 3"], ["d", "M5 19 16 8l-3-3L2 16v3h3Z"], ["d", "M12 19h9"], ["routerLink", "/operarios/gestion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 19v-2a5 5 0 0 1 10 0v2"], ["d", "M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0"], ["d", "M17 11h4"], ["d", "M19 9v4"], ["routerLink", "/operarios/ordenes", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 3h10v18H7z"], ["d", "M10 8h4"], ["d", "M10 12h4"], ["d", "M10 16h2"], ["routerLink", "/admin/roles-menu", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 3 4 7v10l8 4 8-4V7l-8-4Z"], ["d", "M9 12h6"], ["d", "M12 9v6"], ["d", "M9 6l6 6-6 6"]], template: function DashboardShellComponent_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _DashboardShellComponent, selectors: [["app-dashboard-shell"]], decls: 76, vars: 44, consts: [[1, "shell"], [1, "sidebar"], [1, "brand-row"], ["aria-hidden", "true", 1, "brand-mark"], ["viewBox", "0 0 24 24"], ["d", "M5 18c7 0 12-5 12-12-7 0-12 5-12 12Z"], ["d", "M5 18c0-6 4-10 10-12"], ["d", "M12 19v-7"], ["d", "M12 14h6"], ["class", "brand-copy", 4, "ngIf"], ["type", "button", 1, "brand-toggle", 3, "click", "title"], ["class", "mobile-menu-line", "d", "M4 7h16", 4, "ngIf"], ["class", "mobile-menu-line", "d", "M4 12h16", 4, "ngIf"], ["class", "mobile-menu-line", "d", "M4 17h16", 4, "ngIf"], ["class", "desktop-collapse-line", "d", "M9 6l6 6-6 6", 4, "ngIf"], ["d", "M15 6l-6 6 6 6", 4, "ngIf"], ["aria-label", "Menu principal", 1, "nav-section"], ["class", "section-title", 4, "ngIf"], ["routerLink", "/reportes/agricola", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/reportes/ganaderia", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operaciones/calendario", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/lotes", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/siembra", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/analytics", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/plagas", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/agricola/insumos", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/clima", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/trazabilidad", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/sanidad", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/reproduccion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/alimentacion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/ganaderia/potreros", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/maquinaria/inventario", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/maquinaria/mantenimiento", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operarios/gestion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/operarios/ordenes", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/admin/roles-menu", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], ["routerLink", "/finanzas/facturacion", "routerLinkActive", "active", "class", "nav-link", 3, "title", 4, "ngIf"], [1, "sidebar-footer"], ["type", "button", 1, "footer-action", 3, "click", "title"], ["d", "M9 6l6 6-6 6", 4, "ngIf"], [4, "ngIf"], ["type", "button", "title", "Centro de ayuda", 1, "footer-action"], ["d", "M12 18h.01"], ["d", "M9.5 9a2.7 2.7 0 1 1 4.7 1.8c-.9.8-1.7 1.4-1.9 2.7"], ["d", "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"], ["type", "button", "title", "Salir", 1, "footer-action", "logout-action", 3, "click"], ["d", "M10 17l5-5-5-5"], ["d", "M15 12H3"], ["d", "M21 4v16"], [1, "main-panel"], [1, "topbar"], [1, "user-chip"], [1, "user-avatar"], [1, "user-copy"], ["d", "M6 9l6 6 6-6"], [1, "content-area"], [1, "brand-copy"], ["d", "M4 7h16", 1, "mobile-menu-line"], ["d", "M4 12h16", 1, "mobile-menu-line"], ["d", "M4 17h16", 1, "mobile-menu-line"], ["d", "M9 6l6 6-6 6", 1, "desktop-collapse-line"], ["d", "M15 6l-6 6 6 6"], [1, "section-title"], ["routerLink", "/reportes/agricola", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 19h16"], ["d", "M7 16v-5"], ["d", "M12 16V7"], ["d", "M17 16v-8"], ["d", "M5 10l4-4 4 3 5-6"], ["routerLink", "/reportes/ganaderia", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M5 8c0-3 3-5 7-5s7 2 7 5c0 4-3 7-7 7S5 12 5 8Z"], ["d", "M8 5L5 3"], ["d", "M16 5l3-2"], ["d", "M10 15v4h4v-4"], ["d", "M16 19h5"], ["d", "M18 19v-5"], ["d", "M20 19v-8"], ["routerLink", "/operaciones/calendario", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M8 2v4"], ["d", "M16 2v4"], ["d", "M3 10h18"], ["d", "M5 5h14v16H5z"], ["d", "M8 14h3"], ["d", "M13 14h3"], ["d", "M8 17h3"], ["routerLink", "/agricola/lotes", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 7l8-3 8 3v10l-8 3-8-3V7Z"], ["d", "M12 4v16"], ["d", "M4 7l8 3 8-3"], ["routerLink", "/agricola/siembra", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M6 20V8"], ["d", "M10 20V5"], ["d", "M14 20V7"], ["d", "M18 20V9"], ["d", "M4 20h16"], ["d", "M12 21V8"], ["routerLink", "/agricola/analytics", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 16V9"], ["d", "M12 16V5"], ["d", "M17 16v-4"], ["routerLink", "/agricola/plagas", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z"], ["d", "M12 9v8"], ["d", "M8 13h8"], ["routerLink", "/agricola/insumos", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 7l8-4 8 4-8 4-8-4Z"], ["d", "M4 7v10l8 4 8-4V7"], ["d", "M12 11v10"], ["routerLink", "/clima", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.6 1.8A3.5 3.5 0 0 0 7 18Z"], ["d", "M12 3v2"], ["d", "M20 5l-1.5 1.5"], ["routerLink", "/ganaderia/trazabilidad", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M9 11h.01"], ["d", "M15 11h.01"], ["routerLink", "/ganaderia/sanidad", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 21s7-4 7-11V5l-7-3-7 3v5c0 7 7 11 7 11Z"], ["d", "M12 8v6"], ["d", "M9 11h6"], ["routerLink", "/ganaderia/reproduccion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"], ["d", "M11 11v10"], ["d", "M7 17h8"], ["d", "M17 4h3v3"], ["d", "M20 4l-5 5"], ["routerLink", "/ganaderia/alimentacion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M4 19c6-9 12-9 16 0"], ["d", "M8 13c2-4 6-4 8 0"], ["d", "M12 5v15"], ["d", "M7 7h10"], ["routerLink", "/ganaderia/potreros", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M8 12h8"], ["routerLink", "/maquinaria/inventario", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M5 15h12l2 4H3l2-4Z"], ["d", "M6 15V9h7l4 6"], ["d", "M8 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"], ["d", "M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"], ["routerLink", "/maquinaria/mantenimiento", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "m14 7 3 3"], ["d", "M5 19 16 8l-3-3L2 16v3h3Z"], ["d", "M12 19h9"], ["routerLink", "/operarios/gestion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 19v-2a5 5 0 0 1 10 0v2"], ["d", "M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0"], ["d", "M17 11h4"], ["d", "M19 9v4"], ["routerLink", "/operarios/ordenes", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M7 3h10v18H7z"], ["d", "M10 8h4"], ["d", "M10 12h4"], ["d", "M10 16h2"], ["routerLink", "/admin/roles-menu", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M12 3 4 7v10l8 4 8-4V7l-8-4Z"], ["d", "M9 12h6"], ["d", "M12 9v6"], ["routerLink", "/finanzas/facturacion", "routerLinkActive", "active", 1, "nav-link", 3, "title"], ["d", "M9 17h6"], ["d", "M9 6l6 6-6 6"]], template: function DashboardShellComponent_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "div", 0)(1, "aside", 1)(2, "div", 2)(3, "div", 3);
       \u0275\u0275namespaceSVG();
@@ -32431,54 +32462,54 @@ var DashboardShellComponent = class _DashboardShellComponent {
       \u0275\u0275elementEnd()()();
       \u0275\u0275namespaceHTML();
       \u0275\u0275elementStart(17, "nav", 16);
-      \u0275\u0275template(18, DashboardShellComponent_div_18_Template, 2, 0, "div", 17)(19, DashboardShellComponent_a_19_Template, 8, 2, "a", 18)(20, DashboardShellComponent_a_20_Template, 10, 2, "a", 19)(21, DashboardShellComponent_a_21_Template, 10, 2, "a", 20)(22, DashboardShellComponent_div_22_Template, 2, 0, "div", 17)(23, DashboardShellComponent_a_23_Template, 6, 2, "a", 21)(24, DashboardShellComponent_a_24_Template, 9, 2, "a", 22)(25, DashboardShellComponent_a_25_Template, 7, 2, "a", 23)(26, DashboardShellComponent_a_26_Template, 6, 2, "a", 24)(27, DashboardShellComponent_a_27_Template, 6, 2, "a", 25)(28, DashboardShellComponent_a_28_Template, 6, 2, "a", 26)(29, DashboardShellComponent_div_29_Template, 2, 0, "div", 17)(30, DashboardShellComponent_a_30_Template, 9, 2, "a", 27)(31, DashboardShellComponent_a_31_Template, 6, 2, "a", 28)(32, DashboardShellComponent_a_32_Template, 8, 2, "a", 29)(33, DashboardShellComponent_a_33_Template, 7, 2, "a", 30)(34, DashboardShellComponent_a_34_Template, 7, 2, "a", 31)(35, DashboardShellComponent_div_35_Template, 2, 0, "div", 17)(36, DashboardShellComponent_a_36_Template, 7, 2, "a", 32)(37, DashboardShellComponent_a_37_Template, 6, 2, "a", 33)(38, DashboardShellComponent_div_38_Template, 2, 0, "div", 17)(39, DashboardShellComponent_a_39_Template, 7, 2, "a", 34)(40, DashboardShellComponent_a_40_Template, 7, 2, "a", 35)(41, DashboardShellComponent_a_41_Template, 6, 2, "a", 36);
+      \u0275\u0275template(18, DashboardShellComponent_div_18_Template, 2, 0, "div", 17)(19, DashboardShellComponent_a_19_Template, 8, 2, "a", 18)(20, DashboardShellComponent_a_20_Template, 10, 2, "a", 19)(21, DashboardShellComponent_a_21_Template, 10, 2, "a", 20)(22, DashboardShellComponent_div_22_Template, 2, 0, "div", 17)(23, DashboardShellComponent_a_23_Template, 6, 2, "a", 21)(24, DashboardShellComponent_a_24_Template, 9, 2, "a", 22)(25, DashboardShellComponent_a_25_Template, 7, 2, "a", 23)(26, DashboardShellComponent_a_26_Template, 6, 2, "a", 24)(27, DashboardShellComponent_a_27_Template, 6, 2, "a", 25)(28, DashboardShellComponent_a_28_Template, 6, 2, "a", 26)(29, DashboardShellComponent_div_29_Template, 2, 0, "div", 17)(30, DashboardShellComponent_a_30_Template, 9, 2, "a", 27)(31, DashboardShellComponent_a_31_Template, 6, 2, "a", 28)(32, DashboardShellComponent_a_32_Template, 8, 2, "a", 29)(33, DashboardShellComponent_a_33_Template, 7, 2, "a", 30)(34, DashboardShellComponent_a_34_Template, 7, 2, "a", 31)(35, DashboardShellComponent_div_35_Template, 2, 0, "div", 17)(36, DashboardShellComponent_a_36_Template, 7, 2, "a", 32)(37, DashboardShellComponent_a_37_Template, 6, 2, "a", 33)(38, DashboardShellComponent_div_38_Template, 2, 0, "div", 17)(39, DashboardShellComponent_a_39_Template, 7, 2, "a", 34)(40, DashboardShellComponent_a_40_Template, 7, 2, "a", 35)(41, DashboardShellComponent_a_41_Template, 6, 2, "a", 36)(42, DashboardShellComponent_div_42_Template, 2, 0, "div", 17)(43, DashboardShellComponent_a_43_Template, 7, 2, "a", 37);
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(42, "div", 37)(43, "button", 38);
-      \u0275\u0275listener("click", function DashboardShellComponent_Template_button_click_43_listener() {
+      \u0275\u0275elementStart(44, "div", 38)(45, "button", 39);
+      \u0275\u0275listener("click", function DashboardShellComponent_Template_button_click_45_listener() {
         return ctx.toggleSidebar();
       });
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(44, "svg", 4);
-      \u0275\u0275template(45, DashboardShellComponent__svg_path_45_Template, 1, 0, "path", 39)(46, DashboardShellComponent__svg_path_46_Template, 1, 0, "path", 15);
+      \u0275\u0275elementStart(46, "svg", 4);
+      \u0275\u0275template(47, DashboardShellComponent__svg_path_47_Template, 1, 0, "path", 40)(48, DashboardShellComponent__svg_path_48_Template, 1, 0, "path", 15);
       \u0275\u0275elementEnd();
-      \u0275\u0275template(47, DashboardShellComponent_span_47_Template, 2, 0, "span", 40);
+      \u0275\u0275template(49, DashboardShellComponent_span_49_Template, 2, 0, "span", 41);
       \u0275\u0275elementEnd();
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(48, "button", 41);
+      \u0275\u0275elementStart(50, "button", 42);
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(49, "svg", 4);
-      \u0275\u0275element(50, "path", 42)(51, "path", 43)(52, "path", 44);
+      \u0275\u0275elementStart(51, "svg", 4);
+      \u0275\u0275element(52, "path", 43)(53, "path", 44)(54, "path", 45);
       \u0275\u0275elementEnd();
-      \u0275\u0275template(53, DashboardShellComponent_span_53_Template, 2, 0, "span", 40);
+      \u0275\u0275template(55, DashboardShellComponent_span_55_Template, 2, 0, "span", 41);
       \u0275\u0275elementEnd();
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(54, "button", 45);
-      \u0275\u0275listener("click", function DashboardShellComponent_Template_button_click_54_listener() {
+      \u0275\u0275elementStart(56, "button", 46);
+      \u0275\u0275listener("click", function DashboardShellComponent_Template_button_click_56_listener() {
         return ctx.logout();
       });
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(55, "svg", 4);
-      \u0275\u0275element(56, "path", 46)(57, "path", 47)(58, "path", 48);
+      \u0275\u0275elementStart(57, "svg", 4);
+      \u0275\u0275element(58, "path", 47)(59, "path", 48)(60, "path", 49);
       \u0275\u0275elementEnd();
-      \u0275\u0275template(59, DashboardShellComponent_span_59_Template, 2, 0, "span", 40);
+      \u0275\u0275template(61, DashboardShellComponent_span_61_Template, 2, 0, "span", 41);
       \u0275\u0275elementEnd()()();
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(60, "main", 49)(61, "header", 50)(62, "div", 51)(63, "span", 52);
-      \u0275\u0275text(64);
+      \u0275\u0275elementStart(62, "main", 50)(63, "header", 51)(64, "div", 52)(65, "span", 53);
+      \u0275\u0275text(66);
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(65, "span", 53)(66, "strong");
-      \u0275\u0275text(67);
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(68, "small");
+      \u0275\u0275elementStart(67, "span", 54)(68, "strong");
       \u0275\u0275text(69);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(70, "small");
+      \u0275\u0275text(71);
       \u0275\u0275elementEnd()();
       \u0275\u0275namespaceSVG();
-      \u0275\u0275elementStart(70, "svg", 4);
-      \u0275\u0275element(71, "path", 54);
+      \u0275\u0275elementStart(72, "svg", 4);
+      \u0275\u0275element(73, "path", 55);
       \u0275\u0275elementEnd()()();
       \u0275\u0275namespaceHTML();
-      \u0275\u0275elementStart(72, "section", 55);
-      \u0275\u0275element(73, "router-outlet");
+      \u0275\u0275elementStart(74, "section", 56);
+      \u0275\u0275element(75, "router-outlet");
       \u0275\u0275elementEnd()()();
     }
     if (rf & 2) {
@@ -32546,6 +32577,10 @@ var DashboardShellComponent = class _DashboardShellComponent {
       \u0275\u0275property("ngIf", ctx.isMenuVisible("operarios-ordenes"));
       \u0275\u0275advance();
       \u0275\u0275property("ngIf", ctx.isMenuVisible("admin-roles-menu"));
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", !ctx.collapsed());
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.isMenuVisible("finanzas-facturacion"));
       \u0275\u0275advance(2);
       \u0275\u0275property("title", ctx.collapsed() ? "Expandir" : "Colapsar");
       \u0275\u0275advance(2);
@@ -32631,20 +32666,20 @@ var DashboardShellComponent = class _DashboardShellComponent {
         <span *ngIf="!collapsed()">Analytics</span>\r
       </a>\r
 \r
-      <a *ngIf="isMenuVisible('agricola-plagas')" routerLink="/agricola/plagas" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Plagas' : ''">
-        <svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z" /><path d="M12 9v8" /><path d="M8 13h8" /></svg>
-        <span *ngIf="!collapsed()">Plagas</span>
-      </a>
-
-      <a *ngIf="isMenuVisible('agricola-insumos')" routerLink="/agricola/insumos" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Insumos' : ''">
-        <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4Z" /><path d="M4 7v10l8 4 8-4V7" /><path d="M12 11v10" /></svg>
-        <span *ngIf="!collapsed()">Insumos</span>
-      </a>
-
-      <a *ngIf="isMenuVisible('clima')" routerLink="/clima" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Clima' : ''">
-        <svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.6 1.8A3.5 3.5 0 0 0 7 18Z" /><path d="M12 3v2" /><path d="M20 5l-1.5 1.5" /></svg>
-        <span *ngIf="!collapsed()">Clima</span>
-      </a>
+      <a *ngIf="isMenuVisible('agricola-plagas')" routerLink="/agricola/plagas" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Plagas' : ''">\r
+        <svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z" /><path d="M12 9v8" /><path d="M8 13h8" /></svg>\r
+        <span *ngIf="!collapsed()">Plagas</span>\r
+      </a>\r
+\r
+      <a *ngIf="isMenuVisible('agricola-insumos')" routerLink="/agricola/insumos" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Insumos' : ''">\r
+        <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4Z" /><path d="M4 7v10l8 4 8-4V7" /><path d="M12 11v10" /></svg>\r
+        <span *ngIf="!collapsed()">Insumos</span>\r
+      </a>\r
+\r
+      <a *ngIf="isMenuVisible('clima')" routerLink="/clima" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Clima' : ''">\r
+        <svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.6 1.8A3.5 3.5 0 0 0 7 18Z" /><path d="M12 3v2" /><path d="M20 5l-1.5 1.5" /></svg>\r
+        <span *ngIf="!collapsed()">Clima</span>\r
+      </a>\r
 \r
       <div class="section-title" *ngIf="!collapsed()">Ganader\xEDa</div>\r
 \r
@@ -32700,8 +32735,13 @@ var DashboardShellComponent = class _DashboardShellComponent {
       <a *ngIf="isMenuVisible('admin-roles-menu')" routerLink="/admin/roles-menu" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Roles y men\xFA' : ''">\r
         <svg viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>\r
         <span *ngIf="!collapsed()">Roles y men\xFA</span>\r
+      </a>
+      <div class="section-title" *ngIf="!collapsed()">Finanzas</div>
+
+      <a *ngIf="isMenuVisible('finanzas-facturacion')" routerLink="/finanzas/facturacion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Facturacion' : ''">
+        <svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z" /><path d="M10 8h4" /><path d="M10 12h4" /><path d="M9 17h6" /></svg>
+        <span *ngIf="!collapsed()">Facturacion</span>
       </a>\r
-\r
     </nav>\r
 \r
     <div class="sidebar-footer">\r
@@ -48017,7 +48057,13 @@ function unwrapResponse(response) {
     return response;
   if (response && typeof response === "object" && "data" in response) {
     const data = response.data;
+    if (data && typeof data === "object" && "content" in data && Array.isArray(data.content)) {
+      return data.content;
+    }
     return Array.isArray(data) ? data : [];
+  }
+  if (response && typeof response === "object" && "content" in response && Array.isArray(response.content)) {
+    return response.content;
   }
   return [];
 }
@@ -48271,7 +48317,7 @@ var RemoteSearchSelectComponent = class _RemoteSearchSelectComponent {
   }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(RemoteSearchSelectComponent, { className: "RemoteSearchSelectComponent", filePath: "src/app/shared/remote-search-select/remote-search-select.component.ts", lineNumber: 33 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(RemoteSearchSelectComponent, { className: "RemoteSearchSelectComponent", filePath: "src/app/shared/remote-search-select/remote-search-select.component.ts", lineNumber: 39 });
 })();
 
 // src/app/pages/agricola-insumos-page/agricola-insumos-page.component.ts
@@ -50524,337 +50570,337 @@ var AgricolaInsumosPageComponent = class _AgricolaInsumosPageComponent {
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AgricolaInsumosPageComponent, [{
     type: Component,
-    args: [{ selector: "app-agricola-insumos-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<section class="insumos-page">
-  <header class="page-hero">
-    <div>
-      <p class="eyebrow">Campo App \xB7 Agricultura</p>
-      <h1>Inventario de insumos</h1>
-      <p>Stock, vencimientos, reorden y trazabilidad de uso de semillas, fertilizantes y fitosanitarios.</p>
-    </div>
-    <div class="hero-actions">
-      <button class="btn-secondary" type="button" (click)="openStockModal()">Registrar stock</button>
-      <button class="btn-secondary" type="button" (click)="openMovimientoModal()">Registrar uso</button>
-      <button class="btn-primary" type="button" (click)="openInsumoModal()">Nuevo insumo</button>
-    </div>
-  </header>
-
-  <div class="kpi-grid">
-    <article class="kpi-card" *ngFor="let kpi of kpis()" [class]="'kpi-card tone-' + kpi.tone">
-      <span class="kpi-icon">
-        <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4Z" /><path d="M4 7v10l8 4 8-4V7" /><path d="M12 11v10" /></svg>
-      </span>
-      <div>
-        <small>{{ kpi.label }}</small>
-        <strong>{{ kpi.value }}</strong>
-        <em>{{ kpi.sub }}</em>
-      </div>
-    </article>
-  </div>
-
-  <section class="filters-card">
-    <label>
-      <span>Buscar</span>
-      <input placeholder="Codigo, nombre, marca o principio activo" [ngModel]="filters().search" (ngModelChange)="filters.update(f => ({ ...f, search: $event }))" />
-    </label>
-    <label>
-      <span>Tipo</span>
-      <select [ngModel]="filters().tipo" (ngModelChange)="filters.update(f => ({ ...f, tipo: $event }))">
-        <option value="">Todos</option>
-        <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
-      </select>
-    </label>
-    <label>
-      <span>Estado</span>
-      <select [ngModel]="filters().activo" (ngModelChange)="filters.update(f => ({ ...f, activo: $event }))">
-        <option value="">Todos</option>
-        <option value="true">Activos</option>
-        <option value="false">Inactivos</option>
-      </select>
-    </label>
-    <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>
-  </section>
-
-  <p class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</p>
-
-  <section class="content-grid catalog-row">
-    <article class="panel">
-      <div class="panel-head">
-        <div class="panel-actions">
-          <button class="btn-secondary compact" type="button" (click)="openStockModal()">Registrar stock</button>
-          <button class="btn-secondary compact" type="button" (click)="openMovimientoModal()">Registrar uso</button>
-          <button class="btn-primary compact" type="button" (click)="openInsumoModal()">Nuevo insumo</button>
-        </div>
-        <div class="table-pager">
-          <label class="page-size-select">
-            <span>Mostrar</span>
-            <select [ngModel]="insumoPageSize()" (ngModelChange)="setInsumoPageSize($event)">
-              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
-            </select>
-          </label>
-          <span>{{ insumosPage()?.totalElements || 0 }} registros</span>
-          <button type="button" (click)="changeInsumoPage(-1)" [disabled]="(insumosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
-          <button type="button" *ngFor="let page of pageNumbers(insumosPage())" [class.active]="page === ((insumosPage()?.number || 0) + 1)" (click)="setInsumoPage(page)">{{ page }}</button>
-          <button type="button" (click)="changeInsumoPage(1)" [disabled]="((insumosPage()?.number || 0) + 1) >= (insumosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Insumo</th>
-              <th>Tipo</th>
-              <th>Stock</th>
-              <th>Minimo</th>
-              <th>Vencimiento</th>
-              <th>Precio unitario</th>
-              <th>Valor stock</th>
-              <th>Alertas</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let insumo of insumosPage()?.content || []">
-              <td>
-                <strong>{{ insumo.nombre }}</strong>
-                <small>{{ insumo.codigo }} \xB7 {{ insumo.marca || 'Sin marca' }}</small>
-              </td>
-              <td><span class="pill">{{ insumo.tipo }}</span></td>
-              <td>{{ number(insumo.stockTotal) }} {{ insumo.unidadMedida }}</td>
-              <td>{{ number(insumo.stockMinimo) }}</td>
-              <td>{{ date(insumo.proximoVencimiento) }}</td>
-              <td>{{ money(insumo.precioUnitario) }}</td>
-              <td>{{ money(insumo.valorStock) }}</td>
-              <td>
-                <span class="status danger" *ngIf="insumo.requiereReorden">Reorden</span>
-                <span class="status warning" *ngIf="insumo.tieneVencimientoProximo">Vence</span>
-                <span class="status ok" *ngIf="!insumo.requiereReorden && !insumo.tieneVencimientoProximo">OK</span>
-              </td>
-              <td class="actions-cell">
-                <button type="button" (click)="openStockModal(insumo)">Stock</button>
-                <button type="button" (click)="openMovimientoModal(insumo)">Uso</button>
-                <button type="button" (click)="openEditInsumoModal(insumo)">Editar</button>
-                <button class="danger-action" type="button" (click)="deleteInsumo(insumo)">Eliminar</button>
-              </td>
-            </tr>
-            <tr *ngIf="!(insumosPage()?.content || []).length">
-              <td colspan="9" class="empty-cell">Sin insumos registrados.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </article>
-  </section>
-
-  <section class="content-grid alerts-row">
-    <article class="panel">
-      <div class="panel-head tabbed-head">
-        <div class="table-tabs">
-          <button type="button" [class.active]="activeAlertTab() === 'REORDEN'" (click)="activeAlertTab.set('REORDEN')">Alertas de reorden</button>
-          <button type="button" [class.active]="activeAlertTab() === 'VENCIMIENTOS'" (click)="activeAlertTab.set('VENCIMIENTOS')">Vencimientos proximos</button>
-        </div>
-        <div class="table-pager" *ngIf="activeAlertTab() === 'REORDEN'; else vencimientosPager">
-          <label class="page-size-select">
-            <span>Mostrar</span>
-            <select [ngModel]="reordenPageSize()" (ngModelChange)="setReordenPageSize($event)">
-              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
-            </select>
-          </label>
-          <span>{{ reordenPage()?.totalElements || 0 }} registros</span>
-          <button type="button" (click)="changeReordenPage(-1)" [disabled]="(reordenPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
-          <button type="button" *ngFor="let page of pageNumbers(reordenPage())" [class.active]="page === ((reordenPage()?.number || 0) + 1)" (click)="setReordenPage(page)">{{ page }}</button>
-          <button type="button" (click)="changeReordenPage(1)" [disabled]="((reordenPage()?.number || 0) + 1) >= (reordenPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
-        </div>
-        <ng-template #vencimientosPager>
-          <div class="table-pager">
-            <label class="page-size-select">
-              <span>Mostrar</span>
-              <select [ngModel]="vencimientosPageSize()" (ngModelChange)="setVencimientosPageSize($event)">
-                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
-              </select>
-            </label>
-            <span>{{ vencimientosPage()?.totalElements || 0 }} registros</span>
-            <button type="button" (click)="changeVencimientosPage(-1)" [disabled]="(vencimientosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
-            <button type="button" *ngFor="let page of pageNumbers(vencimientosPage())" [class.active]="page === ((vencimientosPage()?.number || 0) + 1)" (click)="setVencimientosPage(page)">{{ page }}</button>
-            <button type="button" (click)="changeVencimientosPage(1)" [disabled]="((vencimientosPage()?.number || 0) + 1) >= (vencimientosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
-          </div>
-        </ng-template>
-      </div>
-
-      <ng-container *ngIf="activeAlertTab() === 'REORDEN'; else vencimientosTab">
-        <div class="table-wrap small">
-          <table>
-            <thead><tr><th>Insumo</th><th>Tipo</th><th>Stock actual</th><th>Minimo</th><th>Unidad</th><th>Estado</th></tr></thead>
-            <tbody>
-              <tr *ngFor="let item of reordenPage()?.content || []">
-                <td><strong>{{ item.nombre }}</strong><small>{{ item.codigo }} - {{ item.marca || 'Sin marca' }}</small></td>
-                <td><span class="pill">{{ item.tipo }}</span></td>
-                <td>{{ number(item.stockTotal) }}</td>
-                <td>{{ number(item.stockMinimo) }}</td>
-                <td>{{ item.unidadMedida }}</td>
-                <td><span class="status danger">Reorden</span></td>
-              </tr>
-              <tr *ngIf="!(reordenPage()?.content || []).length">
-                <td colspan="6" class="empty-cell">Sin alertas de reorden.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </ng-container>
-
-      <ng-template #vencimientosTab>
-        <div class="table-wrap small">
-          <table>
-            <thead><tr><th>Insumo</th><th>Lote</th><th>Cantidad</th><th>Deposito</th><th>Responsable</th><th>Vencimiento</th></tr></thead>
-            <tbody>
-              <tr *ngFor="let item of vencimientosPage()?.content || []">
-                <td><strong>{{ item.insumoNombre }}</strong><small>{{ item.insumoCodigo }}</small></td>
-                <td>{{ item.loteStock || 'Sin lote' }}</td>
-                <td>{{ number(item.cantidadDisponible) }}</td>
-                <td>{{ item.ubicacionDeposito || item.deposito || 'Sin dato' }}</td>
-                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>
-                <td><span [class]="item.vencido ? 'status danger' : 'status warning'">{{ date(item.fechaVencimiento) }}</span></td>
-              </tr>
-              <tr *ngIf="!(vencimientosPage()?.content || []).length">
-                <td colspan="6" class="empty-cell">Sin vencimientos proximos.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </ng-template>
-    </article>
-  </section>
-  <section class="content-grid detail-row">
-    <article class="panel">
-      <div class="panel-head tabbed-head">
-        <div class="table-tabs">
-          <button type="button" [class.active]="activeDetailTab() === 'STOCK'" (click)="activeDetailTab.set('STOCK')">Stock por lote</button>
-          <button type="button" [class.active]="activeDetailTab() === 'MOVIMIENTOS'" (click)="activeDetailTab.set('MOVIMIENTOS')">Movimientos</button>
-        </div>
-        <div class="table-pager" *ngIf="activeDetailTab() === 'STOCK'; else movimientosPager">
-          <label class="page-size-select">
-            <span>Mostrar</span>
-            <select [ngModel]="stockPageSize()" (ngModelChange)="setStockPageSize($event)">
-              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
-            </select>
-          </label>
-          <span>{{ stockPage()?.totalElements || 0 }} registros</span>
-          <button type="button" (click)="changeStockPage(-1)" [disabled]="(stockPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
-          <button type="button" *ngFor="let page of pageNumbers(stockPage())" [class.active]="page === ((stockPage()?.number || 0) + 1)" (click)="setStockPage(page)">{{ page }}</button>
-          <button type="button" (click)="changeStockPage(1)" [disabled]="((stockPage()?.number || 0) + 1) >= (stockPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
-        </div>
-        <ng-template #movimientosPager>
-          <div class="table-pager">
-            <label class="page-size-select">
-              <span>Mostrar</span>
-              <select [ngModel]="movimientosPageSize()" (ngModelChange)="setMovimientosPageSize($event)">
-                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
-              </select>
-            </label>
-            <span>{{ movimientosPage()?.totalElements || 0 }} registros</span>
-            <button type="button" (click)="changeMovimientosPage(-1)" [disabled]="(movimientosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
-            <button type="button" *ngFor="let page of pageNumbers(movimientosPage())" [class.active]="page === ((movimientosPage()?.number || 0) + 1)" (click)="setMovimientosPage(page)">{{ page }}</button>
-            <button type="button" (click)="changeMovimientosPage(1)" [disabled]="((movimientosPage()?.number || 0) + 1) >= (movimientosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
-          </div>
-        </ng-template>
-      </div>
-
-      <ng-container *ngIf="activeDetailTab() === 'STOCK'; else movimientosTab">
-        <div class="table-wrap small">
-          <table>
-          <thead><tr><th>Insumo</th><th>Lote</th><th>Cantidad</th><th>Deposito</th><th>Responsable</th><th>Vence</th></tr></thead>
-            <tbody>
-              <tr *ngFor="let item of stockPage()?.content || []">
-                <td>{{ item.insumoNombre }}</td>
-                <td>{{ item.loteStock || 'Sin lote' }}</td>
-                <td>{{ number(item.cantidadDisponible) }}</td>
-                <td>{{ item.ubicacionDeposito || item.deposito || 'Sin dato' }}</td>
-                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>
-                <td><span [class]="item.vencido ? 'status danger' : item.vencimientoProximo ? 'status warning' : 'status ok'">{{ date(item.fechaVencimiento) }}</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </ng-container>
-
-      <ng-template #movimientosTab>
-        <div class="table-wrap small">
-          <table>
-            <thead><tr><th>Fecha</th><th>Tipo</th><th>Insumo</th><th>Lote</th><th>Responsable</th><th>Cantidad</th><th>Costo</th></tr></thead>
-            <tbody>
-              <tr *ngFor="let item of movimientosPage()?.content || []">
-                <td>{{ date(item.fecha) }}</td>
-                <td><span class="pill">{{ item.tipoMovimiento }}</span></td>
-                <td>{{ item.insumoNombre }}</td>
-                <td>{{ item.loteNombre || item.destino || 'Sin lote' }}</td>
-                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>
-                <td>{{ number(item.cantidad) }}</td>
-                <td>{{ item.costoTotal ? money(item.costoTotal) : 'Sin costo' }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </ng-template>
-    </article>
-  </section>
-</section>
-
-<div class="modal-backdrop" *ngIf="modal()" (click)="closeModal()"></div>
-
-<section class="modal" *ngIf="modal() === 'INSUMO'">
-  <button class="modal-close" type="button" (click)="closeModal()">\xD7</button>
-  <h3>{{ editingInsumoId() ? 'Editar insumo' : 'Nuevo insumo' }}</h3>
-  <div class="form-grid">
-    <label><span>Codigo</span><input [ngModel]="insumoForm().codigo" (ngModelChange)="insumoForm.update(f => ({ ...f, codigo: $event }))" /></label>
-    <label><span>Nombre</span><input [ngModel]="insumoForm().nombre" (ngModelChange)="insumoForm.update(f => ({ ...f, nombre: $event }))" /></label>
-    <label><span>Tipo</span><select [ngModel]="insumoForm().tipo" (ngModelChange)="insumoForm.update(f => ({ ...f, tipo: $event }))"><option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option></select></label>
-    <label><span>Unidad</span><select [ngModel]="insumoForm().unidadMedida" (ngModelChange)="insumoForm.update(f => ({ ...f, unidadMedida: $event }))"><option *ngFor="let unidad of unidadOptions" [value]="unidad">{{ unidad }}</option></select></label>
-    <label><span>Marca</span><input [ngModel]="insumoForm().marca" (ngModelChange)="insumoForm.update(f => ({ ...f, marca: $event }))" /></label>
-    <label><span>Presentacion</span><input [ngModel]="insumoForm().presentacion" (ngModelChange)="insumoForm.update(f => ({ ...f, presentacion: $event }))" /></label>
-    <label><span>Precio unitario</span><input type="number" [ngModel]="insumoForm().precioUnitario" (ngModelChange)="insumoForm.update(f => ({ ...f, precioUnitario: $event }))" /></label>
-    <label><span>Stock minimo</span><input type="number" [ngModel]="insumoForm().stockMinimo" (ngModelChange)="insumoForm.update(f => ({ ...f, stockMinimo: $event }))" /></label>
-    <label><span>Stock maximo</span><input type="number" [ngModel]="insumoForm().stockMaximo" (ngModelChange)="insumoForm.update(f => ({ ...f, stockMaximo: $event }))" /></label>
-    <label><span>Principio activo</span><input [ngModel]="insumoForm().principioActivo" (ngModelChange)="insumoForm.update(f => ({ ...f, principioActivo: $event }))" /></label>
-    <label><span>Proveedor</span><input [ngModel]="insumoForm().proveedor" (ngModelChange)="insumoForm.update(f => ({ ...f, proveedor: $event }))" /></label>
-    <label><span>Origen</span><input [ngModel]="insumoForm().origen" (ngModelChange)="insumoForm.update(f => ({ ...f, origen: $event }))" /></label>
-  </div>
-  <label class="wide"><span>Descripcion</span><textarea [ngModel]="insumoForm().descripcion" (ngModelChange)="insumoForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
-  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitInsumo()">{{ editingInsumoId() ? 'Actualizar insumo' : 'Guardar insumo' }}</button>
-</section>
-
-<section class="modal" *ngIf="modal() === 'STOCK'">
-  <button class="modal-close" type="button" (click)="closeModal()">\xD7</button>
-  <h3>Registrar stock</h3>
-  <div class="form-grid">
-    <label><span>Insumo</span><select [ngModel]="stockForm().insumoId" (ngModelChange)="stockForm.update(f => ({ ...f, insumoId: $event }))"><option value="">Seleccionar</option><option *ngFor="let insumo of insumosActivos()" [value]="insumo.id">{{ insumo.nombre }}</option></select></label>
-    <label><span>Lote / partida</span><input [ngModel]="stockForm().loteStock" (ngModelChange)="stockForm.update(f => ({ ...f, loteStock: $event }))" /></label>
-    <label><span>Cantidad</span><input type="number" [ngModel]="stockForm().cantidadDisponible" (ngModelChange)="stockForm.update(f => ({ ...f, cantidadDisponible: $event }))" /></label>
-    <label><span>Vencimiento</span><input type="date" [ngModel]="stockForm().fechaVencimiento" (ngModelChange)="stockForm.update(f => ({ ...f, fechaVencimiento: $event }))" /></label>
-    <label><span>Deposito</span><input [ngModel]="stockForm().deposito" (ngModelChange)="stockForm.update(f => ({ ...f, deposito: $event }))" /></label>
-    <label><span>Ubicacion</span><input [ngModel]="stockForm().ubicacionDeposito" (ngModelChange)="stockForm.update(f => ({ ...f, ubicacionDeposito: $event }))" /></label>
-    <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="stockForm().responsableId" (valueChange)="stockForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>
-  </div>
-  <label class="wide"><span>Observaciones</span><textarea [ngModel]="stockForm().observaciones" (ngModelChange)="stockForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
-  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitStock()">Guardar stock</button>
-</section>
-
-<section class="modal" *ngIf="modal() === 'MOVIMIENTO'">
-  <button class="modal-close" type="button" (click)="closeModal()">\xD7</button>
-  <h3>Registrar movimiento</h3>
-  <div class="form-grid">
-    <app-remote-search-select label="Insumo" placeholder="Buscar insumo" [options]="insumosSelectOptions()" valueField="id" labelField="nombre" [subtitleFields]="['codigo','tipo']" [searchFields]="['nombre','codigo','tipo','marca','principioActivo']" [value]="movimientoForm().insumoId" (valueChange)="updateMovimientoInsumo($event)"></app-remote-search-select>
-    <label><span>Lote de stock</span><select [ngModel]="movimientoForm().stockId" (ngModelChange)="movimientoForm.update(f => ({ ...f, stockId: $event }))"><option value="">Sin stock asociado</option><option *ngFor="let stock of stockDisponibleSeleccionado()" [value]="stock.id">{{ stock.loteStock || stock.insumoCodigo }} \xB7 {{ number(stock.cantidadDisponible) }}</option></select></label>
-    <label><span>Tipo</span><select [ngModel]="movimientoForm().tipoMovimiento" (ngModelChange)="movimientoForm.update(f => ({ ...f, tipoMovimiento: $event }))"><option *ngFor="let tipo of movimientoOptions" [value]="tipo">{{ tipo }}</option></select></label>
-    <label><span>Fecha</span><input type="datetime-local" [ngModel]="movimientoForm().fecha" (ngModelChange)="movimientoForm.update(f => ({ ...f, fecha: $event }))" /></label>
-    <label><span>Cantidad</span><input type="number" [ngModel]="movimientoForm().cantidad" (ngModelChange)="movimientoForm.update(f => ({ ...f, cantidad: $event }))" /></label>
-    <label><span>Costo unitario</span><input type="number" [ngModel]="movimientoForm().costoUnitario" (ngModelChange)="movimientoForm.update(f => ({ ...f, costoUnitario: $event }))" /></label>
-    <label><span>Lote agricola</span><select [ngModel]="movimientoForm().loteId" (ngModelChange)="movimientoForm.update(f => ({ ...f, loteId: $event }))"><option value="">No aplica</option><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
-    <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="movimientoForm().responsableId" (valueChange)="movimientoForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>
-    <label><span>Tarea referencia</span><input [ngModel]="movimientoForm().tareaReferencia" (ngModelChange)="movimientoForm.update(f => ({ ...f, tareaReferencia: $event }))" /></label>
-    <label><span>Proveedor</span><input [ngModel]="movimientoForm().proveedor" (ngModelChange)="movimientoForm.update(f => ({ ...f, proveedor: $event }))" /></label>
-  </div>
-  <label class="wide"><span>Observaciones</span><textarea [ngModel]="movimientoForm().observaciones" (ngModelChange)="movimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
-  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitMovimiento()">Guardar movimiento</button>
-</section>
+    args: [{ selector: "app-agricola-insumos-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<section class="insumos-page">\r
+  <header class="page-hero">\r
+    <div>\r
+      <p class="eyebrow">Campo App \xB7 Agricultura</p>\r
+      <h1>Inventario de insumos</h1>\r
+      <p>Stock, vencimientos, reorden y trazabilidad de uso de semillas, fertilizantes y fitosanitarios.</p>\r
+    </div>\r
+    <div class="hero-actions">\r
+      <button class="btn-secondary" type="button" (click)="openStockModal()">Registrar stock</button>\r
+      <button class="btn-secondary" type="button" (click)="openMovimientoModal()">Registrar uso</button>\r
+      <button class="btn-primary" type="button" (click)="openInsumoModal()">Nuevo insumo</button>\r
+    </div>\r
+  </header>\r
+\r
+  <div class="kpi-grid">\r
+    <article class="kpi-card" *ngFor="let kpi of kpis()" [class]="'kpi-card tone-' + kpi.tone">\r
+      <span class="kpi-icon">\r
+        <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4Z" /><path d="M4 7v10l8 4 8-4V7" /><path d="M12 11v10" /></svg>\r
+      </span>\r
+      <div>\r
+        <small>{{ kpi.label }}</small>\r
+        <strong>{{ kpi.value }}</strong>\r
+        <em>{{ kpi.sub }}</em>\r
+      </div>\r
+    </article>\r
+  </div>\r
+\r
+  <section class="filters-card">\r
+    <label>\r
+      <span>Buscar</span>\r
+      <input placeholder="Codigo, nombre, marca o principio activo" [ngModel]="filters().search" (ngModelChange)="filters.update(f => ({ ...f, search: $event }))" />\r
+    </label>\r
+    <label>\r
+      <span>Tipo</span>\r
+      <select [ngModel]="filters().tipo" (ngModelChange)="filters.update(f => ({ ...f, tipo: $event }))">\r
+        <option value="">Todos</option>\r
+        <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>\r
+      </select>\r
+    </label>\r
+    <label>\r
+      <span>Estado</span>\r
+      <select [ngModel]="filters().activo" (ngModelChange)="filters.update(f => ({ ...f, activo: $event }))">\r
+        <option value="">Todos</option>\r
+        <option value="true">Activos</option>\r
+        <option value="false">Inactivos</option>\r
+      </select>\r
+    </label>\r
+    <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>\r
+  </section>\r
+\r
+  <p class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</p>\r
+\r
+  <section class="content-grid catalog-row">\r
+    <article class="panel">\r
+      <div class="panel-head">\r
+        <div class="panel-actions">\r
+          <button class="btn-secondary compact" type="button" (click)="openStockModal()">Registrar stock</button>\r
+          <button class="btn-secondary compact" type="button" (click)="openMovimientoModal()">Registrar uso</button>\r
+          <button class="btn-primary compact" type="button" (click)="openInsumoModal()">Nuevo insumo</button>\r
+        </div>\r
+        <div class="table-pager">\r
+          <label class="page-size-select">\r
+            <span>Mostrar</span>\r
+            <select [ngModel]="insumoPageSize()" (ngModelChange)="setInsumoPageSize($event)">\r
+              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>\r
+            </select>\r
+          </label>\r
+          <span>{{ insumosPage()?.totalElements || 0 }} registros</span>\r
+          <button type="button" (click)="changeInsumoPage(-1)" [disabled]="(insumosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>\r
+          <button type="button" *ngFor="let page of pageNumbers(insumosPage())" [class.active]="page === ((insumosPage()?.number || 0) + 1)" (click)="setInsumoPage(page)">{{ page }}</button>\r
+          <button type="button" (click)="changeInsumoPage(1)" [disabled]="((insumosPage()?.number || 0) + 1) >= (insumosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>\r
+        </div>\r
+      </div>\r
+      <div class="table-wrap">\r
+        <table>\r
+          <thead>\r
+            <tr>\r
+              <th>Insumo</th>\r
+              <th>Tipo</th>\r
+              <th>Stock</th>\r
+              <th>Minimo</th>\r
+              <th>Vencimiento</th>\r
+              <th>Precio unitario</th>\r
+              <th>Valor stock</th>\r
+              <th>Alertas</th>\r
+              <th></th>\r
+            </tr>\r
+          </thead>\r
+          <tbody>\r
+            <tr *ngFor="let insumo of insumosPage()?.content || []">\r
+              <td>\r
+                <strong>{{ insumo.nombre }}</strong>\r
+                <small>{{ insumo.codigo }} \xB7 {{ insumo.marca || 'Sin marca' }}</small>\r
+              </td>\r
+              <td><span class="pill">{{ insumo.tipo }}</span></td>\r
+              <td>{{ number(insumo.stockTotal) }} {{ insumo.unidadMedida }}</td>\r
+              <td>{{ number(insumo.stockMinimo) }}</td>\r
+              <td>{{ date(insumo.proximoVencimiento) }}</td>\r
+              <td>{{ money(insumo.precioUnitario) }}</td>\r
+              <td>{{ money(insumo.valorStock) }}</td>\r
+              <td>\r
+                <span class="status danger" *ngIf="insumo.requiereReorden">Reorden</span>\r
+                <span class="status warning" *ngIf="insumo.tieneVencimientoProximo">Vence</span>\r
+                <span class="status ok" *ngIf="!insumo.requiereReorden && !insumo.tieneVencimientoProximo">OK</span>\r
+              </td>\r
+              <td class="actions-cell">\r
+                <button type="button" (click)="openStockModal(insumo)">Stock</button>\r
+                <button type="button" (click)="openMovimientoModal(insumo)">Uso</button>\r
+                <button type="button" (click)="openEditInsumoModal(insumo)">Editar</button>\r
+                <button class="danger-action" type="button" (click)="deleteInsumo(insumo)">Eliminar</button>\r
+              </td>\r
+            </tr>\r
+            <tr *ngIf="!(insumosPage()?.content || []).length">\r
+              <td colspan="9" class="empty-cell">Sin insumos registrados.</td>\r
+            </tr>\r
+          </tbody>\r
+        </table>\r
+      </div>\r
+    </article>\r
+  </section>\r
+\r
+  <section class="content-grid alerts-row">\r
+    <article class="panel">\r
+      <div class="panel-head tabbed-head">\r
+        <div class="table-tabs">\r
+          <button type="button" [class.active]="activeAlertTab() === 'REORDEN'" (click)="activeAlertTab.set('REORDEN')">Alertas de reorden</button>\r
+          <button type="button" [class.active]="activeAlertTab() === 'VENCIMIENTOS'" (click)="activeAlertTab.set('VENCIMIENTOS')">Vencimientos proximos</button>\r
+        </div>\r
+        <div class="table-pager" *ngIf="activeAlertTab() === 'REORDEN'; else vencimientosPager">\r
+          <label class="page-size-select">\r
+            <span>Mostrar</span>\r
+            <select [ngModel]="reordenPageSize()" (ngModelChange)="setReordenPageSize($event)">\r
+              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>\r
+            </select>\r
+          </label>\r
+          <span>{{ reordenPage()?.totalElements || 0 }} registros</span>\r
+          <button type="button" (click)="changeReordenPage(-1)" [disabled]="(reordenPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>\r
+          <button type="button" *ngFor="let page of pageNumbers(reordenPage())" [class.active]="page === ((reordenPage()?.number || 0) + 1)" (click)="setReordenPage(page)">{{ page }}</button>\r
+          <button type="button" (click)="changeReordenPage(1)" [disabled]="((reordenPage()?.number || 0) + 1) >= (reordenPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>\r
+        </div>\r
+        <ng-template #vencimientosPager>\r
+          <div class="table-pager">\r
+            <label class="page-size-select">\r
+              <span>Mostrar</span>\r
+              <select [ngModel]="vencimientosPageSize()" (ngModelChange)="setVencimientosPageSize($event)">\r
+                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>\r
+              </select>\r
+            </label>\r
+            <span>{{ vencimientosPage()?.totalElements || 0 }} registros</span>\r
+            <button type="button" (click)="changeVencimientosPage(-1)" [disabled]="(vencimientosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>\r
+            <button type="button" *ngFor="let page of pageNumbers(vencimientosPage())" [class.active]="page === ((vencimientosPage()?.number || 0) + 1)" (click)="setVencimientosPage(page)">{{ page }}</button>\r
+            <button type="button" (click)="changeVencimientosPage(1)" [disabled]="((vencimientosPage()?.number || 0) + 1) >= (vencimientosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>\r
+          </div>\r
+        </ng-template>\r
+      </div>\r
+\r
+      <ng-container *ngIf="activeAlertTab() === 'REORDEN'; else vencimientosTab">\r
+        <div class="table-wrap small">\r
+          <table>\r
+            <thead><tr><th>Insumo</th><th>Tipo</th><th>Stock actual</th><th>Minimo</th><th>Unidad</th><th>Estado</th></tr></thead>\r
+            <tbody>\r
+              <tr *ngFor="let item of reordenPage()?.content || []">\r
+                <td><strong>{{ item.nombre }}</strong><small>{{ item.codigo }} - {{ item.marca || 'Sin marca' }}</small></td>\r
+                <td><span class="pill">{{ item.tipo }}</span></td>\r
+                <td>{{ number(item.stockTotal) }}</td>\r
+                <td>{{ number(item.stockMinimo) }}</td>\r
+                <td>{{ item.unidadMedida }}</td>\r
+                <td><span class="status danger">Reorden</span></td>\r
+              </tr>\r
+              <tr *ngIf="!(reordenPage()?.content || []).length">\r
+                <td colspan="6" class="empty-cell">Sin alertas de reorden.</td>\r
+              </tr>\r
+            </tbody>\r
+          </table>\r
+        </div>\r
+      </ng-container>\r
+\r
+      <ng-template #vencimientosTab>\r
+        <div class="table-wrap small">\r
+          <table>\r
+            <thead><tr><th>Insumo</th><th>Lote</th><th>Cantidad</th><th>Deposito</th><th>Responsable</th><th>Vencimiento</th></tr></thead>\r
+            <tbody>\r
+              <tr *ngFor="let item of vencimientosPage()?.content || []">\r
+                <td><strong>{{ item.insumoNombre }}</strong><small>{{ item.insumoCodigo }}</small></td>\r
+                <td>{{ item.loteStock || 'Sin lote' }}</td>\r
+                <td>{{ number(item.cantidadDisponible) }}</td>\r
+                <td>{{ item.ubicacionDeposito || item.deposito || 'Sin dato' }}</td>\r
+                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>\r
+                <td><span [class]="item.vencido ? 'status danger' : 'status warning'">{{ date(item.fechaVencimiento) }}</span></td>\r
+              </tr>\r
+              <tr *ngIf="!(vencimientosPage()?.content || []).length">\r
+                <td colspan="6" class="empty-cell">Sin vencimientos proximos.</td>\r
+              </tr>\r
+            </tbody>\r
+          </table>\r
+        </div>\r
+      </ng-template>\r
+    </article>\r
+  </section>\r
+  <section class="content-grid detail-row">\r
+    <article class="panel">\r
+      <div class="panel-head tabbed-head">\r
+        <div class="table-tabs">\r
+          <button type="button" [class.active]="activeDetailTab() === 'STOCK'" (click)="activeDetailTab.set('STOCK')">Stock por lote</button>\r
+          <button type="button" [class.active]="activeDetailTab() === 'MOVIMIENTOS'" (click)="activeDetailTab.set('MOVIMIENTOS')">Movimientos</button>\r
+        </div>\r
+        <div class="table-pager" *ngIf="activeDetailTab() === 'STOCK'; else movimientosPager">\r
+          <label class="page-size-select">\r
+            <span>Mostrar</span>\r
+            <select [ngModel]="stockPageSize()" (ngModelChange)="setStockPageSize($event)">\r
+              <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>\r
+            </select>\r
+          </label>\r
+          <span>{{ stockPage()?.totalElements || 0 }} registros</span>\r
+          <button type="button" (click)="changeStockPage(-1)" [disabled]="(stockPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>\r
+          <button type="button" *ngFor="let page of pageNumbers(stockPage())" [class.active]="page === ((stockPage()?.number || 0) + 1)" (click)="setStockPage(page)">{{ page }}</button>\r
+          <button type="button" (click)="changeStockPage(1)" [disabled]="((stockPage()?.number || 0) + 1) >= (stockPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>\r
+        </div>\r
+        <ng-template #movimientosPager>\r
+          <div class="table-pager">\r
+            <label class="page-size-select">\r
+              <span>Mostrar</span>\r
+              <select [ngModel]="movimientosPageSize()" (ngModelChange)="setMovimientosPageSize($event)">\r
+                <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>\r
+              </select>\r
+            </label>\r
+            <span>{{ movimientosPage()?.totalElements || 0 }} registros</span>\r
+            <button type="button" (click)="changeMovimientosPage(-1)" [disabled]="(movimientosPage()?.number || 0) === 0" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>\r
+            <button type="button" *ngFor="let page of pageNumbers(movimientosPage())" [class.active]="page === ((movimientosPage()?.number || 0) + 1)" (click)="setMovimientosPage(page)">{{ page }}</button>\r
+            <button type="button" (click)="changeMovimientosPage(1)" [disabled]="((movimientosPage()?.number || 0) + 1) >= (movimientosPage()?.totalPages || 1)" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>\r
+          </div>\r
+        </ng-template>\r
+      </div>\r
+\r
+      <ng-container *ngIf="activeDetailTab() === 'STOCK'; else movimientosTab">\r
+        <div class="table-wrap small">\r
+          <table>\r
+          <thead><tr><th>Insumo</th><th>Lote</th><th>Cantidad</th><th>Deposito</th><th>Responsable</th><th>Vence</th></tr></thead>\r
+            <tbody>\r
+              <tr *ngFor="let item of stockPage()?.content || []">\r
+                <td>{{ item.insumoNombre }}</td>\r
+                <td>{{ item.loteStock || 'Sin lote' }}</td>\r
+                <td>{{ number(item.cantidadDisponible) }}</td>\r
+                <td>{{ item.ubicacionDeposito || item.deposito || 'Sin dato' }}</td>\r
+                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>\r
+                <td><span [class]="item.vencido ? 'status danger' : item.vencimientoProximo ? 'status warning' : 'status ok'">{{ date(item.fechaVencimiento) }}</span></td>\r
+              </tr>\r
+            </tbody>\r
+          </table>\r
+        </div>\r
+      </ng-container>\r
+\r
+      <ng-template #movimientosTab>\r
+        <div class="table-wrap small">\r
+          <table>\r
+            <thead><tr><th>Fecha</th><th>Tipo</th><th>Insumo</th><th>Lote</th><th>Responsable</th><th>Cantidad</th><th>Costo</th></tr></thead>\r
+            <tbody>\r
+              <tr *ngFor="let item of movimientosPage()?.content || []">\r
+                <td>{{ date(item.fecha) }}</td>\r
+                <td><span class="pill">{{ item.tipoMovimiento }}</span></td>\r
+                <td>{{ item.insumoNombre }}</td>\r
+                <td>{{ item.loteNombre || item.destino || 'Sin lote' }}</td>\r
+                <td>{{ item.responsableNombre || 'Sin responsable' }}</td>\r
+                <td>{{ number(item.cantidad) }}</td>\r
+                <td>{{ item.costoTotal ? money(item.costoTotal) : 'Sin costo' }}</td>\r
+              </tr>\r
+            </tbody>\r
+          </table>\r
+        </div>\r
+      </ng-template>\r
+    </article>\r
+  </section>\r
+</section>\r
+\r
+<div class="modal-backdrop" *ngIf="modal()" (click)="closeModal()"></div>\r
+\r
+<section class="modal" *ngIf="modal() === 'INSUMO'">\r
+  <button class="modal-close" type="button" (click)="closeModal()">\xD7</button>\r
+  <h3>{{ editingInsumoId() ? 'Editar insumo' : 'Nuevo insumo' }}</h3>\r
+  <div class="form-grid">\r
+    <label><span>Codigo</span><input [ngModel]="insumoForm().codigo" (ngModelChange)="insumoForm.update(f => ({ ...f, codigo: $event }))" /></label>\r
+    <label><span>Nombre</span><input [ngModel]="insumoForm().nombre" (ngModelChange)="insumoForm.update(f => ({ ...f, nombre: $event }))" /></label>\r
+    <label><span>Tipo</span><select [ngModel]="insumoForm().tipo" (ngModelChange)="insumoForm.update(f => ({ ...f, tipo: $event }))"><option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option></select></label>\r
+    <label><span>Unidad</span><select [ngModel]="insumoForm().unidadMedida" (ngModelChange)="insumoForm.update(f => ({ ...f, unidadMedida: $event }))"><option *ngFor="let unidad of unidadOptions" [value]="unidad">{{ unidad }}</option></select></label>\r
+    <label><span>Marca</span><input [ngModel]="insumoForm().marca" (ngModelChange)="insumoForm.update(f => ({ ...f, marca: $event }))" /></label>\r
+    <label><span>Presentacion</span><input [ngModel]="insumoForm().presentacion" (ngModelChange)="insumoForm.update(f => ({ ...f, presentacion: $event }))" /></label>\r
+    <label><span>Precio unitario</span><input type="number" [ngModel]="insumoForm().precioUnitario" (ngModelChange)="insumoForm.update(f => ({ ...f, precioUnitario: $event }))" /></label>\r
+    <label><span>Stock minimo</span><input type="number" [ngModel]="insumoForm().stockMinimo" (ngModelChange)="insumoForm.update(f => ({ ...f, stockMinimo: $event }))" /></label>\r
+    <label><span>Stock maximo</span><input type="number" [ngModel]="insumoForm().stockMaximo" (ngModelChange)="insumoForm.update(f => ({ ...f, stockMaximo: $event }))" /></label>\r
+    <label><span>Principio activo</span><input [ngModel]="insumoForm().principioActivo" (ngModelChange)="insumoForm.update(f => ({ ...f, principioActivo: $event }))" /></label>\r
+    <label><span>Proveedor</span><input [ngModel]="insumoForm().proveedor" (ngModelChange)="insumoForm.update(f => ({ ...f, proveedor: $event }))" /></label>\r
+    <label><span>Origen</span><input [ngModel]="insumoForm().origen" (ngModelChange)="insumoForm.update(f => ({ ...f, origen: $event }))" /></label>\r
+  </div>\r
+  <label class="wide"><span>Descripcion</span><textarea [ngModel]="insumoForm().descripcion" (ngModelChange)="insumoForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>\r
+  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitInsumo()">{{ editingInsumoId() ? 'Actualizar insumo' : 'Guardar insumo' }}</button>\r
+</section>\r
+\r
+<section class="modal" *ngIf="modal() === 'STOCK'">\r
+  <button class="modal-close" type="button" (click)="closeModal()">\xD7</button>\r
+  <h3>Registrar stock</h3>\r
+  <div class="form-grid">\r
+    <label><span>Insumo</span><select [ngModel]="stockForm().insumoId" (ngModelChange)="stockForm.update(f => ({ ...f, insumoId: $event }))"><option value="">Seleccionar</option><option *ngFor="let insumo of insumosActivos()" [value]="insumo.id">{{ insumo.nombre }}</option></select></label>\r
+    <label><span>Lote / partida</span><input [ngModel]="stockForm().loteStock" (ngModelChange)="stockForm.update(f => ({ ...f, loteStock: $event }))" /></label>\r
+    <label><span>Cantidad</span><input type="number" [ngModel]="stockForm().cantidadDisponible" (ngModelChange)="stockForm.update(f => ({ ...f, cantidadDisponible: $event }))" /></label>\r
+    <label><span>Vencimiento</span><input type="date" [ngModel]="stockForm().fechaVencimiento" (ngModelChange)="stockForm.update(f => ({ ...f, fechaVencimiento: $event }))" /></label>\r
+    <label><span>Deposito</span><input [ngModel]="stockForm().deposito" (ngModelChange)="stockForm.update(f => ({ ...f, deposito: $event }))" /></label>\r
+    <label><span>Ubicacion</span><input [ngModel]="stockForm().ubicacionDeposito" (ngModelChange)="stockForm.update(f => ({ ...f, ubicacionDeposito: $event }))" /></label>\r
+    <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="stockForm().responsableId" (valueChange)="stockForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>\r
+  </div>\r
+  <label class="wide"><span>Observaciones</span><textarea [ngModel]="stockForm().observaciones" (ngModelChange)="stockForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>\r
+  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitStock()">Guardar stock</button>\r
+</section>\r
+\r
+<section class="modal" *ngIf="modal() === 'MOVIMIENTO'">\r
+  <button class="modal-close" type="button" (click)="closeModal()">\xD7</button>\r
+  <h3>Registrar movimiento</h3>\r
+  <div class="form-grid">\r
+    <app-remote-search-select label="Insumo" placeholder="Buscar insumo" [options]="insumosSelectOptions()" valueField="id" labelField="nombre" [subtitleFields]="['codigo','tipo']" [searchFields]="['nombre','codigo','tipo','marca','principioActivo']" [value]="movimientoForm().insumoId" (valueChange)="updateMovimientoInsumo($event)"></app-remote-search-select>\r
+    <label><span>Lote de stock</span><select [ngModel]="movimientoForm().stockId" (ngModelChange)="movimientoForm.update(f => ({ ...f, stockId: $event }))"><option value="">Sin stock asociado</option><option *ngFor="let stock of stockDisponibleSeleccionado()" [value]="stock.id">{{ stock.loteStock || stock.insumoCodigo }} \xB7 {{ number(stock.cantidadDisponible) }}</option></select></label>\r
+    <label><span>Tipo</span><select [ngModel]="movimientoForm().tipoMovimiento" (ngModelChange)="movimientoForm.update(f => ({ ...f, tipoMovimiento: $event }))"><option *ngFor="let tipo of movimientoOptions" [value]="tipo">{{ tipo }}</option></select></label>\r
+    <label><span>Fecha</span><input type="datetime-local" [ngModel]="movimientoForm().fecha" (ngModelChange)="movimientoForm.update(f => ({ ...f, fecha: $event }))" /></label>\r
+    <label><span>Cantidad</span><input type="number" [ngModel]="movimientoForm().cantidad" (ngModelChange)="movimientoForm.update(f => ({ ...f, cantidad: $event }))" /></label>\r
+    <label><span>Costo unitario</span><input type="number" [ngModel]="movimientoForm().costoUnitario" (ngModelChange)="movimientoForm.update(f => ({ ...f, costoUnitario: $event }))" /></label>\r
+    <label><span>Lote agricola</span><select [ngModel]="movimientoForm().loteId" (ngModelChange)="movimientoForm.update(f => ({ ...f, loteId: $event }))"><option value="">No aplica</option><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>\r
+    <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="movimientoForm().responsableId" (valueChange)="movimientoForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>\r
+    <label><span>Tarea referencia</span><input [ngModel]="movimientoForm().tareaReferencia" (ngModelChange)="movimientoForm.update(f => ({ ...f, tareaReferencia: $event }))" /></label>\r
+    <label><span>Proveedor</span><input [ngModel]="movimientoForm().proveedor" (ngModelChange)="movimientoForm.update(f => ({ ...f, proveedor: $event }))" /></label>\r
+  </div>\r
+  <label class="wide"><span>Observaciones</span><textarea [ngModel]="movimientoForm().observaciones" (ngModelChange)="movimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>\r
+  <button class="btn-primary modal-submit" type="button" [disabled]="saving()" (click)="submitMovimiento()">Guardar movimiento</button>\r
+</section>\r
 `, styles: ["/* src/app/pages/agricola-insumos-page/agricola-insumos-page.component.css */\n:host {\n  display: block;\n  color: #fff;\n}\n.insumos-page {\n  display: grid;\n  gap: 24px;\n  padding-bottom: 36px;\n}\n.page-hero {\n  align-items: flex-start;\n  display: flex;\n  justify-content: space-between;\n  gap: 24px;\n}\n.eyebrow {\n  color: #9fe870;\n  font-size: 0.78rem;\n  font-weight: 800;\n  letter-spacing: 0.14em;\n  margin: 0 0 10px;\n  text-transform: uppercase;\n}\n.page-hero h1 {\n  font-size: clamp(2.4rem, 5vw, 4.2rem);\n  letter-spacing: -0.06em;\n  line-height: 0.95;\n  margin: 0;\n}\n.page-hero p {\n  color: #a6b0cf;\n  font-size: 1.08rem;\n  line-height: 1.6;\n  margin: 14px 0 0;\n  max-width: 760px;\n}\n.hero-actions {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 12px;\n  justify-content: flex-end;\n}\nbutton {\n  border: 0;\n  cursor: pointer;\n  font: inherit;\n}\n.btn-primary,\n.btn-secondary {\n  align-items: center;\n  border-radius: 16px;\n  display: inline-flex;\n  font-weight: 700;\n  min-height: 52px;\n  padding: 0 20px;\n}\n.btn-primary {\n  background: #4f8a05;\n  color: #fff;\n  box-shadow: 0 18px 42px rgba(79, 138, 5, 0.24);\n}\n.btn-secondary {\n  background: rgba(255, 255, 255, 0.07);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  color: #fff;\n}\n.compact {\n  border-radius: 14px;\n  font-size: 0.92rem;\n  min-height: 42px;\n  padding: 0 14px;\n}\n.kpi-grid {\n  display: grid;\n  gap: 16px;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n}\n.kpi-card,\n.filters-card,\n.panel,\n.modal {\n  background:\n    linear-gradient(\n      145deg,\n      rgba(16, 31, 59, 0.92),\n      rgba(8, 18, 37, 0.96));\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 24px;\n  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.kpi-card {\n  align-items: center;\n  display: flex;\n  gap: 16px;\n  min-height: 112px;\n  padding: 22px;\n}\n.kpi-icon {\n  align-items: center;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 18px;\n  color: #9fe870;\n  display: grid;\n  height: 58px;\n  place-items: center;\n  width: 58px;\n}\n.kpi-icon svg,\n.nav-icon svg {\n  fill: none;\n  height: 24px;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 2;\n  width: 24px;\n}\n.kpi-card small {\n  color: #a6b0cf;\n  display: block;\n  font-size: 0.88rem;\n}\n.kpi-card strong {\n  display: block;\n  font-size: 2rem;\n  letter-spacing: -0.04em;\n  margin-top: 2px;\n}\n.kpi-card em {\n  color: #9fe870;\n  display: block;\n  font-style: normal;\n  margin-top: 4px;\n}\n.tone-orange .kpi-icon,\n.tone-orange em {\n  color: #ffb84d;\n}\n.tone-red .kpi-icon,\n.tone-red em {\n  color: #ff6b6b;\n}\n.tone-blue .kpi-icon,\n.tone-blue em {\n  color: #6ea8ff;\n}\n.filters-card {\n  align-items: end;\n  display: grid;\n  gap: 14px;\n  grid-template-columns: 1.8fr 1fr 1fr auto;\n  padding: 22px;\n}\nlabel {\n  color: #a6b0cf;\n  display: grid;\n  font-size: 0.9rem;\n  gap: 8px;\n}\ninput,\nselect,\ntextarea {\n  background: #081225;\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 16px;\n  color: #fff;\n  min-height: 48px;\n  outline: none;\n  padding: 0 14px;\n}\ntextarea {\n  min-height: 96px;\n  padding-top: 14px;\n  resize: vertical;\n}\n.content-grid {\n  display: grid;\n  gap: 18px;\n  grid-template-columns: minmax(0, 1fr);\n}\n.panel {\n  min-width: 0;\n  overflow: hidden;\n}\n.panel-head {\n  align-items: center;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n  display: flex;\n  justify-content: space-between;\n  padding: 18px 22px;\n}\n.panel-head h2 {\n  font-size: 1rem;\n  margin: 0;\n}\n.panel-head p {\n  color: #a6b0cf;\n  margin: 4px 0 0;\n}\n.panel-actions {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 10px;\n  justify-content: flex-start;\n}\n.tabbed-head {\n  align-items: center;\n  gap: 18px;\n  justify-content: space-between;\n}\n.table-tabs {\n  display: inline-flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 8px;\n}\n.table-tabs button {\n  background: rgba(7, 15, 31, 0.42);\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #a6b0cf;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 12px;\n  font-weight: 800;\n  gap: 9px;\n  min-height: 40px;\n  padding: 10px 12px;\n}\n.table-tabs button.active {\n  background: rgba(159, 232, 112, 0.1);\n  border-color: rgba(159, 232, 112, 0.34);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.table-pager {\n  align-items: center;\n  color: #8ea0bb;\n  display: flex;\n  flex-wrap: wrap;\n  font-size: 12px;\n  font-weight: 800;\n  gap: 8px;\n  justify-content: flex-end;\n  white-space: nowrap;\n}\n.table-pager button {\n  align-items: center;\n  background: rgba(7, 15, 31, 0.42);\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #8ea0bb;\n  display: inline-flex;\n  font-size: 12px;\n  font-weight: 800;\n  height: 38px;\n  justify-content: center;\n  min-width: 38px;\n  padding: 0;\n}\n.table-pager button.active {\n  background: rgba(159, 232, 112, 0.1);\n  border-color: rgba(159, 232, 112, 0.34);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.table-pager button:disabled {\n  cursor: not-allowed;\n  opacity: 0.42;\n}\n.table-pager svg {\n  fill: none;\n  height: 18px;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n  width: 18px;\n}\n.page-size-select {\n  align-items: center;\n  display: inline-flex;\n  gap: 8px;\n}\n.page-size-select span {\n  color: #7f91ac;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n}\n.page-size-select select {\n  background: rgba(7, 15, 31, 0.42);\n  border-color: rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #dbe7f6;\n  font-size: 12px;\n  font-weight: 800;\n  min-height: 38px;\n  min-width: 70px;\n  padding: 0 10px;\n}\n.table-wrap {\n  background: rgba(7, 15, 31, 0.34);\n  border: 1px solid rgba(148, 163, 184, 0.1);\n  border-radius: 16px;\n  margin: 0 18px 18px;\n  overflow: auto;\n}\ntable {\n  border-collapse: separate;\n  border-spacing: 0;\n  min-width: 980px;\n  width: 100%;\n}\n.small table {\n  min-width: 620px;\n}\nth,\ntd {\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  color: #b9c7da;\n  font-size: 12px;\n  padding: 13px 10px;\n  text-align: left;\n  vertical-align: middle;\n}\nth {\n  border-bottom-color: rgba(148, 163, 184, 0.1);\n  color: #7f91ac;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n}\ntbody tr {\n  transition: background 0.16s ease, box-shadow 0.16s ease;\n}\ntbody tr:hover {\n  background: rgba(159, 232, 112, 0.055);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, 0.78);\n}\ntbody tr:last-child td {\n  border-bottom: 0;\n}\ntd strong {\n  color: #f8fbff;\n}\ntd small {\n  color: #a6b0cf;\n  display: block;\n  margin-top: 4px;\n}\n.pill,\n.status {\n  border-radius: 999px;\n  display: inline-flex;\n  font-size: 0.78rem;\n  font-weight: 700;\n  padding: 6px 10px;\n}\n.pill {\n  background: rgba(110, 168, 255, 0.11);\n  color: #6ea8ff;\n}\n.status.ok {\n  background: rgba(159, 232, 112, 0.1);\n  color: #9fe870;\n}\n.status.warning {\n  background: rgba(255, 184, 77, 0.12);\n  color: #ffb84d;\n}\n.status.danger {\n  background: rgba(255, 107, 107, 0.12);\n  color: #ff6b6b;\n}\n.actions-cell {\n  white-space: nowrap;\n}\n.actions-cell button,\n.pager button {\n  background: rgba(255, 255, 255, 0.06);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 12px;\n  color: #fff;\n  margin-left: 6px;\n  min-height: 36px;\n  padding: 0 12px;\n}\n.actions-cell button.danger-action {\n  background: rgba(255, 107, 107, 0.1);\n  border-color: rgba(255, 107, 107, 0.24);\n  color: #ff8f8f;\n}\n.pager {\n  align-items: center;\n  color: #a6b0cf;\n  display: flex;\n  justify-content: space-between;\n  padding: 16px 22px;\n}\n.mini-list {\n  display: grid;\n  gap: 10px;\n  padding: 18px;\n}\n.mini-row {\n  align-items: center;\n  background: rgba(8, 18, 37, 0.68);\n  border: 1px solid rgba(255, 255, 255, 0.06);\n  border-radius: 16px;\n  display: flex;\n  gap: 12px;\n  padding: 14px;\n}\n.mini-row small,\n.empty-box,\n.empty-cell {\n  color: #a6b0cf;\n}\n.dot {\n  border-radius: 999px;\n  height: 10px;\n  width: 10px;\n}\n.dot.red {\n  background: #ff6b6b;\n  box-shadow: 0 0 16px rgba(255, 107, 107, 0.55);\n}\n.dot.orange {\n  background: #ffb84d;\n  box-shadow: 0 0 16px rgba(255, 184, 77, 0.55);\n}\n.empty-box,\n.empty-cell {\n  padding: 18px;\n}\n.error-box {\n  background: rgba(255, 107, 107, 0.12);\n  border: 1px solid rgba(255, 107, 107, 0.22);\n  border-radius: 16px;\n  color: #ffb3b3;\n  margin: 0;\n  padding: 14px 18px;\n}\n.modal-backdrop {\n  background: rgba(0, 0, 0, 0.55);\n  inset: 0;\n  position: fixed;\n  z-index: 60;\n}\n.modal {\n  left: 50%;\n  max-height: 88vh;\n  max-width: 880px;\n  overflow-y: auto;\n  padding: 26px;\n  position: fixed;\n  top: 50%;\n  transform: translate(-50%, -50%);\n  width: min(92vw, 880px);\n  z-index: 70;\n}\n.modal h3 {\n  font-size: 1.5rem;\n  margin: 0 0 20px;\n}\n.modal-close {\n  align-items: center;\n  background: rgba(255, 255, 255, 0.08);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  border-radius: 999px;\n  color: #fff;\n  display: grid;\n  font-size: 1.2rem;\n  height: 34px;\n  place-items: center;\n  position: absolute;\n  right: 18px;\n  top: 18px;\n  width: 34px;\n}\n.form-grid {\n  display: grid;\n  gap: 14px;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n.wide {\n  margin-top: 14px;\n}\n.modal-submit {\n  justify-content: center;\n  margin-top: 18px;\n  width: 100%;\n}\n@media (max-width: 1280px) {\n  .kpi-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n}\n@media (max-width: 780px) {\n  .page-hero,\n  .hero-actions,\n  .panel-actions,\n  .tabbed-head,\n  .pager {\n    align-items: stretch;\n    flex-direction: column;\n  }\n  .table-pager {\n    justify-content: flex-start;\n    white-space: normal;\n  }\n  .kpi-grid,\n  .filters-card,\n  .content-grid.alerts-row,\n  .form-grid {\n    grid-template-columns: 1fr;\n  }\n  .table-tabs {\n    display: grid;\n    width: 100%;\n  }\n}\n/*# sourceMappingURL=agricola-insumos-page.component.css.map */\n"] }]
   }], null, null);
 })();
@@ -75963,6 +76009,1666 @@ var AdminRolesMenuPageComponent = class _AdminRolesMenuPageComponent {
   (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(AdminRolesMenuPageComponent, { className: "AdminRolesMenuPageComponent", filePath: "src/app/pages/admin-roles-menu-page/admin-roles-menu-page.component.ts", lineNumber: 14 });
 })();
 
+// src/app/core/services/finanzas.service.ts
+function unwrap(response) {
+  return response && typeof response === "object" && "data" in response ? response.data : response;
+}
+function clean(params) {
+  if (!params)
+    return void 0;
+  return Object.fromEntries(Object.entries(params).filter(([, v]) => v !== void 0 && v !== null && v !== ""));
+}
+var FinanzasService = class _FinanzasService {
+  http = inject(HttpClient);
+  base = `${API_BASE_URL}/finanzas/facturacion`;
+  dashboard(params) {
+    return this.http.get(`${this.base}/dashboard`, { params: clean(params) }).pipe(map(unwrap));
+  }
+  clientes(params) {
+    return this.http.get(`${this.base}/clientes`, { params: clean(params) }).pipe(map(unwrap));
+  }
+  createCliente(data) {
+    return this.http.post(`${this.base}/clientes`, data).pipe(map(unwrap));
+  }
+  updateCliente(id, data) {
+    return this.http.put(`${this.base}/clientes/${id}`, data).pipe(map(unwrap));
+  }
+  deleteCliente(id) {
+    return this.http.delete(`${this.base}/clientes/${id}`);
+  }
+  facturas(params) {
+    return this.http.get(`${this.base}/facturas`, { params: clean(params) }).pipe(map(unwrap));
+  }
+  createFactura(data) {
+    return this.http.post(`${this.base}/facturas`, data).pipe(map(unwrap));
+  }
+  cobros(params) {
+    return this.http.get(`${this.base}/cobros`, { params: clean(params) }).pipe(map(unwrap));
+  }
+  createCobro(data) {
+    return this.http.post(`${this.base}/cobros`, data).pipe(map(unwrap));
+  }
+  notasCredito(params) {
+    return this.http.get(`${this.base}/notas-credito`, { params: clean(params) }).pipe(map(unwrap));
+  }
+  createNotaCredito(data) {
+    return this.http.post(`${this.base}/notas-credito`, data).pipe(map(unwrap));
+  }
+  static \u0275fac = function FinanzasService_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _FinanzasService)();
+  };
+  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _FinanzasService, factory: _FinanzasService.\u0275fac, providedIn: "root" });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(FinanzasService, [{
+    type: Injectable,
+    args: [{ providedIn: "root" }]
+  }], null, null);
+})();
+
+// src/app/pages/finanzas-facturacion-page/finanzas-facturacion-page.component.ts
+var _c015 = () => [];
+var _c114 = () => ["cuit", "condicionFiscal"];
+var _c214 = () => ["razonSocial", "cuit"];
+var _c313 = () => ["rolOperativo", "documentoNumero"];
+var _c411 = () => ["nombreCompleto", "username", "documentoNumero"];
+var _c57 = () => ["numeroComprobante", "saldoPendiente"];
+var _c65 = () => ["rolOperativo"];
+function FinanzasFacturacionPageComponent_option_80_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 47);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const estado_r1 = ctx.$implicit;
+    \u0275\u0275property("value", estado_r1);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(estado_r1);
+  }
+}
+function FinanzasFacturacionPageComponent_p_92_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p", 48);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r1.error());
+  }
+}
+function FinanzasFacturacionPageComponent_option_109_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 47);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const size_r3 = ctx.$implicit;
+    \u0275\u0275property("value", size_r3);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(size_r3);
+  }
+}
+function FinanzasFacturacionPageComponent_button_115_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r4 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "button", 36);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_button_115_Template_button_click_0_listener() {
+      const page_r5 = \u0275\u0275restoreView(_r4).$implicit;
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.setPage(ctx_r1.tab(), page_r5));
+    });
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    let tmp_2_0;
+    const page_r5 = ctx.$implicit;
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275classProp("active", page_r5 === (((tmp_2_0 = ctx_r1.pageFor(ctx_r1.tab())) == null ? null : tmp_2_0.number) || 0) + 1);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(page_r5);
+  }
+}
+function FinanzasFacturacionPageComponent_div_119_tr_21_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "strong");
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "small");
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "td");
+    \u0275\u0275text(7);
+    \u0275\u0275elementStart(8, "small");
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(10, "td");
+    \u0275\u0275text(11);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "td");
+    \u0275\u0275text(13);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "td")(15, "span", 52);
+    \u0275\u0275text(16);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(17, "td");
+    \u0275\u0275text(18);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(19, "td");
+    \u0275\u0275text(20);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(21, "td");
+    \u0275\u0275text(22);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const f_r6 = ctx.$implicit;
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate2("", f_r6.puntoVenta, "-", f_r6.numeroComprobante);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(f_r6.tipoComprobante);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(f_r6.clienteRazonSocial);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(f_r6.clienteCuit);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.date(f_r6.fechaEmision));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.date(f_r6.fechaVencimiento));
+    \u0275\u0275advance(2);
+    \u0275\u0275classProp("ok", f_r6.estado === "COBRADA")("warning", f_r6.estado === "PARCIAL" || f_r6.estado === "EMITIDA")("danger", f_r6.estado === "VENCIDA");
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(f_r6.estado);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.money(f_r6.total));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.money(f_r6.saldoPendiente));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(f_r6.cae || "Pendiente");
+  }
+}
+function FinanzasFacturacionPageComponent_div_119_tr_22_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td", 53);
+    \u0275\u0275text(2, "Sin facturas.");
+    \u0275\u0275elementEnd()();
+  }
+}
+function FinanzasFacturacionPageComponent_div_119_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 49)(1, "table")(2, "thead")(3, "tr")(4, "th");
+    \u0275\u0275text(5, "Comprobante");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "th");
+    \u0275\u0275text(7, "Cliente");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "th");
+    \u0275\u0275text(9, "Fecha");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "th");
+    \u0275\u0275text(11, "Vence");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "th");
+    \u0275\u0275text(13, "Estado");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "th");
+    \u0275\u0275text(15, "Total");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "th");
+    \u0275\u0275text(17, "Saldo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(18, "th");
+    \u0275\u0275text(19, "CAE");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(20, "tbody");
+    \u0275\u0275template(21, FinanzasFacturacionPageComponent_div_119_tr_21_Template, 23, 17, "tr", 50)(22, FinanzasFacturacionPageComponent_div_119_tr_22_Template, 3, 0, "tr", 51);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_1_0;
+    let tmp_2_0;
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(21);
+    \u0275\u0275property("ngForOf", ((tmp_1_0 = ctx_r1.facturasPage()) == null ? null : tmp_1_0.content) || \u0275\u0275pureFunction0(2, _c015));
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !(((tmp_2_0 = ctx_r1.facturasPage()) == null ? null : tmp_2_0.content) || \u0275\u0275pureFunction0(3, _c015)).length);
+  }
+}
+function FinanzasFacturacionPageComponent_div_120_tr_19_span_16_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 59);
+    \u0275\u0275text(1, "Activo");
+    \u0275\u0275elementEnd();
+  }
+}
+function FinanzasFacturacionPageComponent_div_120_tr_19_span_17_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "span", 60);
+    \u0275\u0275text(1, "Inactivo");
+    \u0275\u0275elementEnd();
+  }
+}
+function FinanzasFacturacionPageComponent_div_120_tr_19_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r7 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "tr")(1, "td")(2, "strong");
+    \u0275\u0275text(3);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(4, "small");
+    \u0275\u0275text(5);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(6, "td");
+    \u0275\u0275text(7);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "td")(9, "span", 54);
+    \u0275\u0275text(10);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(11, "td");
+    \u0275\u0275text(12);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "td");
+    \u0275\u0275text(14);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(15, "td");
+    \u0275\u0275template(16, FinanzasFacturacionPageComponent_div_120_tr_19_span_16_Template, 2, 0, "span", 55)(17, FinanzasFacturacionPageComponent_div_120_tr_19_span_17_Template, 2, 0, "span", 56);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(18, "td", 57)(19, "button", 58);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_div_120_tr_19_Template_button_click_19_listener() {
+      const c_r8 = \u0275\u0275restoreView(_r7).$implicit;
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.openEditCliente(c_r8));
+    });
+    \u0275\u0275text(20, "Editar");
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const c_r8 = ctx.$implicit;
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(c_r8.razonSocial);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(c_r8.direccion || "Sin direccion");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(c_r8.cuit);
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(c_r8.condicionFiscal);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(c_r8.email || "Sin email");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(c_r8.telefono || "Sin telefono");
+    \u0275\u0275advance(2);
+    \u0275\u0275property("ngIf", c_r8.activo);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !c_r8.activo);
+  }
+}
+function FinanzasFacturacionPageComponent_div_120_tr_20_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td", 61);
+    \u0275\u0275text(2, "Sin clientes.");
+    \u0275\u0275elementEnd()();
+  }
+}
+function FinanzasFacturacionPageComponent_div_120_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 49)(1, "table")(2, "thead")(3, "tr")(4, "th");
+    \u0275\u0275text(5, "Cliente");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "th");
+    \u0275\u0275text(7, "CUIT");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "th");
+    \u0275\u0275text(9, "Condicion");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "th");
+    \u0275\u0275text(11, "Email");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "th");
+    \u0275\u0275text(13, "Telefono");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "th");
+    \u0275\u0275text(15, "Estado");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "th");
+    \u0275\u0275text(17, "Acciones");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(18, "tbody");
+    \u0275\u0275template(19, FinanzasFacturacionPageComponent_div_120_tr_19_Template, 21, 8, "tr", 50)(20, FinanzasFacturacionPageComponent_div_120_tr_20_Template, 3, 0, "tr", 51);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_1_0;
+    let tmp_2_0;
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(19);
+    \u0275\u0275property("ngForOf", ((tmp_1_0 = ctx_r1.clientesPage()) == null ? null : tmp_1_0.content) || \u0275\u0275pureFunction0(2, _c015));
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !(((tmp_2_0 = ctx_r1.clientesPage()) == null ? null : tmp_2_0.content) || \u0275\u0275pureFunction0(3, _c015)).length);
+  }
+}
+function FinanzasFacturacionPageComponent_div_121_tr_19_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td");
+    \u0275\u0275text(2);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "td");
+    \u0275\u0275text(4);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "td");
+    \u0275\u0275text(6);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "td")(8, "span", 54);
+    \u0275\u0275text(9);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(10, "td");
+    \u0275\u0275text(11);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "td");
+    \u0275\u0275text(13);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "td");
+    \u0275\u0275text(15);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const c_r9 = ctx.$implicit;
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.date(c_r9.fecha));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(c_r9.comprobante);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(c_r9.clienteRazonSocial);
+    \u0275\u0275advance(3);
+    \u0275\u0275textInterpolate(c_r9.metodoPago);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(c_r9.operarioNombre || "Sin responsable");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.money(c_r9.importe));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(c_r9.referencia || "Sin referencia");
+  }
+}
+function FinanzasFacturacionPageComponent_div_121_tr_20_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td", 61);
+    \u0275\u0275text(2, "Sin cobros.");
+    \u0275\u0275elementEnd()();
+  }
+}
+function FinanzasFacturacionPageComponent_div_121_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 49)(1, "table")(2, "thead")(3, "tr")(4, "th");
+    \u0275\u0275text(5, "Fecha");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "th");
+    \u0275\u0275text(7, "Factura");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "th");
+    \u0275\u0275text(9, "Cliente");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "th");
+    \u0275\u0275text(11, "Metodo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "th");
+    \u0275\u0275text(13, "Responsable");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "th");
+    \u0275\u0275text(15, "Importe");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "th");
+    \u0275\u0275text(17, "Referencia");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(18, "tbody");
+    \u0275\u0275template(19, FinanzasFacturacionPageComponent_div_121_tr_19_Template, 16, 7, "tr", 50)(20, FinanzasFacturacionPageComponent_div_121_tr_20_Template, 3, 0, "tr", 51);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_1_0;
+    let tmp_2_0;
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(19);
+    \u0275\u0275property("ngForOf", ((tmp_1_0 = ctx_r1.cobrosPage()) == null ? null : tmp_1_0.content) || \u0275\u0275pureFunction0(2, _c015));
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !(((tmp_2_0 = ctx_r1.cobrosPage()) == null ? null : tmp_2_0.content) || \u0275\u0275pureFunction0(3, _c015)).length);
+  }
+}
+function FinanzasFacturacionPageComponent_div_122_tr_19_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td");
+    \u0275\u0275text(2);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "td");
+    \u0275\u0275text(4);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "td");
+    \u0275\u0275text(6);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "td");
+    \u0275\u0275text(8);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "td");
+    \u0275\u0275text(10);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "td");
+    \u0275\u0275text(12);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "td");
+    \u0275\u0275text(14);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const n_r10 = ctx.$implicit;
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.date(n_r10.fecha));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(n_r10.comprobante);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(n_r10.clienteRazonSocial);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(n_r10.operarioNombre || "Sin responsable");
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(ctx_r1.money(n_r10.importe));
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(n_r10.motivo);
+    \u0275\u0275advance(2);
+    \u0275\u0275textInterpolate(n_r10.cae);
+  }
+}
+function FinanzasFacturacionPageComponent_div_122_tr_20_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "tr")(1, "td", 61);
+    \u0275\u0275text(2, "Sin notas de credito.");
+    \u0275\u0275elementEnd()();
+  }
+}
+function FinanzasFacturacionPageComponent_div_122_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 49)(1, "table")(2, "thead")(3, "tr")(4, "th");
+    \u0275\u0275text(5, "Fecha");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "th");
+    \u0275\u0275text(7, "Factura");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "th");
+    \u0275\u0275text(9, "Cliente");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(10, "th");
+    \u0275\u0275text(11, "Responsable");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "th");
+    \u0275\u0275text(13, "Importe");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(14, "th");
+    \u0275\u0275text(15, "Motivo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "th");
+    \u0275\u0275text(17, "CAE");
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(18, "tbody");
+    \u0275\u0275template(19, FinanzasFacturacionPageComponent_div_122_tr_19_Template, 15, 7, "tr", 50)(20, FinanzasFacturacionPageComponent_div_122_tr_20_Template, 3, 0, "tr", 51);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    let tmp_1_0;
+    let tmp_2_0;
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(19);
+    \u0275\u0275property("ngForOf", ((tmp_1_0 = ctx_r1.notasPage()) == null ? null : tmp_1_0.content) || \u0275\u0275pureFunction0(2, _c015));
+    \u0275\u0275advance();
+    \u0275\u0275property("ngIf", !(((tmp_2_0 = ctx_r1.notasPage()) == null ? null : tmp_2_0.content) || \u0275\u0275pureFunction0(3, _c015)).length);
+  }
+}
+function FinanzasFacturacionPageComponent_div_123_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r11 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 62);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_div_123_Template_div_click_0_listener() {
+      \u0275\u0275restoreView(_r11);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.closeModal());
+    });
+    \u0275\u0275elementEnd();
+  }
+}
+function FinanzasFacturacionPageComponent_section_124_option_18_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 47);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const t_r13 = ctx.$implicit;
+    \u0275\u0275property("value", t_r13);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(t_r13);
+  }
+}
+function FinanzasFacturacionPageComponent_section_124_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r12 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "section", 63)(1, "button", 64);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_section_124_Template_button_click_1_listener() {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.closeModal());
+    });
+    \u0275\u0275text(2, "x");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "h3");
+    \u0275\u0275text(4);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "div", 65)(6, "label")(7, "span");
+    \u0275\u0275text(8, "Razon social");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "input", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_124_Template_input_ngModelChange_9_listener($event) {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.clienteForm.update((f) => __spreadProps(__spreadValues({}, f), { razonSocial: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(10, "label")(11, "span");
+    \u0275\u0275text(12, "CUIT");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(13, "input", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_124_Template_input_ngModelChange_13_listener($event) {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.clienteForm.update((f) => __spreadProps(__spreadValues({}, f), { cuit: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(14, "label")(15, "span");
+    \u0275\u0275text(16, "Condicion fiscal");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(17, "select", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_124_Template_select_ngModelChange_17_listener($event) {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.clienteForm.update((f) => __spreadProps(__spreadValues({}, f), { condicionFiscal: $event })));
+    });
+    \u0275\u0275template(18, FinanzasFacturacionPageComponent_section_124_option_18_Template, 2, 2, "option", 28);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(19, "label")(20, "span");
+    \u0275\u0275text(21, "Email");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(22, "input", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_124_Template_input_ngModelChange_22_listener($event) {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.clienteForm.update((f) => __spreadProps(__spreadValues({}, f), { email: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(23, "label")(24, "span");
+    \u0275\u0275text(25, "Telefono");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(26, "input", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_124_Template_input_ngModelChange_26_listener($event) {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.clienteForm.update((f) => __spreadProps(__spreadValues({}, f), { telefono: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(27, "label")(28, "span");
+    \u0275\u0275text(29, "Direccion");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(30, "input", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_124_Template_input_ngModelChange_30_listener($event) {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.clienteForm.update((f) => __spreadProps(__spreadValues({}, f), { direccion: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(31, "label")(32, "span");
+    \u0275\u0275text(33, "Estado");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(34, "select", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_124_Template_select_ngModelChange_34_listener($event) {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.clienteForm.update((f) => __spreadProps(__spreadValues({}, f), { activo: $event === "true" || $event === true })));
+    });
+    \u0275\u0275elementStart(35, "option", 47);
+    \u0275\u0275text(36, "Activo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(37, "option", 47);
+    \u0275\u0275text(38, "Inactivo");
+    \u0275\u0275elementEnd()()()();
+    \u0275\u0275elementStart(39, "button", 66);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_section_124_Template_button_click_39_listener() {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.submitCliente());
+    });
+    \u0275\u0275text(40);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(4);
+    \u0275\u0275textInterpolate(ctx_r1.editingClienteId() ? "Editar cliente" : "Nuevo cliente");
+    \u0275\u0275advance(5);
+    \u0275\u0275property("ngModel", ctx_r1.clienteForm().razonSocial);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.clienteForm().cuit);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.clienteForm().condicionFiscal);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r1.tipoClienteOptions);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.clienteForm().email);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.clienteForm().telefono);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.clienteForm().direccion);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.clienteForm().activo);
+    \u0275\u0275advance();
+    \u0275\u0275property("value", true);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("value", false);
+    \u0275\u0275advance(2);
+    \u0275\u0275property("disabled", ctx_r1.saving());
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r1.editingClienteId() ? "Guardar cambios" : "Guardar cliente");
+  }
+}
+function FinanzasFacturacionPageComponent_section_125_option_12_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 47);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const t_r15 = ctx.$implicit;
+    \u0275\u0275property("value", t_r15);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(t_r15);
+  }
+}
+function FinanzasFacturacionPageComponent_section_125_div_24_option_4_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 47);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const insumo_r18 = ctx.$implicit;
+    \u0275\u0275property("value", insumo_r18.id);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(insumo_r18.nombre);
+  }
+}
+function FinanzasFacturacionPageComponent_section_125_div_24_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r16 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "div", 73)(1, "select", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_125_div_24_Template_select_ngModelChange_1_listener($event) {
+      const i_r17 = \u0275\u0275restoreView(_r16).index;
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.selectInsumo(i_r17, $event));
+    });
+    \u0275\u0275elementStart(2, "option", 27);
+    \u0275\u0275text(3, "Sin insumo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(4, FinanzasFacturacionPageComponent_section_125_div_24_option_4_Template, 2, 2, "option", 28);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "input", 74);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_125_div_24_Template_input_ngModelChange_5_listener($event) {
+      const i_r17 = \u0275\u0275restoreView(_r16).index;
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.updateItem(i_r17, { descripcion: $event }));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "input", 75);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_125_div_24_Template_input_ngModelChange_6_listener($event) {
+      const i_r17 = \u0275\u0275restoreView(_r16).index;
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.updateItem(i_r17, { cantidad: $event }));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "input", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_125_div_24_Template_input_ngModelChange_7_listener($event) {
+      const i_r17 = \u0275\u0275restoreView(_r16).index;
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.updateItem(i_r17, { unidad: $event }));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "input", 75);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_125_div_24_Template_input_ngModelChange_8_listener($event) {
+      const i_r17 = \u0275\u0275restoreView(_r16).index;
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.updateItem(i_r17, { precioUnitario: $event }));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "button", 76);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_section_125_div_24_Template_button_click_9_listener() {
+      const i_r17 = \u0275\u0275restoreView(_r16).index;
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.removeItem(i_r17));
+    });
+    \u0275\u0275text(10, "Quitar");
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const item_r19 = ctx.$implicit;
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngModel", item_r19.insumoId);
+    \u0275\u0275advance(3);
+    \u0275\u0275property("ngForOf", ctx_r1.insumos());
+    \u0275\u0275advance();
+    \u0275\u0275property("ngModel", item_r19.descripcion);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngModel", item_r19.cantidad);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngModel", item_r19.unidad);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngModel", item_r19.precioUnitario);
+  }
+}
+function FinanzasFacturacionPageComponent_section_125_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r14 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "section", 67)(1, "button", 64);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_section_125_Template_button_click_1_listener() {
+      \u0275\u0275restoreView(_r14);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.closeModal());
+    });
+    \u0275\u0275text(2, "x");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "h3");
+    \u0275\u0275text(4, "Emitir factura");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "div", 65)(6, "app-remote-search-select", 68);
+    \u0275\u0275listener("valueChange", function FinanzasFacturacionPageComponent_section_125_Template_app_remote_search_select_valueChange_6_listener($event) {
+      \u0275\u0275restoreView(_r14);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.facturaForm.update((f) => __spreadProps(__spreadValues({}, f), { clienteId: $event })));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "app-remote-search-select", 69);
+    \u0275\u0275listener("valueChange", function FinanzasFacturacionPageComponent_section_125_Template_app_remote_search_select_valueChange_7_listener($event) {
+      \u0275\u0275restoreView(_r14);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.facturaForm.update((f) => __spreadProps(__spreadValues({}, f), { operarioId: $event })));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "label")(9, "span");
+    \u0275\u0275text(10, "Tipo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "select", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_125_Template_select_ngModelChange_11_listener($event) {
+      \u0275\u0275restoreView(_r14);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.facturaForm.update((f) => __spreadProps(__spreadValues({}, f), { tipoComprobante: $event })));
+    });
+    \u0275\u0275template(12, FinanzasFacturacionPageComponent_section_125_option_12_Template, 2, 2, "option", 28);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(13, "label")(14, "span");
+    \u0275\u0275text(15, "Fecha");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "input", 29);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_125_Template_input_ngModelChange_16_listener($event) {
+      \u0275\u0275restoreView(_r14);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.facturaForm.update((f) => __spreadProps(__spreadValues({}, f), { fechaEmision: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(17, "label")(18, "span");
+    \u0275\u0275text(19, "Vencimiento");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(20, "input", 29);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_125_Template_input_ngModelChange_20_listener($event) {
+      \u0275\u0275restoreView(_r14);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.facturaForm.update((f) => __spreadProps(__spreadValues({}, f), { fechaVencimiento: $event })));
+    });
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(21, "div", 70)(22, "button", 71);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_section_125_Template_button_click_22_listener() {
+      \u0275\u0275restoreView(_r14);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.addItem());
+    });
+    \u0275\u0275text(23, "Agregar item");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(24, FinanzasFacturacionPageComponent_section_125_div_24_Template, 11, 6, "div", 72);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(25, "button", 66);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_section_125_Template_button_click_25_listener() {
+      \u0275\u0275restoreView(_r14);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.submitFactura());
+    });
+    \u0275\u0275text(26, "Emitir factura");
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(6);
+    \u0275\u0275property("endpoint", ctx_r1.endpoints.clientes)("subtitleFields", \u0275\u0275pureFunction0(15, _c114))("searchFields", \u0275\u0275pureFunction0(16, _c214))("value", ctx_r1.facturaForm().clienteId);
+    \u0275\u0275advance();
+    \u0275\u0275property("endpoint", ctx_r1.endpoints.operarios)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(17, _c313))("searchFields", \u0275\u0275pureFunction0(18, _c411))("value", ctx_r1.facturaForm().operarioId);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.facturaForm().tipoComprobante);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r1.tipoComprobanteOptions);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.facturaForm().fechaEmision);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.facturaForm().fechaVencimiento);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngForOf", ctx_r1.facturaForm().items);
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", ctx_r1.saving());
+  }
+}
+function FinanzasFacturacionPageComponent_section_126_option_12_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 47);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const m_r21 = ctx.$implicit;
+    \u0275\u0275property("value", m_r21);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(m_r21);
+  }
+}
+function FinanzasFacturacionPageComponent_section_126_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r20 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "section", 63)(1, "button", 64);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_section_126_Template_button_click_1_listener() {
+      \u0275\u0275restoreView(_r20);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.closeModal());
+    });
+    \u0275\u0275text(2, "x");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "h3");
+    \u0275\u0275text(4, "Registrar cobro");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "div", 65)(6, "app-remote-search-select", 77);
+    \u0275\u0275listener("valueChange", function FinanzasFacturacionPageComponent_section_126_Template_app_remote_search_select_valueChange_6_listener($event) {
+      \u0275\u0275restoreView(_r20);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.cobroForm.update((f) => __spreadProps(__spreadValues({}, f), { facturaId: $event })));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "app-remote-search-select", 78);
+    \u0275\u0275listener("valueChange", function FinanzasFacturacionPageComponent_section_126_Template_app_remote_search_select_valueChange_7_listener($event) {
+      \u0275\u0275restoreView(_r20);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.cobroForm.update((f) => __spreadProps(__spreadValues({}, f), { operarioId: $event })));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "label")(9, "span");
+    \u0275\u0275text(10, "Metodo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "select", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_126_Template_select_ngModelChange_11_listener($event) {
+      \u0275\u0275restoreView(_r20);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.cobroForm.update((f) => __spreadProps(__spreadValues({}, f), { metodoPago: $event })));
+    });
+    \u0275\u0275template(12, FinanzasFacturacionPageComponent_section_126_option_12_Template, 2, 2, "option", 28);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(13, "label")(14, "span");
+    \u0275\u0275text(15, "Fecha");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(16, "input", 29);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_126_Template_input_ngModelChange_16_listener($event) {
+      \u0275\u0275restoreView(_r20);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.cobroForm.update((f) => __spreadProps(__spreadValues({}, f), { fecha: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(17, "label")(18, "span");
+    \u0275\u0275text(19, "Importe");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(20, "input", 75);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_126_Template_input_ngModelChange_20_listener($event) {
+      \u0275\u0275restoreView(_r20);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.cobroForm.update((f) => __spreadProps(__spreadValues({}, f), { importe: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(21, "label")(22, "span");
+    \u0275\u0275text(23, "Referencia");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(24, "input", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_126_Template_input_ngModelChange_24_listener($event) {
+      \u0275\u0275restoreView(_r20);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.cobroForm.update((f) => __spreadProps(__spreadValues({}, f), { referencia: $event })));
+    });
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(25, "button", 66);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_section_126_Template_button_click_25_listener() {
+      \u0275\u0275restoreView(_r20);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.submitCobro());
+    });
+    \u0275\u0275text(26, "Guardar cobro");
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(6);
+    \u0275\u0275property("endpoint", ctx_r1.API_BASE_URL + "/finanzas/facturacion/facturas")("subtitleFields", \u0275\u0275pureFunction0(13, _c57))("value", ctx_r1.cobroForm().facturaId);
+    \u0275\u0275advance();
+    \u0275\u0275property("endpoint", ctx_r1.endpoints.operarios)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(14, _c65))("value", ctx_r1.cobroForm().operarioId);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.cobroForm().metodoPago);
+    \u0275\u0275advance();
+    \u0275\u0275property("ngForOf", ctx_r1.metodoPagoOptions);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.cobroForm().fecha);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.cobroForm().importe);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.cobroForm().referencia);
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", ctx_r1.saving());
+  }
+}
+function FinanzasFacturacionPageComponent_section_127_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r22 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "section", 63)(1, "button", 64);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_section_127_Template_button_click_1_listener() {
+      \u0275\u0275restoreView(_r22);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.closeModal());
+    });
+    \u0275\u0275text(2, "x");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "h3");
+    \u0275\u0275text(4, "Nota de credito");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(5, "div", 65)(6, "app-remote-search-select", 77);
+    \u0275\u0275listener("valueChange", function FinanzasFacturacionPageComponent_section_127_Template_app_remote_search_select_valueChange_6_listener($event) {
+      \u0275\u0275restoreView(_r22);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.notaForm.update((f) => __spreadProps(__spreadValues({}, f), { facturaId: $event })));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(7, "app-remote-search-select", 78);
+    \u0275\u0275listener("valueChange", function FinanzasFacturacionPageComponent_section_127_Template_app_remote_search_select_valueChange_7_listener($event) {
+      \u0275\u0275restoreView(_r22);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.notaForm.update((f) => __spreadProps(__spreadValues({}, f), { operarioId: $event })));
+    });
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(8, "label")(9, "span");
+    \u0275\u0275text(10, "Fecha");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "input", 29);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_127_Template_input_ngModelChange_11_listener($event) {
+      \u0275\u0275restoreView(_r22);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.notaForm.update((f) => __spreadProps(__spreadValues({}, f), { fecha: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(12, "label")(13, "span");
+    \u0275\u0275text(14, "Importe");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(15, "input", 75);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_127_Template_input_ngModelChange_15_listener($event) {
+      \u0275\u0275restoreView(_r22);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.notaForm.update((f) => __spreadProps(__spreadValues({}, f), { importe: $event })));
+    });
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(16, "label")(17, "span");
+    \u0275\u0275text(18, "Motivo");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(19, "input", 26);
+    \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_section_127_Template_input_ngModelChange_19_listener($event) {
+      \u0275\u0275restoreView(_r22);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.notaForm.update((f) => __spreadProps(__spreadValues({}, f), { motivo: $event })));
+    });
+    \u0275\u0275elementEnd()()();
+    \u0275\u0275elementStart(20, "button", 66);
+    \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_section_127_Template_button_click_20_listener() {
+      \u0275\u0275restoreView(_r22);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.submitNota());
+    });
+    \u0275\u0275text(21, "Guardar nota");
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance(6);
+    \u0275\u0275property("endpoint", ctx_r1.API_BASE_URL + "/finanzas/facturacion/facturas")("subtitleFields", \u0275\u0275pureFunction0(11, _c57))("value", ctx_r1.notaForm().facturaId);
+    \u0275\u0275advance();
+    \u0275\u0275property("endpoint", ctx_r1.endpoints.operarios)("extraParams", ctx_r1.activeOperarioParams)("subtitleFields", \u0275\u0275pureFunction0(12, _c65))("value", ctx_r1.notaForm().operarioId);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.notaForm().fecha);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.notaForm().importe);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("ngModel", ctx_r1.notaForm().motivo);
+    \u0275\u0275advance();
+    \u0275\u0275property("disabled", ctx_r1.saving());
+  }
+}
+var FinanzasFacturacionPageComponent = class _FinanzasFacturacionPageComponent {
+  service = inject(FinanzasService);
+  agricola = inject(AgricolaService);
+  API_BASE_URL = API_BASE_URL;
+  endpoints = { operarios: `${API_BASE_URL}/operarios/gestion/operarios`, clientes: `${API_BASE_URL}/finanzas/facturacion/clientes` };
+  activeOperarioParams = { estado: "ACTIVO" };
+  dashboard = signal(null, ...ngDevMode ? [{ debugName: "dashboard" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  clientesPage = signal(null, ...ngDevMode ? [{ debugName: "clientesPage" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  facturasPage = signal(null, ...ngDevMode ? [{ debugName: "facturasPage" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  cobrosPage = signal(null, ...ngDevMode ? [{ debugName: "cobrosPage" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  notasPage = signal(null, ...ngDevMode ? [{ debugName: "notasPage" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  insumos = signal([], ...ngDevMode ? [{ debugName: "insumos" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  tab = signal("FACTURAS", ...ngDevMode ? [{ debugName: "tab" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  modal = signal(null, ...ngDevMode ? [{ debugName: "modal" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  editingClienteId = signal(null, ...ngDevMode ? [{ debugName: "editingClienteId" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  saving = signal(false, ...ngDevMode ? [{ debugName: "saving" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  error = signal("", ...ngDevMode ? [{ debugName: "error" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  pageSizeOptions = [5, 8, 10, 20, 50];
+  facturasPageIndex = signal(0, ...ngDevMode ? [{ debugName: "facturasPageIndex" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  clientesPageIndex = signal(0, ...ngDevMode ? [{ debugName: "clientesPageIndex" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  cobrosPageIndex = signal(0, ...ngDevMode ? [{ debugName: "cobrosPageIndex" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  notasPageIndex = signal(0, ...ngDevMode ? [{ debugName: "notasPageIndex" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  facturasSize = signal(8, ...ngDevMode ? [{ debugName: "facturasSize" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  clientesSize = signal(8, ...ngDevMode ? [{ debugName: "clientesSize" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  cobrosSize = signal(8, ...ngDevMode ? [{ debugName: "cobrosSize" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  notasSize = signal(8, ...ngDevMode ? [{ debugName: "notasSize" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  search = signal("", ...ngDevMode ? [{ debugName: "search" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  estadoFilter = signal("", ...ngDevMode ? [{ debugName: "estadoFilter" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  fechaDesde = signal(this.firstDayOfCurrentMonth(), ...ngDevMode ? [{ debugName: "fechaDesde" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  fechaHasta = signal(this.today(), ...ngDevMode ? [{ debugName: "fechaHasta" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  tipoClienteOptions = ["RESPONSABLE_INSCRIPTO", "MONOTRIBUTO", "EXENTO", "CONSUMIDOR_FINAL"];
+  tipoComprobanteOptions = ["FACTURA_A", "FACTURA_B", "FACTURA_C", "RECIBO"];
+  estadoOptions = ["EMITIDA", "PARCIAL", "COBRADA", "VENCIDA", "ANULADA"];
+  metodoPagoOptions = ["EFECTIVO", "TRANSFERENCIA", "CHEQUE", "TARJETA", "RETENCION", "OTRO"];
+  clienteForm = signal({ razonSocial: "", cuit: "", condicionFiscal: "RESPONSABLE_INSCRIPTO", email: "", telefono: "", direccion: "", activo: true }, ...ngDevMode ? [{ debugName: "clienteForm" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  facturaForm = signal({ clienteId: "", operarioId: "", tipoComprobante: "FACTURA_A", puntoVenta: "0001", fechaEmision: (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), fechaVencimiento: new Date(Date.now() + 15 * 864e5).toISOString().slice(0, 10), observaciones: "", items: [{ descripcion: "", cantidad: 1, unidad: "UN", precioUnitario: 0, ivaPorcentaje: 21 }] }, ...ngDevMode ? [{ debugName: "facturaForm" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  cobroForm = signal({ facturaId: "", operarioId: "", fecha: (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), metodoPago: "TRANSFERENCIA", importe: 0, referencia: "", observaciones: "" }, ...ngDevMode ? [{ debugName: "cobroForm" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  notaForm = signal({ facturaId: "", operarioId: "", fecha: (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), importe: 0, motivo: "" }, ...ngDevMode ? [{ debugName: "notaForm" }] : (
+    /* istanbul ignore next */
+    []
+  ));
+  ngOnInit() {
+    this.loadAll();
+    this.agricola.getInsumosActivos().subscribe({ next: (v) => this.insumos.set(v), error: () => void 0 });
+  }
+  loadAll() {
+    this.loadDashboard();
+    this.loadFacturas();
+    this.loadClientes();
+    this.loadCobros();
+    this.loadNotas();
+  }
+  loadDashboard() {
+    this.service.dashboard({ fechaDesde: this.fechaDesde(), fechaHasta: this.fechaHasta() }).subscribe({ next: (v) => this.dashboard.set(v), error: () => void 0 });
+  }
+  loadFacturas() {
+    this.service.facturas({ search: this.search(), estado: this.estadoFilter() || void 0, fechaDesde: this.fechaDesde(), fechaHasta: this.fechaHasta(), page: this.facturasPageIndex(), size: this.facturasSize() }).subscribe({ next: (v) => this.facturasPage.set(v), error: () => this.error.set("No se pudieron cargar las facturas") });
+  }
+  loadClientes() {
+    this.service.clientes({ search: this.search(), page: this.clientesPageIndex(), size: this.clientesSize() }).subscribe({ next: (v) => this.clientesPage.set(v), error: () => void 0 });
+  }
+  loadCobros() {
+    this.service.cobros({ page: this.cobrosPageIndex(), size: this.cobrosSize() }).subscribe({ next: (v) => this.cobrosPage.set(v), error: () => void 0 });
+  }
+  loadNotas() {
+    this.service.notasCredito({ page: this.notasPageIndex(), size: this.notasSize() }).subscribe({ next: (v) => this.notasPage.set(v), error: () => void 0 });
+  }
+  applyFilters() {
+    this.facturasPageIndex.set(0);
+    this.clientesPageIndex.set(0);
+    this.loadDashboard();
+    this.loadFacturas();
+    this.loadClientes();
+  }
+  pageNumbers(page) {
+    const total = page?.totalPages || 1;
+    const current = (page?.number || 0) + 1;
+    const start = Math.max(1, current - 2);
+    const end = Math.min(total, start + 4);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  }
+  setPage(kind, page) {
+    const idx = page - 1;
+    if (kind === "FACTURAS") {
+      this.facturasPageIndex.set(idx);
+      this.loadFacturas();
+    }
+    if (kind === "CLIENTES") {
+      this.clientesPageIndex.set(idx);
+      this.loadClientes();
+    }
+    if (kind === "COBROS") {
+      this.cobrosPageIndex.set(idx);
+      this.loadCobros();
+    }
+    if (kind === "NOTAS") {
+      this.notasPageIndex.set(idx);
+      this.loadNotas();
+    }
+  }
+  changePage(kind, delta) {
+    const page = this.pageFor(kind);
+    const current = (page?.number || 0) + 1;
+    this.setPage(kind, Math.max(1, Math.min(page?.totalPages || 1, current + delta)));
+  }
+  setSize(kind, size) {
+    const value = Number(size);
+    if (kind === "FACTURAS") {
+      this.facturasSize.set(value);
+      this.facturasPageIndex.set(0);
+      this.loadFacturas();
+    }
+    if (kind === "CLIENTES") {
+      this.clientesSize.set(value);
+      this.clientesPageIndex.set(0);
+      this.loadClientes();
+    }
+    if (kind === "COBROS") {
+      this.cobrosSize.set(value);
+      this.cobrosPageIndex.set(0);
+      this.loadCobros();
+    }
+    if (kind === "NOTAS") {
+      this.notasSize.set(value);
+      this.notasPageIndex.set(0);
+      this.loadNotas();
+    }
+  }
+  pageFor(kind) {
+    return kind === "FACTURAS" ? this.facturasPage() : kind === "CLIENTES" ? this.clientesPage() : kind === "COBROS" ? this.cobrosPage() : this.notasPage();
+  }
+  sizeFor(kind) {
+    return kind === "FACTURAS" ? this.facturasSize() : kind === "CLIENTES" ? this.clientesSize() : kind === "COBROS" ? this.cobrosSize() : this.notasSize();
+  }
+  openModal(modal) {
+    if (modal === "CLIENTE")
+      this.resetClienteForm();
+    this.modal.set(modal);
+  }
+  openEditCliente(cliente) {
+    this.editingClienteId.set(cliente.id);
+    this.clienteForm.set({
+      razonSocial: cliente.razonSocial,
+      cuit: cliente.cuit,
+      condicionFiscal: cliente.condicionFiscal,
+      email: cliente.email || "",
+      telefono: cliente.telefono || "",
+      direccion: cliente.direccion || "",
+      activo: cliente.activo
+    });
+    this.modal.set("CLIENTE");
+  }
+  closeModal() {
+    this.modal.set(null);
+    this.saving.set(false);
+    this.editingClienteId.set(null);
+  }
+  addItem() {
+    this.facturaForm.update((f) => __spreadProps(__spreadValues({}, f), { items: [...f.items, { descripcion: "", cantidad: 1, unidad: "UN", precioUnitario: 0, ivaPorcentaje: 21 }] }));
+  }
+  removeItem(i) {
+    this.facturaForm.update((f) => __spreadProps(__spreadValues({}, f), { items: f.items.filter((_, idx) => idx !== i) }));
+  }
+  updateItem(i, patch) {
+    this.facturaForm.update((f) => __spreadProps(__spreadValues({}, f), { items: f.items.map((item, idx) => idx === i ? __spreadValues(__spreadValues({}, item), patch) : item) }));
+  }
+  selectInsumo(i, id) {
+    const insumo = this.insumos().find((x) => x.id === id);
+    this.updateItem(i, { insumoId: id, descripcion: insumo?.nombre || "", unidad: insumo?.unidadMedida || "UN", precioUnitario: insumo?.precioUnitario || 0 });
+  }
+  submitCliente() {
+    this.saving.set(true);
+    const id = this.editingClienteId();
+    const request = id ? this.service.updateCliente(id, this.cleanCliente()) : this.service.createCliente(this.cleanCliente());
+    request.subscribe({ next: () => this.afterSave(), error: () => this.fail("No se pudo guardar el cliente") });
+  }
+  submitFactura() {
+    this.saving.set(true);
+    this.service.createFactura(this.cleanFactura()).subscribe({ next: () => this.afterSave(), error: () => this.fail("No se pudo emitir la factura") });
+  }
+  submitCobro() {
+    this.saving.set(true);
+    this.service.createCobro(this.cleanCobro()).subscribe({ next: () => this.afterSave(), error: () => this.fail("No se pudo registrar el cobro") });
+  }
+  submitNota() {
+    this.saving.set(true);
+    this.service.createNotaCredito(this.cleanNota()).subscribe({ next: () => this.afterSave(), error: () => this.fail("No se pudo registrar la nota de credito") });
+  }
+  afterSave() {
+    this.closeModal();
+    this.loadAll();
+  }
+  fail(msg) {
+    this.saving.set(false);
+    this.error.set(msg);
+  }
+  cleanCliente() {
+    const f = this.clienteForm();
+    return __spreadProps(__spreadValues({}, f), { email: f.email || void 0, telefono: f.telefono || void 0, direccion: f.direccion || void 0 });
+  }
+  cleanFactura() {
+    const f = this.facturaForm();
+    return __spreadProps(__spreadValues({}, f), { operarioId: f.operarioId || void 0, observaciones: f.observaciones || void 0, items: f.items.map((i) => __spreadProps(__spreadValues({}, i), { cantidad: Number(i.cantidad), precioUnitario: Number(i.precioUnitario), ivaPorcentaje: Number(i.ivaPorcentaje ?? 21) })) });
+  }
+  cleanCobro() {
+    const f = this.cobroForm();
+    return __spreadProps(__spreadValues({}, f), { operarioId: f.operarioId || void 0, importe: Number(f.importe), referencia: f.referencia || void 0, observaciones: f.observaciones || void 0 });
+  }
+  cleanNota() {
+    const f = this.notaForm();
+    return __spreadProps(__spreadValues({}, f), { operarioId: f.operarioId || void 0, importe: Number(f.importe) });
+  }
+  resetClienteForm() {
+    this.editingClienteId.set(null);
+    this.clienteForm.set({ razonSocial: "", cuit: "", condicionFiscal: "RESPONSABLE_INSCRIPTO", email: "", telefono: "", direccion: "", activo: true });
+  }
+  money(v) {
+    return new Intl.NumberFormat("es-AR", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(Number(v || 0));
+  }
+  date(v) {
+    return v ? v.slice(0, 10) : "Sin fecha";
+  }
+  today() {
+    return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+  }
+  firstDayOfCurrentMonth() {
+    const now = /* @__PURE__ */ new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+  }
+  static \u0275fac = function FinanzasFacturacionPageComponent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _FinanzasFacturacionPageComponent)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _FinanzasFacturacionPageComponent, selectors: [["app-finanzas-facturacion-page"]], decls: 128, vars: 33, consts: [[1, "finanzas-page"], [1, "page-hero"], [1, "eyebrow"], [1, "hero-actions"], [1, "btn-secondary", 3, "click"], [1, "btn-primary", 3, "click"], [1, "kpi-grid"], [1, "kpi-card"], [1, "kpi-icon"], ["viewBox", "0 0 24 24"], ["d", "M7 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"], ["d", "M5 21a7 7 0 0 1 14 0"], [1, "kpi-card", "tone-blue"], ["d", "M7 3h10v18H7z"], ["d", "M10 8h4"], ["d", "M10 12h4"], ["d", "M4 19h16"], ["d", "M7 16V9"], ["d", "M12 16V5"], ["d", "M17 16v-4"], [1, "kpi-card", "tone-orange"], ["d", "M12 8v5"], ["d", "M12 17h.01"], ["d", "M10 3h4l8 18H2L10 3Z"], [1, "filters-card"], ["placeholder", "Cliente, CUIT o comprobante", 3, "ngModelChange", "ngModel"], [3, "ngModelChange", "ngModel"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["type", "date", 3, "ngModelChange", "ngModel"], [1, "filter-actions"], [1, "btn-primary", "filter-submit", 3, "click"], ["class", "error-box", 4, "ngIf"], [1, "panel"], [1, "panel-head", "tabbed-head"], [1, "table-tabs"], [3, "click"], [1, "table-pager"], [1, "page-size-select"], [3, "click", "disabled"], ["d", "m15 18-6-6 6-6"], [3, "active", "click", 4, "ngFor", "ngForOf"], ["d", "m9 18 6-6-6-6"], ["class", "table-wrap", 4, "ngIf"], ["class", "modal-backdrop", 3, "click", 4, "ngIf"], ["class", "modal", 4, "ngIf"], ["class", "modal wide-modal", 4, "ngIf"], [3, "value"], [1, "error-box"], [1, "table-wrap"], [4, "ngFor", "ngForOf"], [4, "ngIf"], [1, "status"], ["colspan", "8", 1, "empty-cell"], [1, "pill"], ["class", "status ok", 4, "ngIf"], ["class", "status danger", 4, "ngIf"], [1, "actions-cell"], ["type", "button", 3, "click"], [1, "status", "ok"], [1, "status", "danger"], ["colspan", "7", 1, "empty-cell"], [1, "modal-backdrop", 3, "click"], [1, "modal"], [1, "modal-close", 3, "click"], [1, "form-grid"], [1, "btn-primary", "modal-submit", 3, "click", "disabled"], [1, "modal", "wide-modal"], ["label", "Cliente", "placeholder", "Buscar cliente", "queryParam", "search", "valueField", "id", "labelField", "razonSocial", 3, "valueChange", "endpoint", "subtitleFields", "searchFields", "value"], ["label", "Responsable", "placeholder", "Buscar operario", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "searchFields", "value"], [1, "items-box"], [1, "btn-secondary", "compact", 3, "click"], ["class", "item-row", 4, "ngFor", "ngForOf"], [1, "item-row"], ["placeholder", "Descripcion", 3, "ngModelChange", "ngModel"], ["type", "number", 3, "ngModelChange", "ngModel"], [1, "danger-action", 3, "click"], ["label", "Factura", "placeholder", "Buscar factura", "queryParam", "search", "valueField", "id", "labelField", "clienteRazonSocial", 3, "valueChange", "endpoint", "subtitleFields", "value"], ["label", "Responsable", "placeholder", "Buscar operario", "queryParam", "search", "valueField", "id", "labelField", "nombreCompleto", 3, "valueChange", "endpoint", "extraParams", "subtitleFields", "value"]], template: function FinanzasFacturacionPageComponent_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275elementStart(0, "section", 0)(1, "header", 1)(2, "div")(3, "p", 2);
+      \u0275\u0275text(4, "Campo App - Finanzas");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(5, "h1");
+      \u0275\u0275text(6, "Facturacion y ventas");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(7, "p");
+      \u0275\u0275text(8, "Emision de comprobantes, cobros, deuda de clientes y trazabilidad fiscal.");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(9, "div", 3)(10, "button", 4);
+      \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_Template_button_click_10_listener() {
+        return ctx.openModal("CLIENTE");
+      });
+      \u0275\u0275text(11, "Nuevo cliente");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(12, "button", 4);
+      \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_Template_button_click_12_listener() {
+        return ctx.openModal("COBRO");
+      });
+      \u0275\u0275text(13, "Registrar cobro");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(14, "button", 5);
+      \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_Template_button_click_14_listener() {
+        return ctx.openModal("FACTURA");
+      });
+      \u0275\u0275text(15, "Emitir factura");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(16, "div", 6)(17, "article", 7)(18, "span", 8);
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(19, "svg", 9);
+      \u0275\u0275element(20, "path", 10)(21, "path", 11);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275namespaceHTML();
+      \u0275\u0275elementStart(22, "div")(23, "small");
+      \u0275\u0275text(24, "Clientes activos");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(25, "strong");
+      \u0275\u0275text(26);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(27, "em");
+      \u0275\u0275text(28, "Compradores");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(29, "article", 12)(30, "span", 8);
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(31, "svg", 9);
+      \u0275\u0275element(32, "path", 13)(33, "path", 14)(34, "path", 15);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275namespaceHTML();
+      \u0275\u0275elementStart(35, "div")(36, "small");
+      \u0275\u0275text(37, "Facturas emitidas");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(38, "strong");
+      \u0275\u0275text(39);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(40, "em");
+      \u0275\u0275text(41, "Historico");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(42, "article", 7)(43, "span", 8);
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(44, "svg", 9);
+      \u0275\u0275element(45, "path", 16)(46, "path", 17)(47, "path", 18)(48, "path", 19);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275namespaceHTML();
+      \u0275\u0275elementStart(49, "div")(50, "small");
+      \u0275\u0275text(51, "Ventas del periodo");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(52, "strong");
+      \u0275\u0275text(53);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(54, "em");
+      \u0275\u0275text(55, "Devengado por rango");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(56, "article", 20)(57, "span", 8);
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(58, "svg", 9);
+      \u0275\u0275element(59, "path", 21)(60, "path", 22)(61, "path", 23);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275namespaceHTML();
+      \u0275\u0275elementStart(62, "div")(63, "small");
+      \u0275\u0275text(64, "Cuentas por cobrar");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(65, "strong");
+      \u0275\u0275text(66);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(67, "em");
+      \u0275\u0275text(68, "Saldo pendiente por rango");
+      \u0275\u0275elementEnd()()()();
+      \u0275\u0275elementStart(69, "section", 24)(70, "label")(71, "span");
+      \u0275\u0275text(72, "Buscar");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(73, "input", 25);
+      \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_Template_input_ngModelChange_73_listener($event) {
+        return ctx.search.set($event);
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(74, "label")(75, "span");
+      \u0275\u0275text(76, "Estado");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(77, "select", 26);
+      \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_Template_select_ngModelChange_77_listener($event) {
+        return ctx.estadoFilter.set($event);
+      });
+      \u0275\u0275elementStart(78, "option", 27);
+      \u0275\u0275text(79, "Todos");
+      \u0275\u0275elementEnd();
+      \u0275\u0275template(80, FinanzasFacturacionPageComponent_option_80_Template, 2, 2, "option", 28);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(81, "label")(82, "span");
+      \u0275\u0275text(83, "Desde");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(84, "input", 29);
+      \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_Template_input_ngModelChange_84_listener($event) {
+        return ctx.fechaDesde.set($event);
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(85, "label")(86, "span");
+      \u0275\u0275text(87, "Hasta");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(88, "input", 29);
+      \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_Template_input_ngModelChange_88_listener($event) {
+        return ctx.fechaHasta.set($event);
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(89, "div", 30)(90, "button", 31);
+      \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_Template_button_click_90_listener() {
+        return ctx.applyFilters();
+      });
+      \u0275\u0275text(91, "Aplicar filtros");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275template(92, FinanzasFacturacionPageComponent_p_92_Template, 2, 1, "p", 32);
+      \u0275\u0275elementStart(93, "article", 33)(94, "div", 34)(95, "div", 35)(96, "button", 36);
+      \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_Template_button_click_96_listener() {
+        return ctx.tab.set("FACTURAS");
+      });
+      \u0275\u0275text(97, "Facturas");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(98, "button", 36);
+      \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_Template_button_click_98_listener() {
+        return ctx.tab.set("CLIENTES");
+      });
+      \u0275\u0275text(99, "Clientes");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(100, "button", 36);
+      \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_Template_button_click_100_listener() {
+        return ctx.tab.set("COBROS");
+      });
+      \u0275\u0275text(101, "Cobros");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(102, "button", 36);
+      \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_Template_button_click_102_listener() {
+        return ctx.tab.set("NOTAS");
+      });
+      \u0275\u0275text(103, "Notas de credito");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(104, "div", 37)(105, "label", 38)(106, "span");
+      \u0275\u0275text(107, "Mostrar");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(108, "select", 26);
+      \u0275\u0275listener("ngModelChange", function FinanzasFacturacionPageComponent_Template_select_ngModelChange_108_listener($event) {
+        return ctx.setSize(ctx.tab(), $event);
+      });
+      \u0275\u0275template(109, FinanzasFacturacionPageComponent_option_109_Template, 2, 2, "option", 28);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(110, "span");
+      \u0275\u0275text(111);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(112, "button", 39);
+      \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_Template_button_click_112_listener() {
+        return ctx.changePage(ctx.tab(), -1);
+      });
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(113, "svg", 9);
+      \u0275\u0275element(114, "path", 40);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275template(115, FinanzasFacturacionPageComponent_button_115_Template, 2, 3, "button", 41);
+      \u0275\u0275namespaceHTML();
+      \u0275\u0275elementStart(116, "button", 39);
+      \u0275\u0275listener("click", function FinanzasFacturacionPageComponent_Template_button_click_116_listener() {
+        return ctx.changePage(ctx.tab(), 1);
+      });
+      \u0275\u0275namespaceSVG();
+      \u0275\u0275elementStart(117, "svg", 9);
+      \u0275\u0275element(118, "path", 42);
+      \u0275\u0275elementEnd()()()();
+      \u0275\u0275template(119, FinanzasFacturacionPageComponent_div_119_Template, 23, 4, "div", 43)(120, FinanzasFacturacionPageComponent_div_120_Template, 21, 4, "div", 43)(121, FinanzasFacturacionPageComponent_div_121_Template, 21, 4, "div", 43)(122, FinanzasFacturacionPageComponent_div_122_Template, 21, 4, "div", 43);
+      \u0275\u0275elementEnd()();
+      \u0275\u0275template(123, FinanzasFacturacionPageComponent_div_123_Template, 1, 0, "div", 44)(124, FinanzasFacturacionPageComponent_section_124_Template, 41, 13, "section", 45)(125, FinanzasFacturacionPageComponent_section_125_Template, 27, 19, "section", 46)(126, FinanzasFacturacionPageComponent_section_126_Template, 27, 15, "section", 45)(127, FinanzasFacturacionPageComponent_section_127_Template, 22, 13, "section", 45);
+    }
+    if (rf & 2) {
+      let tmp_0_0;
+      let tmp_1_0;
+      let tmp_2_0;
+      let tmp_3_0;
+      let tmp_16_0;
+      let tmp_17_0;
+      let tmp_19_0;
+      \u0275\u0275advance(26);
+      \u0275\u0275textInterpolate(((tmp_0_0 = ctx.dashboard()) == null ? null : tmp_0_0.clientesActivos) || 0);
+      \u0275\u0275advance(13);
+      \u0275\u0275textInterpolate(((tmp_1_0 = ctx.dashboard()) == null ? null : tmp_1_0.facturasEmitidas) || 0);
+      \u0275\u0275advance(14);
+      \u0275\u0275textInterpolate(ctx.money((tmp_2_0 = ctx.dashboard()) == null ? null : tmp_2_0.ventasMes));
+      \u0275\u0275advance(13);
+      \u0275\u0275textInterpolate(ctx.money((tmp_3_0 = ctx.dashboard()) == null ? null : tmp_3_0.cuentasPorCobrar));
+      \u0275\u0275advance(7);
+      \u0275\u0275property("ngModel", ctx.search());
+      \u0275\u0275advance(4);
+      \u0275\u0275property("ngModel", ctx.estadoFilter());
+      \u0275\u0275advance(3);
+      \u0275\u0275property("ngForOf", ctx.estadoOptions);
+      \u0275\u0275advance(4);
+      \u0275\u0275property("ngModel", ctx.fechaDesde());
+      \u0275\u0275advance(4);
+      \u0275\u0275property("ngModel", ctx.fechaHasta());
+      \u0275\u0275advance(4);
+      \u0275\u0275property("ngIf", ctx.error());
+      \u0275\u0275advance(4);
+      \u0275\u0275classProp("active", ctx.tab() === "FACTURAS");
+      \u0275\u0275advance(2);
+      \u0275\u0275classProp("active", ctx.tab() === "CLIENTES");
+      \u0275\u0275advance(2);
+      \u0275\u0275classProp("active", ctx.tab() === "COBROS");
+      \u0275\u0275advance(2);
+      \u0275\u0275classProp("active", ctx.tab() === "NOTAS");
+      \u0275\u0275advance(6);
+      \u0275\u0275property("ngModel", ctx.sizeFor(ctx.tab()));
+      \u0275\u0275advance();
+      \u0275\u0275property("ngForOf", ctx.pageSizeOptions);
+      \u0275\u0275advance(2);
+      \u0275\u0275textInterpolate1("", ((tmp_16_0 = ctx.pageFor(ctx.tab())) == null ? null : tmp_16_0.totalElements) || 0, " registros");
+      \u0275\u0275advance();
+      \u0275\u0275property("disabled", (((tmp_17_0 = ctx.pageFor(ctx.tab())) == null ? null : tmp_17_0.number) || 0) === 0);
+      \u0275\u0275advance(3);
+      \u0275\u0275property("ngForOf", ctx.pageNumbers(ctx.pageFor(ctx.tab())));
+      \u0275\u0275advance();
+      \u0275\u0275property("disabled", (((tmp_19_0 = ctx.pageFor(ctx.tab())) == null ? null : tmp_19_0.number) || 0) + 1 >= (((tmp_19_0 = ctx.pageFor(ctx.tab())) == null ? null : tmp_19_0.totalPages) || 1));
+      \u0275\u0275advance(3);
+      \u0275\u0275property("ngIf", ctx.tab() === "FACTURAS");
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.tab() === "CLIENTES");
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.tab() === "COBROS");
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.tab() === "NOTAS");
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.modal());
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.modal() === "CLIENTE");
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.modal() === "FACTURA");
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.modal() === "COBRO");
+      \u0275\u0275advance();
+      \u0275\u0275property("ngIf", ctx.modal() === "NOTA");
+    }
+  }, dependencies: [CommonModule, NgForOf, NgIf, FormsModule, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, SelectControlValueAccessor, NgControlStatus, NgModel, RemoteSearchSelectComponent], styles: ['\n[_nghost-%COMP%] {\n  display: block;\n  color: #fff;\n}\n.insumos-page[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 24px;\n  padding-bottom: 36px;\n}\n.page-hero[_ngcontent-%COMP%] {\n  align-items: flex-start;\n  display: flex;\n  justify-content: space-between;\n  gap: 24px;\n}\n.eyebrow[_ngcontent-%COMP%] {\n  color: #9fe870;\n  font-size: 0.78rem;\n  font-weight: 800;\n  letter-spacing: 0.14em;\n  margin: 0 0 10px;\n  text-transform: uppercase;\n}\n.page-hero[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  font-size: clamp(2.4rem, 5vw, 4.2rem);\n  letter-spacing: -0.06em;\n  line-height: 0.95;\n  margin: 0;\n}\n.page-hero[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n  font-size: 1.08rem;\n  line-height: 1.6;\n  margin: 14px 0 0;\n  max-width: 760px;\n}\n.hero-actions[_ngcontent-%COMP%] {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 12px;\n  justify-content: flex-end;\n}\nbutton[_ngcontent-%COMP%] {\n  border: 0;\n  cursor: pointer;\n  font: inherit;\n}\n.btn-primary[_ngcontent-%COMP%], \n.btn-secondary[_ngcontent-%COMP%] {\n  align-items: center;\n  border-radius: 16px;\n  display: inline-flex;\n  font-weight: 700;\n  min-height: 52px;\n  padding: 0 20px;\n}\n.btn-primary[_ngcontent-%COMP%] {\n  background: #4f8a05;\n  color: #fff;\n  box-shadow: 0 18px 42px rgba(79, 138, 5, 0.24);\n}\n.btn-secondary[_ngcontent-%COMP%] {\n  background: rgba(255, 255, 255, 0.07);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  color: #fff;\n}\n.compact[_ngcontent-%COMP%] {\n  border-radius: 14px;\n  font-size: 0.92rem;\n  min-height: 42px;\n  padding: 0 14px;\n}\n.kpi-grid[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 16px;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n}\n.kpi-card[_ngcontent-%COMP%], \n.filters-card[_ngcontent-%COMP%], \n.panel[_ngcontent-%COMP%], \n.modal[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      145deg,\n      rgba(16, 31, 59, 0.92),\n      rgba(8, 18, 37, 0.96));\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 24px;\n  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.kpi-card[_ngcontent-%COMP%] {\n  align-items: center;\n  display: flex;\n  gap: 16px;\n  min-height: 112px;\n  padding: 22px;\n}\n.kpi-icon[_ngcontent-%COMP%] {\n  align-items: center;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 18px;\n  color: #9fe870;\n  display: grid;\n  height: 58px;\n  place-items: center;\n  width: 58px;\n}\n.kpi-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%], \n.nav-icon[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  fill: none;\n  height: 24px;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 2;\n  width: 24px;\n}\n.kpi-card[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n  display: block;\n  font-size: 0.88rem;\n}\n.kpi-card[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  display: block;\n  font-size: 2rem;\n  letter-spacing: -0.04em;\n  margin-top: 2px;\n}\n.kpi-card[_ngcontent-%COMP%]   em[_ngcontent-%COMP%] {\n  color: #9fe870;\n  display: block;\n  font-style: normal;\n  margin-top: 4px;\n}\n.tone-orange[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%], \n.tone-orange[_ngcontent-%COMP%]   em[_ngcontent-%COMP%] {\n  color: #ffb84d;\n}\n.tone-red[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%], \n.tone-red[_ngcontent-%COMP%]   em[_ngcontent-%COMP%] {\n  color: #ff6b6b;\n}\n.tone-blue[_ngcontent-%COMP%]   .kpi-icon[_ngcontent-%COMP%], \n.tone-blue[_ngcontent-%COMP%]   em[_ngcontent-%COMP%] {\n  color: #6ea8ff;\n}\n.filters-card[_ngcontent-%COMP%] {\n  align-items: end;\n  display: grid;\n  gap: 14px;\n  grid-template-columns: 1.8fr 1fr 1fr auto;\n  padding: 22px;\n}\nlabel[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n  display: grid;\n  font-size: 0.9rem;\n  gap: 8px;\n}\ninput[_ngcontent-%COMP%], \nselect[_ngcontent-%COMP%], \ntextarea[_ngcontent-%COMP%] {\n  background: #081225;\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 16px;\n  color: #fff;\n  min-height: 48px;\n  outline: none;\n  padding: 0 14px;\n}\ntextarea[_ngcontent-%COMP%] {\n  min-height: 96px;\n  padding-top: 14px;\n  resize: vertical;\n}\n.content-grid[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 18px;\n  grid-template-columns: minmax(0, 1fr);\n}\n.panel[_ngcontent-%COMP%] {\n  min-width: 0;\n  overflow: hidden;\n}\n.panel-head[_ngcontent-%COMP%] {\n  align-items: center;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n  display: flex;\n  justify-content: space-between;\n  padding: 18px 22px;\n}\n.panel-head[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  font-size: 1rem;\n  margin: 0;\n}\n.panel-head[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n  margin: 4px 0 0;\n}\n.panel-actions[_ngcontent-%COMP%] {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 10px;\n  justify-content: flex-start;\n}\n.tabbed-head[_ngcontent-%COMP%] {\n  align-items: center;\n  gap: 18px;\n  justify-content: space-between;\n  min-height: 68px;\n  padding: 0 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(8, 18, 37, .92),\n      rgba(8, 18, 37, .64));\n  border-bottom-color: rgba(110, 168, 255, .12);\n}\n.table-tabs[_ngcontent-%COMP%] {\n  display: inline-flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 18px;\n  align-self: stretch;\n}\n.table-tabs[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  background: transparent;\n  border: 0;\n  border-radius: 0;\n  color: #97a8c2;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 14px;\n  font-weight: 500;\n  gap: 9px;\n  min-height: 68px;\n  padding: 0 8px;\n  position: relative;\n  box-shadow: none;\n}\n.table-tabs[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]::after {\n  background: transparent;\n  bottom: 0;\n  content: "";\n  height: 1px;\n  left: 0;\n  position: absolute;\n  right: 0;\n}\n.table-tabs[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:hover {\n  color: #dbe8fb;\n  text-shadow: 0 0 18px rgba(110, 168, 255, .18);\n}\n.table-tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(159, 232, 112, .08),\n      rgba(159, 232, 112, .02));\n  box-shadow: 0 12px 34px rgba(159, 232, 112, .06);\n  color: #9fe870;\n}\n.table-tabs[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%]::after {\n  background: #9fe870;\n  box-shadow: 0 0 22px rgba(159, 232, 112, .58);\n}\n.table-pager[_ngcontent-%COMP%] {\n  align-items: center;\n  color: #8ea0bb;\n  display: flex;\n  flex-wrap: wrap;\n  font-size: 12px;\n  font-weight: 800;\n  gap: 8px;\n  justify-content: flex-end;\n  white-space: nowrap;\n}\n.table-pager[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  align-items: center;\n  background: rgba(7, 15, 31, 0.42);\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #8ea0bb;\n  display: inline-flex;\n  font-size: 12px;\n  font-weight: 800;\n  height: 38px;\n  justify-content: center;\n  min-width: 38px;\n  padding: 0;\n}\n.table-pager[_ngcontent-%COMP%]   button.active[_ngcontent-%COMP%] {\n  background: rgba(159, 232, 112, 0.1);\n  border-color: rgba(159, 232, 112, 0.34);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.table-pager[_ngcontent-%COMP%]   button[_ngcontent-%COMP%]:disabled {\n  cursor: not-allowed;\n  opacity: 0.42;\n}\n.table-pager[_ngcontent-%COMP%]   svg[_ngcontent-%COMP%] {\n  fill: none;\n  height: 18px;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n  width: 18px;\n}\n.page-size-select[_ngcontent-%COMP%] {\n  align-items: center;\n  display: inline-flex;\n  gap: 8px;\n}\n.page-size-select[_ngcontent-%COMP%]   span[_ngcontent-%COMP%] {\n  color: #7f91ac;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n}\n.page-size-select[_ngcontent-%COMP%]   select[_ngcontent-%COMP%] {\n  background: rgba(7, 15, 31, 0.42);\n  border-color: rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #dbe7f6;\n  font-size: 12px;\n  font-weight: 800;\n  min-height: 38px;\n  min-width: 70px;\n  padding: 0 10px;\n}\n.table-wrap[_ngcontent-%COMP%] {\n  background: rgba(7, 15, 31, 0.34);\n  border: 1px solid rgba(148, 163, 184, 0.1);\n  border-radius: 16px;\n  margin: 0 18px 18px;\n  overflow: auto;\n}\ntable[_ngcontent-%COMP%] {\n  border-collapse: separate;\n  border-spacing: 0;\n  min-width: 980px;\n  width: 100%;\n}\n.small[_ngcontent-%COMP%]   table[_ngcontent-%COMP%] {\n  min-width: 620px;\n}\nth[_ngcontent-%COMP%], \ntd[_ngcontent-%COMP%] {\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  color: #b9c7da;\n  font-size: 12px;\n  padding: 13px 10px;\n  text-align: left;\n  vertical-align: middle;\n}\nth[_ngcontent-%COMP%] {\n  border-bottom-color: rgba(148, 163, 184, 0.1);\n  color: #7f91ac;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n}\ntbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%] {\n  transition: background 0.16s ease, box-shadow 0.16s ease;\n}\ntbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:hover {\n  background: rgba(159, 232, 112, 0.055);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, 0.78);\n}\ntbody[_ngcontent-%COMP%]   tr[_ngcontent-%COMP%]:last-child   td[_ngcontent-%COMP%] {\n  border-bottom: 0;\n}\ntd[_ngcontent-%COMP%]   strong[_ngcontent-%COMP%] {\n  color: #f8fbff;\n}\ntd[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n  display: block;\n  margin-top: 4px;\n}\n.pill[_ngcontent-%COMP%], \n.status[_ngcontent-%COMP%] {\n  border-radius: 999px;\n  display: inline-flex;\n  font-size: 0.78rem;\n  font-weight: 700;\n  padding: 6px 10px;\n}\n.pill[_ngcontent-%COMP%] {\n  background: rgba(110, 168, 255, 0.11);\n  color: #6ea8ff;\n}\n.status.ok[_ngcontent-%COMP%] {\n  background: rgba(159, 232, 112, 0.1);\n  color: #9fe870;\n}\n.status.warning[_ngcontent-%COMP%] {\n  background: rgba(255, 184, 77, 0.12);\n  color: #ffb84d;\n}\n.status.danger[_ngcontent-%COMP%] {\n  background: rgba(255, 107, 107, 0.12);\n  color: #ff6b6b;\n}\n.actions-cell[_ngcontent-%COMP%] {\n  white-space: nowrap;\n}\n.actions-cell[_ngcontent-%COMP%]   button[_ngcontent-%COMP%], \n.pager[_ngcontent-%COMP%]   button[_ngcontent-%COMP%] {\n  background: rgba(255, 255, 255, 0.06);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 12px;\n  color: #fff;\n  margin-left: 6px;\n  min-height: 36px;\n  padding: 0 12px;\n}\n.actions-cell[_ngcontent-%COMP%]   button.danger-action[_ngcontent-%COMP%] {\n  background: rgba(255, 107, 107, 0.1);\n  border-color: rgba(255, 107, 107, 0.24);\n  color: #ff8f8f;\n}\n.pager[_ngcontent-%COMP%] {\n  align-items: center;\n  color: #a6b0cf;\n  display: flex;\n  justify-content: space-between;\n  padding: 16px 22px;\n}\n.mini-list[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 10px;\n  padding: 18px;\n}\n.mini-row[_ngcontent-%COMP%] {\n  align-items: center;\n  background: rgba(8, 18, 37, 0.68);\n  border: 1px solid rgba(255, 255, 255, 0.06);\n  border-radius: 16px;\n  display: flex;\n  gap: 12px;\n  padding: 14px;\n}\n.mini-row[_ngcontent-%COMP%]   small[_ngcontent-%COMP%], \n.empty-box[_ngcontent-%COMP%], \n.empty-cell[_ngcontent-%COMP%] {\n  color: #a6b0cf;\n}\n.dot[_ngcontent-%COMP%] {\n  border-radius: 999px;\n  height: 10px;\n  width: 10px;\n}\n.dot.red[_ngcontent-%COMP%] {\n  background: #ff6b6b;\n  box-shadow: 0 0 16px rgba(255, 107, 107, 0.55);\n}\n.dot.orange[_ngcontent-%COMP%] {\n  background: #ffb84d;\n  box-shadow: 0 0 16px rgba(255, 184, 77, 0.55);\n}\n.empty-box[_ngcontent-%COMP%], \n.empty-cell[_ngcontent-%COMP%] {\n  padding: 18px;\n}\n.error-box[_ngcontent-%COMP%] {\n  background: rgba(255, 107, 107, 0.12);\n  border: 1px solid rgba(255, 107, 107, 0.22);\n  border-radius: 16px;\n  color: #ffb3b3;\n  margin: 0;\n  padding: 14px 18px;\n}\n.modal-backdrop[_ngcontent-%COMP%] {\n  background: rgba(0, 0, 0, 0.55);\n  inset: 0;\n  position: fixed;\n  z-index: 60;\n}\n.modal[_ngcontent-%COMP%] {\n  left: 50%;\n  max-height: 88vh;\n  max-width: 880px;\n  overflow-y: auto;\n  padding: 26px;\n  position: fixed;\n  top: 50%;\n  transform: translate(-50%, -50%);\n  width: min(92vw, 880px);\n  z-index: 70;\n}\n.modal[_ngcontent-%COMP%]   h3[_ngcontent-%COMP%] {\n  font-size: 1.5rem;\n  margin: 0 0 20px;\n}\n.modal-close[_ngcontent-%COMP%] {\n  align-items: center;\n  background: rgba(255, 255, 255, 0.08);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  border-radius: 999px;\n  color: #fff;\n  display: grid;\n  font-size: 1.2rem;\n  height: 34px;\n  place-items: center;\n  position: absolute;\n  right: 18px;\n  top: 18px;\n  width: 34px;\n}\n.form-grid[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 14px;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n.wide[_ngcontent-%COMP%] {\n  margin-top: 14px;\n}\n.modal-submit[_ngcontent-%COMP%] {\n  justify-content: center;\n  margin-top: 18px;\n  width: 100%;\n}\n@media (max-width: 1280px) {\n  .kpi-grid[_ngcontent-%COMP%] {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n}\n@media (max-width: 780px) {\n  .page-hero[_ngcontent-%COMP%], \n   .hero-actions[_ngcontent-%COMP%], \n   .panel-actions[_ngcontent-%COMP%], \n   .tabbed-head[_ngcontent-%COMP%], \n   .pager[_ngcontent-%COMP%] {\n    align-items: stretch;\n    flex-direction: column;\n  }\n  .table-pager[_ngcontent-%COMP%] {\n    justify-content: flex-start;\n    white-space: normal;\n  }\n  .kpi-grid[_ngcontent-%COMP%], \n   .filters-card[_ngcontent-%COMP%], \n   .content-grid.alerts-row[_ngcontent-%COMP%], \n   .form-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .table-tabs[_ngcontent-%COMP%] {\n    display: grid;\n    width: 100%;\n  }\n}\n.finanzas-page[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 24px;\n  padding-bottom: 36px;\n}\n.finanzas-page[_ngcontent-%COMP%]   .filters-card[_ngcontent-%COMP%] {\n  grid-template-columns: minmax(260px, 1.6fr) minmax(160px, .7fr) minmax(150px, .55fr) minmax(150px, .55fr) auto;\n}\n.filter-actions[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: flex-end;\n  align-items: end;\n}\n.filter-submit[_ngcontent-%COMP%] {\n  min-height: 42px;\n  padding: 0 14px;\n  border-radius: 14px;\n  white-space: nowrap;\n}\n.items-box[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 12px;\n  margin-top: 18px;\n}\n.item-row[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 10px;\n  grid-template-columns: 1.2fr 1.5fr .7fr .6fr .8fr auto;\n}\n.item-row[_ngcontent-%COMP%]   button.danger-action[_ngcontent-%COMP%], \n.danger-action[_ngcontent-%COMP%] {\n  background: rgba(255, 107, 107, .1);\n  border: 1px solid rgba(255, 107, 107, .24);\n  border-radius: 12px;\n  color: #ff8f8f;\n  min-height: 40px;\n  padding: 0 12px;\n}\n.wide-modal[_ngcontent-%COMP%] {\n  max-width: 1120px;\n  width: min(94vw, 1120px);\n}\n@media (max-width: 980px) {\n  .item-row[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n}\n/*# sourceMappingURL=finanzas-facturacion-page.component.css.map */'] });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(FinanzasFacturacionPageComponent, [{
+    type: Component,
+    args: [{ selector: "app-finanzas-facturacion-page", standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], template: `<section class="finanzas-page">
+  <header class="page-hero">
+    <div><p class="eyebrow">Campo App - Finanzas</p><h1>Facturacion y ventas</h1><p>Emision de comprobantes, cobros, deuda de clientes y trazabilidad fiscal.</p></div>
+    <div class="hero-actions"><button class="btn-secondary" (click)="openModal('CLIENTE')">Nuevo cliente</button><button class="btn-secondary" (click)="openModal('COBRO')">Registrar cobro</button><button class="btn-primary" (click)="openModal('FACTURA')">Emitir factura</button></div>
+  </header>
+  <div class="kpi-grid">
+    <article class="kpi-card"><span class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M7 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></span><div><small>Clientes activos</small><strong>{{ dashboard()?.clientesActivos || 0 }}</strong><em>Compradores</em></div></article>
+    <article class="kpi-card tone-blue"><span class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z"/><path d="M10 8h4"/><path d="M10 12h4"/></svg></span><div><small>Facturas emitidas</small><strong>{{ dashboard()?.facturasEmitidas || 0 }}</strong><em>Historico</em></div></article>
+    <article class="kpi-card"><span class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-4"/></svg></span><div><small>Ventas del periodo</small><strong>{{ money(dashboard()?.ventasMes) }}</strong><em>Devengado por rango</em></div></article>
+    <article class="kpi-card tone-orange"><span class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M12 8v5"/><path d="M12 17h.01"/><path d="M10 3h4l8 18H2L10 3Z"/></svg></span><div><small>Cuentas por cobrar</small><strong>{{ money(dashboard()?.cuentasPorCobrar) }}</strong><em>Saldo pendiente por rango</em></div></article>
+  </div>
+  <section class="filters-card"><label><span>Buscar</span><input placeholder="Cliente, CUIT o comprobante" [ngModel]="search()" (ngModelChange)="search.set($event)" /></label><label><span>Estado</span><select [ngModel]="estadoFilter()" (ngModelChange)="estadoFilter.set($event)"><option value="">Todos</option><option *ngFor="let estado of estadoOptions" [value]="estado">{{ estado }}</option></select></label><label><span>Desde</span><input type="date" [ngModel]="fechaDesde()" (ngModelChange)="fechaDesde.set($event)" /></label><label><span>Hasta</span><input type="date" [ngModel]="fechaHasta()" (ngModelChange)="fechaHasta.set($event)" /></label><div class="filter-actions"><button class="btn-primary filter-submit" (click)="applyFilters()">Aplicar filtros</button></div></section>
+  <p class="error-box" *ngIf="error()">{{ error() }}</p>
+  <article class="panel">
+    <div class="panel-head tabbed-head"><div class="table-tabs"><button [class.active]="tab()==='FACTURAS'" (click)="tab.set('FACTURAS')">Facturas</button><button [class.active]="tab()==='CLIENTES'" (click)="tab.set('CLIENTES')">Clientes</button><button [class.active]="tab()==='COBROS'" (click)="tab.set('COBROS')">Cobros</button><button [class.active]="tab()==='NOTAS'" (click)="tab.set('NOTAS')">Notas de credito</button></div><div class="table-pager"><label class="page-size-select"><span>Mostrar</span><select [ngModel]="sizeFor(tab())" (ngModelChange)="setSize(tab(), $event)"><option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option></select></label><span>{{ pageFor(tab())?.totalElements || 0 }} registros</span><button (click)="changePage(tab(), -1)" [disabled]="(pageFor(tab())?.number || 0)===0"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button><button *ngFor="let page of pageNumbers(pageFor(tab()))" [class.active]="page===((pageFor(tab())?.number || 0)+1)" (click)="setPage(tab(), page)">{{ page }}</button><button (click)="changePage(tab(), 1)" [disabled]="((pageFor(tab())?.number || 0)+1)>=(pageFor(tab())?.totalPages || 1)"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button></div></div>
+    <div class="table-wrap" *ngIf="tab()==='FACTURAS'"><table><thead><tr><th>Comprobante</th><th>Cliente</th><th>Fecha</th><th>Vence</th><th>Estado</th><th>Total</th><th>Saldo</th><th>CAE</th></tr></thead><tbody><tr *ngFor="let f of facturasPage()?.content || []"><td><strong>{{ f.puntoVenta }}-{{ f.numeroComprobante }}</strong><small>{{ f.tipoComprobante }}</small></td><td>{{ f.clienteRazonSocial }}<small>{{ f.clienteCuit }}</small></td><td>{{ date(f.fechaEmision) }}</td><td>{{ date(f.fechaVencimiento) }}</td><td><span class="status" [class.ok]="f.estado==='COBRADA'" [class.warning]="f.estado==='PARCIAL' || f.estado==='EMITIDA'" [class.danger]="f.estado==='VENCIDA'">{{ f.estado }}</span></td><td>{{ money(f.total) }}</td><td>{{ money(f.saldoPendiente) }}</td><td>{{ f.cae || 'Pendiente' }}</td></tr><tr *ngIf="!(facturasPage()?.content || []).length"><td colspan="8" class="empty-cell">Sin facturas.</td></tr></tbody></table></div>
+    <div class="table-wrap" *ngIf="tab()==='CLIENTES'"><table><thead><tr><th>Cliente</th><th>CUIT</th><th>Condicion</th><th>Email</th><th>Telefono</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr *ngFor="let c of clientesPage()?.content || []"><td><strong>{{ c.razonSocial }}</strong><small>{{ c.direccion || 'Sin direccion' }}</small></td><td>{{ c.cuit }}</td><td><span class="pill">{{ c.condicionFiscal }}</span></td><td>{{ c.email || 'Sin email' }}</td><td>{{ c.telefono || 'Sin telefono' }}</td><td><span class="status ok" *ngIf="c.activo">Activo</span><span class="status danger" *ngIf="!c.activo">Inactivo</span></td><td class="actions-cell"><button type="button" (click)="openEditCliente(c)">Editar</button></td></tr><tr *ngIf="!(clientesPage()?.content || []).length"><td colspan="7" class="empty-cell">Sin clientes.</td></tr></tbody></table></div>
+    <div class="table-wrap" *ngIf="tab()==='COBROS'"><table><thead><tr><th>Fecha</th><th>Factura</th><th>Cliente</th><th>Metodo</th><th>Responsable</th><th>Importe</th><th>Referencia</th></tr></thead><tbody><tr *ngFor="let c of cobrosPage()?.content || []"><td>{{ date(c.fecha) }}</td><td>{{ c.comprobante }}</td><td>{{ c.clienteRazonSocial }}</td><td><span class="pill">{{ c.metodoPago }}</span></td><td>{{ c.operarioNombre || 'Sin responsable' }}</td><td>{{ money(c.importe) }}</td><td>{{ c.referencia || 'Sin referencia' }}</td></tr><tr *ngIf="!(cobrosPage()?.content || []).length"><td colspan="7" class="empty-cell">Sin cobros.</td></tr></tbody></table></div>
+    <div class="table-wrap" *ngIf="tab()==='NOTAS'"><table><thead><tr><th>Fecha</th><th>Factura</th><th>Cliente</th><th>Responsable</th><th>Importe</th><th>Motivo</th><th>CAE</th></tr></thead><tbody><tr *ngFor="let n of notasPage()?.content || []"><td>{{ date(n.fecha) }}</td><td>{{ n.comprobante }}</td><td>{{ n.clienteRazonSocial }}</td><td>{{ n.operarioNombre || 'Sin responsable' }}</td><td>{{ money(n.importe) }}</td><td>{{ n.motivo }}</td><td>{{ n.cae }}</td></tr><tr *ngIf="!(notasPage()?.content || []).length"><td colspan="7" class="empty-cell">Sin notas de credito.</td></tr></tbody></table></div>
+  </article>
+</section>
+<div class="modal-backdrop" *ngIf="modal()" (click)="closeModal()"></div>
+<section class="modal" *ngIf="modal()==='CLIENTE'"><button class="modal-close" (click)="closeModal()">x</button><h3>{{ editingClienteId() ? 'Editar cliente' : 'Nuevo cliente' }}</h3><div class="form-grid"><label><span>Razon social</span><input [ngModel]="clienteForm().razonSocial" (ngModelChange)="clienteForm.update(f=>({...f, razonSocial:$event}))"/></label><label><span>CUIT</span><input [ngModel]="clienteForm().cuit" (ngModelChange)="clienteForm.update(f=>({...f, cuit:$event}))"/></label><label><span>Condicion fiscal</span><select [ngModel]="clienteForm().condicionFiscal" (ngModelChange)="clienteForm.update(f=>({...f, condicionFiscal:$event}))"><option *ngFor="let t of tipoClienteOptions" [value]="t">{{ t }}</option></select></label><label><span>Email</span><input [ngModel]="clienteForm().email" (ngModelChange)="clienteForm.update(f=>({...f, email:$event}))"/></label><label><span>Telefono</span><input [ngModel]="clienteForm().telefono" (ngModelChange)="clienteForm.update(f=>({...f, telefono:$event}))"/></label><label><span>Direccion</span><input [ngModel]="clienteForm().direccion" (ngModelChange)="clienteForm.update(f=>({...f, direccion:$event}))"/></label><label><span>Estado</span><select [ngModel]="clienteForm().activo" (ngModelChange)="clienteForm.update(f=>({...f, activo:$event === 'true' || $event === true}))"><option [value]="true">Activo</option><option [value]="false">Inactivo</option></select></label></div><button class="btn-primary modal-submit" [disabled]="saving()" (click)="submitCliente()">{{ editingClienteId() ? 'Guardar cambios' : 'Guardar cliente' }}</button></section>
+<section class="modal wide-modal" *ngIf="modal()==='FACTURA'"><button class="modal-close" (click)="closeModal()">x</button><h3>Emitir factura</h3><div class="form-grid"><app-remote-search-select label="Cliente" placeholder="Buscar cliente" [endpoint]="endpoints.clientes" queryParam="search" valueField="id" labelField="razonSocial" [subtitleFields]="['cuit','condicionFiscal']" [searchFields]="['razonSocial','cuit']" [value]="facturaForm().clienteId" (valueChange)="facturaForm.update(f=>({...f, clienteId:$event}))"></app-remote-search-select><app-remote-search-select label="Responsable" placeholder="Buscar operario" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero']" [value]="facturaForm().operarioId" (valueChange)="facturaForm.update(f=>({...f, operarioId:$event}))"></app-remote-search-select><label><span>Tipo</span><select [ngModel]="facturaForm().tipoComprobante" (ngModelChange)="facturaForm.update(f=>({...f, tipoComprobante:$event}))"><option *ngFor="let t of tipoComprobanteOptions" [value]="t">{{ t }}</option></select></label><label><span>Fecha</span><input type="date" [ngModel]="facturaForm().fechaEmision" (ngModelChange)="facturaForm.update(f=>({...f, fechaEmision:$event}))"/></label><label><span>Vencimiento</span><input type="date" [ngModel]="facturaForm().fechaVencimiento" (ngModelChange)="facturaForm.update(f=>({...f, fechaVencimiento:$event}))"/></label></div><div class="items-box"><button class="btn-secondary compact" (click)="addItem()">Agregar item</button><div class="item-row" *ngFor="let item of facturaForm().items; let i=index"><select [ngModel]="item.insumoId" (ngModelChange)="selectInsumo(i,$event)"><option value="">Sin insumo</option><option *ngFor="let insumo of insumos()" [value]="insumo.id">{{ insumo.nombre }}</option></select><input placeholder="Descripcion" [ngModel]="item.descripcion" (ngModelChange)="updateItem(i,{descripcion:$event})"/><input type="number" [ngModel]="item.cantidad" (ngModelChange)="updateItem(i,{cantidad:$event})"/><input [ngModel]="item.unidad" (ngModelChange)="updateItem(i,{unidad:$event})"/><input type="number" [ngModel]="item.precioUnitario" (ngModelChange)="updateItem(i,{precioUnitario:$event})"/><button class="danger-action" (click)="removeItem(i)">Quitar</button></div></div><button class="btn-primary modal-submit" [disabled]="saving()" (click)="submitFactura()">Emitir factura</button></section>
+<section class="modal" *ngIf="modal()==='COBRO'"><button class="modal-close" (click)="closeModal()">x</button><h3>Registrar cobro</h3><div class="form-grid"><app-remote-search-select label="Factura" placeholder="Buscar factura" [endpoint]="API_BASE_URL + '/finanzas/facturacion/facturas'" queryParam="search" valueField="id" labelField="clienteRazonSocial" [subtitleFields]="['numeroComprobante','saldoPendiente']" [value]="cobroForm().facturaId" (valueChange)="cobroForm.update(f=>({...f, facturaId:$event}))"></app-remote-search-select><app-remote-search-select label="Responsable" placeholder="Buscar operario" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo']" [value]="cobroForm().operarioId" (valueChange)="cobroForm.update(f=>({...f, operarioId:$event}))"></app-remote-search-select><label><span>Metodo</span><select [ngModel]="cobroForm().metodoPago" (ngModelChange)="cobroForm.update(f=>({...f, metodoPago:$event}))"><option *ngFor="let m of metodoPagoOptions" [value]="m">{{ m }}</option></select></label><label><span>Fecha</span><input type="date" [ngModel]="cobroForm().fecha" (ngModelChange)="cobroForm.update(f=>({...f, fecha:$event}))"/></label><label><span>Importe</span><input type="number" [ngModel]="cobroForm().importe" (ngModelChange)="cobroForm.update(f=>({...f, importe:$event}))"/></label><label><span>Referencia</span><input [ngModel]="cobroForm().referencia" (ngModelChange)="cobroForm.update(f=>({...f, referencia:$event}))"/></label></div><button class="btn-primary modal-submit" [disabled]="saving()" (click)="submitCobro()">Guardar cobro</button></section>
+<section class="modal" *ngIf="modal()==='NOTA'"><button class="modal-close" (click)="closeModal()">x</button><h3>Nota de credito</h3><div class="form-grid"><app-remote-search-select label="Factura" placeholder="Buscar factura" [endpoint]="API_BASE_URL + '/finanzas/facturacion/facturas'" queryParam="search" valueField="id" labelField="clienteRazonSocial" [subtitleFields]="['numeroComprobante','saldoPendiente']" [value]="notaForm().facturaId" (valueChange)="notaForm.update(f=>({...f, facturaId:$event}))"></app-remote-search-select><app-remote-search-select label="Responsable" placeholder="Buscar operario" [endpoint]="endpoints.operarios" [extraParams]="activeOperarioParams" queryParam="search" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo']" [value]="notaForm().operarioId" (valueChange)="notaForm.update(f=>({...f, operarioId:$event}))"></app-remote-search-select><label><span>Fecha</span><input type="date" [ngModel]="notaForm().fecha" (ngModelChange)="notaForm.update(f=>({...f, fecha:$event}))"/></label><label><span>Importe</span><input type="number" [ngModel]="notaForm().importe" (ngModelChange)="notaForm.update(f=>({...f, importe:$event}))"/></label><label><span>Motivo</span><input [ngModel]="notaForm().motivo" (ngModelChange)="notaForm.update(f=>({...f, motivo:$event}))"/></label></div><button class="btn-primary modal-submit" [disabled]="saving()" (click)="submitNota()">Guardar nota</button></section>\r
+`, styles: ['/* src/app/pages/finanzas-facturacion-page/finanzas-facturacion-page.component.css */\n:host {\n  display: block;\n  color: #fff;\n}\n.insumos-page {\n  display: grid;\n  gap: 24px;\n  padding-bottom: 36px;\n}\n.page-hero {\n  align-items: flex-start;\n  display: flex;\n  justify-content: space-between;\n  gap: 24px;\n}\n.eyebrow {\n  color: #9fe870;\n  font-size: 0.78rem;\n  font-weight: 800;\n  letter-spacing: 0.14em;\n  margin: 0 0 10px;\n  text-transform: uppercase;\n}\n.page-hero h1 {\n  font-size: clamp(2.4rem, 5vw, 4.2rem);\n  letter-spacing: -0.06em;\n  line-height: 0.95;\n  margin: 0;\n}\n.page-hero p {\n  color: #a6b0cf;\n  font-size: 1.08rem;\n  line-height: 1.6;\n  margin: 14px 0 0;\n  max-width: 760px;\n}\n.hero-actions {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 12px;\n  justify-content: flex-end;\n}\nbutton {\n  border: 0;\n  cursor: pointer;\n  font: inherit;\n}\n.btn-primary,\n.btn-secondary {\n  align-items: center;\n  border-radius: 16px;\n  display: inline-flex;\n  font-weight: 700;\n  min-height: 52px;\n  padding: 0 20px;\n}\n.btn-primary {\n  background: #4f8a05;\n  color: #fff;\n  box-shadow: 0 18px 42px rgba(79, 138, 5, 0.24);\n}\n.btn-secondary {\n  background: rgba(255, 255, 255, 0.07);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  color: #fff;\n}\n.compact {\n  border-radius: 14px;\n  font-size: 0.92rem;\n  min-height: 42px;\n  padding: 0 14px;\n}\n.kpi-grid {\n  display: grid;\n  gap: 16px;\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n}\n.kpi-card,\n.filters-card,\n.panel,\n.modal {\n  background:\n    linear-gradient(\n      145deg,\n      rgba(16, 31, 59, 0.92),\n      rgba(8, 18, 37, 0.96));\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 24px;\n  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n.kpi-card {\n  align-items: center;\n  display: flex;\n  gap: 16px;\n  min-height: 112px;\n  padding: 22px;\n}\n.kpi-icon {\n  align-items: center;\n  background: rgba(159, 232, 112, 0.1);\n  border: 1px solid rgba(159, 232, 112, 0.22);\n  border-radius: 18px;\n  color: #9fe870;\n  display: grid;\n  height: 58px;\n  place-items: center;\n  width: 58px;\n}\n.kpi-icon svg,\n.nav-icon svg {\n  fill: none;\n  height: 24px;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 2;\n  width: 24px;\n}\n.kpi-card small {\n  color: #a6b0cf;\n  display: block;\n  font-size: 0.88rem;\n}\n.kpi-card strong {\n  display: block;\n  font-size: 2rem;\n  letter-spacing: -0.04em;\n  margin-top: 2px;\n}\n.kpi-card em {\n  color: #9fe870;\n  display: block;\n  font-style: normal;\n  margin-top: 4px;\n}\n.tone-orange .kpi-icon,\n.tone-orange em {\n  color: #ffb84d;\n}\n.tone-red .kpi-icon,\n.tone-red em {\n  color: #ff6b6b;\n}\n.tone-blue .kpi-icon,\n.tone-blue em {\n  color: #6ea8ff;\n}\n.filters-card {\n  align-items: end;\n  display: grid;\n  gap: 14px;\n  grid-template-columns: 1.8fr 1fr 1fr auto;\n  padding: 22px;\n}\nlabel {\n  color: #a6b0cf;\n  display: grid;\n  font-size: 0.9rem;\n  gap: 8px;\n}\ninput,\nselect,\ntextarea {\n  background: #081225;\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 16px;\n  color: #fff;\n  min-height: 48px;\n  outline: none;\n  padding: 0 14px;\n}\ntextarea {\n  min-height: 96px;\n  padding-top: 14px;\n  resize: vertical;\n}\n.content-grid {\n  display: grid;\n  gap: 18px;\n  grid-template-columns: minmax(0, 1fr);\n}\n.panel {\n  min-width: 0;\n  overflow: hidden;\n}\n.panel-head {\n  align-items: center;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n  display: flex;\n  justify-content: space-between;\n  padding: 18px 22px;\n}\n.panel-head h2 {\n  font-size: 1rem;\n  margin: 0;\n}\n.panel-head p {\n  color: #a6b0cf;\n  margin: 4px 0 0;\n}\n.panel-actions {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 10px;\n  justify-content: flex-start;\n}\n.tabbed-head {\n  align-items: center;\n  gap: 18px;\n  justify-content: space-between;\n  min-height: 68px;\n  padding: 0 18px;\n  background:\n    linear-gradient(\n      180deg,\n      rgba(8, 18, 37, .92),\n      rgba(8, 18, 37, .64));\n  border-bottom-color: rgba(110, 168, 255, .12);\n}\n.table-tabs {\n  display: inline-flex;\n  align-items: center;\n  flex-wrap: wrap;\n  gap: 18px;\n  align-self: stretch;\n}\n.table-tabs button {\n  background: transparent;\n  border: 0;\n  border-radius: 0;\n  color: #97a8c2;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 14px;\n  font-weight: 500;\n  gap: 9px;\n  min-height: 68px;\n  padding: 0 8px;\n  position: relative;\n  box-shadow: none;\n}\n.table-tabs button::after {\n  background: transparent;\n  bottom: 0;\n  content: "";\n  height: 1px;\n  left: 0;\n  position: absolute;\n  right: 0;\n}\n.table-tabs button:hover {\n  color: #dbe8fb;\n  text-shadow: 0 0 18px rgba(110, 168, 255, .18);\n}\n.table-tabs button.active {\n  background:\n    linear-gradient(\n      180deg,\n      rgba(159, 232, 112, .08),\n      rgba(159, 232, 112, .02));\n  box-shadow: 0 12px 34px rgba(159, 232, 112, .06);\n  color: #9fe870;\n}\n.table-tabs button.active::after {\n  background: #9fe870;\n  box-shadow: 0 0 22px rgba(159, 232, 112, .58);\n}\n.table-pager {\n  align-items: center;\n  color: #8ea0bb;\n  display: flex;\n  flex-wrap: wrap;\n  font-size: 12px;\n  font-weight: 800;\n  gap: 8px;\n  justify-content: flex-end;\n  white-space: nowrap;\n}\n.table-pager button {\n  align-items: center;\n  background: rgba(7, 15, 31, 0.42);\n  border: 1px solid rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #8ea0bb;\n  display: inline-flex;\n  font-size: 12px;\n  font-weight: 800;\n  height: 38px;\n  justify-content: center;\n  min-width: 38px;\n  padding: 0;\n}\n.table-pager button.active {\n  background: rgba(159, 232, 112, 0.1);\n  border-color: rgba(159, 232, 112, 0.34);\n  box-shadow: 0 0 20px rgba(159, 232, 112, 0.08);\n  color: #9fe870;\n}\n.table-pager button:disabled {\n  cursor: not-allowed;\n  opacity: 0.42;\n}\n.table-pager svg {\n  fill: none;\n  height: 18px;\n  stroke: currentColor;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n  stroke-width: 1.8;\n  width: 18px;\n}\n.page-size-select {\n  align-items: center;\n  display: inline-flex;\n  gap: 8px;\n}\n.page-size-select span {\n  color: #7f91ac;\n  font-size: 11px;\n  font-weight: 800;\n  text-transform: uppercase;\n}\n.page-size-select select {\n  background: rgba(7, 15, 31, 0.42);\n  border-color: rgba(148, 163, 184, 0.12);\n  border-radius: 12px;\n  color: #dbe7f6;\n  font-size: 12px;\n  font-weight: 800;\n  min-height: 38px;\n  min-width: 70px;\n  padding: 0 10px;\n}\n.table-wrap {\n  background: rgba(7, 15, 31, 0.34);\n  border: 1px solid rgba(148, 163, 184, 0.1);\n  border-radius: 16px;\n  margin: 0 18px 18px;\n  overflow: auto;\n}\ntable {\n  border-collapse: separate;\n  border-spacing: 0;\n  min-width: 980px;\n  width: 100%;\n}\n.small table {\n  min-width: 620px;\n}\nth,\ntd {\n  border-bottom: 1px solid rgba(148, 163, 184, 0.08);\n  color: #b9c7da;\n  font-size: 12px;\n  padding: 13px 10px;\n  text-align: left;\n  vertical-align: middle;\n}\nth {\n  border-bottom-color: rgba(148, 163, 184, 0.1);\n  color: #7f91ac;\n  font-size: 10px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n}\ntbody tr {\n  transition: background 0.16s ease, box-shadow 0.16s ease;\n}\ntbody tr:hover {\n  background: rgba(159, 232, 112, 0.055);\n  box-shadow: inset 3px 0 0 rgba(159, 232, 112, 0.78);\n}\ntbody tr:last-child td {\n  border-bottom: 0;\n}\ntd strong {\n  color: #f8fbff;\n}\ntd small {\n  color: #a6b0cf;\n  display: block;\n  margin-top: 4px;\n}\n.pill,\n.status {\n  border-radius: 999px;\n  display: inline-flex;\n  font-size: 0.78rem;\n  font-weight: 700;\n  padding: 6px 10px;\n}\n.pill {\n  background: rgba(110, 168, 255, 0.11);\n  color: #6ea8ff;\n}\n.status.ok {\n  background: rgba(159, 232, 112, 0.1);\n  color: #9fe870;\n}\n.status.warning {\n  background: rgba(255, 184, 77, 0.12);\n  color: #ffb84d;\n}\n.status.danger {\n  background: rgba(255, 107, 107, 0.12);\n  color: #ff6b6b;\n}\n.actions-cell {\n  white-space: nowrap;\n}\n.actions-cell button,\n.pager button {\n  background: rgba(255, 255, 255, 0.06);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  border-radius: 12px;\n  color: #fff;\n  margin-left: 6px;\n  min-height: 36px;\n  padding: 0 12px;\n}\n.actions-cell button.danger-action {\n  background: rgba(255, 107, 107, 0.1);\n  border-color: rgba(255, 107, 107, 0.24);\n  color: #ff8f8f;\n}\n.pager {\n  align-items: center;\n  color: #a6b0cf;\n  display: flex;\n  justify-content: space-between;\n  padding: 16px 22px;\n}\n.mini-list {\n  display: grid;\n  gap: 10px;\n  padding: 18px;\n}\n.mini-row {\n  align-items: center;\n  background: rgba(8, 18, 37, 0.68);\n  border: 1px solid rgba(255, 255, 255, 0.06);\n  border-radius: 16px;\n  display: flex;\n  gap: 12px;\n  padding: 14px;\n}\n.mini-row small,\n.empty-box,\n.empty-cell {\n  color: #a6b0cf;\n}\n.dot {\n  border-radius: 999px;\n  height: 10px;\n  width: 10px;\n}\n.dot.red {\n  background: #ff6b6b;\n  box-shadow: 0 0 16px rgba(255, 107, 107, 0.55);\n}\n.dot.orange {\n  background: #ffb84d;\n  box-shadow: 0 0 16px rgba(255, 184, 77, 0.55);\n}\n.empty-box,\n.empty-cell {\n  padding: 18px;\n}\n.error-box {\n  background: rgba(255, 107, 107, 0.12);\n  border: 1px solid rgba(255, 107, 107, 0.22);\n  border-radius: 16px;\n  color: #ffb3b3;\n  margin: 0;\n  padding: 14px 18px;\n}\n.modal-backdrop {\n  background: rgba(0, 0, 0, 0.55);\n  inset: 0;\n  position: fixed;\n  z-index: 60;\n}\n.modal {\n  left: 50%;\n  max-height: 88vh;\n  max-width: 880px;\n  overflow-y: auto;\n  padding: 26px;\n  position: fixed;\n  top: 50%;\n  transform: translate(-50%, -50%);\n  width: min(92vw, 880px);\n  z-index: 70;\n}\n.modal h3 {\n  font-size: 1.5rem;\n  margin: 0 0 20px;\n}\n.modal-close {\n  align-items: center;\n  background: rgba(255, 255, 255, 0.08);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  border-radius: 999px;\n  color: #fff;\n  display: grid;\n  font-size: 1.2rem;\n  height: 34px;\n  place-items: center;\n  position: absolute;\n  right: 18px;\n  top: 18px;\n  width: 34px;\n}\n.form-grid {\n  display: grid;\n  gap: 14px;\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n.wide {\n  margin-top: 14px;\n}\n.modal-submit {\n  justify-content: center;\n  margin-top: 18px;\n  width: 100%;\n}\n@media (max-width: 1280px) {\n  .kpi-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n}\n@media (max-width: 780px) {\n  .page-hero,\n  .hero-actions,\n  .panel-actions,\n  .tabbed-head,\n  .pager {\n    align-items: stretch;\n    flex-direction: column;\n  }\n  .table-pager {\n    justify-content: flex-start;\n    white-space: normal;\n  }\n  .kpi-grid,\n  .filters-card,\n  .content-grid.alerts-row,\n  .form-grid {\n    grid-template-columns: 1fr;\n  }\n  .table-tabs {\n    display: grid;\n    width: 100%;\n  }\n}\n.finanzas-page {\n  display: grid;\n  gap: 24px;\n  padding-bottom: 36px;\n}\n.finanzas-page .filters-card {\n  grid-template-columns: minmax(260px, 1.6fr) minmax(160px, .7fr) minmax(150px, .55fr) minmax(150px, .55fr) auto;\n}\n.filter-actions {\n  display: flex;\n  justify-content: flex-end;\n  align-items: end;\n}\n.filter-submit {\n  min-height: 42px;\n  padding: 0 14px;\n  border-radius: 14px;\n  white-space: nowrap;\n}\n.items-box {\n  display: grid;\n  gap: 12px;\n  margin-top: 18px;\n}\n.item-row {\n  display: grid;\n  gap: 10px;\n  grid-template-columns: 1.2fr 1.5fr .7fr .6fr .8fr auto;\n}\n.item-row button.danger-action,\n.danger-action {\n  background: rgba(255, 107, 107, .1);\n  border: 1px solid rgba(255, 107, 107, .24);\n  border-radius: 12px;\n  color: #ff8f8f;\n  min-height: 40px;\n  padding: 0 12px;\n}\n.wide-modal {\n  max-width: 1120px;\n  width: min(94vw, 1120px);\n}\n@media (max-width: 980px) {\n  .item-row {\n    grid-template-columns: 1fr;\n  }\n}\n/*# sourceMappingURL=finanzas-facturacion-page.component.css.map */\n'] }]
+  }], null, null);
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(FinanzasFacturacionPageComponent, { className: "FinanzasFacturacionPageComponent", filePath: "src/app/pages/finanzas-facturacion-page/finanzas-facturacion-page.component.ts", lineNumber: 14 });
+})();
+
 // src/app/app.routes.ts
 var routes = [
   { path: "login", component: LoginPageComponent, canActivate: [guestGuard] },
@@ -75992,6 +77698,7 @@ var routes = [
       { path: "operarios/ordenes", component: OrdenesTrabajoPageComponent },
       { path: "operaciones/calendario", component: OperacionesCalendarioPageComponent },
       { path: "admin/roles-menu", component: AdminRolesMenuPageComponent },
+      { path: "finanzas/facturacion", component: FinanzasFacturacionPageComponent },
       { path: "clima", component: ClimaPageComponent }
     ]
   },

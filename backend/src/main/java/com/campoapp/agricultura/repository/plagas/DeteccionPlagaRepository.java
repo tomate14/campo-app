@@ -31,8 +31,8 @@ public interface DeteccionPlagaRepository extends JpaRepository<DeteccionPlaga, 
 
     @Query(value = """
             SELECT d FROM DeteccionPlaga d
-            JOIN FETCH d.lote l
-            JOIN FETCH d.catalogoPlaga c
+            JOIN d.lote l
+            JOIN d.catalogoPlaga c
             WHERE d.deletedAt IS NULL
               AND (:loteId IS NULL OR l.id = :loteId)
               AND (:estado IS NULL OR d.estado = :estado)

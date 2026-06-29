@@ -120,6 +120,11 @@ JWT_REFRESH_EXPIRATION_MS    # default 604800000 (7 dÃ­as)
 
 ## Regla Visual de Tablas y Tabs
 - Cuando se pidan tablas nuevas en frontend web, usar como referencia obligatoria el formato de `Animales registrados` en Trazabilidad: card premium, header compacto, contenedor de tabla con borde y radio 16px, `border-collapse: separate`, encabezados chicos uppercase gris azulado, filas con hover verde sutil y barra izquierda verde.
-- Cuando se pidan tabs nuevas en frontend web, usar como referencia obligatoria el formato de tabs de Sanidad: botones independientes dark glass, borde suave, texto fino gris azulado, activo en verde `#9FE870`, glow sutil y sin contenedor tipo Bootstrap.
+- Cuando se pidan tabs nuevas en frontend web, usar como referencia obligatoria el formato de tabs premium de Ciclo Agricola: barra dark glass de 68px, botones sin capsula, texto gris azulado fino, activo verde `#9FE870`, linea inferior glow y hover azul sutil. No crear variantes locales ni estilo Bootstrap/pills.
 - Cuando una tabla tenga paginacion, ubicarla arriba a la derecha del header de la tabla con el estilo de Sanidad: botones compactos dark glass, pagina activa verde `#9FE870`, bordes suaves y glow sutil.
 - Toda tabla paginada debe incluir selector de cantidad de registros por pagina en el mismo bloque de paginacion, y esa paginacion debe estar respaldada por el servicio/backend cuando corresponda.
+
+## Regla de Nuevas Opciones de Menu
+- Cada vez que se implemente una nueva pantalla/opcion de menu, debe quedar visible por defecto para `super_admin` y para los roles funcionales correspondientes.
+- La migracion debe crear la opcion en `menu_options` y asignarla en `role_menu_options`; no alcanza con agregar la ruta y el link en frontend.
+- Antes de finalizar una feature con menu nuevo, validar en base que `/menu-options/me` pueda devolver la nueva `menu_key` para el usuario admin inicial.

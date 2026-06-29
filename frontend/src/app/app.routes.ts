@@ -21,6 +21,7 @@ import { OperariosGestionPageComponent } from './pages/operarios-gestion-page/op
 import { OrdenesTrabajoPageComponent } from './pages/ordenes-trabajo-page/ordenes-trabajo-page.component';
 import { OperacionesCalendarioPageComponent } from './pages/operaciones-calendario-page/operaciones-calendario-page.component';
 import { AdminRolesMenuPageComponent } from './pages/admin-roles-menu-page/admin-roles-menu-page.component';
+import { FinanzasFacturacionPageComponent } from './pages/finanzas-facturacion-page/finanzas-facturacion-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -50,6 +51,7 @@ export const routes: Routes = [
       { path: 'operarios/ordenes', component: OrdenesTrabajoPageComponent },
       { path: 'operaciones/calendario', component: OperacionesCalendarioPageComponent },
       { path: 'admin/roles-menu', component: AdminRolesMenuPageComponent },
+      { path: 'finanzas/facturacion', component: FinanzasFacturacionPageComponent },
       { path: 'clima', component: ClimaPageComponent },
     ],
   },
