@@ -1,6 +1,7 @@
 package com.campoapp.agricultura.entity.insumos;
 
 import com.campoapp.common.entity.AuditableEntity;
+import com.campoapp.finanzas.entity.ProveedorFinanciero;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -40,6 +41,10 @@ public class InsumoAgricola extends AuditableEntity {
 
     @Column(length = 160)
     private String proveedor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "proveedor_id")
+    private ProveedorFinanciero proveedorFinanciero;
 
     @Column(length = 160)
     private String origen;

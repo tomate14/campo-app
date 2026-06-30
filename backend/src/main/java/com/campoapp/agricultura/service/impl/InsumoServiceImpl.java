@@ -10,6 +10,8 @@ import com.campoapp.agricultura.repository.insumos.StockInsumoAgricolaRepository
 import com.campoapp.agricultura.service.InsumoService;
 import com.campoapp.common.exception.BusinessException;
 import com.campoapp.common.exception.ResourceNotFoundException;
+import com.campoapp.finanzas.entity.ProveedorFinanciero;
+import com.campoapp.finanzas.repository.ProveedorFinancieroRepository;
 import com.campoapp.operarios.entity.Operario;
 import com.campoapp.operarios.repository.OperarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,7 @@ public class InsumoServiceImpl implements InsumoService {
     private final MovimientoInsumoAgricolaRepository movimientoRepository;
     private final LoteRepository loteRepository;
     private final OperarioRepository operarioRepository;
+    private final ProveedorFinancieroRepository proveedorRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -85,6 +88,7 @@ public class InsumoServiceImpl implements InsumoService {
     @Override
     public InsumoAgricolaResponse crearInsumo(InsumoAgricolaRequest request) {
         validateInsumo(request, null);
+        ProveedorFinanciero proveedor = resolveProveedor(request.proveedorId());
         InsumoAgricola insumo = InsumoAgricola.builder()
                 .codigo(request.codigo().trim())
                 .nombre(request.nombre().trim())
@@ -93,7 +97,8 @@ public class InsumoServiceImpl implements InsumoService {
                 .presentacion(request.presentacion())
                 .unidadMedida(request.unidadMedida())
                 .principioActivo(request.principioActivo())
-                .proveedor(request.proveedor())
+                .proveedor(proveedor != null ? proveedor.getRazonSocial() : request.proveedor())
+                .proveedorFinanciero(proveedor)
                 .origen(request.origen())
                 .descripcion(request.descripcion())
                 .precioUnitario(request.precioUnitario())
@@ -108,6 +113,7 @@ public class InsumoServiceImpl implements InsumoService {
     public InsumoAgricolaResponse actualizarInsumo(String id, InsumoAgricolaRequest request) {
         InsumoAgricola insumo = getInsumo(id);
         validateInsumo(request, id);
+        ProveedorFinanciero proveedor = resolveProveedor(request.proveedorId());
         insumo.setCodigo(request.codigo().trim());
         insumo.setNombre(request.nombre().trim());
         insumo.setTipo(request.tipo());
@@ -115,7 +121,8 @@ public class InsumoServiceImpl implements InsumoService {
         insumo.setPresentacion(request.presentacion());
         insumo.setUnidadMedida(request.unidadMedida());
         insumo.setPrincipioActivo(request.principioActivo());
-        insumo.setProveedor(request.proveedor());
+        insumo.setProveedor(proveedor != null ? proveedor.getRazonSocial() : request.proveedor());
+        insumo.setProveedorFinanciero(proveedor);
         insumo.setOrigen(request.origen());
         insumo.setDescripcion(request.descripcion());
         insumo.setPrecioUnitario(request.precioUnitario());
@@ -295,6 +302,14 @@ public class InsumoServiceImpl implements InsumoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Operario responsable no encontrado"));
     }
 
+    private ProveedorFinanciero resolveProveedor(String id) {
+        if (id == null || id.isBlank()) {
+            return null;
+        }
+        return proveedorRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor no encontrado"));
+    }
+
     private InsumoAgricolaResponse toInsumoResponse(InsumoAgricola insumo) {
         BigDecimal stockTotal = stockRepository.totalByInsumoId(insumo.getId());
         BigDecimal precio = insumo.getPrecioUnitario() == null ? BigDecimal.ZERO : insumo.getPrecioUnitario();
@@ -315,7 +330,8 @@ public class InsumoServiceImpl implements InsumoService {
                 insumo.getPresentacion(),
                 insumo.getUnidadMedida(),
                 insumo.getPrincipioActivo(),
-                insumo.getProveedor(),
+                insumo.getProveedorFinanciero() != null ? insumo.getProveedorFinanciero().getId() : null,
+                insumo.getProveedorFinanciero() != null ? insumo.getProveedorFinanciero().getRazonSocial() : insumo.getProveedor(),
                 insumo.getOrigen(),
                 insumo.getDescripcion(),
                 insumo.getPrecioUnitario(),

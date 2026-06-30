@@ -9,7 +9,7 @@ Control centralizado de todos los stocks (materiales, repuestos, herramientas) c
 - Devoluciones y ajustes
 - Inventario fÃ­sico vs. sistema
 - AuditorÃ­a de discrepancias
-
+9
 ## Tareas
 1. **Almacenes**: Registro de depÃ³sitos y ubicaciones
 2. **Entrada de Stock**: RecepciÃ³n de compras, devoluciones de clientes

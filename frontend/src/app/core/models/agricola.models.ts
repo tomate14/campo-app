@@ -206,6 +206,7 @@ export interface InsumoAgricola {
   presentacion?: string
   unidadMedida: UnidadMedidaInsumo
   principioActivo?: string
+  proveedorId?: string
   proveedor?: string
   origen?: string
   descripcion?: string
@@ -230,6 +231,7 @@ export interface InsumoAgricolaRequest {
   presentacion?: string
   unidadMedida: UnidadMedidaInsumo
   principioActivo?: string
+  proveedorId?: string
   proveedor?: string
   origen?: string
   descripcion?: string

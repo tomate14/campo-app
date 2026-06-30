@@ -625,3 +625,10 @@ td small {
 .item-row button.danger-action, .danger-action { background: rgba(255,107,107,.1); border: 1px solid rgba(255,107,107,.24); border-radius: 12px; color: #ff8f8f; min-height: 40px; padding: 0 12px; }
 .wide-modal { max-width: 1120px; width: min(94vw, 1120px); }
 @media (max-width: 980px) { .item-row { grid-template-columns: 1fr; } }
+.detail-summary { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 16px; }
+.detail-summary div { background: rgba(8,18,37,.72); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 14px; }
+.detail-summary small { color: #a6b0cf; display: block; margin-bottom: 6px; }
+.detail-summary strong { color: #fff; }
+.detail-table { margin: 0; }
+.detail-note { color: #a6b0cf; margin: 14px 0 0; }
+@media (max-width: 780px) { .detail-summary { grid-template-columns: 1fr; } }
