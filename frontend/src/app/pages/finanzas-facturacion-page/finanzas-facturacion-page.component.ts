@@ -8,7 +8,7 @@ import type { InsumoAgricola, PageResponse } from '../../core/models/agricola.mo
 import { FinanzasService, type ClienteFinanciero, type ClienteRequest, type CobroRequest, type CobroVenta, type EstadoFactura, type FacturaRequest, type FacturaVenta, type FacturacionDashboard, type MetodoPago, type NotaCreditoRequest, type NotaCreditoVenta, type TipoClienteFiscal, type TipoComprobante } from '../../core/services/finanzas.service'
 
 type Tab = 'FACTURAS' | 'CLIENTES' | 'COBROS' | 'NOTAS'
-type Modal = 'CLIENTE' | 'FACTURA' | 'COBRO' | 'NOTA' | null
+type Modal = 'CLIENTE' | 'FACTURA' | 'COBRO' | 'NOTA' | 'DETALLE_FACTURA' | null
 
 @Component({ selector: 'app-finanzas-facturacion-page', standalone: true, imports: [CommonModule, FormsModule, RemoteSearchSelectComponent], templateUrl: './finanzas-facturacion-page.component.html', styleUrl: './finanzas-facturacion-page.component.css' })
 export class FinanzasFacturacionPageComponent implements OnInit {
@@ -26,6 +26,7 @@ export class FinanzasFacturacionPageComponent implements OnInit {
   protected readonly tab = signal<Tab>('FACTURAS')
   protected readonly modal = signal<Modal>(null)
   protected readonly editingClienteId = signal<string | null>(null)
+  protected readonly selectedFactura = signal<FacturaVenta | null>(null)
   protected readonly saving = signal(false)
   protected readonly error = signal('')
   protected readonly pageSizeOptions = [5, 8, 10, 20, 50]
@@ -72,7 +73,8 @@ export class FinanzasFacturacionPageComponent implements OnInit {
     })
     this.modal.set('CLIENTE')
   }
-  protected closeModal() { this.modal.set(null); this.saving.set(false); this.editingClienteId.set(null) }
+  protected openFacturaDetail(factura: FacturaVenta) { this.selectedFactura.set(factura); this.modal.set('DETALLE_FACTURA') }
+  protected closeModal() { this.modal.set(null); this.saving.set(false); this.editingClienteId.set(null); this.selectedFactura.set(null) }
   protected addItem() { this.facturaForm.update(f => ({ ...f, items: [...f.items, { descripcion: '', cantidad: 1, unidad: 'UN', precioUnitario: 0, ivaPorcentaje: 21 }] })) }
   protected removeItem(i: number) { this.facturaForm.update(f => ({ ...f, items: f.items.filter((_, idx) => idx !== i) })) }
   protected updateItem(i: number, patch: Record<string, unknown>) { this.facturaForm.update(f => ({ ...f, items: f.items.map((item, idx) => idx === i ? { ...item, ...patch } : item) })) }
@@ -94,6 +96,7 @@ export class FinanzasFacturacionPageComponent implements OnInit {
   private cleanNota(): NotaCreditoRequest { const f = this.notaForm(); return { ...f, operarioId: f.operarioId || undefined, importe: Number(f.importe) } }
   private resetClienteForm() { this.editingClienteId.set(null); this.clienteForm.set({ razonSocial: '', cuit: '', condicionFiscal: 'RESPONSABLE_INSCRIPTO', email: '', telefono: '', direccion: '', activo: true }) }
   protected money(v?: number) { return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number(v || 0)) }
+  protected number(v?: number) { return new Intl.NumberFormat('es-AR', { maximumFractionDigits: 2 }).format(Number(v || 0)) }
   protected date(v?: string) { return v ? v.slice(0, 10) : 'Sin fecha' }
   private today() { return new Date().toISOString().slice(0, 10) }
   private firstDayOfCurrentMonth() { const now = new Date(); return new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10) }

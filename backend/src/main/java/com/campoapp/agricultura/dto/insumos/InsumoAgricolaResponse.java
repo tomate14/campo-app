@@ -16,6 +16,7 @@ public record InsumoAgricolaResponse(
         String presentacion,
         UnidadMedidaInsumo unidadMedida,
         String principioActivo,
+        String proveedorId,
         String proveedor,
         String origen,
         String descripcion,

@@ -48,6 +48,7 @@ export class AgricolaInsumosPageComponent implements OnInit {
   protected readonly errorMessage = signal('');
   protected readonly endpoints = {
     operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
+    proveedores: `${API_BASE_URL}/finanzas/compras-proveedores/proveedores`,
   };
   protected readonly activeOperarioParams = { estado: 'ACTIVO' };
   protected readonly filters = signal<{ search: string; tipo: '' | TipoInsumoAgricola; activo: '' | 'true' | 'false' }>({ search: '', tipo: '', activo: '' });
@@ -76,6 +77,7 @@ export class AgricolaInsumosPageComponent implements OnInit {
     presentacion: '',
     unidadMedida: 'KG',
     principioActivo: '',
+    proveedorId: '',
     proveedor: '',
     origen: '',
     descripcion: '',
@@ -195,6 +197,7 @@ export class AgricolaInsumosPageComponent implements OnInit {
       presentacion: '',
       unidadMedida: 'KG',
       principioActivo: '',
+      proveedorId: '',
       proveedor: '',
       origen: '',
       descripcion: '',
@@ -216,6 +219,7 @@ export class AgricolaInsumosPageComponent implements OnInit {
       presentacion: insumo.presentacion || '',
       unidadMedida: insumo.unidadMedida,
       principioActivo: insumo.principioActivo || '',
+      proveedorId: insumo.proveedorId || '',
       proveedor: insumo.proveedor || '',
       origen: insumo.origen || '',
       descripcion: insumo.descripcion || '',
@@ -452,6 +456,7 @@ export class AgricolaInsumosPageComponent implements OnInit {
       marca: form.marca || undefined,
       presentacion: form.presentacion || undefined,
       principioActivo: form.principioActivo || undefined,
+      proveedorId: form.proveedorId || undefined,
       proveedor: form.proveedor || undefined,
       origen: form.origen || undefined,
       descripcion: form.descripcion || undefined,

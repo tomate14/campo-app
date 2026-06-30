@@ -288,7 +288,7 @@
     <label><span>Stock minimo</span><input type="number" [ngModel]="insumoForm().stockMinimo" (ngModelChange)="insumoForm.update(f => ({ ...f, stockMinimo: $event }))" /></label>
     <label><span>Stock maximo</span><input type="number" [ngModel]="insumoForm().stockMaximo" (ngModelChange)="insumoForm.update(f => ({ ...f, stockMaximo: $event }))" /></label>
     <label><span>Principio activo</span><input [ngModel]="insumoForm().principioActivo" (ngModelChange)="insumoForm.update(f => ({ ...f, principioActivo: $event }))" /></label>
-    <label><span>Proveedor</span><input [ngModel]="insumoForm().proveedor" (ngModelChange)="insumoForm.update(f => ({ ...f, proveedor: $event }))" /></label>
+    <app-remote-search-select label="Proveedor" placeholder="Buscar proveedor" [endpoint]="endpoints.proveedores" queryParam="search" valueField="id" labelField="razonSocial" [subtitleFields]="['cuit','categoria']" [searchFields]="['razonSocial','cuit','categoria']" [value]="insumoForm().proveedorId || ''" (valueChange)="insumoForm.update(f => ({ ...f, proveedorId: $event }))"></app-remote-search-select>
     <label><span>Origen</span><input [ngModel]="insumoForm().origen" (ngModelChange)="insumoForm.update(f => ({ ...f, origen: $event }))" /></label>
   </div>
   <label class="wide"><span>Descripcion</span><textarea [ngModel]="insumoForm().descripcion" (ngModelChange)="insumoForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>

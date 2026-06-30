@@ -135,6 +135,11 @@
         <svg viewBox="0 0 24 24"><path d="M7 3h10v18H7z" /><path d="M10 8h4" /><path d="M10 12h4" /><path d="M9 17h6" /></svg>
         <span *ngIf="!collapsed()">Facturacion</span>
       </a>
+
+      <a *ngIf="isMenuVisible('finanzas-compras-proveedores')" routerLink="/finanzas/compras-proveedores" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Compras' : ''">
+        <svg viewBox="0 0 24 24"><path d="M6 7h15l-2 8H8L6 3H3" /><path d="M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" /><path d="M18 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" /></svg>
+        <span *ngIf="!collapsed()">Compras</span>
+      </a>
     </nav>
 
     <div class="sidebar-footer">
