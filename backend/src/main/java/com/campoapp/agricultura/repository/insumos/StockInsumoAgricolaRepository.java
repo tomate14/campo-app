@@ -46,4 +46,12 @@ public interface StockInsumoAgricolaRepository extends JpaRepository<StockInsumo
         order by s.insumo.nombre asc, s.fechaVencimiento asc
         """)
     List<StockInsumoAgricola> findAvailable();
+
+    @Query(value = """
+        select coalesce(sum(s.cantidad_disponible * coalesce(i.precio_unitario, 0)), 0)
+        from stock_insumos_agricolas s
+        join insumos_agricolas i on i.id = s.insumo_id
+        where s.deleted_at is null and i.deleted_at is null and s.cantidad_disponible > 0
+        """, nativeQuery = true)
+    BigDecimal stockValorizado();
 }

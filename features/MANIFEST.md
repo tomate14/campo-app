@@ -18,9 +18,9 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 44
-- Realizadas: 25
+- Realizadas: 26
 - Parciales: 0
-- Pendientes: 17
+- Pendientes: 16
 - Saltadas: 2
 - Ultima actualizacion: 2026-06-29
 
@@ -48,7 +48,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 16 | `16_inventario_stock_control.md` | Inventario | Pendiente | Stock y control centralizado pendiente. |
 | 17 | `17_COMPLETA_finanzas_facturacion_ventas.md` | Finanzas | Realizada | Facturacion y ventas implementada con clientes fiscales, facturas, CAE simulado, cobros, notas de credito, dashboard, REST paginado, pantalla Angular premium y datos iniciales. |
 | 18 | `18_COMPLETA_finanzas_compras_proveedores.md` | Finanzas | Realizada | Compras y proveedores implementada con proveedores, compras, items, pagos, dashboard, REST paginado, sidebar y pantalla Angular premium. |
-| 19 | `19_finanzas_reportes_financieros.md` | Finanzas | Pendiente | Reportes financieros pendiente. |
+| 19 | `19_COMPLETA_finanzas_reportes_financieros.md` | Finanzas | Realizada | Dashboard financiero ejecutivo implementado con endpoint backend-driven, KPIs reales, series de 12 periodos, flujo de caja, rankings parametrizables, tablas operativas, ApexCharts y tooltips premium. |
 | 20 | `20_geo_mapas_lotes.md` | Geolocalizacion | Pendiente | Mapas/geolocalizacion avanzada pendiente; el mapa de lotes operativo existe de forma parcial en agricultura. |
 | 21 | `21_geo_tracking_operarios.md` | Geolocalizacion | Pendiente | Tracking de operarios pendiente. |
 | 22 | `22_reportes_operacionales.md` | Reportes | Pendiente | Reportes operacionales pendiente. |
@@ -108,8 +108,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 16.
 
 ### Finanzas
-- Realizadas: 17.
-- Pendientes: 17, 19.
+- Realizadas: 17, 18, 19.
+- Pendientes: ninguna.
 
 ### Geolocalizacion
 - Pendientes: 20, 21.
@@ -129,6 +129,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 43.
 
 ## Ultimas Actualizaciones
+- 2026-06-29: Feature 19 realizada con dashboard financiero ejecutivo, endpoint consolidado, datos reales de facturacion/compras/cobros/pagos/inventario, graficos ApexCharts y sidebar visible.
 - 2026-06-29: Feature 18 realizada con compras y proveedores, proveedores fiscales, compras de insumos, pagos, cuentas por pagar, dashboard, endpoints paginados y UI Angular premium.
 - 2026-06-29: Feature 17 realizada con facturacion y ventas, clientes, comprobantes, cobros, notas de credito, dashboard financiero y UI Angular premium.
 - 2026-06-26: Feature 15 realizada con inventario agricola de insumos, stock, movimientos, alertas, backend REST, pantalla Angular y datos mock.

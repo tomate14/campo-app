@@ -37,6 +37,11 @@
         <span *ngIf="!collapsed()">Dashboard ganadero</span>
       </a>
 
+      <a *ngIf="isMenuVisible('finanzas-reportes')" routerLink="/finanzas/reportes" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Dashboard financiero' : ''">
+        <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M7 16v-5" /><path d="M12 16V7" /><path d="M17 16v-8" /><path d="M5 10l4-4 4 3 5-6" /></svg>
+        <span *ngIf="!collapsed()">Dashboard financiero</span>
+      </a>
+
       <a *ngIf="isMenuVisible('operaciones-calendario')" routerLink="/operaciones/calendario" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Calendario' : ''">
         <svg viewBox="0 0 24 24"><path d="M8 2v4" /><path d="M16 2v4" /><path d="M3 10h18" /><path d="M5 5h14v16H5z" /><path d="M8 14h3" /><path d="M13 14h3" /><path d="M8 17h3" /></svg>
         <span *ngIf="!collapsed()">Calendario</span>
@@ -140,6 +145,7 @@
         <svg viewBox="0 0 24 24"><path d="M6 7h15l-2 8H8L6 3H3" /><path d="M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" /><path d="M18 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" /></svg>
         <span *ngIf="!collapsed()">Compras</span>
       </a>
+
     </nav>
 
     <div class="sidebar-footer">

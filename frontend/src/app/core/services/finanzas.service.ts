@@ -18,6 +18,23 @@ export type EstadoFactura = 'BORRADOR' | 'EMITIDA' | 'PARCIAL' | 'COBRADA' | 'VE
 export type MetodoPago = 'EFECTIVO' | 'TRANSFERENCIA' | 'CHEQUE' | 'TARJETA' | 'RETENCION' | 'OTRO'
 
 export interface FacturacionDashboard { clientesActivos: number; facturasEmitidas: number; ventasMes: number; cuentasPorCobrar: number; cobradoMes: number; vencidas: number }
+export interface ReporteFinancieroKpi { codigo: string; titulo: string; valor: number; formato: 'currency' | 'percent' | 'number'; subtitulo: string; tono: string; tendencia?: string }
+export interface ReporteFinancieroPeriodo { periodo: string; ingresos: number; egresos: number; neto: number }
+export interface ReporteFinancieroRanking { nombre: string; cantidad: number; total: number; porcentaje: number }
+export interface ReporteFinancieroPendiente { entidad: string; comprobante: string; vencimiento: string; saldo: number; estado: string; tipo: string }
+export interface ReporteFinancieroVencimiento { titulo: string; entidad: string; vencimiento: string; saldo: number; prioridad: string; tipo: string }
+export interface ReportesFinancierosDashboard {
+  fechaDesde: string
+  fechaHasta: string
+  kpis: ReporteFinancieroKpi[]
+  ingresosEgresos: ReporteFinancieroPeriodo[]
+  flujoCaja: ReporteFinancieroPeriodo[]
+  topClientes: ReporteFinancieroRanking[]
+  topProveedores: ReporteFinancieroRanking[]
+  cuentasPorCobrar: ReporteFinancieroPendiente[]
+  cuentasPorPagar: ReporteFinancieroPendiente[]
+  proximosVencimientos: ReporteFinancieroVencimiento[]
+}
 export interface ClienteFinanciero { id: string; razonSocial: string; cuit: string; condicionFiscal: TipoClienteFiscal; email?: string; telefono?: string; direccion?: string; activo: boolean }
 export interface ClienteRequest { razonSocial: string; cuit: string; condicionFiscal: TipoClienteFiscal; email?: string; telefono?: string; direccion?: string; activo?: boolean }
 export interface FacturaItemRequest { insumoId?: string; descripcion: string; cantidad: number; unidad: string; precioUnitario: number; ivaPorcentaje?: number }
@@ -33,6 +50,7 @@ export interface NotaCreditoVenta { id: string; facturaId: string; comprobante: 
 export class FinanzasService {
   private readonly http = inject(HttpClient)
   private readonly base = `${API_BASE_URL}/finanzas/facturacion`
+  private readonly reportesBase = `${API_BASE_URL}/finanzas/reportes`
   dashboard(params?: { fechaDesde?: string; fechaHasta?: string }) { return this.http.get<ApiResponse<FacturacionDashboard> | FacturacionDashboard>(`${this.base}/dashboard`, { params: clean(params) }).pipe(map(unwrap)) }
   clientes(params?: { search?: string; page?: number; size?: number }) { return this.http.get<ApiResponse<PageResponse<ClienteFinanciero>> | PageResponse<ClienteFinanciero>>(`${this.base}/clientes`, { params: clean(params) }).pipe(map(unwrap)) }
   createCliente(data: ClienteRequest) { return this.http.post<ApiResponse<ClienteFinanciero> | ClienteFinanciero>(`${this.base}/clientes`, data).pipe(map(unwrap)) }
@@ -44,4 +62,7 @@ export class FinanzasService {
   createCobro(data: CobroRequest) { return this.http.post<ApiResponse<CobroVenta> | CobroVenta>(`${this.base}/cobros`, data).pipe(map(unwrap)) }
   notasCredito(params?: { page?: number; size?: number }) { return this.http.get<ApiResponse<PageResponse<NotaCreditoVenta>> | PageResponse<NotaCreditoVenta>>(`${this.base}/notas-credito`, { params: clean(params) }).pipe(map(unwrap)) }
   createNotaCredito(data: NotaCreditoRequest) { return this.http.post<ApiResponse<NotaCreditoVenta> | NotaCreditoVenta>(`${this.base}/notas-credito`, data).pipe(map(unwrap)) }
+  reportesDashboard(params?: { fechaDesde?: string; fechaHasta?: string; topClientesLimit?: number; topProveedoresLimit?: number }) {
+    return this.http.get<ApiResponse<ReportesFinancierosDashboard> | ReportesFinancierosDashboard>(`${this.reportesBase}/dashboard`, { params: clean(params) }).pipe(map(unwrap))
+  }
 }
