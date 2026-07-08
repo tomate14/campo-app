@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:raw.githubusercontent.com)",
-      "PowerShell(Get-ChildItem -Recurse \"C:\\\\Users\\\\Maxi\\\\Desktop\\\\campo-app\\\\backend\\\\src\" -File | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Maxi\\\\Desktop\\\\campo-app\\\\backend\\\\src\\\\\", \"\"\\) })"
+      "PowerShell(Get-ChildItem -Recurse \"C:\\\\Users\\\\Maxi\\\\Desktop\\\\campo-app\\\\backend\\\\src\" -File | ForEach-Object { $_.FullName.Replace\\(\"C:\\\\Users\\\\Maxi\\\\Desktop\\\\campo-app\\\\backend\\\\src\\\\\", \"\"\\) })",
+      "mcp__visualize__read_me",
+      "Bash(git commit -m ' *)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git add *)"
     ]
   }
 }

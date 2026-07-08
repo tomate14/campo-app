@@ -23,6 +23,7 @@ import { OperacionesCalendarioPageComponent } from './pages/operaciones-calendar
 import { AdminRolesMenuPageComponent } from './pages/admin-roles-menu-page/admin-roles-menu-page.component';
 import { FinanzasFacturacionPageComponent } from './pages/finanzas-facturacion-page/finanzas-facturacion-page.component';
 import { FinanzasComprasPageComponent } from './pages/finanzas-compras-page/finanzas-compras-page.component';
+import { FinanzasReportesPageComponent } from './pages/finanzas-reportes-page/finanzas-reportes-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -54,6 +55,7 @@ export const routes: Routes = [
       { path: 'admin/roles-menu', component: AdminRolesMenuPageComponent },
       { path: 'finanzas/facturacion', component: FinanzasFacturacionPageComponent },
       { path: 'finanzas/compras-proveedores', component: FinanzasComprasPageComponent },
+      { path: 'finanzas/reportes', component: FinanzasReportesPageComponent },
       { path: 'clima', component: ClimaPageComponent },
     ],
   },

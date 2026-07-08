@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface CompraProveedorRepository extends JpaRepository<CompraProveedor, String> {
@@ -22,6 +23,43 @@ public interface CompraProveedorRepository extends JpaRepository<CompraProveedor
 
     @Query(value = "select coalesce(sum(saldo_pendiente), 0) from finanzas_compras where deleted_at is null and fecha_emision between :desde and :hasta and estado not in ('PAGADA', 'ANULADA')", nativeQuery = true)
     BigDecimal cuentasPorPagarEntre(@Param("desde") LocalDate desde, @Param("hasta") LocalDate hasta);
+
+    @Query(value = """
+        select date_format(fecha_emision, '%Y-%m') as periodo, coalesce(sum(total), 0) as total
+        from finanzas_compras
+        where deleted_at is null and estado <> 'ANULADA' and fecha_emision between :desde and :hasta
+        group by date_format(fecha_emision, '%Y-%m')
+        order by periodo
+        """, nativeQuery = true)
+    List<Object[]> comprasPorPeriodo(@Param("desde") LocalDate desde, @Param("hasta") LocalDate hasta);
+
+    @Query(value = """
+        select p.razon_social, count(c.id), coalesce(sum(c.total), 0)
+        from finanzas_compras c
+        join finanzas_proveedores p on p.id = c.proveedor_id
+        where c.deleted_at is null and c.estado <> 'ANULADA' and c.fecha_emision between :desde and :hasta
+        group by p.id, p.razon_social
+        order by coalesce(sum(c.total), 0) desc
+        limit :limit
+        """, nativeQuery = true)
+    List<Object[]> topProveedores(@Param("desde") LocalDate desde, @Param("hasta") LocalDate hasta, @Param("limit") int limit);
+
+    @Query(value = """
+        select p.razon_social, c.numero_comprobante, c.fecha_vencimiento, c.saldo_pendiente, c.estado
+        from finanzas_compras c
+        join finanzas_proveedores p on p.id = c.proveedor_id
+        where c.deleted_at is null and c.estado not in ('PAGADA', 'ANULADA') and c.saldo_pendiente > 0
+        order by c.fecha_vencimiento asc, c.saldo_pendiente desc
+        limit :limit
+        """, nativeQuery = true)
+    List<Object[]> cuentasPorPagarPendientes(@Param("limit") int limit);
+
+    @Query(value = """
+        select count(*)
+        from finanzas_compras
+        where deleted_at is null and estado not in ('PAGADA', 'ANULADA') and fecha_vencimiento between :desde and :hasta
+        """, nativeQuery = true)
+    long vencimientosPendientesEntre(@Param("desde") LocalDate desde, @Param("hasta") LocalDate hasta);
 
     @Query("""
         select c from CompraProveedor c
