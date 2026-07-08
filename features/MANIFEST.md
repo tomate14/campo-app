@@ -17,12 +17,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 44
+- Total de historias registradas: 45
 - Realizadas: 26
 - Parciales: 0
-- Pendientes: 16
+- Pendientes: 17
 - Saltadas: 2
-- Ultima actualizacion: 2026-06-29
+- Ultima actualizacion: 2026-07-08
 
 ## Registro por Feature
 
@@ -73,6 +73,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 41 | `41_COMPLETA_roles_menu_permisos.md` | Seguridad/Frontend | Realizada | Pantalla administrativa para definir opciones de menu visibles por rol, con backend persistido y sidebar filtrado por permisos. |
 | 42 | `42_COMPLETA_dashboard_ganadero_ejecutivo.md` | Ganaderia/Reportes | Realizada | Dashboard Ganadero Ejecutivo implementado con endpoint backend-driven, KPIs, graficos, alertas operativas y analitica del rodeo. |
 | 43 | `43_COMPLETA_integridad_referencial_transversal_por_id.md` | Arquitectura/Datos | Realizada | Integridad referencial animal-potrero implementada con `animales_potreros`, movimientos por `potrero_id`, dashboard ganadero por IDs y alimentacion por FK de potrero. |
+| 44 | `44_frontend_modernizacion_graficos_apexcharts.md` | Frontend | Pendiente | Migracion de graficos compartidos (barras, donut, linea) de SVG plano a ApexCharts con gradientes, glow y tooltip premium, sin romper el contrato de los componentes. |
 
 ## Registro por Dominio
 
@@ -128,7 +129,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 ### Arquitectura/Datos
 - Realizadas: 43.
 
+### Frontend
+- Pendientes: 44.
+
 ## Ultimas Actualizaciones
+- 2026-07-08: Feature 44 creada para migrar los graficos compartidos (barras, donut, linea) de SVG plano a ApexCharts con gradientes, glow y tooltip premium, a pedido del usuario tras ver que la estetica actual no era moderna.
 - 2026-06-29: Feature 19 realizada con dashboard financiero ejecutivo, endpoint consolidado, datos reales de facturacion/compras/cobros/pagos/inventario, graficos ApexCharts y sidebar visible.
 - 2026-06-29: Feature 18 realizada con compras y proveedores, proveedores fiscales, compras de insumos, pagos, cuentas por pagar, dashboard, endpoints paginados y UI Angular premium.
 - 2026-06-29: Feature 17 realizada con facturacion y ventas, clientes, comprobantes, cobros, notas de credito, dashboard financiero y UI Angular premium.
