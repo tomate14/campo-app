@@ -1,82 +1,18 @@
 <div class="material-chart-shell" *ngIf="hasData(); else empty">
-  <svg class="material-line-chart" [attr.viewBox]="'0 0 ' + width + ' ' + chartHeight" preserveAspectRatio="none">
-    <defs>
-      <linearGradient id="material-line-fill" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0%" stop-color="#9FE870" stop-opacity=".34" />
-        <stop offset="100%" stop-color="#9FE870" stop-opacity="0" />
-      </linearGradient>
-    </defs>
-
-    <g class="axis-grid">
-      <line *ngFor="let tick of yTicks()" [attr.x1]="margin.left" [attr.x2]="width - margin.right" [attr.y1]="tick.y" [attr.y2]="tick.y" />
-    </g>
-
-    <g class="axis-labels y-labels">
-      <text *ngFor="let tick of yTicks()" [attr.x]="margin.left - 10" [attr.y]="tick.y + 4">{{ tick.label }}</text>
-    </g>
-
-    <path *ngIf="primary.length" [attr.d]="areaPath(primary)" class="area-path" />
-    <path *ngIf="secondary.length" [attr.d]="path(secondary)" class="line-path secondary" />
-    <path *ngIf="primary.length" [attr.d]="path(primary)" class="line-path primary" />
-
-    <g>
-      <circle
-        *ngFor="let point of points(secondary, secondaryLabel)"
-        class="chart-point secondary-point"
-        [attr.cx]="point.x"
-        [attr.cy]="point.y"
-        r="4"
-      />
-      <circle
-        *ngFor="let point of points(primary, primaryLabel)"
-        class="chart-point primary-point"
-        [attr.cx]="point.x"
-        [attr.cy]="point.y"
-        r="5"
-      />
-    </g>
-
-    <g class="axis-line">
-      <line [attr.x1]="margin.left" [attr.x2]="width - margin.right" [attr.y1]="chartHeight - margin.bottom" [attr.y2]="chartHeight - margin.bottom" />
-      <line [attr.x1]="margin.left" [attr.x2]="margin.left" [attr.y1]="margin.top" [attr.y2]="chartHeight - margin.bottom" />
-    </g>
-
-    <g class="axis-labels x-labels">
-      <text *ngFor="let tick of xTicks()" [attr.x]="tick.x" [attr.y]="chartHeight - 14" [class.hidden]="!tick.visible">{{ tick.label }}</text>
-    </g>
-  </svg>
-  <div class="chart-hit-layer">
-    <button
-      *ngFor="let point of points(secondary, secondaryLabel)"
-      type="button"
-      class="chart-hit-point"
-      [style.left.%]="(point.x / width) * 100"
-      [style.top.%]="(point.y / chartHeight) * 100"
-      (mouseenter)="showTooltip(point)"
-      (mouseleave)="hideTooltip()"
-    ></button>
-    <button
-      *ngFor="let point of points(primary, primaryLabel)"
-      type="button"
-      class="chart-hit-point primary"
-      [style.left.%]="(point.x / width) * 100"
-      [style.top.%]="(point.y / chartHeight) * 100"
-      (mouseenter)="showTooltip(point)"
-      (mouseleave)="hideTooltip()"
-    ></button>
-  </div>
-  <div class="premium-chart-tooltip-overlay" *ngIf="activePoint() as point">
-    <app-premium-chart-tooltip
-      [accentColor]="tooltipAccentColor"
-      [icon]="tooltipIcon"
-      [title]="tooltipTitle"
-      [subtitle]="tooltipSubtitle"
-      [status]="tooltipStatus"
-      [metrics]="tooltipMetrics(point)"
-      [primaryLegend]="primaryLabel"
-      [secondaryLegend]="secondaryLabel"
-    />
-  </div>
+  <apx-chart
+    [series]="series()"
+    [chart]="chart()"
+    [colors]="colors()"
+    [stroke]="stroke()"
+    [fill]="fill()"
+    [markers]="markers()"
+    [xaxis]="xaxis()"
+    [yaxis]="yaxis()"
+    [grid]="grid"
+    [legend]="{ show: false }"
+    [dataLabels]="{ enabled: false }"
+    [tooltip]="tooltip()"
+  />
 </div>
 
 <ng-template #empty>

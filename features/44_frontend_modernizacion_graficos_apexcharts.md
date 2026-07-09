@@ -1,7 +1,7 @@
 # 44 - Frontend: Modernizacion de Graficos Compartidos con ApexCharts
 
 ## Estado
-Pendiente.
+Realizada.
 
 ## Origen
 El usuario reporto que la estetica de los graficos de barras, donut y linea usados en los dashboards no es moderna. Se acordo migrar los componentes compartidos de SVG hand-rolled a `ng-apexcharts` (ya usado en `reportes-ganaderia-page` y `finanzas-reportes-page`) aplicando gradientes, glow verde sutil, curvas suaves y el tooltip premium ya definido en el proyecto.
@@ -25,6 +25,14 @@ Pantallas consumidoras que deben verse sin cambios de contrato (no requieren edi
 - No se migran los graficos que ya usan ApexCharts directamente (Dashboard Ganadero, Dashboard Financiero).
 - No se agregan tipos de grafico nuevos (radialBar multi-anillo, mapas, etc.) mas alla del donut existente.
 
+## Implementado
+- `material-bar-chart`, `material-donut-chart` y `material-line-chart` migrados a `ng-apexcharts` manteniendo el mismo contrato de `@Input()` (no se tocaron `analytics-page` ni `reportes-agricola-page`).
+- Gradientes por color de serie, `dropShadow` como glow sutil, `borderRadius` en barras, `curve: smooth` + area degradada en la linea, anillo redondeado con centro tipo vidrio en el donut.
+- Tooltip migrado al patron `apex-tooltip-card` (helper compartido `frontend/src/app/shared/apex-tooltip/apex-tooltip.util.ts`), con la card CSS scoped por componente via `:host ::ng-deep`.
+- `PremiumChartTooltipComponent` eliminado por quedar sin consumidores.
+- `animations: { enabled: false }` en los tres charts para evitar una excepcion de ApexCharts (`runMaskReveal` sobre un nodo ya destruido) al navegar fuera de la pantalla mientras el chart todavia estaba animando su aparicion.
+
 ## Validacion Tecnica
-- `npx ng build --configuration development`
-- Verificacion visual en navegador de `analytics-page` y `reportes-agricola-page` (dev server), incluyendo estado de tooltip al pasar el mouse y estado vacio (`emptyText`).
+- `npx ng build --configuration development` sin errores.
+- Corregido y verificado el crash de arranque del backend en Docker (SIGSEGV de la JVM por musl+G1GC) para poder probar contra datos reales; ver commit "Corregir SIGSEGV de la JVM en el backend Docker".
+- Verificacion visual en navegador (dev server + backend real) de `analytics-page` y `reportes/agricola`, incluyendo estado de tooltip al pasar el mouse, estado vacio (`emptyText`) y navegacion rapida entre pantallas sin errores de consola.

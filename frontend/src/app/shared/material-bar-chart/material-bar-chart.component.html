@@ -3,51 +3,20 @@
     <span><i [style.background]="color"></i>{{ seriesLabel }}</span>
     <span *ngIf="averageValue != null"><i class="average"></i>{{ averageLabel }}</span>
   </div>
-  <div class="axis-title axis-title-y">{{ yAxisTitle }}</div>
-  <svg class="bar-chart" [attr.viewBox]="'0 0 ' + width + ' ' + height" preserveAspectRatio="none">
-    <g class="grid">
-      <line *ngFor="let tick of yTicks()" [attr.x1]="margin.left" [attr.x2]="width - margin.right" [attr.y1]="tick.y" [attr.y2]="tick.y" />
-    </g>
-    <g class="y-labels">
-      <text *ngFor="let tick of yTicks()" [attr.x]="margin.left - 10" [attr.y]="tick.y + 4">{{ tick.label }}</text>
-    </g>
-    <line *ngIf="averageValue != null" class="average-line" [attr.x1]="margin.left" [attr.x2]="width - margin.right" [attr.y1]="averageY()" [attr.y2]="averageY()" />
-    <g>
-      <rect
-        *ngFor="let bar of bars()"
-        class="bar"
-        [attr.x]="bar.x"
-        [attr.y]="bar.y"
-        [attr.width]="bar.width"
-        [attr.height]="bar.height"
-        [attr.fill]="color"
-        rx="2"
-        ry="2"
-        (mouseenter)="showTooltip(bar)"
-        (mouseleave)="hideTooltip()"
-      />
-    </g>
-    <g class="axis">
-      <line [attr.x1]="margin.left" [attr.x2]="width - margin.right" [attr.y1]="height - margin.bottom" [attr.y2]="height - margin.bottom" />
-      <line [attr.x1]="margin.left" [attr.x2]="margin.left" [attr.y1]="margin.top" [attr.y2]="height - margin.bottom" />
-    </g>
-    <g class="x-labels">
-      <text *ngFor="let bar of bars()" [attr.x]="bar.x + bar.width / 2" [attr.y]="height - 24">{{ formatLabel(bar.label) }}</text>
-    </g>
-  </svg>
-  <div class="axis-title axis-title-x">{{ xAxisTitle }}</div>
-  <div class="premium-bar-tooltip" *ngIf="activeBar() as bar">
-    <app-premium-chart-tooltip
-      [accentColor]="color"
-      icon="crop"
-      [title]="bar.label"
-      [subtitle]="seriesLabel"
-      status="Activo"
-      [metrics]="tooltipMetrics(bar)"
-      [primaryLegend]="seriesLabel"
-      [secondaryLegend]="averageLabel"
-    />
-  </div>
+  <apx-chart
+    [series]="series()"
+    [chart]="chart()"
+    [colors]="[color]"
+    [fill]="fill()"
+    [plotOptions]="plotOptions"
+    [dataLabels]="dataLabels"
+    [xaxis]="xaxis()"
+    [yaxis]="yaxis()"
+    [grid]="grid"
+    [annotations]="annotations()"
+    [tooltip]="tooltip()"
+    [legend]="{ show: false }"
+  />
 </div>
 
 <ng-template #empty>

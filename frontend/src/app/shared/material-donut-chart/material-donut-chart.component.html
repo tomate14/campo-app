@@ -1,28 +1,14 @@
-<div class="donut-chart">
-  <svg viewBox="0 0 160 160" aria-label="Distribución">
-    <circle class="donut-track" cx="80" cy="80" r="58" />
-    <path
-      *ngFor="let segment of segments()"
-      class="donut-segment"
-      [attr.d]="segment.path"
-      [attr.stroke]="segment.color"
-      (mouseenter)="showTooltip(segment)"
-      (mouseleave)="hideTooltip()"
-    />
-    <circle class="donut-core" cx="80" cy="80" r="38" />
-    <text class="donut-value" x="80" y="76">{{ centerValue }}</text>
-    <text class="donut-label" x="80" y="94">{{ centerLabel }}</text>
-  </svg>
-  <div class="premium-donut-tooltip" *ngIf="activeSegment() as segment">
-    <app-premium-chart-tooltip
-      [accentColor]="segment.color"
-      icon="crop"
-      [title]="segment.label"
-      subtitle="Distribución por cultivo"
-      status="Activo"
-      [metrics]="tooltipMetrics(segment)"
-      primaryLegend="Lotes sembrados"
-      secondaryLegend="Total campaña"
-    />
-  </div>
+<div class="donut-chart" *ngIf="hasData()">
+  <apx-chart
+    [series]="series()"
+    [chart]="chart"
+    [labels]="labels()"
+    [colors]="colors()"
+    [fill]="fill()"
+    [stroke]="stroke"
+    [dataLabels]="dataLabels"
+    [legend]="{ show: false }"
+    [plotOptions]="plotOptions()"
+    [tooltip]="tooltip()"
+  />
 </div>
