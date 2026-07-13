@@ -27,70 +27,7 @@
   width: 18px;
   height: 3px;
   border-radius: 999px;
-  background: #f59e0b;
-}
-
-.axis-title {
-  color: rgba(226, 232, 240, .74);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-.axis-title-y {
-  margin-bottom: 4px;
-}
-
-.axis-title-x {
-  text-align: right;
-  margin-top: 4px;
-}
-
-.bar-chart {
-  width: 100%;
-  height: 280px;
-  overflow: visible;
-}
-
-.grid line {
-  stroke: rgba(148, 163, 184, .1);
-}
-
-.axis line {
-  stroke: rgba(148, 163, 184, .24);
-}
-
-.y-labels text,
-.x-labels text {
-  fill: #8ea0bb;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.y-labels text {
-  text-anchor: end;
-}
-
-.x-labels text {
-  text-anchor: middle;
-}
-
-.bar {
-  opacity: .72;
-  cursor: pointer;
-  filter: drop-shadow(0 0 9px rgba(110, 168, 255, .18));
-  transition: opacity .18s ease;
-}
-
-.bar:hover {
-  opacity: .95;
-}
-
-.average-line {
-  stroke: #f59e0b;
-  stroke-width: 2;
-  stroke-linecap: round;
+  background: #9fe870;
 }
 
 .bar-empty {
@@ -100,12 +37,139 @@
   color: #9bb0cc;
 }
 
-.premium-bar-tooltip {
-  position: absolute;
-  z-index: 25;
-  right: 10px;
-  top: 18px;
-  transform: scale(.86);
-  transform-origin: top left;
-  pointer-events: none;
+apx-chart {
+  display: block;
+  width: 100%;
+}
+
+:host ::ng-deep .apexcharts-tooltip {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+:host ::ng-deep .apexcharts-tooltip-title {
+  display: none !important;
+}
+
+:host ::ng-deep .apex-tooltip-card {
+  width: 280px;
+  border: 1px solid rgba(159, 232, 112, .2);
+  border-radius: 20px;
+  padding: 20px;
+  background: linear-gradient(145deg, rgba(8, 18, 37, .98), rgba(11, 23, 48, .96));
+  color: #fff;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, .35), 0 0 30px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+:host ::ng-deep .apex-tooltip-band {
+  height: 6px;
+  margin: -20px -20px 16px;
+  border-radius: 20px 20px 999px 0;
+  background: var(--accent);
+}
+
+:host ::ng-deep .apex-tooltip-head {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+:host ::ng-deep .apex-tooltip-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+}
+
+:host ::ng-deep .apex-tooltip-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+:host ::ng-deep .apex-tooltip-head strong {
+  display: block;
+  max-width: 140px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .apex-tooltip-head small {
+  display: block;
+  margin-top: 4px;
+  color: #a6b0cf;
+  font-size: 11px;
+}
+
+:host ::ng-deep .apex-tooltip-head em {
+  align-self: start;
+  padding: 6px 10px;
+  color: var(--accent);
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 800;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  white-space: nowrap;
+}
+
+:host ::ng-deep .apex-tooltip-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 0;
+}
+
+:host ::ng-deep .apex-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: #a6b0cf;
+  font-size: 12px;
+}
+
+:host ::ng-deep .apex-tooltip-row strong {
+  color: #fff;
+  text-align: right;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .apex-tooltip-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  color: #a6b0cf;
+  font-size: 11px;
+}
+
+:host ::ng-deep .apex-tooltip-footer span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+:host ::ng-deep .apex-tooltip-footer i {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
 }

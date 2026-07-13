@@ -1,20 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, computed, signal } from '@angular/core';
+import { Component, Input, computed } from '@angular/core';
+import { NgApexchartsModule } from 'ng-apexcharts';
 import type { ReporteSeriePunto } from '../../core/models/agricola.models';
-import { PremiumChartTooltipComponent, type PremiumTooltipIcon, type PremiumTooltipMetric } from '../premium-chart-tooltip/premium-chart-tooltip.component';
-
-interface ChartPoint {
-  x: number;
-  y: number;
-  label: string;
-  value: number;
-  series: string;
-}
+import { buildApexTooltipHtml } from '../apex-tooltip/apex-tooltip.util';
 
 @Component({
   selector: 'app-material-line-chart',
   standalone: true,
-  imports: [CommonModule, PremiumChartTooltipComponent],
+  imports: [CommonModule, NgApexchartsModule],
   templateUrl: './material-line-chart.component.html',
   styleUrl: './material-line-chart.component.css',
 })
@@ -25,63 +18,96 @@ export class MaterialLineChartComponent {
   @Input() secondaryLabel = 'Histórico';
   @Input() valueSuffix = '';
   @Input() emptyText = 'Sin datos.';
-  @Input() tooltipTitle = 'MAÍZ';
-  @Input() tooltipSubtitle = 'Dashboard agrícola';
-  @Input() tooltipIcon: PremiumTooltipIcon = 'crop';
-  @Input() tooltipAccentColor = '#F4C542';
-  @Input() tooltipStatus = 'Activo';
-
-  protected readonly width = 640;
-  protected readonly chartHeight = 250;
-  protected readonly margin = { top: 18, right: 20, bottom: 42, left: 58 };
-  protected readonly activePoint = signal<ChartPoint | null>(null);
 
   protected readonly hasData = computed(() => this.primary.length > 0 || this.secondary.length > 0);
-  protected readonly labels = computed(() => (this.primary.length ? this.primary : this.secondary).map((point) => point.etiqueta));
-  protected readonly yTicks = computed(() => {
-    const [min, max] = this.range();
-    const step = (max - min) / 4;
-    return Array.from({ length: 5 }, (_, index) => {
-      const value = max - step * index;
-      return { value, y: this.y(value), label: this.formatValue(value) };
-    });
-  });
-  protected readonly xTicks = computed(() => {
-    const labels = this.labels();
-    const step = labels.length <= 6 ? 1 : Math.ceil(labels.length / 6);
-    return labels.map((label, index) => ({ label, x: this.x(index), visible: index === labels.length - 1 || index % step === 0 }));
+
+  private readonly categories = computed(() => (this.primary.length ? this.primary : this.secondary).map((point) => point.etiqueta));
+
+  protected readonly series = computed(() => {
+    const result: { name: string; data: (number | null)[] }[] = [];
+    if (this.primary.length) result.push({ name: this.primaryLabel, data: this.primary.map((point) => this.numOrNull(point.valor)) });
+    if (this.secondary.length) result.push({ name: this.secondaryLabel, data: this.secondary.map((point) => this.numOrNull(point.valor)) });
+    return result;
   });
 
-  protected path(series: ReporteSeriePunto[]): string {
-    return this.points(series).map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
-  }
+  protected readonly colors = computed(() => (this.secondary.length ? ['#9FE870', '#7C93B8'] : ['#9FE870']));
 
-  protected areaPath(series: ReporteSeriePunto[]): string {
-    const points = this.points(series);
-    if (!points.length) return '';
-    const bottom = this.chartHeight - this.margin.bottom;
-    return `${points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ')} L ${points.at(-1)!.x} ${bottom} L ${points[0].x} ${bottom} Z`;
-  }
+  protected readonly chart = computed<any>(() => ({
+    type: 'area',
+    height: 260,
+    toolbar: { show: false },
+    zoom: { enabled: false },
+    background: 'transparent',
+    animations: { enabled: false },
+    dropShadow: { enabled: true, top: 3, left: 0, blur: 6, color: this.colors()[0], opacity: 0.35 },
+  }));
 
-  protected points(series: ReporteSeriePunto[], label = this.primaryLabel): ChartPoint[] {
-    return series
-      .map((point, index) => ({ point, index }))
-      .filter(({ point }) => Number.isFinite(Number(point.valor)))
-      .map(({ point, index }) => ({ x: this.x(index), y: this.y(Number(point.valor)), label: point.etiqueta, value: Number(point.valor), series: label }));
-  }
+  protected readonly stroke = computed<any>(() => ({
+    curve: 'smooth',
+    width: this.secondary.length ? [3, 2] : [3],
+    dashArray: this.secondary.length ? [0, 6] : [0],
+  }));
 
-  protected showTooltip(point: ChartPoint): void { this.activePoint.set(point); }
-  protected hideTooltip(): void { this.activePoint.set(null); }
+  protected readonly fill = computed<any>(() => ({
+    type: this.secondary.length ? ['gradient', 'solid'] : 'gradient',
+    opacity: this.secondary.length ? [1, 0] : 1,
+    gradient: { shade: 'dark', type: 'vertical', shadeIntensity: 0.5, opacityFrom: 0.42, opacityTo: 0.03, stops: [0, 100] },
+  }));
 
-  protected tooltipMetrics(point: ChartPoint): PremiumTooltipMetric[] {
-    return [
-      { icon: 'yield', label: point.series, value: `${this.formatValue(point.value)}${this.valueSuffix ? ` ${this.valueSuffix}` : ''}` },
-      { icon: 'calendar', label: 'Período', value: point.label },
-      { icon: 'series', label: 'Serie', value: this.primaryLabel },
-      { icon: 'stage', label: 'Referencia', value: this.secondary.length ? this.secondaryLabel : 'Sin histórico' },
-      { icon: 'trend', label: 'Variación vs histórico', value: this.variation(point), accent: true },
-    ];
-  }
+  protected readonly markers = computed<any>(() => ({
+    size: 4,
+    colors: ['#081225'],
+    strokeColors: this.colors(),
+    strokeWidth: 2,
+    hover: { size: 6 },
+  }));
+
+  protected readonly xaxis = computed<any>(() => ({
+    categories: this.categories(),
+    labels: { style: { colors: '#8892AD', fontSize: '10px' }, rotate: -30, trim: true },
+    axisBorder: { color: 'rgba(255,255,255,0.12)' },
+    axisTicks: { color: 'rgba(255,255,255,0.12)' },
+  }));
+
+  protected readonly yaxis = computed<any>(() => ({
+    labels: { style: { colors: '#8892AD', fontSize: '10px' }, formatter: (value: number) => this.formatValue(value) },
+  }));
+
+  protected readonly grid: any = { borderColor: 'rgba(255,255,255,0.06)', strokeDashArray: 4, padding: { left: 8, right: 8 } };
+
+  protected readonly tooltip = computed<any>(() => ({
+    enabled: true,
+    shared: false,
+    intersect: false,
+    followCursor: true,
+    custom: ({ series, seriesIndex, dataPointIndex, w }: any) => {
+      const safeIndex = seriesIndex ?? 0;
+      const label = w.globals.categoryLabels?.[dataPointIndex] ?? this.categories()[dataPointIndex] ?? 'Sin período';
+      const name = w.globals.seriesNames?.[safeIndex] ?? this.primaryLabel;
+      const value = series?.[safeIndex]?.[dataPointIndex];
+      const color = w.globals.colors?.[safeIndex] ?? this.colors()[0];
+      const rows = [
+        { label: 'Valor', value: value == null ? 'Sin dato' : `${this.formatValue(Number(value))}${this.valueSuffix ? ` ${this.valueSuffix}` : ''}` },
+        { label: 'Período', value: label },
+      ];
+      if (this.secondary.length) {
+        const otherIndex = safeIndex === 0 ? 1 : 0;
+        const otherName = w.globals.seriesNames?.[otherIndex];
+        const otherValue = series?.[otherIndex]?.[dataPointIndex];
+        if (otherName != null && otherValue != null) {
+          rows.push({ label: otherName, value: `${this.formatValue(Number(otherValue))}${this.valueSuffix ? ` ${this.valueSuffix}` : ''}` });
+        }
+      }
+      return buildApexTooltipHtml({
+        title: name,
+        subtitle: label,
+        status: name,
+        accent: color,
+        rows,
+        legends: [{ label: name, color }],
+      });
+    },
+  }));
 
   protected formatValue(value: number): string {
     if (Math.abs(value) >= 1000) return Math.round(value).toLocaleString('es-AR');
@@ -89,32 +115,8 @@ export class MaterialLineChartComponent {
     return value.toFixed(2).replace(/\.00$/, '');
   }
 
-  private variation(point: ChartPoint): string {
-    const index = this.labels().indexOf(point.label);
-    const reference = this.secondary[index]?.valor;
-    if (!reference || Number(reference) === 0) return 'Sin dato';
-    const diff = ((point.value - Number(reference)) / Number(reference)) * 100;
-    return `${diff >= 0 ? '+' : ''}${diff.toFixed(1)}%`;
-  }
-
-  private x(index: number): number {
-    const count = Math.max(this.labels().length - 1, 1);
-    const plotWidth = this.width - this.margin.left - this.margin.right;
-    return this.margin.left + (index / count) * plotWidth;
-  }
-
-  private y(value: number): number {
-    const [min, max] = this.range();
-    const plotHeight = this.chartHeight - this.margin.top - this.margin.bottom;
-    return this.margin.top + ((max - value) / Math.max(max - min, 1)) * plotHeight;
-  }
-
-  private range(): [number, number] {
-    const values = [...this.primary, ...this.secondary].map((point) => Number(point.valor)).filter((value) => Number.isFinite(value));
-    if (!values.length) return [0, 1];
-    const min = Math.min(0, ...values);
-    const max = Math.max(...values);
-    const padding = Math.max((max - min) * 0.12, 1);
-    return [min, max + padding];
+  private numOrNull(value: number | string | undefined): number | null {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
   }
 }

@@ -1,61 +1,141 @@
 .donut-chart {
   position: relative;
-  width: 150px;
-  height: 150px;
-  filter: drop-shadow(0 0 22px rgba(159, 232, 112, .14));
+  width: 190px;
 }
 
-.donut-chart svg {
+apx-chart {
+  display: block;
   width: 100%;
-  height: 100%;
 }
 
-.donut-track {
-  fill: none;
-  stroke: rgba(110, 168, 255, .13);
-  stroke-width: 24;
+:host ::ng-deep .apexcharts-tooltip {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
 }
 
-.donut-segment {
+:host ::ng-deep .apexcharts-tooltip-title {
+  display: none !important;
+}
+
+:host ::ng-deep .apex-tooltip-card {
+  width: 280px;
+  border: 1px solid rgba(159, 232, 112, .2);
+  border-radius: 20px;
+  padding: 20px;
+  background: linear-gradient(145deg, rgba(8, 18, 37, .98), rgba(11, 23, 48, .96));
+  color: #fff;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, .35), 0 0 30px color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+:host ::ng-deep .apex-tooltip-band {
+  height: 6px;
+  margin: -20px -20px 16px;
+  border-radius: 20px 20px 999px 0;
+  background: var(--accent);
+}
+
+:host ::ng-deep .apex-tooltip-head {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+:host ::ng-deep .apex-tooltip-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+}
+
+:host ::ng-deep .apex-tooltip-icon svg {
+  width: 22px;
+  height: 22px;
   fill: none;
-  stroke-width: 24;
+  stroke: currentColor;
+  stroke-width: 1.8;
   stroke-linecap: round;
-  cursor: pointer;
-  transition: opacity .18s ease, filter .18s ease;
+  stroke-linejoin: round;
 }
 
-.donut-segment:hover {
-  opacity: .82;
-  filter: drop-shadow(0 0 10px currentColor);
+:host ::ng-deep .apex-tooltip-head strong {
+  display: block;
+  max-width: 140px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.donut-core {
-  fill: #0b1730;
-  stroke: rgba(110, 168, 255, .12);
+:host ::ng-deep .apex-tooltip-head small {
+  display: block;
+  margin-top: 4px;
+  color: #a6b0cf;
+  font-size: 11px;
 }
 
-.donut-value,
-.donut-label {
-  text-anchor: middle;
-  fill: #fff;
+:host ::ng-deep .apex-tooltip-head em {
+  align-self: start;
+  padding: 6px 10px;
+  color: var(--accent);
+  font-style: normal;
+  font-size: 10px;
   font-weight: 800;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  white-space: nowrap;
 }
 
-.donut-value {
-  font-size: 26px;
+:host ::ng-deep .apex-tooltip-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 0;
 }
 
-.donut-label {
-  fill: #9bb0cc;
+:host ::ng-deep .apex-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: #a6b0cf;
   font-size: 12px;
 }
 
-.premium-donut-tooltip {
-  position: absolute;
-  z-index: 25;
-  left: 116px;
-  top: -96px;
-  transform: scale(.86);
-  transform-origin: top left;
-  pointer-events: none;
+:host ::ng-deep .apex-tooltip-row strong {
+  color: #fff;
+  text-align: right;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .apex-tooltip-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  color: #a6b0cf;
+  font-size: 11px;
+}
+
+:host ::ng-deep .apex-tooltip-footer span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+:host ::ng-deep .apex-tooltip-footer i {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
 }

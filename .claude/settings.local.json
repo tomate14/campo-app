@@ -7,7 +7,15 @@
       "Bash(git commit -m ' *)",
       "Bash(git checkout *)",
       "Bash(git merge *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(npx ng *)",
+      "Bash(git status *)",
+      "Bash(docker info *)",
+      "Bash(docker compose *)",
+      "Bash(python3 -c ' *)",
+      "Bash(docker stop *)",
+      "Bash(npx tsc *)",
+      "Bash(docker start *)"
     ]
   }
 }

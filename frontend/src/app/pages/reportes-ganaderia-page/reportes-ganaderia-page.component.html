@@ -51,7 +51,7 @@
       <article class="panel-card chart-card compact-chart-card">
         <div class="panel-head">
           <div>
-            <h2>Distribuci?n del Rodeo</h2>
+            <h2>Distribución del Rodeo</h2>
           </div>
         </div>
         <apx-chart
@@ -66,7 +66,7 @@
         />
       </article>
 
-      <article class="panel-card chart-card compact-chart-card">
+      <article class="panel-card chart-card compact-chart-card hbar-chart-card">
         <div class="panel-head">
           <div>
             <h2>Animales por Potrero</h2>
@@ -76,11 +76,11 @@
           [series]="barSeries(data.animalesPorPotrero)"
           [chart]="horizontalBarChart"
           [xaxis]="{ categories: barCategories(data.animalesPorPotrero), labels: { style: { colors: '#A6B0CF', fontSize: '10px' } } }"
-          [yaxis]="{ labels: { style: { colors: '#FFFFFF', fontSize: '11px' } } }"
+          [yaxis]="{ labels: { style: { colors: '#FFFFFF', fontSize: '11px' }, maxWidth: 140 } }"
           [colors]="['#9FE870']"
           [plotOptions]="horizontalBarPlotOptions"
           [dataLabels]="horizontalBarDataLabels"
-          [grid]="compactGrid"
+          [grid]="livestockBarGrid"
           [tooltip]="barTooltip('Animales', 'Animales por potrero', 'animales', false)"
         />
       </article>
@@ -88,14 +88,14 @@
       <article class="panel-card occupancy-card">
         <div class="panel-head">
           <div>
-            <h2>Ocupaci?n de Potreros</h2>
+            <h2>Ocupación de Potreros</h2>
           </div>
         </div>
         <div class="occupancy-header">
           <span>Potrero</span>
           <span>Carga actual</span>
           <span>Capacidad</span>
-          <span>Ocupaci?n</span>
+          <span>Ocupación</span>
         </div>
         <div class="occupancy-list">
           <div class="occupancy-row" *ngFor="let item of data.ocupacionPotreros">

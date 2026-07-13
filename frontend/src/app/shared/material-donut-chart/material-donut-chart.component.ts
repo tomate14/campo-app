@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, computed, signal } from '@angular/core';
-import { PremiumChartTooltipComponent, type PremiumTooltipMetric } from '../premium-chart-tooltip/premium-chart-tooltip.component';
+import { Component, Input, computed } from '@angular/core';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { buildApexTooltipHtml } from '../apex-tooltip/apex-tooltip.util';
 
 export interface MaterialDonutItem {
   label: string;
@@ -12,7 +13,7 @@ export interface MaterialDonutItem {
 @Component({
   selector: 'app-material-donut-chart',
   standalone: true,
-  imports: [CommonModule, PremiumChartTooltipComponent],
+  imports: [CommonModule, NgApexchartsModule],
   templateUrl: './material-donut-chart.component.html',
   styleUrl: './material-donut-chart.component.css',
 })
@@ -20,41 +21,69 @@ export class MaterialDonutChartComponent {
   @Input() items: MaterialDonutItem[] = [];
   @Input() centerValue = '';
   @Input() centerLabel = '';
-  protected readonly activeSegment = signal<MaterialDonutItem | null>(null);
 
-  protected readonly segments = computed(() => {
-    let cursor = 0;
-    return this.items.map((item) => {
-      const start = cursor;
-      cursor += item.percentage;
-      return { ...item, path: this.arcPath(start, cursor) };
-    });
-  });
+  protected readonly hasData = computed(() => this.items.length > 0);
+  protected readonly series = computed(() => this.items.map((item) => item.value));
+  protected readonly labels = computed(() => this.items.map((item) => item.label));
+  protected readonly colors = computed(() => this.items.map((item) => item.color));
 
-  protected showTooltip(item: MaterialDonutItem): void { this.activeSegment.set(item); }
-  protected hideTooltip(): void { this.activeSegment.set(null); }
+  protected readonly chart: any = {
+    type: 'donut',
+    height: 190,
+    toolbar: { show: false },
+    background: 'transparent',
+    animations: { enabled: false },
+    dropShadow: { enabled: true, top: 0, left: 0, blur: 8, color: '#9FE870', opacity: 0.25 },
+  };
 
-  protected tooltipMetrics(item: MaterialDonutItem): PremiumTooltipMetric[] {
-    return [
-      { icon: 'trend', label: 'Participación', value: `${item.percentage}%` },
-      { icon: 'crop', label: 'Cultivo', value: item.label },
-      { icon: 'area', label: 'Lotes', value: `${item.value}` },
-      { icon: 'series', label: 'Total panel', value: `${this.centerValue} ${this.centerLabel}` },
-    ];
-  }
+  protected readonly fill = computed<any>(() => ({
+    type: 'gradient',
+    gradient: { shade: 'dark', type: 'diagonal1', shadeIntensity: 0.5, gradientToColors: this.colors(), opacityFrom: 0.95, opacityTo: 0.72, stops: [0, 100] },
+  }));
 
-  private arcPath(startPct: number, endPct: number): string {
-    const cx = 80;
-    const cy = 80;
-    const radius = 58;
-    const start = this.pointOnCircle(cx, cy, radius, startPct);
-    const end = this.pointOnCircle(cx, cy, radius, endPct);
-    const largeArc = endPct - startPct > 50 ? 1 : 0;
-    return `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArc} 1 ${end.x} ${end.y}`;
-  }
+  protected readonly stroke: any = { show: true, width: 2, colors: ['#0B1730'] };
 
-  private pointOnCircle(cx: number, cy: number, radius: number, pct: number): { x: number; y: number } {
-    const angle = (pct / 100) * Math.PI * 2 - Math.PI / 2;
-    return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
-  }
+  protected readonly dataLabels = { enabled: false };
+
+  protected readonly plotOptions = computed<any>(() => ({
+    pie: {
+      donut: {
+        size: '72%',
+        labels: {
+          show: true,
+          name: { show: false },
+          value: { show: false },
+          total: {
+            show: true,
+            showAlways: true,
+            label: this.centerLabel || 'Total',
+            color: '#8892AD',
+            fontSize: '12px',
+            fontWeight: 600,
+            formatter: () => this.centerValue,
+          },
+        },
+      },
+    },
+  }));
+
+  protected readonly tooltip = computed<any>(() => ({
+    enabled: true,
+    custom: ({ seriesIndex }: any) => {
+      const item = this.items[seriesIndex];
+      if (!item) return '';
+      return buildApexTooltipHtml({
+        title: item.label,
+        subtitle: 'Distribución',
+        status: `${item.percentage}%`,
+        accent: item.color,
+        rows: [
+          { label: 'Cantidad', value: `${item.value}` },
+          { label: 'Participación', value: `${item.percentage}%` },
+          { label: 'Total', value: `${this.centerValue} ${this.centerLabel}`.trim() },
+        ],
+        legends: [{ label: item.label, color: item.color }],
+      });
+    },
+  }));
 }

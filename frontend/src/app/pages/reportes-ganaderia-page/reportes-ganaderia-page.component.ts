@@ -188,6 +188,11 @@ export class ReportesGanaderiaPageComponent implements OnInit {
     type: 'gradient',
     gradient: { shade: 'dark', type: 'vertical', opacityFrom: 0.42, opacityTo: 0.04, stops: [0, 100] },
   };
+  readonly livestockBarGrid = {
+    borderColor: 'rgba(255,255,255,.06)',
+    strokeDashArray: 0,
+    padding: { left: 10, right: 6, top: -8, bottom: -8 },
+  } as const;
   readonly compactGrid = {
     borderColor: 'rgba(255,255,255,.06)',
     strokeDashArray: 0,

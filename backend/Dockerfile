@@ -18,15 +18,19 @@ COPY src ./src
 RUN mvn clean package -DskipTests -B -q
 
 # ---- Stage 2: Runtime ----
-FROM eclipse-temurin:17-jre-alpine AS runtime
+# Nota: se usa la imagen glibc (no alpine/musl) porque la combinacion
+# musl + G1GC en Temurin 17 puede producir un SIGSEGV nativo dentro de
+# G1ParScanThreadState::trim_queue_to_threshold al arrancar Hibernate.
+FROM eclipse-temurin:17-jre AS runtime
 
 WORKDIR /app
 
 # Utilidad requerida por el healthcheck del compose
-RUN apk add --no-cache curl
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+  && rm -rf /var/lib/apt/lists/*
 
 # Usuario no-root por seguridad
-RUN addgroup -S spring && adduser -S spring -G spring
+RUN groupadd -r spring && useradd -r -g spring spring
 
 # Copiar solo el JAR generado
 COPY --from=builder /app/target/*.jar app.jar
