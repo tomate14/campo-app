@@ -111,7 +111,7 @@ svg {
 
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 14px;
 }
 
@@ -153,11 +153,13 @@ svg {
   color: #b7c8ea;
   font-size: 0.9rem;
   font-weight: 500;
+  overflow-wrap: break-word;
 }
 
 .kpi-copy small {
   color: #9fe870;
   font-size: 0.76rem;
+  overflow-wrap: break-word;
 }
 
 .kpi-card > strong {
@@ -224,6 +226,10 @@ svg {
 
 .compact-chart-card apx-chart {
   margin: -8px -8px -16px;
+}
+
+.hbar-chart-card apx-chart {
+  margin-left: 0;
 }
 
 .panel-head {
@@ -1482,10 +1488,6 @@ apx-chart {
 }
 
 @media (max-width: 1537px) {
-  .kpi-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
   .kpi-card {
     grid-template-columns: 44px minmax(0, 1fr) auto;
     gap: 10px;
@@ -1511,7 +1513,6 @@ apx-chart {
     justify-content: flex-start;
   }
 
-  .kpi-grid,
   .row-livestock,
   .row-three,
   .row-four {
@@ -1520,7 +1521,6 @@ apx-chart {
 }
 
 @media (max-width: 760px) {
-  .kpi-grid,
   .row-livestock,
   .row-three,
   .row-four {

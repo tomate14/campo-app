@@ -11,7 +11,11 @@
       "Bash(npx ng *)",
       "Bash(git status *)",
       "Bash(docker info *)",
-      "Bash(docker compose *)"
+      "Bash(docker compose *)",
+      "Bash(python3 -c ' *)",
+      "Bash(docker stop *)",
+      "Bash(npx tsc *)",
+      "Bash(docker start *)"
     ]
   }
 }
