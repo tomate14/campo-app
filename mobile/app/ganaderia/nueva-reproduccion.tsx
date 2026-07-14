@@ -14,11 +14,16 @@ import {
   Plus,
   Search,
   Syringe,
+  Tag,
+  User,
+  UserPlus,
   type LucideIcon,
 } from 'lucide-react-native'
-import { useAnimales } from '../../shared/hooks/useAnimales'
+import { useAnimales, useCreateAnimal } from '../../shared/hooks/useAnimales'
+import { useOperarios } from '../../shared/hooks/useOperarios'
 import { useCreateControlPrenez, useCreateIndiceGenetico, useCreateInseminacion, useCreateMonta, useCreateParto } from '../../shared/hooks/useReproduccion'
 import type { Animal } from '../../shared/types/ganaderia'
+import type { Operario } from '../../shared/types/operarios'
 
 type ActividadTipo = 'MONTA' | 'INSEMINACION' | 'PRENEZ' | 'PARTO' | 'INDICE'
 
@@ -54,12 +59,19 @@ const VIABILIDADES = [
   { value: 'OBSERVACION', label: 'Observación' },
 ]
 
+const SEXOS_ANIMAL = [
+  { value: 'HEMBRA', label: 'Hembra' },
+  { value: 'MACHO', label: 'Macho' },
+]
+
 const HEMBRA_TOKENS = ['femenino', 'hembra', 'f']
 const MACHO_TOKENS = ['masculino', 'macho', 'toro', 'm']
 
 export default function NuevaReproduccionScreen() {
   const router = useRouter()
   const { data: animales = [], isLoading: loadingAnimales } = useAnimales()
+  const { data: operarios = [] } = useOperarios({ estado: 'ACTIVO' })
+  const createAnimal = useCreateAnimal()
 
   const createMonta = useCreateMonta()
   const createInseminacion = useCreateInseminacion()
@@ -79,27 +91,51 @@ export default function NuevaReproduccionScreen() {
   const [resultadoMonta, setResultadoMonta] = useState('PENDIENTE')
 
   const [geneticaUsada, setGeneticaUsada] = useState('')
-  const [tecnico, setTecnico] = useState('')
+  const [tecnicoId, setTecnicoId] = useState('')
   const [costo, setCosto] = useState('')
 
   const [estadoPrenez, setEstadoPrenez] = useState('PRENADA')
   const [fechaEstimadaParto, setFechaEstimadaParto] = useState('')
   const [nivelRiesgoParto, setNivelRiesgoParto] = useState('MEDIO')
-  const [veterinario, setVeterinario] = useState('')
+  const [veterinarioId, setVeterinarioId] = useState('')
 
   const [madreId, setMadreId] = useState('')
   const [terneroId, setTerneroId] = useState('')
-  const [complicaciones, setComplicaciones] = useState('')
   const [viabilidadTernero, setViabilidadTernero] = useState('VIABLE')
 
   const [animalId, setAnimalId] = useState('')
   const [epd, setEpd] = useState('')
   const [dep, setDep] = useState('')
   const [indiceProductivo, setIndiceProductivo] = useState('')
-  const [fuente, setFuente] = useState('')
+
+  const [addingTernero, setAddingTernero] = useState(false)
+  const [newAnimalCaravana, setNewAnimalCaravana] = useState('')
+  const [newAnimalSexo, setNewAnimalSexo] = useState('HEMBRA')
+  const [newAnimalRaza, setNewAnimalRaza] = useState('')
 
   const hembras = useMemo(() => animales.filter((animal) => matchesSexo(animal.sexo, HEMBRA_TOKENS)), [animales])
   const machos = useMemo(() => animales.filter((animal) => matchesSexo(animal.sexo, MACHO_TOKENS)), [animales])
+
+  const handleCreateTernero = async () => {
+    if (!newAnimalCaravana.trim()) {
+      Alert.alert('Error', 'Ingresá la caravana del animal.')
+      return
+    }
+    try {
+      const created = await createAnimal.mutateAsync({
+        caravana: newAnimalCaravana.trim(),
+        sexo: newAnimalSexo,
+        raza: newAnimalRaza.trim() || undefined,
+      })
+      setTerneroId(created.id)
+      setAddingTernero(false)
+      setNewAnimalCaravana('')
+      setNewAnimalRaza('')
+      setNewAnimalSexo('HEMBRA')
+    } catch {
+      Alert.alert('Error', 'No se pudo registrar el animal.')
+    }
+  }
 
   const handleSubmit = async () => {
     try {
@@ -118,7 +154,7 @@ export default function NuevaReproduccionScreen() {
           vacaId,
           fecha,
           geneticaUsada: geneticaUsada.trim(),
-          tecnico: tecnico.trim() || undefined,
+          tecnico: tecnicoId || undefined,
           costo: parseNumber(costo),
           observaciones: observaciones || undefined,
         })
@@ -133,7 +169,7 @@ export default function NuevaReproduccionScreen() {
           estado: estadoPrenez,
           fechaEstimadaParto: fechaEstimadaParto || undefined,
           nivelRiesgoParto,
-          veterinario: veterinario.trim() || undefined,
+          veterinario: veterinarioId || undefined,
           observaciones: observaciones || undefined,
         })
       } else if (tipo === 'PARTO') {
@@ -145,7 +181,6 @@ export default function NuevaReproduccionScreen() {
           madreId,
           terneroId: terneroId || undefined,
           fecha,
-          complicaciones: complicaciones.trim() || undefined,
           viabilidadTernero,
           observaciones: observaciones || undefined,
         })
@@ -160,7 +195,6 @@ export default function NuevaReproduccionScreen() {
           epd: parseNumber(epd),
           dep: parseNumber(dep),
           indiceProductivo: parseNumber(indiceProductivo),
-          fuente: fuente.trim() || undefined,
           observaciones: observaciones || undefined,
         })
       }
@@ -209,10 +243,8 @@ export default function NuevaReproduccionScreen() {
             <>
               {tipo === 'MONTA' && (
                 <>
-                  <SectionTitle>Vaca</SectionTitle>
-                  <AnimalPicker animales={hembras} selected={vacaId} onSelect={setVacaId} placeholder="Buscar vaca por caravana" />
-                  <SectionTitle>Toro</SectionTitle>
-                  <AnimalPicker animales={machos} selected={toroId} onSelect={setToroId} placeholder="Buscar toro por caravana" />
+                  <AnimalSelect label="Vaca" animales={hembras} value={vacaId} onChange={setVacaId} placeholder="Buscar vaca por caravana" />
+                  <AnimalSelect label="Toro" animales={machos} value={toroId} onChange={setToroId} placeholder="Buscar toro por caravana" />
                   <SectionTitle>Resultado</SectionTitle>
                   <OptionChips options={RESULTADOS_MONTA} selected={resultadoMonta} onSelect={setResultadoMonta} />
                 </>
@@ -220,12 +252,10 @@ export default function NuevaReproduccionScreen() {
 
               {tipo === 'INSEMINACION' && (
                 <>
-                  <SectionTitle>Vaca</SectionTitle>
-                  <AnimalPicker animales={hembras} selected={vacaId} onSelect={setVacaId} placeholder="Buscar vaca por caravana" />
+                  <AnimalSelect label="Vaca" animales={hembras} value={vacaId} onChange={setVacaId} placeholder="Buscar vaca por caravana" />
                   <SectionTitle>Genética usada</SectionTitle>
                   <TextField value={geneticaUsada} onChangeText={setGeneticaUsada} placeholder="Ej: Angus PC 4021" />
-                  <SectionTitle>Técnico (opcional)</SectionTitle>
-                  <TextField value={tecnico} onChangeText={setTecnico} placeholder="Nombre del técnico" />
+                  <PersonSelect label="Técnico (opcional)" operarios={operarios} value={tecnicoId} onChange={setTecnicoId} placeholder="Buscar responsable" />
                   <SectionTitle>Costo (opcional)</SectionTitle>
                   <TextField value={costo} onChangeText={setCosto} placeholder="0" keyboardType="decimal-pad" />
                 </>
@@ -233,8 +263,7 @@ export default function NuevaReproduccionScreen() {
 
               {tipo === 'PRENEZ' && (
                 <>
-                  <SectionTitle>Vaca</SectionTitle>
-                  <AnimalPicker animales={hembras} selected={vacaId} onSelect={setVacaId} placeholder="Buscar vaca por caravana" />
+                  <AnimalSelect label="Vaca" animales={hembras} value={vacaId} onChange={setVacaId} placeholder="Buscar vaca por caravana" />
                   <SectionTitle>Estado</SectionTitle>
                   <OptionChips options={ESTADOS_PRENEZ} selected={estadoPrenez} onSelect={setEstadoPrenez} />
                   <SectionTitle>Parto estimado (opcional)</SectionTitle>
@@ -245,19 +274,41 @@ export default function NuevaReproduccionScreen() {
                   </Pressable>
                   <SectionTitle>Nivel de riesgo del parto</SectionTitle>
                   <OptionChips options={NIVELES_RIESGO} selected={nivelRiesgoParto} onSelect={setNivelRiesgoParto} />
-                  <SectionTitle>Veterinario (opcional)</SectionTitle>
-                  <TextField value={veterinario} onChangeText={setVeterinario} placeholder="Nombre del veterinario" />
+                  <PersonSelect label="Veterinario (opcional)" operarios={operarios} value={veterinarioId} onChange={setVeterinarioId} placeholder="Buscar veterinario" />
                 </>
               )}
 
               {tipo === 'PARTO' && (
                 <>
-                  <SectionTitle>Madre</SectionTitle>
-                  <AnimalPicker animales={hembras} selected={madreId} onSelect={setMadreId} placeholder="Buscar madre por caravana" />
-                  <SectionTitle>Ternero (opcional)</SectionTitle>
-                  <AnimalPicker animales={animales} selected={terneroId} onSelect={setTerneroId} placeholder="Buscar ternero por caravana" />
-                  <SectionTitle>Complicaciones (opcional)</SectionTitle>
-                  <TextField value={complicaciones} onChangeText={setComplicaciones} placeholder="Sin complicaciones" />
+                  <AnimalSelect label="Madre" animales={hembras} value={madreId} onChange={setMadreId} placeholder="Buscar madre por caravana" />
+
+                  <AnimalSelect label="Ternero (opcional)" animales={animales} value={terneroId} onChange={setTerneroId} placeholder="Buscar ternero por caravana" />
+                  <Pressable style={styles.addAnimalButton} onPress={() => setAddingTernero((current) => !current)}>
+                    <UserPlus size={16} color="#9FE870" strokeWidth={2.2} />
+                    <Text style={styles.addAnimalText}>{addingTernero ? 'Cancelar' : 'Registrar nuevo animal'}</Text>
+                  </Pressable>
+
+                  {addingTernero && (
+                    <View style={styles.newAnimalBox}>
+                      <Text style={styles.newAnimalTitle}>Alta rápida de animal</Text>
+                      <TextField value={newAnimalCaravana} onChangeText={setNewAnimalCaravana} placeholder="Caravana" />
+                      <View style={styles.chipRow}>
+                        {SEXOS_ANIMAL.map((option) => {
+                          const active = newAnimalSexo === option.value
+                          return (
+                            <Pressable key={option.value} style={[styles.chip, active && styles.chipActive]} onPress={() => setNewAnimalSexo(option.value)}>
+                              <Text style={[styles.chipText, active && styles.chipTextActive]}>{option.label}</Text>
+                            </Pressable>
+                          )
+                        })}
+                      </View>
+                      <TextField value={newAnimalRaza} onChangeText={setNewAnimalRaza} placeholder="Raza (opcional)" />
+                      <Pressable style={[styles.saveAnimalButton, createAnimal.isPending && styles.submitButtonDisabled]} onPress={handleCreateTernero} disabled={createAnimal.isPending}>
+                        <Text style={styles.saveAnimalText}>{createAnimal.isPending ? 'Guardando...' : 'Guardar animal'}</Text>
+                      </Pressable>
+                    </View>
+                  )}
+
                   <SectionTitle>Viabilidad</SectionTitle>
                   <OptionChips options={VIABILIDADES} selected={viabilidadTernero} onSelect={setViabilidadTernero} />
                 </>
@@ -265,16 +316,13 @@ export default function NuevaReproduccionScreen() {
 
               {tipo === 'INDICE' && (
                 <>
-                  <SectionTitle>Animal</SectionTitle>
-                  <AnimalPicker animales={animales} selected={animalId} onSelect={setAnimalId} placeholder="Buscar animal por caravana" />
+                  <AnimalSelect label="Animal" animales={animales} value={animalId} onChange={setAnimalId} placeholder="Buscar animal por caravana" />
                   <SectionTitle>EPD (opcional)</SectionTitle>
                   <TextField value={epd} onChangeText={setEpd} placeholder="0" keyboardType="decimal-pad" />
                   <SectionTitle>DEP (opcional)</SectionTitle>
                   <TextField value={dep} onChangeText={setDep} placeholder="0" keyboardType="decimal-pad" />
                   <SectionTitle>Índice productivo (opcional)</SectionTitle>
                   <TextField value={indiceProductivo} onChangeText={setIndiceProductivo} placeholder="0" keyboardType="decimal-pad" />
-                  <SectionTitle>Fuente (opcional)</SectionTitle>
-                  <TextField value={fuente} onChangeText={setFuente} placeholder="Laboratorio, catálogo, etc." />
                 </>
               )}
             </>
@@ -348,35 +396,92 @@ function OptionChips({ options, selected, onSelect }: { options: Array<{ value: 
   )
 }
 
-function AnimalPicker({ animales, selected, onSelect, placeholder }: { animales: Animal[]; selected: string; onSelect: (id: string) => void; placeholder: string }) {
+function AnimalSelect({ label, animales, value, onChange, placeholder }: { label: string; animales: Animal[]; value: string; onChange: (id: string) => void; placeholder: string }) {
   const [query, setQuery] = useState('')
   const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase()
-    if (!normalized) return animales
-    return animales.filter((animal) => animal.caravana?.toLowerCase().includes(normalized))
+    const term = query.trim().toLowerCase()
+    return animales
+      .filter((item) => !term || [item.caravana, item.raza, item.potreroNombre].some((field) => field?.toLowerCase().includes(term)))
+      .slice(0, 2)
   }, [animales, query])
 
   return (
-    <View style={styles.pickerBlock}>
-      <View style={styles.searchWrap}>
-        <Search size={16} color="#6F7D9A" strokeWidth={2} />
-        <TextInput value={query} onChangeText={setQuery} style={styles.searchInput} placeholder={placeholder} placeholderTextColor="#6F7D9A" />
+    <View style={styles.fieldGroup}>
+      <SectionTitle>{label}</SectionTitle>
+      <View style={styles.searchBox}>
+        <Search size={18} color="#6EA8FF" strokeWidth={2} />
+        <TextInput style={styles.searchInput} value={query} onChangeText={setQuery} placeholder={placeholder} placeholderTextColor="#6F7D9A" />
       </View>
-      {!filtered.length ? (
-        <Text style={styles.emptyPickerText}>Sin animales disponibles.</Text>
-      ) : (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.loteChips}>
-          {filtered.map((animal) => {
-            const isSelected = selected === animal.id
-            return (
-              <Pressable key={animal.id} style={[styles.loteChip, isSelected && styles.loteChipActive]} onPress={() => onSelect(animal.id)}>
-                <Text style={[styles.loteChipText, isSelected && styles.loteChipTextActive]}>{animal.caravana}</Text>
-                {isSelected && <ChipCheck />}
-              </Pressable>
-            )
-          })}
-        </ScrollView>
-      )}
+      <View style={styles.peopleList}>
+        {filtered.map((item) => {
+          const active = item.id === value
+          return (
+            <Pressable
+              key={item.id}
+              style={[styles.personItem, active && styles.personItemActive]}
+              onPress={() => {
+                onChange(item.id)
+                setQuery(item.caravana)
+              }}
+            >
+              <View style={styles.personIcon}>
+                <Tag size={16} color={active ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
+              </View>
+              <View style={styles.personText}>
+                <Text style={styles.personName}>{item.caravana}</Text>
+                <Text style={styles.personRole}>{item.raza ?? item.potreroNombre ?? 'Sin datos'}</Text>
+              </View>
+              {active && <Check size={16} color="#9FE870" strokeWidth={2.4} />}
+            </Pressable>
+          )
+        })}
+        {!filtered.length && <Text style={styles.emptyPickerText}>Sin animales disponibles.</Text>}
+      </View>
+    </View>
+  )
+}
+
+function PersonSelect({ label, operarios, value, onChange, placeholder }: { label: string; operarios: Operario[]; value: string; onChange: (id: string) => void; placeholder: string }) {
+  const [query, setQuery] = useState('')
+  const filtered = useMemo(() => {
+    const term = query.trim().toLowerCase()
+    return operarios
+      .filter((item) => !term || [item.nombreCompleto, item.username, item.documentoNumero, item.rolOperativo].some((field) => field?.toLowerCase().includes(term)))
+      .slice(0, 6)
+  }, [operarios, query])
+
+  return (
+    <View style={styles.fieldGroup}>
+      <SectionTitle>{label}</SectionTitle>
+      <View style={styles.searchBox}>
+        <Search size={18} color="#6EA8FF" strokeWidth={2} />
+        <TextInput style={styles.searchInput} value={query} onChangeText={setQuery} placeholder={placeholder} placeholderTextColor="#6F7D9A" />
+      </View>
+      <ScrollView style={styles.peopleListScroll} contentContainerStyle={styles.peopleList} nestedScrollEnabled showsVerticalScrollIndicator={false}>
+        {filtered.map((item) => {
+          const active = item.id === value
+          return (
+            <Pressable
+              key={item.id}
+              style={[styles.personItem, active && styles.personItemActive]}
+              onPress={() => {
+                onChange(item.id)
+                setQuery(item.nombreCompleto)
+              }}
+            >
+              <View style={styles.personIcon}>
+                <User size={16} color={active ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
+              </View>
+              <View style={styles.personText}>
+                <Text style={styles.personName}>{item.nombreCompleto}</Text>
+                <Text style={styles.personRole}>{item.rolOperativo ?? item.username ?? 'Operario'}</Text>
+              </View>
+              {active && <Check size={16} color="#9FE870" strokeWidth={2.4} />}
+            </Pressable>
+          )
+        })}
+        {!filtered.length && <Text style={styles.emptyPickerText}>Sin personas disponibles.</Text>}
+      </ScrollView>
     </View>
   )
 }
@@ -523,18 +628,36 @@ const styles = StyleSheet.create({
   cardCheck: { position: 'absolute', top: 8, right: 8, width: 18, height: 18, borderRadius: 9, alignItems: 'center', justifyContent: 'center', backgroundColor: '#9FE870' },
   eventTitle: { color: '#FFFFFF', fontSize: 11, fontWeight: '900', marginTop: 9, textAlign: 'center' },
   eventDescription: { color: '#A6B0CF', fontSize: 9, lineHeight: 12, marginTop: 3, textAlign: 'center' },
-  pickerBlock: { gap: 10 },
-  searchWrap: {
-    height: 44, borderRadius: 14, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 8,
+  fieldGroup: { gap: 0 },
+  searchBox: {
+    height: 52, borderRadius: 18, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 10,
     backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
   },
-  searchInput: { flex: 1, color: '#FFFFFF', fontSize: 13, padding: 0 },
+  searchInput: { flex: 1, color: '#FFFFFF', fontSize: 14, padding: 0 },
+  peopleListScroll: { maxHeight: 220, marginTop: 8 },
+  peopleList: { gap: 8, marginTop: 8 },
   emptyPickerText: { color: '#A6B0CF', fontSize: 12, paddingVertical: 8 },
-  loteChips: { gap: 10, paddingRight: 20 },
-  loteChip: { height: 48, paddingHorizontal: 18, borderRadius: 999, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
-  loteChipActive: { backgroundColor: 'rgba(159,232,112,0.15)', borderColor: '#9FE870', shadowColor: '#9FE870', shadowOpacity: 0.24, shadowRadius: 18, shadowOffset: { width: 0, height: 8 } },
-  loteChipText: { color: '#DCE8F8', fontSize: 13, fontWeight: '800' },
-  loteChipTextActive: { color: '#FFFFFF' },
+  personItem: {
+    minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: 18, paddingHorizontal: 10,
+    backgroundColor: 'rgba(8,18,37,0.72)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)',
+  },
+  personItemActive: { borderColor: 'rgba(159,232,112,0.6)', backgroundColor: 'rgba(159,232,112,0.10)' },
+  personIcon: { width: 32, height: 32, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.04)' },
+  personText: { flex: 1 },
+  personName: { color: '#FFFFFF', fontSize: 13, fontWeight: '700' },
+  personRole: { color: '#A6B0CF', fontSize: 11, marginTop: 2 },
+  addAnimalButton: {
+    height: 44, marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+    borderRadius: 14, backgroundColor: 'rgba(159,232,112,0.08)', borderWidth: 1, borderColor: 'rgba(159,232,112,0.24)',
+  },
+  addAnimalText: { color: '#9FE870', fontSize: 12, fontWeight: '800' },
+  newAnimalBox: {
+    marginTop: 12, padding: 14, borderRadius: 18, gap: 10,
+    backgroundColor: 'rgba(8,18,37,0.72)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
+  },
+  newAnimalTitle: { color: '#FFFFFF', fontSize: 12, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 0.5 },
+  saveAnimalButton: { height: 46, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: '#9FE870' },
+  saveAnimalText: { color: '#081225', fontSize: 13, fontWeight: '900' },
   chipCheck: { width: 18, height: 18, borderRadius: 9, alignItems: 'center', justifyContent: 'center', backgroundColor: '#9FE870' },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   chip: { minHeight: 42, paddingHorizontal: 14, borderRadius: 999, flexDirection: 'row', alignItems: 'center', gap: 7, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },

@@ -1,6 +1,6 @@
 import { apiClient as api } from './client'
 import type {
-  Animal, ApiResponse,
+  Animal, AnimalRequest, ApiResponse,
   ControlPrenezRequest, ControlPrenezResponse,
   IndiceGeneticoRequest, IndiceGeneticoResponse,
   InseminacionRequest, InseminacionResponse,
@@ -29,6 +29,9 @@ export const deletePotrero = (id: string) =>
 
 export const getAnimales = (params?: { caravana?: string; raza?: string; ubicacion?: string; estado?: string }) =>
   api.get<ApiResponse<Animal[]>>('/ganaderia/trazabilidad/animales', { params }).then(r => r.data.data)
+
+export const createAnimal = (data: AnimalRequest) =>
+  api.post<ApiResponse<Animal>>('/ganaderia/trazabilidad/animales', data).then(r => r.data.data)
 
 export const createMonta = (data: MontaRequest) =>
   api.post<ApiResponse<MontaResponse>>('/ganaderia/reproduccion/montas', data).then(r => r.data.data)
