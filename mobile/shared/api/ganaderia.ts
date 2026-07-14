@@ -7,6 +7,7 @@ import type {
   MontaRequest, MontaResponse,
   PartoRequest, PartoResponse,
   Potrero, PotreroRequest,
+  RazaBovina,
 } from '../types/ganaderia'
 
 export const getPotrerosMapa = () =>
@@ -32,6 +33,9 @@ export const getAnimales = (params?: { caravana?: string; raza?: string; ubicaci
 
 export const createAnimal = (data: AnimalRequest) =>
   api.post<ApiResponse<Animal>>('/ganaderia/trazabilidad/animales', data).then(r => r.data.data)
+
+export const getRazasBovinas = (params?: { search?: string }) =>
+  api.get<ApiResponse<RazaBovina[]>>('/ganaderia/trazabilidad/razas-bovinas', { params }).then(r => r.data.data)
 
 export const createMonta = (data: MontaRequest) =>
   api.post<ApiResponse<MontaResponse>>('/ganaderia/reproduccion/montas', data).then(r => r.data.data)

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createPotrero, deletePotrero, getPotrero, getPotrerosMapa, updatePotrero } from '../api/ganaderia'
+import { createPotrero, deletePotrero, getPotrero, getPotreros, getPotrerosMapa, updatePotrero } from '../api/ganaderia'
 import type { PotreroRequest } from '../types/ganaderia'
 
 const POTREROS_KEY = 'potreros'
@@ -8,6 +8,13 @@ export function usePotrerosMapa() {
   return useQuery({
     queryKey: [POTREROS_KEY, 'mapa'],
     queryFn: getPotrerosMapa,
+  })
+}
+
+export function usePotrerosList() {
+  return useQuery({
+    queryKey: [POTREROS_KEY, 'lista'],
+    queryFn: getPotreros,
   })
 }
 

@@ -9,6 +9,7 @@ import {
   Check,
   ChevronDown,
   Dna,
+  Fence,
   Heart,
   PencilLine,
   Plus,
@@ -21,11 +22,14 @@ import {
 } from 'lucide-react-native'
 import { useAnimales, useCreateAnimal } from '../../shared/hooks/useAnimales'
 import { useOperarios } from '../../shared/hooks/useOperarios'
+import { usePotrerosList } from '../../shared/hooks/usePotreros'
+import { useRazasBovinas } from '../../shared/hooks/useRazasBovinas'
 import { useCreateControlPrenez, useCreateIndiceGenetico, useCreateInseminacion, useCreateMonta, useCreateParto } from '../../shared/hooks/useReproduccion'
-import type { Animal } from '../../shared/types/ganaderia'
+import type { Animal, Potrero, RazaBovina } from '../../shared/types/ganaderia'
 import type { Operario } from '../../shared/types/operarios'
 
 type ActividadTipo = 'MONTA' | 'INSEMINACION' | 'PRENEZ' | 'PARTO' | 'INDICE'
+type DatePickerTarget = 'fecha' | 'fechaEstimadaParto' | 'nuevoAnimalFechaNacimiento' | 'nuevoAnimalFechaCompra'
 
 const ACTIVIDAD_TYPES: Array<{ value: ActividadTipo; title: string; description: string; Icon: LucideIcon; color: string }> = [
   { value: 'MONTA', title: 'Nueva monta', description: 'Servicio natural', Icon: Heart, color: '#9FE870' },
@@ -60,8 +64,8 @@ const VIABILIDADES = [
 ]
 
 const SEXOS_ANIMAL = [
-  { value: 'HEMBRA', label: 'Hembra' },
-  { value: 'MACHO', label: 'Macho' },
+  { value: 'Femenino', label: 'Femenino' },
+  { value: 'Masculino', label: 'Masculino' },
 ]
 
 const HEMBRA_TOKENS = ['femenino', 'hembra', 'f']
@@ -71,6 +75,8 @@ export default function NuevaReproduccionScreen() {
   const router = useRouter()
   const { data: animales = [], isLoading: loadingAnimales } = useAnimales()
   const { data: operarios = [] } = useOperarios({ estado: 'ACTIVO' })
+  const { data: razas = [] } = useRazasBovinas()
+  const { data: potrerosList = [] } = usePotrerosList()
   const createAnimal = useCreateAnimal()
 
   const createMonta = useCreateMonta()
@@ -83,7 +89,7 @@ export default function NuevaReproduccionScreen() {
 
   const [tipo, setTipo] = useState<ActividadTipo>('MONTA')
   const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0])
-  const [datePickerTarget, setDatePickerTarget] = useState<'fecha' | 'fechaEstimadaParto' | null>(null)
+  const [datePickerTarget, setDatePickerTarget] = useState<DatePickerTarget | null>(null)
   const [observaciones, setObservaciones] = useState('')
 
   const [vacaId, setVacaId] = useState('')
@@ -110,11 +116,35 @@ export default function NuevaReproduccionScreen() {
 
   const [addingTernero, setAddingTernero] = useState(false)
   const [newAnimalCaravana, setNewAnimalCaravana] = useState('')
-  const [newAnimalSexo, setNewAnimalSexo] = useState('HEMBRA')
-  const [newAnimalRaza, setNewAnimalRaza] = useState('')
+  const [newAnimalRazaId, setNewAnimalRazaId] = useState('')
+  const [newAnimalRazaNombre, setNewAnimalRazaNombre] = useState('')
+  const [newAnimalSexo, setNewAnimalSexo] = useState('Femenino')
+  const [newAnimalFechaNacimiento, setNewAnimalFechaNacimiento] = useState('')
+  const [newAnimalFechaCompra, setNewAnimalFechaCompra] = useState('')
+  const [newAnimalPeso, setNewAnimalPeso] = useState('')
+  const [newAnimalRfid, setNewAnimalRfid] = useState('')
+  const [newAnimalPotreroId, setNewAnimalPotreroId] = useState('')
+  const [newAnimalMadreId, setNewAnimalMadreId] = useState('')
+  const [newAnimalPadreId, setNewAnimalPadreId] = useState('')
+  const [newAnimalObservaciones, setNewAnimalObservaciones] = useState('')
 
   const hembras = useMemo(() => animales.filter((animal) => matchesSexo(animal.sexo, HEMBRA_TOKENS)), [animales])
   const machos = useMemo(() => animales.filter((animal) => matchesSexo(animal.sexo, MACHO_TOKENS)), [animales])
+
+  const resetNewAnimalForm = () => {
+    setNewAnimalCaravana('')
+    setNewAnimalRazaId('')
+    setNewAnimalRazaNombre('')
+    setNewAnimalSexo('Femenino')
+    setNewAnimalFechaNacimiento('')
+    setNewAnimalFechaCompra('')
+    setNewAnimalPeso('')
+    setNewAnimalRfid('')
+    setNewAnimalPotreroId('')
+    setNewAnimalMadreId('')
+    setNewAnimalPadreId('')
+    setNewAnimalObservaciones('')
+  }
 
   const handleCreateTernero = async () => {
     if (!newAnimalCaravana.trim()) {
@@ -124,14 +154,21 @@ export default function NuevaReproduccionScreen() {
     try {
       const created = await createAnimal.mutateAsync({
         caravana: newAnimalCaravana.trim(),
+        razaId: newAnimalRazaId || undefined,
+        raza: newAnimalRazaNombre || undefined,
         sexo: newAnimalSexo,
-        raza: newAnimalRaza.trim() || undefined,
+        fechaNacimiento: newAnimalFechaNacimiento || undefined,
+        fechaCompra: newAnimalFechaCompra || undefined,
+        pesoActualKg: parseNumber(newAnimalPeso),
+        rfidCodigo: newAnimalRfid.trim() || undefined,
+        potreroId: newAnimalPotreroId || undefined,
+        madreId: newAnimalMadreId || undefined,
+        padreId: newAnimalPadreId || undefined,
+        observaciones: newAnimalObservaciones.trim() || undefined,
       })
       setTerneroId(created.id)
       setAddingTernero(false)
-      setNewAnimalCaravana('')
-      setNewAnimalRaza('')
-      setNewAnimalSexo('HEMBRA')
+      resetNewAnimalForm()
     } catch {
       Alert.alert('Error', 'No se pudo registrar el animal.')
     }
@@ -203,6 +240,20 @@ export default function NuevaReproduccionScreen() {
     } catch {
       Alert.alert('Error', 'No se pudo registrar la actividad.')
     }
+  }
+
+  const datePickerValue = (() => {
+    if (datePickerTarget === 'fechaEstimadaParto') return fechaEstimadaParto || fecha
+    if (datePickerTarget === 'nuevoAnimalFechaNacimiento') return newAnimalFechaNacimiento || fecha
+    if (datePickerTarget === 'nuevoAnimalFechaCompra') return newAnimalFechaCompra || fecha
+    return fecha
+  })()
+
+  const handleDatePickerChange = (value: string) => {
+    if (datePickerTarget === 'fechaEstimadaParto') setFechaEstimadaParto(value)
+    else if (datePickerTarget === 'nuevoAnimalFechaNacimiento') setNewAnimalFechaNacimiento(value)
+    else if (datePickerTarget === 'nuevoAnimalFechaCompra') setNewAnimalFechaCompra(value)
+    else setFecha(value)
   }
 
   return (
@@ -290,19 +341,56 @@ export default function NuevaReproduccionScreen() {
 
                   {addingTernero && (
                     <View style={styles.newAnimalBox}>
-                      <Text style={styles.newAnimalTitle}>Alta rápida de animal</Text>
+                      <Text style={styles.newAnimalTitle}>Alta de animal</Text>
+
+                      <SectionTitle>Caravana</SectionTitle>
                       <TextField value={newAnimalCaravana} onChangeText={setNewAnimalCaravana} placeholder="Caravana" />
-                      <View style={styles.chipRow}>
-                        {SEXOS_ANIMAL.map((option) => {
-                          const active = newAnimalSexo === option.value
-                          return (
-                            <Pressable key={option.value} style={[styles.chip, active && styles.chipActive]} onPress={() => setNewAnimalSexo(option.value)}>
-                              <Text style={[styles.chipText, active && styles.chipTextActive]}>{option.label}</Text>
-                            </Pressable>
-                          )
-                        })}
+
+                      <RazaSelect razas={razas} value={newAnimalRazaId} onChange={(id, nombre) => { setNewAnimalRazaId(id); setNewAnimalRazaNombre(nombre) }} placeholder="Buscar raza bovina" />
+
+                      <SectionTitle>Sexo</SectionTitle>
+                      <OptionChips options={SEXOS_ANIMAL} selected={newAnimalSexo} onSelect={setNewAnimalSexo} />
+
+                      <SectionTitle>Fecha de nacimiento (opcional)</SectionTitle>
+                      <Pressable style={styles.dateInput} onPress={() => setDatePickerTarget('nuevoAnimalFechaNacimiento')}>
+                        <CalendarDays size={18} color="#A6B0CF" strokeWidth={2} />
+                        <Text style={styles.dateText}>{newAnimalFechaNacimiento ? formatDateDisplay(newAnimalFechaNacimiento) : 'Sin definir'}</Text>
+                        <ChevronDown size={18} color="#A6B0CF" strokeWidth={2} />
+                      </Pressable>
+
+                      <SectionTitle>Fecha de compra (opcional)</SectionTitle>
+                      <Pressable style={styles.dateInput} onPress={() => setDatePickerTarget('nuevoAnimalFechaCompra')}>
+                        <CalendarDays size={18} color="#A6B0CF" strokeWidth={2} />
+                        <Text style={styles.dateText}>{newAnimalFechaCompra ? formatDateDisplay(newAnimalFechaCompra) : 'Sin definir'}</Text>
+                        <ChevronDown size={18} color="#A6B0CF" strokeWidth={2} />
+                      </Pressable>
+
+                      <SectionTitle>Peso actual kg (opcional)</SectionTitle>
+                      <TextField value={newAnimalPeso} onChangeText={setNewAnimalPeso} placeholder="0" keyboardType="decimal-pad" />
+
+                      <SectionTitle>RFID (opcional)</SectionTitle>
+                      <TextField value={newAnimalRfid} onChangeText={setNewAnimalRfid} placeholder="Código RFID" />
+
+                      <PotreroSelect potreros={potrerosList} value={newAnimalPotreroId} onChange={setNewAnimalPotreroId} placeholder="Buscar potrero" />
+
+                      <AnimalSelect label="Madre (opcional)" animales={hembras} value={newAnimalMadreId} onChange={setNewAnimalMadreId} placeholder="Buscar madre por caravana" hideWhenEmpty />
+
+                      <AnimalSelect label="Padre (opcional)" animales={machos} value={newAnimalPadreId} onChange={setNewAnimalPadreId} placeholder="Buscar padre por caravana" hideWhenEmpty />
+
+                      <SectionTitle>Observaciones (opcional)</SectionTitle>
+                      <View style={styles.textAreaWrap}>
+                        <PencilLine size={20} color="#6EA8FF" strokeWidth={1.9} />
+                        <TextInput
+                          value={newAnimalObservaciones}
+                          onChangeText={setNewAnimalObservaciones}
+                          style={styles.textArea}
+                          placeholder="Observaciones del animal..."
+                          placeholderTextColor="#6F7D9A"
+                          multiline
+                          textAlignVertical="top"
+                        />
                       </View>
-                      <TextField value={newAnimalRaza} onChangeText={setNewAnimalRaza} placeholder="Raza (opcional)" />
+
                       <Pressable style={[styles.saveAnimalButton, createAnimal.isPending && styles.submitButtonDisabled]} onPress={handleCreateTernero} disabled={createAnimal.isPending}>
                         <Text style={styles.saveAnimalText}>{createAnimal.isPending ? 'Guardando...' : 'Guardar animal'}</Text>
                       </Pressable>
@@ -360,8 +448,8 @@ export default function NuevaReproduccionScreen() {
 
       <DatePickerSheet
         visible={datePickerTarget !== null}
-        value={datePickerTarget === 'fechaEstimadaParto' ? fechaEstimadaParto || fecha : fecha}
-        onChange={datePickerTarget === 'fechaEstimadaParto' ? setFechaEstimadaParto : setFecha}
+        value={datePickerValue}
+        onChange={handleDatePickerChange}
         onClose={() => setDatePickerTarget(null)}
       />
     </SafeAreaView>
@@ -396,14 +484,26 @@ function OptionChips({ options, selected, onSelect }: { options: Array<{ value: 
   )
 }
 
-function AnimalSelect({ label, animales, value, onChange, placeholder }: { label: string; animales: Animal[]; value: string; onChange: (id: string) => void; placeholder: string }) {
+function AnimalSelect({
+  label, animales, value, onChange, placeholder, hideWhenEmpty = false,
+}: {
+  label: string
+  animales: Animal[]
+  value: string
+  onChange: (id: string) => void
+  placeholder: string
+  hideWhenEmpty?: boolean
+}) {
   const [query, setQuery] = useState('')
+  const isEmptyQuery = !query.trim()
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase()
+    if (!term && hideWhenEmpty) return []
     return animales
       .filter((item) => !term || [item.caravana, item.raza, item.potreroNombre].some((field) => field?.toLowerCase().includes(term)))
       .slice(0, 2)
-  }, [animales, query])
+  }, [animales, query, hideWhenEmpty])
+  const showEmptyMessage = !filtered.length && !(hideWhenEmpty && isEmptyQuery)
 
   return (
     <View style={styles.fieldGroup}>
@@ -412,43 +512,57 @@ function AnimalSelect({ label, animales, value, onChange, placeholder }: { label
         <Search size={18} color="#6EA8FF" strokeWidth={2} />
         <TextInput style={styles.searchInput} value={query} onChangeText={setQuery} placeholder={placeholder} placeholderTextColor="#6F7D9A" />
       </View>
-      <View style={styles.peopleList}>
-        {filtered.map((item) => {
-          const active = item.id === value
-          return (
-            <Pressable
-              key={item.id}
-              style={[styles.personItem, active && styles.personItemActive]}
-              onPress={() => {
-                onChange(item.id)
-                setQuery(item.caravana)
-              }}
-            >
-              <View style={styles.personIcon}>
-                <Tag size={16} color={active ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
-              </View>
-              <View style={styles.personText}>
-                <Text style={styles.personName}>{item.caravana}</Text>
-                <Text style={styles.personRole}>{item.raza ?? item.potreroNombre ?? 'Sin datos'}</Text>
-              </View>
-              {active && <Check size={16} color="#9FE870" strokeWidth={2.4} />}
-            </Pressable>
-          )
-        })}
-        {!filtered.length && <Text style={styles.emptyPickerText}>Sin animales disponibles.</Text>}
-      </View>
+      {!!filtered.length && (
+        <View style={styles.peopleList}>
+          {filtered.map((item) => {
+            const active = item.id === value
+            return (
+              <Pressable
+                key={item.id}
+                style={[styles.personItem, active && styles.personItemActive]}
+                onPress={() => {
+                  onChange(item.id)
+                  setQuery(item.caravana)
+                }}
+              >
+                <View style={styles.personIcon}>
+                  <Tag size={16} color={active ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
+                </View>
+                <View style={styles.personText}>
+                  <Text style={styles.personName}>{item.caravana}</Text>
+                  <Text style={styles.personRole}>{item.raza ?? item.potreroNombre ?? 'Sin datos'}</Text>
+                </View>
+                {active && <Check size={16} color="#9FE870" strokeWidth={2.4} />}
+              </Pressable>
+            )
+          })}
+        </View>
+      )}
+      {showEmptyMessage && <Text style={styles.emptyPickerText}>Sin animales disponibles.</Text>}
     </View>
   )
 }
 
-function PersonSelect({ label, operarios, value, onChange, placeholder }: { label: string; operarios: Operario[]; value: string; onChange: (id: string) => void; placeholder: string }) {
+function PersonSelect({
+  label, operarios, value, onChange, placeholder, hideWhenEmpty = false,
+}: {
+  label: string
+  operarios: Operario[]
+  value: string
+  onChange: (id: string) => void
+  placeholder: string
+  hideWhenEmpty?: boolean
+}) {
   const [query, setQuery] = useState('')
+  const isEmptyQuery = !query.trim()
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase()
+    if (!term && hideWhenEmpty) return []
     return operarios
       .filter((item) => !term || [item.nombreCompleto, item.username, item.documentoNumero, item.rolOperativo].some((field) => field?.toLowerCase().includes(term)))
       .slice(0, 6)
-  }, [operarios, query])
+  }, [operarios, query, hideWhenEmpty])
+  const showEmptyMessage = !filtered.length && !(hideWhenEmpty && isEmptyQuery)
 
   return (
     <View style={styles.fieldGroup}>
@@ -457,31 +571,131 @@ function PersonSelect({ label, operarios, value, onChange, placeholder }: { labe
         <Search size={18} color="#6EA8FF" strokeWidth={2} />
         <TextInput style={styles.searchInput} value={query} onChangeText={setQuery} placeholder={placeholder} placeholderTextColor="#6F7D9A" />
       </View>
-      <ScrollView style={styles.peopleListScroll} contentContainerStyle={styles.peopleList} nestedScrollEnabled showsVerticalScrollIndicator={false}>
-        {filtered.map((item) => {
-          const active = item.id === value
-          return (
-            <Pressable
-              key={item.id}
-              style={[styles.personItem, active && styles.personItemActive]}
-              onPress={() => {
-                onChange(item.id)
-                setQuery(item.nombreCompleto)
-              }}
-            >
-              <View style={styles.personIcon}>
-                <User size={16} color={active ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
-              </View>
-              <View style={styles.personText}>
-                <Text style={styles.personName}>{item.nombreCompleto}</Text>
-                <Text style={styles.personRole}>{item.rolOperativo ?? item.username ?? 'Operario'}</Text>
-              </View>
-              {active && <Check size={16} color="#9FE870" strokeWidth={2.4} />}
-            </Pressable>
-          )
-        })}
-        {!filtered.length && <Text style={styles.emptyPickerText}>Sin personas disponibles.</Text>}
-      </ScrollView>
+      {!!filtered.length && (
+        <ScrollView style={styles.peopleListScroll} contentContainerStyle={styles.peopleList} nestedScrollEnabled showsVerticalScrollIndicator={false}>
+          {filtered.map((item) => {
+            const active = item.id === value
+            return (
+              <Pressable
+                key={item.id}
+                style={[styles.personItem, active && styles.personItemActive]}
+                onPress={() => {
+                  onChange(item.id)
+                  setQuery(item.nombreCompleto)
+                }}
+              >
+                <View style={styles.personIcon}>
+                  <User size={16} color={active ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
+                </View>
+                <View style={styles.personText}>
+                  <Text style={styles.personName}>{item.nombreCompleto}</Text>
+                  <Text style={styles.personRole}>{item.rolOperativo ?? item.username ?? 'Operario'}</Text>
+                </View>
+                {active && <Check size={16} color="#9FE870" strokeWidth={2.4} />}
+              </Pressable>
+            )
+          })}
+        </ScrollView>
+      )}
+      {showEmptyMessage && <Text style={styles.emptyPickerText}>Sin personas disponibles.</Text>}
+    </View>
+  )
+}
+
+function RazaSelect({ razas, value, onChange, placeholder }: { razas: RazaBovina[]; value: string; onChange: (id: string, nombre: string) => void; placeholder: string }) {
+  const [query, setQuery] = useState('')
+  const isEmptyQuery = !query.trim()
+  const filtered = useMemo(() => {
+    const term = query.trim().toLowerCase()
+    if (!term) return []
+    return razas
+      .filter((item) => [item.nombre, item.codigo, item.aptitud, item.tipoGenetico].some((field) => field?.toLowerCase().includes(term)))
+      .slice(0, 2)
+  }, [razas, query])
+
+  return (
+    <View style={styles.fieldGroup}>
+      <SectionTitle>Raza (opcional)</SectionTitle>
+      <View style={styles.searchBox}>
+        <Search size={18} color="#6EA8FF" strokeWidth={2} />
+        <TextInput style={styles.searchInput} value={query} onChangeText={setQuery} placeholder={placeholder} placeholderTextColor="#6F7D9A" />
+      </View>
+      {!!filtered.length && (
+        <View style={styles.peopleList}>
+          {filtered.map((item) => {
+            const active = item.id === value
+            return (
+              <Pressable
+                key={item.id}
+                style={[styles.personItem, active && styles.personItemActive]}
+                onPress={() => {
+                  onChange(item.id, item.nombre)
+                  setQuery(item.nombre)
+                }}
+              >
+                <View style={styles.personIcon}>
+                  <Dna size={16} color={active ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
+                </View>
+                <View style={styles.personText}>
+                  <Text style={styles.personName}>{item.nombre}</Text>
+                  <Text style={styles.personRole}>{item.aptitud ?? item.tipoGenetico ?? 'Sin datos'}</Text>
+                </View>
+                {active && <Check size={16} color="#9FE870" strokeWidth={2.4} />}
+              </Pressable>
+            )
+          })}
+        </View>
+      )}
+      {!filtered.length && !isEmptyQuery && <Text style={styles.emptyPickerText}>Sin razas disponibles.</Text>}
+    </View>
+  )
+}
+
+function PotreroSelect({ potreros, value, onChange, placeholder }: { potreros: Potrero[]; value: string; onChange: (id: string) => void; placeholder: string }) {
+  const [query, setQuery] = useState('')
+  const isEmptyQuery = !query.trim()
+  const filtered = useMemo(() => {
+    const term = query.trim().toLowerCase()
+    if (!term) return []
+    return potreros
+      .filter((item) => [item.nombre, item.tipoUso, item.estado].some((field) => field?.toLowerCase().includes(term)))
+      .slice(0, 2)
+  }, [potreros, query])
+
+  return (
+    <View style={styles.fieldGroup}>
+      <SectionTitle>Potrero actual (opcional)</SectionTitle>
+      <View style={styles.searchBox}>
+        <Search size={18} color="#6EA8FF" strokeWidth={2} />
+        <TextInput style={styles.searchInput} value={query} onChangeText={setQuery} placeholder={placeholder} placeholderTextColor="#6F7D9A" />
+      </View>
+      {!!filtered.length && (
+        <View style={styles.peopleList}>
+          {filtered.map((item) => {
+            const active = item.id === value
+            return (
+              <Pressable
+                key={item.id}
+                style={[styles.personItem, active && styles.personItemActive]}
+                onPress={() => {
+                  onChange(item.id)
+                  setQuery(item.nombre)
+                }}
+              >
+                <View style={styles.personIcon}>
+                  <Fence size={16} color={active ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
+                </View>
+                <View style={styles.personText}>
+                  <Text style={styles.personName}>{item.nombre}</Text>
+                  <Text style={styles.personRole}>{item.tipoUso ?? item.estado ?? 'Sin datos'}</Text>
+                </View>
+                {active && <Check size={16} color="#9FE870" strokeWidth={2.4} />}
+              </Pressable>
+            )
+          })}
+        </View>
+      )}
+      {!filtered.length && !isEmptyQuery && <Text style={styles.emptyPickerText}>Sin potreros disponibles.</Text>}
     </View>
   )
 }
@@ -652,11 +866,11 @@ const styles = StyleSheet.create({
   },
   addAnimalText: { color: '#9FE870', fontSize: 12, fontWeight: '800' },
   newAnimalBox: {
-    marginTop: 12, padding: 14, borderRadius: 18, gap: 10,
+    marginTop: 12, padding: 14, borderRadius: 18,
     backgroundColor: 'rgba(8,18,37,0.72)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
   },
   newAnimalTitle: { color: '#FFFFFF', fontSize: 12, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 0.5 },
-  saveAnimalButton: { height: 46, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: '#9FE870' },
+  saveAnimalButton: { height: 46, marginTop: 20, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: '#9FE870' },
   saveAnimalText: { color: '#081225', fontSize: 13, fontWeight: '900' },
   chipCheck: { width: 18, height: 18, borderRadius: 9, alignItems: 'center', justifyContent: 'center', backgroundColor: '#9FE870' },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },

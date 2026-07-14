@@ -40,6 +40,19 @@ export interface PotreroRequest {
   centroideLongitud?: number
 }
 
+export interface RazaBovina {
+  id: string
+  codigo?: string
+  nombre: string
+  especie?: string
+  aptitud?: string
+  tipoGenetico?: string
+  origen?: string
+  descripcion?: string
+  fuente?: string
+  activo?: boolean
+}
+
 export interface AnimalRequest {
   caravana: string
   razaId?: string
