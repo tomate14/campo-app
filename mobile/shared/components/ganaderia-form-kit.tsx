@@ -323,8 +323,7 @@ export function VacunaSelect({
       getLabel={(item) => item.nombre}
       getSubtitle={(item) => item.codigo ?? item.laboratorio}
       Icon={Syringe}
-      limit={4}
-      hideWhenEmpty
+      limit={2}
       emptyText="Sin vacunas disponibles."
     />
   )

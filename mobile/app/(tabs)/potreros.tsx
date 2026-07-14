@@ -69,6 +69,7 @@ export default function PotrerosScreen() {
   const [layersOpen, setLayersOpen] = useState(false)
   const [mapMode, setMapMode] = useState<MapMode>('satellite')
   const [showPotreros, setShowPotreros] = useState(true)
+  const [showBubbles, setShowBubbles] = useState(true)
   const [selectedPotrero, setSelectedPotrero] = useState<Potrero | null>(null)
 
   useEffect(() => {
@@ -161,25 +162,27 @@ export default function PotrerosScreen() {
           </View>
         </View>
 
-        <View style={styles.actionRail}>
-          {actions.map((action) => {
-            const ActionIcon = action.Icon
-            return (
-              <Pressable
-                key={action.label}
-                style={[styles.actionBubble, { borderColor: `${action.color}55`, shadowColor: action.color }]}
-                onPress={() => router.push(action.route as never)}
-              >
-                <View style={[styles.actionIconCircle, { backgroundColor: action.color }]}>
-                  <ActionIcon size={20} color="#07101F" strokeWidth={2.4} />
-                </View>
-                <View style={styles.actionTextPill}>
-                  <Text style={styles.actionLabel}>{action.label}</Text>
-                </View>
-              </Pressable>
-            )
-          })}
-        </View>
+        {showBubbles && (
+          <View style={styles.actionRail}>
+            {actions.map((action) => {
+              const ActionIcon = action.Icon
+              return (
+                <Pressable
+                  key={action.label}
+                  style={[styles.actionBubble, { borderColor: `${action.color}55`, shadowColor: action.color }]}
+                  onPress={() => router.push(action.route as never)}
+                >
+                  <View style={[styles.actionIconCircle, { backgroundColor: action.color }]}>
+                    <ActionIcon size={20} color="#07101F" strokeWidth={2.4} />
+                  </View>
+                  <View style={styles.actionTextPill}>
+                    <Text style={styles.actionLabel}>{action.label}</Text>
+                  </View>
+                </Pressable>
+              )
+            })}
+          </View>
+        )}
 
         <View style={styles.mapControlsTop}>
           <Pressable
@@ -265,17 +268,31 @@ export default function PotrerosScreen() {
               </View>
 
               <Text style={styles.sheetSectionTitle}>Capas operativas</Text>
-              <View style={styles.layerRow}>
-                <View style={styles.layerCopy}>
-                  <Fence size={18} color="#9FE870" strokeWidth={2} />
-                  <Text style={styles.layerLabel}>Limites de potreros</Text>
+              <View style={styles.layerGroup}>
+                <View style={styles.layerRow}>
+                  <View style={styles.layerCopy}>
+                    <Fence size={18} color="#9FE870" strokeWidth={2} />
+                    <Text style={styles.layerLabel}>Limites de potreros</Text>
+                  </View>
+                  <Switch
+                    value={showPotreros}
+                    onValueChange={setShowPotreros}
+                    trackColor={{ false: 'rgba(255,255,255,0.15)', true: 'rgba(159,232,112,0.34)' }}
+                    thumbColor={showPotreros ? '#9FE870' : '#A6B0CF'}
+                  />
                 </View>
-                <Switch
-                  value={showPotreros}
-                  onValueChange={setShowPotreros}
-                  trackColor={{ false: 'rgba(255,255,255,0.15)', true: 'rgba(159,232,112,0.34)' }}
-                  thumbColor={showPotreros ? '#9FE870' : '#A6B0CF'}
-                />
+                <View style={styles.layerRow}>
+                  <View style={styles.layerCopy}>
+                    <Tag size={18} color="#9FE870" strokeWidth={2} />
+                    <Text style={styles.layerLabel}>Burbujas de accion</Text>
+                  </View>
+                  <Switch
+                    value={showBubbles}
+                    onValueChange={setShowBubbles}
+                    trackColor={{ false: 'rgba(255,255,255,0.15)', true: 'rgba(159,232,112,0.34)' }}
+                    thumbColor={showBubbles ? '#9FE870' : '#A6B0CF'}
+                  />
+                </View>
               </View>
             </ScrollView>
           </View>
@@ -1142,6 +1159,9 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     backgroundColor: '#9FE870',
+  },
+  layerGroup: {
+    gap: 8,
   },
   layerRow: {
     minHeight: 56,
