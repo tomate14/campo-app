@@ -6,7 +6,7 @@ Realizada.
 ## Origen
 El usuario quiere avanzar con el menu de ganaderia en la app mobile. El menu `GANADERIA` en `mobile/app/(tabs)/_layout.tsx` ya muestra 4 items (Trazabilidad, Sanidad, Alimentacion, Potreros), pero solo `Potreros` tiene ruta y pantalla real (`mobile/app/(tabs)/potreros.tsx`); los otros 3 estan deshabilitados.
 
-Al definir prioridades, el usuario decidio acotar esta feature a Potreros y a la burbuja de Reproduccion. Activar el menu (Trazabilidad/Sanidad/Alimentacion) y sus burbujas correspondientes queda derivado a la feature [46](46_ganaderia_mobile_trazabilidad_sanidad_alimentacion.md).
+Al definir prioridades, el usuario decidio acotar esta feature a Potreros y a la burbuja de Reproduccion. Activar el menu (Trazabilidad/Sanidad/Alimentacion) y sus burbujas correspondientes queda derivado a la feature [46](46_COMPLETA_ganaderia_mobile_trazabilidad_sanidad_alimentacion.md).
 
 ## Que ya existe hoy (verificado en codigo, no es pendiente de esta feature)
 - `mobile/app/(tabs)/potreros.tsx`: mapa + listado de potreros, capas satelite/mapa/hibrido/terreno, ubicacion del usuario. Reutiliza `mobile/shared/components/lotes-field-map.native.tsx` (react-native-maps).

@@ -49,12 +49,12 @@ const mapModes: Array<{ label: string; description: string; value: MapMode; Icon
   { label: 'Terreno', description: 'Relieve y elevaciones.', value: 'terrain', Icon: Mountain },
 ]
 
-type QuickAction = { label: string; Icon: LucideIcon; color: string; route?: string; comingSoon?: boolean }
+type QuickAction = { label: string; Icon: LucideIcon; color: string; route: string }
 
 const actions: QuickAction[] = [
-  { label: 'Trazabilidad', Icon: Tag, color: '#9FE870', comingSoon: true },
-  { label: 'Sanidad', Icon: Syringe, color: '#6EA8FF', comingSoon: true },
-  { label: 'Alimentacion', Icon: Wheat, color: '#FFB84D', comingSoon: true },
+  { label: 'Trazabilidad', Icon: Tag, color: '#9FE870', route: '/ganaderia/nueva-trazabilidad' },
+  { label: 'Sanidad', Icon: Syringe, color: '#6EA8FF', route: '/ganaderia/nueva-sanidad' },
+  { label: 'Alimentacion', Icon: Wheat, color: '#FFB84D', route: '/ganaderia/nueva-alimentacion' },
   { label: 'Reproduccion', Icon: Heart, color: '#9A7DFF', route: '/ganaderia/nueva-reproduccion' },
 ]
 
@@ -168,15 +168,7 @@ export default function PotrerosScreen() {
               <Pressable
                 key={action.label}
                 style={[styles.actionBubble, { borderColor: `${action.color}55`, shadowColor: action.color }]}
-                onPress={() => {
-                  if (action.route) {
-                    router.push(action.route as never)
-                    return
-                  }
-                  if (action.comingSoon) {
-                    Alert.alert(action.label, 'Disponible próximamente.')
-                  }
-                }}
+                onPress={() => router.push(action.route as never)}
               >
                 <View style={[styles.actionIconCircle, { backgroundColor: action.color }]}>
                   <ActionIcon size={20} color="#07101F" strokeWidth={2.4} />

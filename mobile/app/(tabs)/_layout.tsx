@@ -50,9 +50,9 @@ const sections: DrawerSection[] = [
   {
     title: 'GANADERIA',
     items: [
-      { label: 'Trazabilidad', Icon: ScanLine },
-      { label: 'Sanidad', Icon: ShieldPlus },
-      { label: 'Alimentacion', Icon: Wheat },
+      { label: 'Trazabilidad', route: '/ganaderia/nueva-trazabilidad', Icon: ScanLine },
+      { label: 'Sanidad', route: '/ganaderia/nueva-sanidad', Icon: ShieldPlus },
+      { label: 'Alimentacion', route: '/ganaderia/nueva-alimentacion', Icon: Wheat },
       { label: 'Potreros', route: '/(tabs)/potreros', Icon: Fence },
     ],
   },
