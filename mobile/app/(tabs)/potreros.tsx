@@ -10,15 +10,12 @@ import {
   Heart,
   Layers,
   Leaf,
-  List,
   LocateFixed,
   Map as MapIcon,
   MapPinned,
   Menu,
   Mountain,
   Pencil,
-  Plus,
-  Search,
   SlidersHorizontal,
   Syringe,
   Tag,
@@ -61,14 +58,11 @@ const actions: QuickAction[] = [
   { label: 'Reproduccion', Icon: Heart, color: '#9A7DFF', route: '/ganaderia/nueva-reproduccion' },
 ]
 
-type ViewMode = 'MAPA' | 'LISTADO'
-
 export default function PotrerosScreen() {
   const navigation = useNavigation()
   const router = useRouter()
   const { data: potreros = [], isLoading } = usePotrerosMapa()
   const deletePotrero = useDeletePotrero()
-  const [mode, setMode] = useState<ViewMode>('MAPA')
   const [locationStatus, setLocationStatus] = useState<'idle' | 'granted' | 'denied'>('idle')
   const [coords, setCoords] = useState<Location.LocationObjectCoords | null>(null)
   const [mapCommand, setMapCommand] = useState<MapCommand | null>(null)
@@ -155,11 +149,7 @@ export default function PotrerosScreen() {
             </View>
           </View>
           <View style={styles.headerActions}>
-            <Pressable style={styles.circleButton}><Search size={19} color="#FFFFFF" strokeWidth={2} /></Pressable>
             <Pressable style={styles.circleButton}><SlidersHorizontal size={18} color="#FFFFFF" strokeWidth={2} /></Pressable>
-            <Pressable style={styles.newPotreroButton} onPress={() => router.push('/ganaderia/potrero-form' as never)}>
-              <Plus size={20} color="#081225" strokeWidth={2.6} />
-            </Pressable>
           </View>
         </View>
 
@@ -177,7 +167,7 @@ export default function PotrerosScreen() {
             return (
               <Pressable
                 key={action.label}
-                style={[styles.actionBubble, { borderColor: `${action.color}55`, shadowColor: action.color }]}
+                style={[styles.actionBubble, { shadowColor: action.color }]}
                 onPress={() => {
                   if (action.route) {
                     router.push(action.route as never)
@@ -217,11 +207,6 @@ export default function PotrerosScreen() {
           <LocateFixed size={18} color="#FFFFFF" strokeWidth={2} />
         </Pressable>
 
-        <View style={styles.zoomControls}>
-          <Pressable style={styles.zoomControl} onPress={() => sendMapCommand('zoom-in')}><Text style={styles.zoomText}>+</Text></Pressable>
-          <Pressable style={styles.zoomControl} onPress={() => sendMapCommand('zoom-out')}><Text style={styles.zoomText}>-</Text></Pressable>
-        </View>
-
         {locationStatus === 'denied' && (
           <View style={styles.permissionCard}>
             <Text style={styles.permissionTitle}>Ubicacion desactivada</Text>
@@ -253,37 +238,6 @@ export default function PotrerosScreen() {
             }}
           />
         )}
-
-        {mode === 'LISTADO' && (
-          <View style={styles.listPanel}>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listContent}>
-              {potreros.map((potrero) => (
-                <Pressable key={potrero.id} style={styles.potreroRow} onPress={() => setSelectedPotrero(potrero)}>
-                  <View style={[styles.rowDot, { backgroundColor: estadoColor(potrero.estado) }]} />
-                  <View style={styles.rowCopy}>
-                    <Text style={styles.rowTitle}>{potrero.nombre}</Text>
-                    <Text style={styles.rowSub}>{potrero.tipoUso || 'Pastoreo'} · {potrero.recursoForrajero || 'Sin forraje'}</Text>
-                  </View>
-                  <Text style={styles.rowArea}>{formatHa(potrero.superficieHa)}</Text>
-                </Pressable>
-              ))}
-              {!potreros.length && <Text style={styles.emptyText}>No hay potreros registrados.</Text>}
-            </ScrollView>
-          </View>
-        )}
-
-        <View style={styles.segmentedWrap}>
-          <View style={styles.segmented}>
-            <Pressable style={[styles.segment, mode === 'MAPA' && styles.segmentActive]} onPress={() => setMode('MAPA')}>
-              <MapIcon size={19} color={mode === 'MAPA' ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
-              <Text style={[styles.segmentText, mode === 'MAPA' && styles.segmentTextActive]}>Mapa</Text>
-            </Pressable>
-            <Pressable style={[styles.segment, mode === 'LISTADO' && styles.segmentActive]} onPress={() => setMode('LISTADO')}>
-              <List size={19} color={mode === 'LISTADO' ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
-              <Text style={[styles.segmentText, mode === 'LISTADO' && styles.segmentTextActive]}>Listado</Text>
-            </Pressable>
-          </View>
-        </View>
 
         <Modal visible={layersOpen} transparent animationType="slide" onRequestClose={() => setLayersOpen(false)}>
           <Pressable style={styles.sheetBackdrop} onPress={() => setLayersOpen(false)} />
@@ -735,28 +689,13 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     marginTop: 1,
   },
-  newPotreroButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#9FE870',
-    shadowColor: '#9FE870',
-    shadowOpacity: 0.38,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 6 },
-  },
   actionRail: {
     position: 'absolute',
     left: 18,
     top: '38%',
-    gap: 10,
+    gap: 14,
   },
   actionBubble: {
-    minHeight: 44,
-    borderRadius: 999,
-    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'transparent',
     shadowOpacity: 0.2,
@@ -773,23 +712,23 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.18)',
   },
   actionTextPill: {
-    minWidth: 68,
-    maxWidth: 82,
-    minHeight: 34,
-    justifyContent: 'center',
+    marginTop: 5,
+    minWidth: 64,
+    maxWidth: 86,
+    alignItems: 'center',
     paddingHorizontal: 9,
-    borderTopRightRadius: 18,
-    borderBottomRightRadius: 18,
+    paddingVertical: 5,
+    borderRadius: 12,
     backgroundColor: 'rgba(8, 18, 37, 0.88)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.08)',
-    marginLeft: -4,
   },
   actionLabel: {
     color: '#FFFFFF',
     fontSize: 8,
     lineHeight: 10,
     fontWeight: '400',
+    textAlign: 'center',
   },
   mapControlsTop: {
     position: 'absolute',
@@ -850,27 +789,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(8, 18, 37, 0.88)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
-  },
-  zoomControls: {
-    position: 'absolute',
-    right: 18,
-    bottom: 166,
-    gap: 8,
-  },
-  zoomControl: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(8, 18, 37, 0.82)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  zoomText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '400',
   },
   permissionCard: {
     position: 'absolute',
@@ -1110,98 +1028,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 14,
     marginTop: 2,
-  },
-  listPanel: {
-    position: 'absolute',
-    left: 12,
-    right: 12,
-    top: 154,
-    bottom: 96,
-    zIndex: 2200,
-    elevation: 2200,
-    borderRadius: 24,
-    backgroundColor: 'rgba(8, 18, 37, 0.94)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  listContent: {
-    padding: 12,
-    gap: 10,
-  },
-  potreroRow: {
-    minHeight: 62,
-    borderRadius: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingHorizontal: 12,
-    backgroundColor: 'rgba(11, 23, 48, 0.78)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  rowDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  rowCopy: {
-    flex: 1,
-  },
-  rowTitle: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '800',
-  },
-  rowSub: {
-    color: '#A6B0CF',
-    fontSize: 10,
-    marginTop: 3,
-  },
-  rowArea: {
-    color: '#9FE870',
-    fontSize: 12,
-    fontWeight: '900',
-  },
-  emptyText: {
-    color: '#A6B0CF',
-    padding: 14,
-    fontSize: 12,
-  },
-  segmentedWrap: {
-    position: 'absolute',
-    left: 20,
-    right: 20,
-    bottom: 22,
-    alignItems: 'center',
-  },
-  segmented: {
-    width: '100%',
-    height: 72,
-    borderRadius: 28,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    backgroundColor: 'rgba(8, 18, 37, 0.92)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  segment: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-  },
-  segmentActive: {
-    opacity: 1,
-  },
-  segmentText: {
-    color: '#A6B0CF',
-    fontSize: 11,
-    fontWeight: '500',
-  },
-  segmentTextActive: {
-    color: '#9FE870',
-    fontWeight: '800',
   },
   sheetBackdrop: {
     flex: 1,
