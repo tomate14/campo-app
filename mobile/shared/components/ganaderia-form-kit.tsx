@@ -160,7 +160,7 @@ export function CatalogSelect<T>({
         <TextInput style={formKitStyles.searchInput} value={query} onChangeText={setQuery} placeholder={placeholder} placeholderTextColor="#6F7D9A" />
       </View>
       {!!filtered.length && (
-        <View style={formKitStyles.peopleList}>
+        <ScrollView style={formKitStyles.peopleListScroll} contentContainerStyle={formKitStyles.peopleList} nestedScrollEnabled showsVerticalScrollIndicator={false}>
           {filtered.map((item) => {
             const id = getId(item)
             const active = id === value
@@ -184,7 +184,7 @@ export function CatalogSelect<T>({
               </Pressable>
             )
           })}
-        </View>
+        </ScrollView>
       )}
       {showEmptyMessage && <Text style={formKitStyles.emptyPickerText}>{emptyText}</Text>}
     </View>
@@ -463,8 +463,8 @@ export const formKitStyles = StyleSheet.create({
     backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)',
   },
   searchInput: { flex: 1, color: '#FFFFFF', fontSize: 14, padding: 0 },
-  peopleListScroll: { maxHeight: 220, marginTop: 8 },
-  peopleList: { gap: 8, marginTop: 8 },
+  peopleListScroll: { maxHeight: 118, marginTop: 8 },
+  peopleList: { gap: 8 },
   emptyPickerText: { color: '#A6B0CF', fontSize: 12, paddingVertical: 8 },
   personItem: {
     minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: 18, paddingHorizontal: 10,

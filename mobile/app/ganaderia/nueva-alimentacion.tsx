@@ -33,12 +33,12 @@ const ALIMENTACION_TYPES: Array<{ value: AlimentacionTipo; title: string; descri
 ]
 
 const ALIMENTO_OPTIONS: CatalogOption[] = [
-  { value: 'Maiz partido', label: 'Maíz partido', subtitle: 'Concentrado' },
-  { value: 'Silo de maiz', label: 'Silo de maíz', subtitle: 'Forraje' },
-  { value: 'Heno de alfalfa', label: 'Heno de alfalfa', subtitle: 'Forraje' },
-  { value: 'Expeller de soja', label: 'Expeller de soja', subtitle: 'Concentrado proteico' },
-  { value: 'Nucleo mineral', label: 'Núcleo mineral', subtitle: 'Suplemento mineral' },
-  { value: 'Sales minerales', label: 'Sales minerales', subtitle: 'Suplemento mineral' },
+  { value: 'Maiz partido', label: 'Maíz partido', subtitle: 'Energético' },
+  { value: 'Silo de maiz', label: 'Silo de maíz', subtitle: 'Voluminoso' },
+  { value: 'Heno de alfalfa', label: 'Heno de alfalfa', subtitle: 'Fibra/proteína' },
+  { value: 'Expeller de soja', label: 'Expeller de soja', subtitle: 'Proteico' },
+  { value: 'Nucleo mineral', label: 'Núcleo mineral', subtitle: 'Mineral' },
+  { value: 'Sales minerales', label: 'Sales minerales', subtitle: 'Mineral' },
 ]
 
 const METODO_PESAJE_OPTIONS: CatalogOption[] = [
