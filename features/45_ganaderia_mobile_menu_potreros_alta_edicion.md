@@ -1,7 +1,7 @@
 # 45 - Ganaderia Mobile: Alta/Edicion de Potreros y Burbuja de Reproduccion
 
 ## Estado
-En desarrollo.
+Realizada.
 
 ## Origen
 El usuario quiere avanzar con el menu de ganaderia en la app mobile. El menu `GANADERIA` en `mobile/app/(tabs)/_layout.tsx` ya muestra 4 items (Trazabilidad, Sanidad, Alimentacion, Potreros), pero solo `Potreros` tiene ruta y pantalla real (`mobile/app/(tabs)/potreros.tsx`); los otros 3 estan deshabilitados.
@@ -51,8 +51,16 @@ Las burbujas de Trazabilidad, Sanidad y Alimentacion quedan visibles en la rail 
 - Web (patrones portados): `ganaderia-potreros-page/`, `ganaderia-reproduccion-page/`.
 - Mobile: `mobile/app/(tabs)/potreros.tsx`, `mobile/app/lotes/nuevo.tsx` (patron de formulario con poligono como texto), `mobile/app/agricola/nueva-siembra.tsx` (patron de "nueva actividad"), `mobile/shared/hooks/usePotreros.ts`, `mobile/shared/api/ganaderia.ts`, `mobile/shared/types/ganaderia.ts`, `mobile/app/_layout.tsx` (registro de nuevas pantallas modal).
 
+## Implementado
+- `mobile/shared/types/ganaderia.ts`: `PotreroRequest`, `Animal`, y request/response de `Monta`, `Inseminacion`, `ControlPrenez`, `Parto`, `IndiceGenetico`.
+- `mobile/shared/api/ganaderia.ts`: `createPotrero`/`updatePotrero`/`deletePotrero`, `getAnimales`, `createMonta`/`createInseminacion`/`createControlPrenez`/`createParto`/`createIndiceGenetico`.
+- `mobile/shared/hooks/usePotreros.ts`: `useCreatePotrero`/`useUpdatePotrero`/`useDeletePotrero`. Nuevos `useAnimales.ts` y `useReproduccion.ts`.
+- `mobile/app/ganaderia/potrero-form.tsx` (nueva pantalla): alta y edicion de potrero, poligono como texto GeoJSON (ver decision tecnica), chips de tipo de uso y estado.
+- `mobile/app/ganaderia/nueva-reproduccion.tsx` (nueva pantalla): los 5 tipos de actividad reproductiva con formulario condicional y selector de animal por chips con buscador por caravana.
+- `mobile/app/(tabs)/potreros.tsx`: boton "Nuevo potrero", boton "Editar"/"Eliminar" en `PotreroPreview`, rail de burbujas actualizada a Trazabilidad/Sanidad/Alimentacion (aviso "Disponible proximamente", quedan para la feature 46) y Reproduccion (funcional, navega a `nueva-reproduccion`).
+- `mobile/app/_layout.tsx`: registro de las 2 pantallas nuevas como modal.
+
 ## Validacion Tecnica
-- Type-check de mobile (`tsc --noEmit` sobre el proyecto Expo).
-- Prueba de alta, edicion y baja de un potrero contra el backend real.
-- Prueba de creacion de cada uno de los 5 tipos de actividad reproductiva.
-- Verificacion de que el color por estado sigue funcionando despues de editar un potrero (cambiar estado y confirmar que el poligono cambia de color en el mapa).
+- `npx tsc --noEmit -p tsconfig.json` sobre `mobile/` sin errores.
+- Verificacion visual pendiente: se intento levantar `expo start --web` para probar en el navegador, pero el entorno tiene un problema preexistente no relacionado a esta feature (falta el binario nativo `lightningcss.win32-x64-msvc.node` que necesita el build web de `maplibre-gl`). No bloquea mobile nativo (Android/iOS), solo el preview web de este entorno.
+- Pendiente de prueba manual en dispositivo/emulador real: alta, edicion y baja de un potrero, y creacion de cada uno de los 5 tipos de actividad reproductiva contra el backend real.

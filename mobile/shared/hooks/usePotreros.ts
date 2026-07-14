@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query'
-import { getPotrero, getPotrerosMapa } from '../api/ganaderia'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createPotrero, deletePotrero, getPotrero, getPotrerosMapa, updatePotrero } from '../api/ganaderia'
+import type { PotreroRequest } from '../types/ganaderia'
 
 const POTREROS_KEY = 'potreros'
 
@@ -15,5 +16,29 @@ export function usePotrero(id: string) {
     queryKey: [POTREROS_KEY, id],
     queryFn: () => getPotrero(id),
     enabled: Boolean(id),
+  })
+}
+
+export function useCreatePotrero() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (data: PotreroRequest) => createPotrero(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [POTREROS_KEY] }),
+  })
+}
+
+export function useUpdatePotrero() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: PotreroRequest }) => updatePotrero(id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [POTREROS_KEY] }),
+  })
+}
+
+export function useDeletePotrero() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => deletePotrero(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [POTREROS_KEY] }),
   })
 }

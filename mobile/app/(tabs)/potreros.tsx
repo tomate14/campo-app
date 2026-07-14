@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { DrawerActions, useNavigation } from '@react-navigation/native'
+import { useRouter } from 'expo-router'
 import * as Location from 'expo-location'
 import {
   ChevronDown,
-  ClipboardList,
   Fence,
-  History,
+  Heart,
   Layers,
   Leaf,
   List,
@@ -16,16 +16,21 @@ import {
   MapPinned,
   Menu,
   Mountain,
+  Pencil,
+  Plus,
   Search,
-  ShieldCheck,
   SlidersHorizontal,
+  Syringe,
+  Tag,
+  Trash2,
   Waves,
+  Wheat,
   X,
   type LucideIcon,
 } from 'lucide-react-native'
 import { Colors } from '../../constants/colors'
 import LotesFieldMap from '../../shared/components/lotes-field-map'
-import { usePotrerosMapa } from '../../shared/hooks/usePotreros'
+import { useDeletePotrero, usePotrerosMapa } from '../../shared/hooks/usePotreros'
 import type { Lote } from '../../shared/types/agricola'
 import type { Potrero } from '../../shared/types/ganaderia'
 import type { LoteMapItem, MapCommand, MapMode, MapPoint, MapRegion } from '../../shared/components/lotes-field-map.types'
@@ -47,18 +52,22 @@ const mapModes: Array<{ label: string; description: string; value: MapMode; Icon
   { label: 'Terreno', description: 'Relieve y elevaciones.', value: 'terrain', Icon: Mountain },
 ]
 
-const actions = [
-  { label: 'Ver detalle', Icon: ClipboardList, color: '#9FE870' },
-  { label: 'Carga animal', Icon: ShieldCheck, color: '#6EA8FF' },
-  { label: 'Ver historial', Icon: History, color: '#FFB84D' },
-  { label: 'Forraje', Icon: Leaf, color: '#39D0D8' },
+type QuickAction = { label: string; Icon: LucideIcon; color: string; route?: string; comingSoon?: boolean }
+
+const actions: QuickAction[] = [
+  { label: 'Trazabilidad', Icon: Tag, color: '#9FE870', comingSoon: true },
+  { label: 'Sanidad', Icon: Syringe, color: '#6EA8FF', comingSoon: true },
+  { label: 'Alimentacion', Icon: Wheat, color: '#FFB84D', comingSoon: true },
+  { label: 'Reproduccion', Icon: Heart, color: '#9A7DFF', route: '/ganaderia/nueva-reproduccion' },
 ]
 
 type ViewMode = 'MAPA' | 'LISTADO'
 
 export default function PotrerosScreen() {
   const navigation = useNavigation()
+  const router = useRouter()
   const { data: potreros = [], isLoading } = usePotrerosMapa()
+  const deletePotrero = useDeletePotrero()
   const [mode, setMode] = useState<ViewMode>('MAPA')
   const [locationStatus, setLocationStatus] = useState<'idle' | 'granted' | 'denied'>('idle')
   const [coords, setCoords] = useState<Location.LocationObjectCoords | null>(null)
@@ -148,6 +157,9 @@ export default function PotrerosScreen() {
           <View style={styles.headerActions}>
             <Pressable style={styles.circleButton}><Search size={19} color="#FFFFFF" strokeWidth={2} /></Pressable>
             <Pressable style={styles.circleButton}><SlidersHorizontal size={18} color="#FFFFFF" strokeWidth={2} /></Pressable>
+            <Pressable style={styles.newPotreroButton} onPress={() => router.push('/ganaderia/potrero-form' as never)}>
+              <Plus size={20} color="#081225" strokeWidth={2.6} />
+            </Pressable>
           </View>
         </View>
 
@@ -167,7 +179,13 @@ export default function PotrerosScreen() {
                 key={action.label}
                 style={[styles.actionBubble, { borderColor: `${action.color}55`, shadowColor: action.color }]}
                 onPress={() => {
-                  if (!selectedPotrero && potreros[0]) setSelectedPotrero(potreros[0])
+                  if (action.route) {
+                    router.push(action.route as never)
+                    return
+                  }
+                  if (action.comingSoon) {
+                    Alert.alert(action.label, 'Disponible próximamente.')
+                  }
                 }}
               >
                 <View style={[styles.actionIconCircle, { backgroundColor: action.color }]}>
@@ -212,7 +230,28 @@ export default function PotrerosScreen() {
         )}
 
         {selectedPotrero && (
-          <PotreroPreview potrero={selectedPotrero} onClose={() => setSelectedPotrero(null)} />
+          <PotreroPreview
+            potrero={selectedPotrero}
+            onClose={() => setSelectedPotrero(null)}
+            onEdit={() => router.push({ pathname: '/ganaderia/potrero-form', params: { id: selectedPotrero.id } } as never)}
+            onDelete={() => {
+              Alert.alert('Eliminar potrero', `¿Seguro que querés eliminar "${selectedPotrero.nombre}"?`, [
+                { text: 'Cancelar', style: 'cancel' },
+                {
+                  text: 'Eliminar',
+                  style: 'destructive',
+                  onPress: async () => {
+                    try {
+                      await deletePotrero.mutateAsync(selectedPotrero.id)
+                      setSelectedPotrero(null)
+                    } catch {
+                      Alert.alert('Error', 'No se pudo eliminar el potrero.')
+                    }
+                  },
+                },
+              ])
+            }}
+          />
         )}
 
         {mode === 'LISTADO' && (
@@ -304,7 +343,7 @@ export default function PotrerosScreen() {
   )
 }
 
-function PotreroPreview({ potrero, onClose }: { potrero: Potrero; onClose: () => void }) {
+function PotreroPreview({ potrero, onClose, onEdit, onDelete }: { potrero: Potrero; onClose: () => void; onEdit: () => void; onDelete: () => void }) {
   const cargaActual = Number(potrero.cargaAnimalActual ?? 0)
   const capacidad = Number(potrero.capacidadAnimales ?? 0)
   const ocupacion = capacidad > 0 ? Math.round((cargaActual / capacidad) * 100) : 0
@@ -317,9 +356,17 @@ function PotreroPreview({ potrero, onClose }: { potrero: Potrero; onClose: () =>
         <View style={[styles.estadoBadge, { borderColor: `${estadoColor(potrero.estado)}80`, backgroundColor: `${estadoColor(potrero.estado)}18` }]}>
           <Text style={[styles.estadoBadgeText, { color: estadoColor(potrero.estado) }]}>{potrero.estado || 'ACTIVO'}</Text>
         </View>
-        <Pressable style={styles.previewClose} onPress={onClose}>
-          <X size={15} color="#DCE8F8" strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.previewHeadActions}>
+          <Pressable style={styles.previewActionButton} onPress={onEdit}>
+            <Pencil size={14} color="#9FE870" strokeWidth={2.2} />
+          </Pressable>
+          <Pressable style={styles.previewActionButton} onPress={onDelete}>
+            <Trash2 size={14} color="#FF6B6B" strokeWidth={2.2} />
+          </Pressable>
+          <Pressable style={styles.previewClose} onPress={onClose}>
+            <X size={15} color="#DCE8F8" strokeWidth={2.2} />
+          </Pressable>
+        </View>
       </View>
 
       <ScrollView
@@ -688,6 +735,18 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     marginTop: 1,
   },
+  newPotreroButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#9FE870',
+    shadowColor: '#9FE870',
+    shadowOpacity: 0.38,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 6 },
+  },
   actionRail: {
     position: 'absolute',
     left: 18,
@@ -876,6 +935,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 14,
     fontWeight: '900',
+  },
+  previewHeadActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  previewActionButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.08)',
   },
   previewClose: {
     width: 32,
