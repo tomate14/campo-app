@@ -17,10 +17,10 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 46
+- Total de historias registradas: 47
 - Realizadas: 27
 - Parciales: 0
-- Pendientes: 17
+- Pendientes: 18
 - Saltadas: 2
 - Ultima actualizacion: 2026-07-09
 
@@ -74,7 +74,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 42 | `42_COMPLETA_dashboard_ganadero_ejecutivo.md` | Ganaderia/Reportes | Realizada | Dashboard Ganadero Ejecutivo implementado con endpoint backend-driven, KPIs, graficos, alertas operativas y analitica del rodeo. |
 | 43 | `43_COMPLETA_integridad_referencial_transversal_por_id.md` | Arquitectura/Datos | Realizada | Integridad referencial animal-potrero implementada con `animales_potreros`, movimientos por `potrero_id`, dashboard ganadero por IDs y alimentacion por FK de potrero. |
 | 44 | `44_frontend_modernizacion_graficos_apexcharts.md` | Frontend | Realizada | Graficos compartidos (barras, donut, linea) migrados de SVG plano a ApexCharts con gradientes, glow, curvas suaves y tooltip premium, sin romper el contrato de los componentes. |
-| 45 | `45_ganaderia_mobile_menu_potreros_alta_edicion.md` | Ganaderia/Mobile | Pendiente | Activar el menu de Ganaderia en mobile (Trazabilidad, Sanidad, Alimentacion), portar alta/edicion de potreros desde mobile y definir burbujas de tareas en el mapa. Potreros ya tiene mapa+detalle de solo lectura. |
+| 45 | `45_ganaderia_mobile_menu_potreros_alta_edicion.md` | Ganaderia/Mobile | En desarrollo | Alta/edicion/baja de potreros desde mobile y burbuja "Agregar Reproduccion" (monta, inseminacion, prenez, parto, indice). Color por estado del potrero ya verificado funcionando. |
+| 46 | `46_ganaderia_mobile_trazabilidad_sanidad_alimentacion.md` | Ganaderia/Mobile | Pendiente | Activar Trazabilidad, Sanidad y Alimentacion en el menu de ganaderia mobile y sus burbujas de "nueva actividad" correspondientes. Derivada de la feature 45 al acotar su alcance. |
 
 ## Registro por Dominio
 
@@ -91,7 +92,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 ### Ganaderia
 - Realizadas: 04, 05, 06, 07, 31, 38, 42.
 - Parciales: ninguna.
-- Pendientes: 30, 32, 33, 34, 35, 45.
+- Pendientes: 30, 32, 33, 34, 35, 46.
+- En desarrollo: 45.
 
 ### Maquinaria
 - Realizadas: 08, 09.
@@ -134,6 +136,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 44.
 
 ## Ultimas Actualizaciones
+- 2026-07-09: Feature 45 acotada a Potreros (alta/edicion/baja) y burbuja "Agregar Reproduccion"; el resto (Trazabilidad/Sanidad/Alimentacion) se deriva a la feature 46 creada para eso. Arranca desarrollo en branch propia.
 - 2026-07-09: Feature 45 creada a pedido del usuario para avanzar el menu de Ganaderia en mobile: activar Trazabilidad/Sanidad/Alimentacion, portar alta y edicion de potreros desde mobile (hoy solo lectura) y definir burbujas de tareas en el mapa. Queda pendiente de priorizacion antes de desarrollar.
 - 2026-07-08: Feature 44 realizada. Graficos compartidos (barras, donut, linea) migrados de SVG plano a ApexCharts con gradientes, glow, curvas suaves y tooltip premium (`apex-tooltip-card`), manteniendo el contrato de los componentes. De paso se corrigio un SIGSEGV de la JVM en el backend Docker (musl+G1GC) que bloqueaba la validacion contra datos reales.
 - 2026-06-29: Feature 19 realizada con dashboard financiero ejecutivo, endpoint consolidado, datos reales de facturacion/compras/cobros/pagos/inventario, graficos ApexCharts y sidebar visible.
