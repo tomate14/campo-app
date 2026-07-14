@@ -1,31 +1,33 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { DrawerActions, useNavigation } from '@react-navigation/native'
+import { useRouter } from 'expo-router'
 import * as Location from 'expo-location'
 import {
   ChevronDown,
-  ClipboardList,
   Fence,
-  History,
+  Heart,
   Layers,
   Leaf,
-  List,
   LocateFixed,
   Map as MapIcon,
   MapPinned,
   Menu,
   Mountain,
-  Search,
-  ShieldCheck,
+  Pencil,
   SlidersHorizontal,
+  Syringe,
+  Tag,
+  Trash2,
   Waves,
+  Wheat,
   X,
   type LucideIcon,
 } from 'lucide-react-native'
 import { Colors } from '../../constants/colors'
 import LotesFieldMap from '../../shared/components/lotes-field-map'
-import { usePotrerosMapa } from '../../shared/hooks/usePotreros'
+import { useDeletePotrero, usePotrerosMapa } from '../../shared/hooks/usePotreros'
 import type { Lote } from '../../shared/types/agricola'
 import type { Potrero } from '../../shared/types/ganaderia'
 import type { LoteMapItem, MapCommand, MapMode, MapPoint, MapRegion } from '../../shared/components/lotes-field-map.types'
@@ -47,19 +49,20 @@ const mapModes: Array<{ label: string; description: string; value: MapMode; Icon
   { label: 'Terreno', description: 'Relieve y elevaciones.', value: 'terrain', Icon: Mountain },
 ]
 
-const actions = [
-  { label: 'Ver detalle', Icon: ClipboardList, color: '#9FE870' },
-  { label: 'Carga animal', Icon: ShieldCheck, color: '#6EA8FF' },
-  { label: 'Ver historial', Icon: History, color: '#FFB84D' },
-  { label: 'Forraje', Icon: Leaf, color: '#39D0D8' },
-]
+type QuickAction = { label: string; Icon: LucideIcon; color: string; route?: string; comingSoon?: boolean }
 
-type ViewMode = 'MAPA' | 'LISTADO'
+const actions: QuickAction[] = [
+  { label: 'Trazabilidad', Icon: Tag, color: '#9FE870', comingSoon: true },
+  { label: 'Sanidad', Icon: Syringe, color: '#6EA8FF', comingSoon: true },
+  { label: 'Alimentacion', Icon: Wheat, color: '#FFB84D', comingSoon: true },
+  { label: 'Reproduccion', Icon: Heart, color: '#9A7DFF', route: '/ganaderia/nueva-reproduccion' },
+]
 
 export default function PotrerosScreen() {
   const navigation = useNavigation()
+  const router = useRouter()
   const { data: potreros = [], isLoading } = usePotrerosMapa()
-  const [mode, setMode] = useState<ViewMode>('MAPA')
+  const deletePotrero = useDeletePotrero()
   const [locationStatus, setLocationStatus] = useState<'idle' | 'granted' | 'denied'>('idle')
   const [coords, setCoords] = useState<Location.LocationObjectCoords | null>(null)
   const [mapCommand, setMapCommand] = useState<MapCommand | null>(null)
@@ -146,7 +149,6 @@ export default function PotrerosScreen() {
             </View>
           </View>
           <View style={styles.headerActions}>
-            <Pressable style={styles.circleButton}><Search size={19} color="#FFFFFF" strokeWidth={2} /></Pressable>
             <Pressable style={styles.circleButton}><SlidersHorizontal size={18} color="#FFFFFF" strokeWidth={2} /></Pressable>
           </View>
         </View>
@@ -167,7 +169,13 @@ export default function PotrerosScreen() {
                 key={action.label}
                 style={[styles.actionBubble, { borderColor: `${action.color}55`, shadowColor: action.color }]}
                 onPress={() => {
-                  if (!selectedPotrero && potreros[0]) setSelectedPotrero(potreros[0])
+                  if (action.route) {
+                    router.push(action.route as never)
+                    return
+                  }
+                  if (action.comingSoon) {
+                    Alert.alert(action.label, 'Disponible próximamente.')
+                  }
                 }}
               >
                 <View style={[styles.actionIconCircle, { backgroundColor: action.color }]}>
@@ -195,15 +203,6 @@ export default function PotrerosScreen() {
           <Text style={styles.locationText}>Mi ubicacion</Text>
         </Pressable>
 
-        <Pressable style={[styles.locationButton, locationStatus === 'granted' && styles.mapControlActive]} onPress={() => sendMapCommand('user')}>
-          <LocateFixed size={18} color="#FFFFFF" strokeWidth={2} />
-        </Pressable>
-
-        <View style={styles.zoomControls}>
-          <Pressable style={styles.zoomControl} onPress={() => sendMapCommand('zoom-in')}><Text style={styles.zoomText}>+</Text></Pressable>
-          <Pressable style={styles.zoomControl} onPress={() => sendMapCommand('zoom-out')}><Text style={styles.zoomText}>-</Text></Pressable>
-        </View>
-
         {locationStatus === 'denied' && (
           <View style={styles.permissionCard}>
             <Text style={styles.permissionTitle}>Ubicacion desactivada</Text>
@@ -212,39 +211,29 @@ export default function PotrerosScreen() {
         )}
 
         {selectedPotrero && (
-          <PotreroPreview potrero={selectedPotrero} onClose={() => setSelectedPotrero(null)} />
+          <PotreroPreview
+            potrero={selectedPotrero}
+            onClose={() => setSelectedPotrero(null)}
+            onEdit={() => router.push({ pathname: '/ganaderia/potrero-form', params: { id: selectedPotrero.id } } as never)}
+            onDelete={() => {
+              Alert.alert('Eliminar potrero', `¿Seguro que querés eliminar "${selectedPotrero.nombre}"?`, [
+                { text: 'Cancelar', style: 'cancel' },
+                {
+                  text: 'Eliminar',
+                  style: 'destructive',
+                  onPress: async () => {
+                    try {
+                      await deletePotrero.mutateAsync(selectedPotrero.id)
+                      setSelectedPotrero(null)
+                    } catch {
+                      Alert.alert('Error', 'No se pudo eliminar el potrero.')
+                    }
+                  },
+                },
+              ])
+            }}
+          />
         )}
-
-        {mode === 'LISTADO' && (
-          <View style={styles.listPanel}>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listContent}>
-              {potreros.map((potrero) => (
-                <Pressable key={potrero.id} style={styles.potreroRow} onPress={() => setSelectedPotrero(potrero)}>
-                  <View style={[styles.rowDot, { backgroundColor: estadoColor(potrero.estado) }]} />
-                  <View style={styles.rowCopy}>
-                    <Text style={styles.rowTitle}>{potrero.nombre}</Text>
-                    <Text style={styles.rowSub}>{potrero.tipoUso || 'Pastoreo'} · {potrero.recursoForrajero || 'Sin forraje'}</Text>
-                  </View>
-                  <Text style={styles.rowArea}>{formatHa(potrero.superficieHa)}</Text>
-                </Pressable>
-              ))}
-              {!potreros.length && <Text style={styles.emptyText}>No hay potreros registrados.</Text>}
-            </ScrollView>
-          </View>
-        )}
-
-        <View style={styles.segmentedWrap}>
-          <View style={styles.segmented}>
-            <Pressable style={[styles.segment, mode === 'MAPA' && styles.segmentActive]} onPress={() => setMode('MAPA')}>
-              <MapIcon size={19} color={mode === 'MAPA' ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
-              <Text style={[styles.segmentText, mode === 'MAPA' && styles.segmentTextActive]}>Mapa</Text>
-            </Pressable>
-            <Pressable style={[styles.segment, mode === 'LISTADO' && styles.segmentActive]} onPress={() => setMode('LISTADO')}>
-              <List size={19} color={mode === 'LISTADO' ? '#9FE870' : '#A6B0CF'} strokeWidth={2} />
-              <Text style={[styles.segmentText, mode === 'LISTADO' && styles.segmentTextActive]}>Listado</Text>
-            </Pressable>
-          </View>
-        </View>
 
         <Modal visible={layersOpen} transparent animationType="slide" onRequestClose={() => setLayersOpen(false)}>
           <Pressable style={styles.sheetBackdrop} onPress={() => setLayersOpen(false)} />
@@ -304,7 +293,7 @@ export default function PotrerosScreen() {
   )
 }
 
-function PotreroPreview({ potrero, onClose }: { potrero: Potrero; onClose: () => void }) {
+function PotreroPreview({ potrero, onClose, onEdit, onDelete }: { potrero: Potrero; onClose: () => void; onEdit: () => void; onDelete: () => void }) {
   const cargaActual = Number(potrero.cargaAnimalActual ?? 0)
   const capacidad = Number(potrero.capacidadAnimales ?? 0)
   const ocupacion = capacidad > 0 ? Math.round((cargaActual / capacidad) * 100) : 0
@@ -317,9 +306,17 @@ function PotreroPreview({ potrero, onClose }: { potrero: Potrero; onClose: () =>
         <View style={[styles.estadoBadge, { borderColor: `${estadoColor(potrero.estado)}80`, backgroundColor: `${estadoColor(potrero.estado)}18` }]}>
           <Text style={[styles.estadoBadgeText, { color: estadoColor(potrero.estado) }]}>{potrero.estado || 'ACTIVO'}</Text>
         </View>
-        <Pressable style={styles.previewClose} onPress={onClose}>
-          <X size={15} color="#DCE8F8" strokeWidth={2.2} />
-        </Pressable>
+        <View style={styles.previewHeadActions}>
+          <Pressable style={styles.previewActionButton} onPress={onEdit}>
+            <Pencil size={14} color="#9FE870" strokeWidth={2.2} />
+          </Pressable>
+          <Pressable style={styles.previewActionButton} onPress={onDelete}>
+            <Trash2 size={14} color="#FF6B6B" strokeWidth={2.2} />
+          </Pressable>
+          <Pressable style={styles.previewClose} onPress={onClose}>
+            <X size={15} color="#DCE8F8" strokeWidth={2.2} />
+          </Pressable>
+        </View>
       </View>
 
       <ScrollView
@@ -693,6 +690,8 @@ const styles = StyleSheet.create({
     left: 18,
     top: '38%',
     gap: 10,
+    zIndex: 9000,
+    elevation: 9000,
   },
   actionBubble: {
     minHeight: 44,
@@ -703,6 +702,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 12 },
+    zIndex: 9001,
+    elevation: 9001,
+    overflow: 'visible',
   },
   actionIconCircle: {
     width: 45,
@@ -712,6 +714,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: 'rgba(255,255,255,0.18)',
+    zIndex: 3,
+    elevation: 3,
   },
   actionTextPill: {
     minWidth: 68,
@@ -724,7 +728,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(8, 18, 37, 0.88)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.08)',
-    marginLeft: -4,
+    marginLeft: -12,
+    paddingLeft: 17,
+    zIndex: 1,
+    elevation: 1,
   },
   actionLabel: {
     color: '#FFFFFF',
@@ -755,14 +762,10 @@ const styles = StyleSheet.create({
     opacity: 0.92,
     transform: [{ scale: 0.96 }],
   },
-  mapControlActive: {
-    borderColor: 'rgba(159,232,112,0.4)',
-    backgroundColor: 'rgba(159,232,112,0.12)',
-  },
   locationPill: {
     position: 'absolute',
     left: 20,
-    bottom: 112,
+    bottom: 24,
     height: 43,
     minWidth: 116,
     borderRadius: 999,
@@ -777,40 +780,6 @@ const styles = StyleSheet.create({
   locationText: {
     color: '#A6B0CF',
     fontSize: 11,
-    fontWeight: '400',
-  },
-  locationButton: {
-    position: 'absolute',
-    right: 20,
-    bottom: 112,
-    width: 43,
-    height: 43,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(8, 18, 37, 0.88)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-  },
-  zoomControls: {
-    position: 'absolute',
-    right: 18,
-    bottom: 166,
-    gap: 8,
-  },
-  zoomControl: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(8, 18, 37, 0.82)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  zoomText: {
-    color: '#FFFFFF',
-    fontSize: 18,
     fontWeight: '400',
   },
   permissionCard: {
@@ -839,9 +808,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 14,
     right: 14,
-    bottom: 104,
-    zIndex: 5000,
-    elevation: 5000,
+    bottom: 14,
+    zIndex: 10000,
+    elevation: 10000,
     maxHeight: '58%',
     padding: 16,
     borderRadius: 22,
@@ -876,6 +845,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 14,
     fontWeight: '900',
+  },
+  previewHeadActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  previewActionButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.08)',
   },
   previewClose: {
     width: 32,
@@ -1038,98 +1020,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 14,
     marginTop: 2,
-  },
-  listPanel: {
-    position: 'absolute',
-    left: 12,
-    right: 12,
-    top: 154,
-    bottom: 96,
-    zIndex: 2200,
-    elevation: 2200,
-    borderRadius: 24,
-    backgroundColor: 'rgba(8, 18, 37, 0.94)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  listContent: {
-    padding: 12,
-    gap: 10,
-  },
-  potreroRow: {
-    minHeight: 62,
-    borderRadius: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingHorizontal: 12,
-    backgroundColor: 'rgba(11, 23, 48, 0.78)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  rowDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  rowCopy: {
-    flex: 1,
-  },
-  rowTitle: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '800',
-  },
-  rowSub: {
-    color: '#A6B0CF',
-    fontSize: 10,
-    marginTop: 3,
-  },
-  rowArea: {
-    color: '#9FE870',
-    fontSize: 12,
-    fontWeight: '900',
-  },
-  emptyText: {
-    color: '#A6B0CF',
-    padding: 14,
-    fontSize: 12,
-  },
-  segmentedWrap: {
-    position: 'absolute',
-    left: 20,
-    right: 20,
-    bottom: 22,
-    alignItems: 'center',
-  },
-  segmented: {
-    width: '100%',
-    height: 72,
-    borderRadius: 28,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    backgroundColor: 'rgba(8, 18, 37, 0.92)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  segment: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-  },
-  segmentActive: {
-    opacity: 1,
-  },
-  segmentText: {
-    color: '#A6B0CF',
-    fontSize: 11,
-    fontWeight: '500',
-  },
-  segmentTextActive: {
-    color: '#9FE870',
-    fontWeight: '800',
   },
   sheetBackdrop: {
     flex: 1,
