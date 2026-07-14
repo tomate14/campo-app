@@ -167,7 +167,7 @@ export default function PotrerosScreen() {
             return (
               <Pressable
                 key={action.label}
-                style={[styles.actionBubble, { shadowColor: action.color }]}
+                style={[styles.actionBubble, { borderColor: `${action.color}55`, shadowColor: action.color }]}
                 onPress={() => {
                   if (action.route) {
                     router.push(action.route as never)
@@ -201,10 +201,6 @@ export default function PotrerosScreen() {
         <Pressable style={styles.locationPill} onPress={() => sendMapCommand('user')}>
           <LocateFixed size={17} color="#A6B0CF" strokeWidth={2} />
           <Text style={styles.locationText}>Mi ubicacion</Text>
-        </Pressable>
-
-        <Pressable style={[styles.locationButton, locationStatus === 'granted' && styles.mapControlActive]} onPress={() => sendMapCommand('user')}>
-          <LocateFixed size={18} color="#FFFFFF" strokeWidth={2} />
         </Pressable>
 
         {locationStatus === 'denied' && (
@@ -693,14 +689,22 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 18,
     top: '38%',
-    gap: 14,
+    gap: 10,
+    zIndex: 9000,
+    elevation: 9000,
   },
   actionBubble: {
+    minHeight: 44,
+    borderRadius: 999,
+    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'transparent',
     shadowOpacity: 0.2,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 12 },
+    zIndex: 9001,
+    elevation: 9001,
+    overflow: 'visible',
   },
   actionIconCircle: {
     width: 45,
@@ -710,25 +714,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: 'rgba(255,255,255,0.18)',
+    zIndex: 3,
+    elevation: 3,
   },
   actionTextPill: {
-    marginTop: 5,
-    minWidth: 64,
-    maxWidth: 86,
-    alignItems: 'center',
+    minWidth: 68,
+    maxWidth: 82,
+    minHeight: 34,
+    justifyContent: 'center',
     paddingHorizontal: 9,
-    paddingVertical: 5,
-    borderRadius: 12,
+    borderTopRightRadius: 18,
+    borderBottomRightRadius: 18,
     backgroundColor: 'rgba(8, 18, 37, 0.88)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.08)',
+    marginLeft: -12,
+    paddingLeft: 17,
+    zIndex: 1,
+    elevation: 1,
   },
   actionLabel: {
     color: '#FFFFFF',
     fontSize: 8,
     lineHeight: 10,
     fontWeight: '400',
-    textAlign: 'center',
   },
   mapControlsTop: {
     position: 'absolute',
@@ -753,14 +762,10 @@ const styles = StyleSheet.create({
     opacity: 0.92,
     transform: [{ scale: 0.96 }],
   },
-  mapControlActive: {
-    borderColor: 'rgba(159,232,112,0.4)',
-    backgroundColor: 'rgba(159,232,112,0.12)',
-  },
   locationPill: {
     position: 'absolute',
     left: 20,
-    bottom: 112,
+    bottom: 24,
     height: 43,
     minWidth: 116,
     borderRadius: 999,
@@ -776,19 +781,6 @@ const styles = StyleSheet.create({
     color: '#A6B0CF',
     fontSize: 11,
     fontWeight: '400',
-  },
-  locationButton: {
-    position: 'absolute',
-    right: 20,
-    bottom: 112,
-    width: 43,
-    height: 43,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(8, 18, 37, 0.88)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
   },
   permissionCard: {
     position: 'absolute',
