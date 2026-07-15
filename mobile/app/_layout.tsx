@@ -75,6 +75,9 @@ export default function RootLayout() {
           <Stack.Screen name="agricola/plagas" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="ganaderia/potrero-form" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="ganaderia/nueva-reproduccion" options={{ presentation: 'modal', headerShown: false }} />
+          <Stack.Screen name="ganaderia/nueva-trazabilidad" options={{ presentation: 'modal', headerShown: false }} />
+          <Stack.Screen name="ganaderia/nueva-sanidad" options={{ presentation: 'modal', headerShown: false }} />
+          <Stack.Screen name="ganaderia/nueva-alimentacion" options={{ presentation: 'modal', headerShown: false }} />
         </Stack>
 
         {isBootstrapping && (

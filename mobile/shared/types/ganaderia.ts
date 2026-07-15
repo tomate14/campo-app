@@ -171,3 +171,143 @@ export interface IndiceGeneticoResponse extends IndiceGeneticoRequest {
   animalCaravana?: string
   createdAt?: string
 }
+
+export interface VacunaCatalogoRequest {
+  codigo: string
+  nombre: string
+  descripcion?: string
+  obligatoria?: boolean
+  especie?: string
+  frecuenciaDias?: number
+  edadMinDias?: number
+  edadMaxDias?: number
+  dosisRecomendada?: string
+  viaAplicacion?: string
+  laboratorio?: string
+  costoReferencia?: number
+  stockDisponible?: number
+  activo?: boolean
+}
+
+export interface VacunaCatalogo extends VacunaCatalogoRequest {
+  id: string
+  updatedAt?: string
+}
+
+export interface AplicacionVacunaRequest {
+  animalId: string
+  vacunaId: string
+  fechaAplicacion: string
+  proximaDosisFecha?: string
+  operario?: string
+  loteMarca?: string
+  costoAplicado?: number
+  observaciones?: string
+}
+
+export interface AplicacionVacunaResponse extends AplicacionVacunaRequest {
+  id: string
+  animalCaravana?: string
+  vacunaNombre?: string
+  createdAt?: string
+}
+
+export interface TratamientoMedicamentoRequest {
+  animalId: string
+  fechaInicio: string
+  fechaFin?: string
+  medicamento: string
+  dosis?: string
+  viaAplicacion?: string
+  responsable?: string
+  motivo?: string
+  costo?: number
+  observaciones?: string
+}
+
+export interface TratamientoMedicamentoResponse extends TratamientoMedicamentoRequest {
+  id: string
+  animalCaravana?: string
+  createdAt?: string
+}
+
+export interface DiagnosticoSanitarioRequest {
+  animalId: string
+  fechaDiagnostico: string
+  enfermedad: string
+  severidad?: string
+  estado?: string
+  veterinario?: string
+  tratamientoIndicado?: string
+  observaciones?: string
+}
+
+export interface DiagnosticoSanitarioResponse extends DiagnosticoSanitarioRequest {
+  id: string
+  animalCaravana?: string
+  createdAt?: string
+}
+
+export interface DietaIngredienteRequest {
+  ingrediente: string
+  proporcionPct: number
+  costoKg?: number
+  materiaSecaPct?: number
+}
+
+export interface DietaIngredienteResponse extends DietaIngredienteRequest {
+  id?: string
+}
+
+export interface DietaRequest {
+  nombre: string
+  tipoAnimal: string
+  objetivo?: string
+  materiaSecaKg?: number
+  costoDiario?: number
+  activa?: boolean
+  observaciones?: string
+  ingredientes?: DietaIngredienteRequest[]
+}
+
+export interface Dieta extends Omit<DietaRequest, 'ingredientes'> {
+  id: string
+  ingredientes?: DietaIngredienteResponse[]
+  updatedAt?: string
+}
+
+export interface RegistroAlimentacionRequest {
+  animalId?: string
+  dietaId?: string
+  fecha: string
+  alimento: string
+  cantidadKg: number
+  costoTotal?: number
+  potreroId?: string
+  potrero?: string
+  responsable?: string
+  observaciones?: string
+}
+
+export interface RegistroAlimentacionResponse extends RegistroAlimentacionRequest {
+  id: string
+  animalCaravana?: string
+  dietaNombre?: string
+  createdAt?: string
+}
+
+export interface PesajeRequest {
+  animalId: string
+  fecha: string
+  pesoKg: number
+  condicionCorporal?: number
+  metodo?: string
+  responsable?: string
+  observaciones?: string
+}
+
+export interface PesajeResponse extends PesajeRequest {
+  id: string
+  animalCaravana?: string
+  createdAt?: string
+}
