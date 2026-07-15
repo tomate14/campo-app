@@ -17,10 +17,10 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 47
+- Total de historias registradas: 48
 - Realizadas: 30
 - Parciales: 0
-- Pendientes: 15
+- Pendientes: 16
 - Saltadas: 2
 - Ultima actualizacion: 2026-07-15
 
@@ -76,6 +76,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 44 | `44_frontend_modernizacion_graficos_apexcharts.md` | Frontend | Realizada | Graficos compartidos (barras, donut, linea) migrados de SVG plano a ApexCharts con gradientes, glow, curvas suaves y tooltip premium, sin romper el contrato de los componentes. |
 | 45 | `45_COMPLETA_ganaderia_mobile_menu_potreros_alta_edicion.md` | Ganaderia/Mobile | Realizada | Alta/edicion/baja de potreros desde mobile y burbuja "Agregar Reproduccion" (monta, inseminacion, prenez, parto, indice) implementadas. Color por estado del potrero verificado funcionando. Pendiente prueba manual en dispositivo real. |
 | 46 | `46_COMPLETA_ganaderia_mobile_trazabilidad_sanidad_alimentacion.md` | Ganaderia/Mobile | Realizada | Trazabilidad, Sanidad y Alimentacion activadas en el menu de ganaderia mobile y en sus burbujas de "nueva actividad", clonando campo por campo los formularios web (incluyendo selectores tipo buscador). Pendiente prueba manual en dispositivo real. |
+| 47 | `47_ganaderia_alertas_potreros.md` | Ganaderia | Pendiente | Alertas georreferenciadas sobre potreros: usuario logueado + fecha + gravedad (niveles de lotes) + observacion, pin de campanita coloreada por gravedad en mapa web y mobile (burbuja nueva), alta por click en potrero en web y por GPS/centroide en mobile, integrada al offline-first (outbox + sync down). |
 
 ## Registro por Dominio
 
@@ -92,7 +93,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 ### Ganaderia
 - Realizadas: 04, 05, 06, 07, 31, 38, 42, 45, 46.
 - Parciales: ninguna.
-- Pendientes: 30, 32, 33, 34, 35.
+- Pendientes: 30, 32, 33, 34, 35, 47.
 
 ### Maquinaria
 - Realizadas: 08, 09.
@@ -136,6 +137,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 44.
 
 ## Ultimas Actualizaciones
+- 2026-07-15: Feature 47 creada: alertas georreferenciadas en potreros (usuario logueado, fecha, gravedad con los niveles de lotes, observacion), pin de campanita coloreada por gravedad en los mapas de web y mobile, e integracion obligatoria al offline-first de la feature 24. Pendiente de desarrollo.
 - 2026-07-15: Feature 24 mergeada a master y renombrada `_COMPLETA_` (referencias en features 30, 32 y 33 actualizadas).
 - 2026-07-15: Feature 24 realizada: offline-first mobile con Sync Down proactiva (replica local de 10 datasets criticos con las mismas query keys de los hooks), Outbox FIFO persistido con interceptor axios sobre 22 mutaciones de agricultura/ganaderia, filtro backend Idempotency-Key (migracion V41), remap de IDs temporales, banner global de estado y bandeja de pendientes con reintento/descarte. Type-check, compilacion backend y 4 tests de outbox OK; queda prueba manual en dispositivo real.
 - 2026-07-14: Feature 24 reformulada tras analisis de mercado: offline-first mobile con Sync Down proactiva (nube a telefono, replica local de lotes/potreros/animales/operarios/catalogos) y Outbox FIFO (telefono a nube, con Idempotency-Key y remap de IDs temporales), acotada a agricultura, ganaderia y operarios. Se descartan SQLite/Realm, delta-sync, endpoint /sync, compresion y merge de conflictos del planteo original. Quedan 3 decisiones abiertas documentadas en el doc antes de implementar.
