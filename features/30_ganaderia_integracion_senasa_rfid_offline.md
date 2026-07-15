@@ -22,5 +22,5 @@ Completar la trazabilidad ganadera con integracion externa efectiva, captura des
 
 ## Dependencias
 - 04_COMPLETA_ganaderia_trazabilidad_animal
-- 24_sincronizacion_offline_first
+- 24_COMPLETA_sincronizacion_offline_first
 

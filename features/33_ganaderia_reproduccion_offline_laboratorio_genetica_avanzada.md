@@ -17,6 +17,6 @@ Extender el modulo reproductivo con operacion offline real, integracion con labo
 
 ## Dependencias
 - 06_COMPLETA_ganaderia_reproduccion_genealogia
-- 24_sincronizacion_offline_first
+- 24_COMPLETA_sincronizacion_offline_first
 - 30_ganaderia_integracion_senasa_rfid_offline
 

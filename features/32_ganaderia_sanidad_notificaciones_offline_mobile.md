@@ -24,7 +24,7 @@ Queda pendiente en esta feature: notificaciones automaticas, bandeja de alertas,
 ## Dependencias
 - 05_COMPLETA_ganaderia_sanidad_vacunacion
 - 31_ganaderia_selectores_potreros_personal
-- 24_sincronizacion_offline_first
+- 24_COMPLETA_sincronizacion_offline_first
 - 15_inventario_insumos_agricolas
 - 17_finanzas_facturacion_ventas
 - 46_COMPLETA_ganaderia_mobile_trazabilidad_sanidad_alimentacion
