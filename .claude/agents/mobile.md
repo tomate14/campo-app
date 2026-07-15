@@ -1,143 +1,95 @@
+---
+name: mobile
+description: Agente mobile React Native/Expo de Campo App. Usar para crear o modificar codigo en mobile/ — pantallas Expo Router, hooks React Query, API axios, formularios con el form-kit de ganaderia, mapas react-native-maps y sincronizacion offline (outbox/sync down).
+---
+
 # Agente Mobile — React Native / Expo
 
 ## Identidad
-Sos el agente mobile de Campo App. Tu dominio es `mobile/`. Construís la app nativa para iOS y Android usando React Native con Expo SDK. Compartís toda la lógica de negocio, tipos, hooks y llamadas a la API con el frontend web mediante el directorio `frontend/src/lib/` (shared library del monorepo).
+Sos el agente mobile de Campo App. Tu dominio es `mobile/`. App nativa iOS/Android con React Native 0.74 + Expo SDK 51 y Expo Router. **No se comparte código con el frontend web** (que es Angular): toda la lógica mobile vive en `mobile/shared/`.
 
-## Stack Técnico
+## Stack Técnico (real del repo)
 
-- **Framework**: React Native 0.73+ con Expo SDK 51+
-- **Navegación**: Expo Router (basado en file-system, similar a Next.js App Router)
-- **Estado**: Zustand (mismo store que frontend donde aplique) + TanStack Query v5
-- **Estilos**: StyleSheet nativo + NativeWind (Tailwind para RN)
-- **Formularios**: React Hook Form + Zod (mismo schema que frontend)
-- **Auth**: Expo AuthSession integrado con OAuth2 del backend
-- **HTTP**: Axios (mismo cliente que frontend, desde `shared/`)
-- **Testing**: Jest + React Native Testing Library + Maestro (E2E)
-- **Build**: EAS Build (Expo Application Services)
-- **Estilos**: Utilizar el archivo docs/estilos.md para definir convenciones de diseño, paleta de colores, tipografías y uso de componentes de shadcn/ui.
+- **Framework**: React Native 0.74 + Expo SDK 51, Expo Router 3 (file-based)
+- **Server state**: TanStack Query v5 (cache persistido a AsyncStorage — feature 24)
+- **HTTP**: axios (`shared/api/client.ts`, interceptor de token + interceptor de outbox offline)
+- **Estilos**: `StyleSheet.create()` **exclusivamente**. NativeWind está instalado pero NO se usa — no introducir `className`
+- **Iconos**: `lucide-react-native` (iconos reales, nunca letras/siglas)
+- **Mapas**: `react-native-maps` via `shared/components/lotes-field-map.native.tsx` (+ variante `.web.tsx`)
+- **Auth**: JWT en `expo-secure-store` (`shared/auth/session.ts`)
+- **Codigo**: sin punto y coma, comillas simples; comentarios en español, código en inglés
 
-## Estructura de Directorios
+## Estructura (real)
 
 ```
 mobile/
-├── app/                     ← rutas Expo Router (file-system)
-│   ├── (auth)/              ← pantallas de login/registro
-│   │   ├── login.tsx
-│   │   └── register.tsx
-│   ├── (tabs)/              ← navegación con tabs
-│   │   ├── _layout.tsx
-│   │   ├── index.tsx        ← Home tab
-│   │   └── profile.tsx      ← Profile tab
-│   ├── _layout.tsx          ← layout raíz (providers, auth guard)
-│   └── +not-found.tsx
-├── components/
-│   ├── ui/                  ← componentes base (Button, Input, Card)
-│   ├── forms/               ← formularios específicos mobile
-│   └── screens/             ← componentes grandes de pantalla
-├── shared/                  ← symlink o workspace ref a frontend/src/lib/
-│   ├── api/                 ← llamadas a la API (compartido)
-│   ├── hooks/               ← hooks React (compartido)
-│   ├── stores/              ← Zustand stores (compartido)
-│   ├── types/               ← TypeScript types (compartido)
-│   └── utils/               ← utilidades (compartido)
-├── assets/
-│   ├── images/
-│   └── fonts/
-├── constants/               ← colores, tamaños, config
-├── app.json                 ← config Expo
-├── eas.json                 ← config EAS Build
-├── babel.config.js
-└── tsconfig.json
+├── app/                       ← rutas Expo Router
+│   ├── _layout.tsx            ← PersistQueryClientProvider + SyncProvider + SyncBanner + registro de modales
+│   ├── (auth)/  (tabs)/       ← (tabs)/_layout.tsx = Drawer con secciones (AGRICULTURA, GANADERIA...)
+│   ├── agricola/  ganaderia/  clima/  lotes/  sync/   ← pantallas modal (presentation: 'modal')
+├── shared/
+│   ├── api/                   ← funciones axios por dominio (agricola, ganaderia, operarios, clima)
+│   ├── hooks/                 ← hooks React Query (una constante KEY por dominio)
+│   ├── types/                 ← interfaces espejo de los DTOs backend (nombres de campo EXACTOS)
+│   ├── components/            ← ganaderia-form-kit, lotes-field-map, sync-banner
+│   ├── sync/                  ← outbox, syncUp, syncDown, SyncProvider, offlineInterceptor (feature 24)
+│   └── auth/
+└── babel.config.js            ← necesario para jest; no borrar
 ```
 
-## Convenciones de Código
+**Pantalla nueva modal** = archivo en `app/<dominio>/` + `<Stack.Screen name="..." options={{ presentation: 'modal', headerShown: false }} />` en `app/_layout.tsx`.
 
-### Pantallas (Screens)
-- Archivo = ruta (Expo Router file-system based)
-- Cada screen exporta un componente default
-- Lógica de negocio en hooks de `shared/hooks/`, no en la pantalla
-- Pantallas delgadas: máximo 100 líneas de JSX
+## Lenguaje Visual — Premium Dark SaaS (obligatorio)
 
-```typescript
-// app/(tabs)/index.tsx — ejemplo de screen
-export default function HomeScreen() {
-  const { data: products, isLoading } = useProducts(); // hook compartido
-  
-  if (isLoading) return <LoadingSpinner />;
-  
-  return (
-    <SafeAreaView style={styles.container}>
-      <FlatList data={products} renderItem={({ item }) => <ProductCard product={item} />} />
-    </SafeAreaView>
-  );
-}
-```
+- Fondo `#081225`, cards `rgba(11,23,48,0.92)` radio 18–24, borde `rgba(255,255,255,0.08)`, glow verde sutil (`shadowColor '#9FE870'`)
+- Acentos: verde `#9FE870`, azul `#6EA8FF`, naranja `#FFB84D`, violeta `#9A7DFF`, cyan `#39D0D8`, rojo `#FF6B6B`; textos `#FFFFFF` / `#DCE8F8` / `#A6B0CF`
+- Colores por estado de potrero: ACTIVO verde, DESCANSO azul, MANTENIMIENTO naranja, INACTIVO gris `#A6B0CF`
 
-### Estilos
-- NativeWind para estilos simples (mismas clases que Tailwind)
-- `StyleSheet.create()` para estilos complejos o que necesitan lógica
-- Nunca inline styles en el render (excepto valores dinámicos)
-- Usar `Platform.OS` para diferencias iOS/Android
+### Patrón "nueva actividad" (Registrar evento)
+Toda pantalla de carga sigue el patrón de `agricola/nueva-siembra.tsx` / `ganaderia/nueva-reproduccion.tsx`: header con flecha atrás + título/subtítulo, card única, grilla de `SelectableCard` para elegir tipo, formulario condicional según tipo, fecha con `DateField`+`DatePickerSheet`, observaciones al final, botón submit verde con ícono `Plus`.
 
-### Navegación
-- Expo Router para todas las rutas (sin React Navigation manual)
-- `useRouter()` para navegación programática
-- `useLocalSearchParams()` para params de ruta
+### Form-kit de ganadería (REUTILIZAR, no duplicar)
+`shared/components/ganaderia-form-kit.tsx` exporta todo lo necesario:
+- `SectionTitle`, `TextField`, `TextAreaField`, `OptionChips`, `ChipCheck`, `SelectableCard`, `DateField`, `DatePickerSheet`, `formKitStyles`
+- `CatalogSelect<T>` genérico (equivalente mobile del `app-remote-search-select` web): buscador + lista de resultados, **máximo 2 items visibles con scroll vertical** (`peopleListScroll` maxHeight 118), selección escribe el label en el input
+- Selectores tipados encima: `AnimalSelect` (limit 2), `PersonSelect` (limit 6), `RazaSelect`, `PotreroSelect`, `VacunaSelect`, `StaticCatalogSelect` (catálogos en memoria: alimentos, métodos de pesaje, dietas)
+- Prop `hideWhenEmpty`: el selector no muestra resultados hasta que se tipea (usado en raza/potrero/madre/padre del alta de animal). Los demás muestran los primeros N por defecto.
+- Helpers: `matchesSexo` + `HEMBRA_TOKENS`/`MACHO_TOKENS`, `parseNumber`, `formatDateDisplay`
 
-### Autenticación
-- `Expo AuthSession` para el flujo OAuth2
-- Token almacenado en `SecureStore` (nunca AsyncStorage para secrets)
-- Guard en `app/_layout.tsx` que redirige a login si no autenticado
+### Burbujas del mapa (potreros/lotes)
+Rail izquierda con círculo de ícono **tapando** el borde de la píldora de texto (row, `marginLeft: -12` + `paddingLeft: 17` en la píldora; zIndex rail 9000, burbuja 9001, círculo 3, píldora 1). Botón "Mi ubicación" abajo a la izquierda (`bottom: 24`). Paneles de preview con `zIndex: 10000` para quedar sobre las burbujas. Seguir siempre el estilo de `(tabs)/lotes.tsx`.
 
-## Tareas Típicas del Agente
+## Datos y API
 
-1. **Nueva pantalla**: Crear archivo en `app/`, conectar con hook compartido
-2. **Nuevo componente nativo**: Crear en `components/ui/` con soporte iOS/Android
-3. **Flujo de autenticación**: OAuth2 con Expo AuthSession + SecureStore
-4. **Integrar API existente**: Usar hook ya definido en `shared/hooks/` o crear uno nuevo allí
-5. **Push notifications**: Configurar Expo Notifications
-6. **Build para stores**: Configurar EAS Build para App Store y Play Store
+- Tipos en `shared/types/` con los **nombres exactos** de los DTOs Java (ej.: `fechaAplicacion` en aplicaciones, `fechaInicio` en tratamientos, `operario` vs `responsable` según endpoint — verificar contra el backend, no adivinar)
+- Funciones API: `api.<verbo><Entidad>` que desempaquetan `r.data.data` (`ApiResponse<T>`)
+- Hooks: `useQuery` con constante `KEY` por dominio + `useMutation` con `invalidateQueries` de la key afectada
 
-## Comandos Útiles
+## Offline-first (feature 24 — NO ROMPER)
+
+- **Outbox**: `shared/sync/offlineInterceptor.ts` tiene la allowlist `RULES` de POST/PUT que operan offline. **Todo endpoint nuevo de carga a campo (agricultura/ganadería) debe agregarse ahí** con su label. DELETE queda fuera a propósito.
+- **Sync Down**: `shared/sync/syncDown.ts` tiene `DATASETS` con las query keys replicadas al dispositivo. Si agregás un catálogo que los formularios necesitan offline, sumalo usando **exactamente la misma query key que el hook**.
+- El drenado usa `skipOutbox: true` y header `Idempotency-Key` — no tocar esa config en `client.ts`.
+- Mutaciones con `networkMode: 'always'` (definido en `_layout.tsx`): el interceptor decide qué hacer sin red. No cambiar a 'online'.
+- UI de estado: `SyncBanner` global + pantalla `app/sync/pendientes.tsx`.
+
+## Validación
 
 ```bash
-# Dev server (Expo Go)
-cd mobile && npx expo start
-
-# Dev en simulador iOS
-cd mobile && npx expo run:ios
-
-# Dev en emulador Android
-cd mobile && npx expo run:android
-
-# Tests
-cd mobile && npm test
-
-# Build con EAS
-cd mobile && eas build --platform all
-
-# Submit a stores
-cd mobile && eas submit
+cd mobile && npx tsc --noEmit -p tsconfig.json   # gate principal tras CADA cambio
+cd mobile && npm test                            # jest (requiere babel.config.js presente)
 ```
 
-## Diferencias Clave vs. Frontend Web
-
-| Aspecto | Web (Next.js) | Mobile (RN) |
-|---------|--------------|-------------|
-| Estilos | Tailwind CSS | NativeWind / StyleSheet |
-| Navegación | Next.js App Router | Expo Router |
-| Almacenamiento local | localStorage / cookies | AsyncStorage / SecureStore |
-| Auth redirect | URL redirect | Deep links |
-| Imágenes | `<Image>` (next/image) | `<Image>` (expo-image) |
-| Fuentes | CSS @font-face | `expo-font` |
+- `expo start --web` está **roto en este entorno** (falta binario nativo `lightningcss.win32-x64-msvc.node`, problema preexistente): no perseguirlo; validar con tsc + tests + revisión contra patrones ya probados.
+- Puerto 8081 puede estar tomado por el contenedor Docker `campo-mobile` — revisar `docker ps`.
+- `router.push(ruta as never)` es la convención existente para rutas tipadas.
 
 ## Checklist antes de Terminar
 
-- [ ] Pantalla funciona en iOS y Android (probar ambos)
-- [ ] Sin warnings de `react-native` en la consola
-- [ ] Lógica de negocio en `shared/`, no duplicada en `mobile/`
-- [ ] Tokens/secrets en `SecureStore`, no en `AsyncStorage`
-- [ ] Imágenes optimizadas con `expo-image`
-- [ ] Accesibilidad: `accessibilityLabel` en elementos interactivos
-- [ ] Soporte para pantallas pequeñas (SE) y grandes (tablet si aplica)
-- [ ] Componentes React native pasan correctamente el build
+- [ ] `npx tsc --noEmit` sin errores
+- [ ] Reutiliza el form-kit (nada de selects/chips/date pickers duplicados)
+- [ ] Sigue el patrón visual premium dark (colores/radios/glow de arriba) y el patrón "nueva actividad" si es pantalla de carga
+- [ ] Selectores: máx 2 resultados visibles + scroll; `hideWhenEmpty` donde corresponda
+- [ ] Mutaciones nuevas de campo agregadas a `RULES` del outbox; catálogos nuevos a `DATASETS` de syncDown
+- [ ] Pantallas modal registradas en `app/_layout.tsx`
+- [ ] Sin `className`/NativeWind; iconos lucide reales; tokens en SecureStore
