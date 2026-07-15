@@ -2,14 +2,37 @@ import 'react-native-gesture-handler'
 import { Stack, useRootNavigationState } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, Platform, StyleSheet, View, useColorScheme } from 'react-native'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { QueryClient } from '@tanstack/react-query'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { useRouter, useSegments } from 'expo-router'
 import { Colors } from '../constants/colors'
 import { readAccessToken } from '../shared/auth/session'
 import { configureApiClient } from '../shared/api/client'
+import { SyncProvider } from '../shared/sync/SyncProvider'
+import { SyncBanner } from '../shared/components/sync-banner'
+
+const CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7 // 7 dias: replica local para operar offline
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: 2, staleTime: 1000 * 60 * 5 } },
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      staleTime: 1000 * 60 * 5,
+      // El cache debe vivir al menos lo que dura la persistencia para que la
+      // replica offline no se recolecte al hidratar.
+      gcTime: CACHE_MAX_AGE_MS,
+    },
+    // Las mutaciones siempre se ejecutan: el interceptor de outbox decide que
+    // hacer ante la falta de red (feature 24).
+    mutations: { networkMode: 'always' },
+  },
+})
+
+const cachePersister = createAsyncStoragePersister({
+  storage: AsyncStorage,
+  key: 'campo-app-query-cache-v1',
 })
 
 export default function RootLayout() {
@@ -63,8 +86,11 @@ export default function RootLayout() {
   }, [router, rootNavigationState?.key, segments])
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: cachePersister, maxAge: CACHE_MAX_AGE_MS }}
+    >
+      <SyncProvider>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="(auth)" />
@@ -78,15 +104,18 @@ export default function RootLayout() {
           <Stack.Screen name="ganaderia/nueva-trazabilidad" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="ganaderia/nueva-sanidad" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="ganaderia/nueva-alimentacion" options={{ presentation: 'modal', headerShown: false }} />
+          <Stack.Screen name="sync/pendientes" options={{ presentation: 'modal', headerShown: false }} />
         </Stack>
+
+        <SyncBanner />
 
         {isBootstrapping && (
           <View style={[styles.bootstrapOverlay, { backgroundColor: colors.background }]}>
             <ActivityIndicator size="large" color={colors.primary} />
           </View>
         )}
-      </>
-    </QueryClientProvider>
+      </SyncProvider>
+    </PersistQueryClientProvider>
   )
 }
 
