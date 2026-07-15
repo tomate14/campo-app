@@ -1,7 +1,7 @@
 # 24 - Sincronizacion: Offline-First Mobile
 
 ## Estado
-Pendiente.
+Realizada.
 
 ## Origen
 Reformulada el 2026-07-14 tras el analisis de mercado de apps de campo: la falta de offline real es la queja numero uno de los productores contra el software agropecuario existente, y es el moat central de competidores como FieldData (que lo resuelve delegando en la cola de WhatsApp). La version original de esta feature (SQLite/Realm, protocolo delta-sync, endpoint `/api/v1/sync`, compresion, Firebase) se descarta por sobre-ingenieria para el volumen real de la app (decenas de eventos por dia, catalogos de cientos de filas): esta version se apoya en la infraestructura que ya existe (React Query + axios + endpoints REST de Spring Boot) y la extiende.
@@ -133,10 +133,25 @@ Los `DELETE` quedan **fuera del Outbox** en v1: borrar requiere confirmacion vis
 6. **12:30** — Recupera señal. El Outbox drena FIFO: deteccion (200), vacunacion (200), create de ternero (200, devuelve ID real), el parto pendiente se reescribe con el ID real y se envia (200). En paralelo la Sync Down baja las novedades de la web. Badge en cero, banner "Sincronizado 12:30".
 7. Caso limite documentado: si un dato se carga por web y el telefono no tiene ni un segundo de señal despues, ese dato no puede estar en el dispositivo; el mitigador es maximizar ventanas de sync (foreground + background fetch), no hay solucion magica.
 
-## Decisiones abiertas (definir con el usuario antes de implementar)
-1. **UI optimista**: ¿los items encolados se muestran ya "como si existieran" en listas y mapa (con icono de pendiente), o solo el badge de pendientes? Lo primero es mejor UX pero mas trabajo.
-2. **Vida del refresh token** para minimizar el caso 401-offline (tocaria feature 26).
-3. **Orden de implementacion**: ¿primero Sync Down (valor inmediato, menor riesgo) y despues Outbox, o las dos en la misma entrega?
+## Decisiones tomadas en la implementacion
+1. **UI optimista**: v1 sin insercion optimista en listas/mapa. El formulario resuelve normal (respuesta sintetica 202 con ID temporal), y la comunicacion del estado pasa por el banner global + badge + bandeja de pendientes. La insercion optimista con icono de pendiente queda como mejora futura.
+2. **Token vencido offline**: un 401 durante el drenado pausa la cola sin perderla; se reanuda tras re-login. Extender la vida del refresh token queda para la feature 26 si se pide.
+3. **Orden**: Sync Down y Outbox se entregaron juntas (comparten disparadores y provider).
+
+## Implementado
+- **Backend**: filtro generico `IdempotencyFilter` (`common/idempotency/`) registrado dentro de la security chain despues de la autorizacion (un replay nunca saltea auth), con tabla `idempotency_keys` (migracion `V41`), clave atada al usuario, cache solo de respuestas 2xx y purga diaria de claves con mas de 30 dias. Header `Idempotency-Key` agregado al CORS.
+- **`mobile/shared/sync/outbox.ts`**: cola FIFO persistida en AsyncStorage (`sync_outbox_v1`) con estados PENDIENTE/ERROR, contadores, suscripcion para la UI y `replaceTempIdInOutbox` (reescribe payloads y URLs de los pendientes cuando el create devuelve el ID real).
+- **`mobile/shared/sync/offlineInterceptor.ts`**: interceptor de respuesta de axios; si un POST/PUT de la allowlist (22 operaciones de agricultura y ganaderia) falla a nivel de red, encola en el outbox y devuelve una respuesta sintetica 202 con `tempId`, asi los formularios existentes (45/46) resuelven sin cambios. Flag `skipOutbox` para que el drenado no se re-encole.
+- **`mobile/shared/sync/syncUp.ts`**: drenado FIFO de a un item contra los endpoints REST existentes con header `Idempotency-Key`; 2xx remueve y remapea tempIds, error de red/5xx/401 corta el drenado, 4xx de validacion manda el item a la bandeja de errores sin bloquear al resto; al final invalida las queries.
+- **`mobile/shared/sync/syncDown.ts`**: replica local proactiva de 10 datasets criticos (lotes, potreros lista+mapa, animales, operarios activos y veterinarios, vacunas, razas, dietas, detecciones de plaga) via `fetchQuery` sobre las mismas query keys de los hooks; guarda `lastSyncAt`.
+- **`mobile/shared/sync/connectivity.ts`**: NetInfo conectado al `onlineManager` de React Query.
+- **`mobile/shared/sync/SyncProvider.tsx`**: orquestador con disparadores (arranque, reconexion, foreground, timer de 5 min, manual) y contexto `useSyncStatus` para la UI.
+- **`mobile/app/_layout.tsx`**: `PersistQueryClientProvider` con persister de AsyncStorage (cache 7 dias, `gcTime` alineado), `networkMode: 'always'` para mutaciones (el interceptor decide ante falta de red), `SyncProvider` y `SyncBanner` globales, registro de la pantalla de pendientes.
+- **`mobile/shared/components/sync-banner.tsx`**: pildora global que solo aparece con algo que comunicar (offline / pendientes / errores / sincronizando), navega a la bandeja.
+- **`mobile/app/sync/pendientes.tsx`**: bandeja de sincronizacion con estado de conexion, ultima sync, boton "Sincronizar ahora" y lista de items con reintentar/descartar.
+- **`mobile/babel.config.js`**: config explicita (preset expo) necesaria para que jest transforme react-native; `expo start` la infiere igual.
+- **Tests**: `mobile/shared/sync/__tests__/outbox.test.ts` (4 tests: FIFO, remap de tempIds en payload y URL, contadores, remocion).
+- Dependencias nuevas: `@react-native-async-storage/async-storage`, `@react-native-community/netinfo` (via `expo install`), `@tanstack/react-query-persist-client@5.40`, `@tanstack/query-async-storage-persister@5.40`.
 
 ## Referencias Tecnicas
 - Mobile: `mobile/shared/api/client.ts` (axios + interceptor de token), `mobile/shared/api/{agricola,ganaderia,operarios}.ts` (inventario completo de GET/POST/PUT), `mobile/app/_layout.tsx` (QueryClient), hooks en `mobile/shared/hooks/`.
@@ -144,8 +159,8 @@ Los `DELETE` quedan **fuera del Outbox** en v1: borrar requiere confirmacion vis
 - Backend: filtro/interceptor generico `Idempotency-Key` + tabla `idempotency_keys` (unico cambio de servidor).
 - Features relacionadas: [26](26_COMPLETA_autenticacion_seguridad_login_tokens.md) (tokens), [27](27_agricultura_offline_validacion_cierre_00_01.md), [32](32_ganaderia_sanidad_notificaciones_offline_mobile.md) y [35](35_ganaderia_alimentacion_offline_balanzas_nrc_inra.md) (sus partes offline quedan cubiertas por esta feature cuando se implemente).
 
-## Validacion Tecnica (cuando se implemente)
-- Type-check mobile (`npx tsc --noEmit`).
-- Prueba manual con modo avion: registrar cada tipo de evento offline, verificar encolado, reconectar y verificar drenado sin duplicados (matar la app entre medio para validar persistencia de la cola).
-- Prueba del remap de tempIds: crear animal + parto offline, sincronizar, verificar que el parto referencia el ID real.
-- Prueba de idempotencia: simular perdida de respuesta (timeout) y verificar que el reintento no duplica.
+## Validacion Tecnica
+- `npx tsc --noEmit -p tsconfig.json` sobre `mobile/` sin errores.
+- `mvn compile` sobre `backend/` sin errores.
+- Jest: 4/4 tests de outbox pasando (FIFO, remap de tempIds, contadores, remocion).
+- Pendiente de prueba manual en dispositivo/emulador real con modo avion: registrar cada tipo de evento offline, verificar encolado y drenado sin duplicados (matando la app entre medio para validar persistencia), remap de tempIds crear-animal+parto, e idempotencia ante timeout. El preview web del entorno sigue bloqueado por el problema preexistente de lightningcss.

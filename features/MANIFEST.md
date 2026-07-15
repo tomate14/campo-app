@@ -18,11 +18,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 47
-- Realizadas: 29
+- Realizadas: 30
 - Parciales: 0
-- Pendientes: 16
+- Pendientes: 15
 - Saltadas: 2
-- Ultima actualizacion: 2026-07-14
+- Ultima actualizacion: 2026-07-15
 
 ## Registro por Feature
 
@@ -53,7 +53,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 21 | `21_geo_tracking_operarios.md` | Geolocalizacion | Pendiente | Tracking de operarios pendiente. |
 | 22 | `22_reportes_operacionales.md` | Reportes | Pendiente | Reportes operacionales pendiente. |
 | 10-reportes | `10_COMPLETA_reportes_agricola_ganaderia.md` | Reportes/Agricultura | Realizada | Dashboard Agricola Ejecutivo Premium implementado en `/reportes/agricola` consumiendo `GET /api/v1/reportes/agricola/dashboard`, sin datos mockeados en frontend. |
-| 24 | `24_sincronizacion_offline_first.md` | Infraestructura | Pendiente | Offline-first mobile reformulada (2026-07-14): Sync Down proactiva (replica local de datos de referencia) + Outbox FIFO con idempotencia y remap de tempIds + UI de estado, acotada a agricultura/ganaderia/operarios sobre la infraestructura React Query existente. Descarta SQLite/delta-sync/endpoint sync del planteo original. |
+| 24 | `24_sincronizacion_offline_first.md` | Infraestructura | Realizada | Offline-first mobile implementada: Sync Down proactiva (replica local de 10 datasets de agricultura/ganaderia/operarios), Outbox FIFO persistido con Idempotency-Key (filtro backend + tabla) y remap de tempIds, banner global y bandeja de pendientes. Pendiente prueba manual en dispositivo real con modo avion. |
 | 25 | `25_agricultura_control_plagas_enfermedades.md` | Agricultura | Pendiente | Reformulada como capa avanzada de plagas: camara real, offline, IA, recomendaciones, inventario, regulacion y reportes. |
 | 26 | `26_COMPLETA_autenticacion_seguridad_login_tokens.md` | Seguridad | Realizada | Autenticacion JWT, refresh tokens, RBAC y validez de token extendida implementadas. |
 | 27 | `27_agricultura_offline_validacion_cierre_00_01.md` | Agricultura | Pendiente | Cierre avanzado/offline de features 00 y 01 pendiente. |
@@ -122,7 +122,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 22.
 
 ### Infraestructura
-- Pendientes: 24.
+- Realizadas: 24.
+- Pendientes: ninguna.
 
 ### Seguridad
 - Realizadas: 26, 41.
@@ -135,6 +136,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 44.
 
 ## Ultimas Actualizaciones
+- 2026-07-15: Feature 24 realizada: offline-first mobile con Sync Down proactiva (replica local de 10 datasets criticos con las mismas query keys de los hooks), Outbox FIFO persistido con interceptor axios sobre 22 mutaciones de agricultura/ganaderia, filtro backend Idempotency-Key (migracion V41), remap de IDs temporales, banner global de estado y bandeja de pendientes con reintento/descarte. Type-check, compilacion backend y 4 tests de outbox OK; queda prueba manual en dispositivo real.
 - 2026-07-14: Feature 24 reformulada tras analisis de mercado: offline-first mobile con Sync Down proactiva (nube a telefono, replica local de lotes/potreros/animales/operarios/catalogos) y Outbox FIFO (telefono a nube, con Idempotency-Key y remap de IDs temporales), acotada a agricultura, ganaderia y operarios. Se descartan SQLite/Realm, delta-sync, endpoint /sync, compresion y merge de conflictos del planteo original. Quedan 3 decisiones abiertas documentadas en el doc antes de implementar.
 - 2026-07-14: Feature 46 realizada: Trazabilidad, Sanidad y Alimentacion activadas en el menu Drawer y en las burbujas del mapa de potreros en mobile, con formularios clonados campo por campo de las paginas web equivalentes (incluyendo selectores tipo buscador). Se extrajo un `ganaderia-form-kit.tsx` compartido para no duplicar los componentes de formulario entre pantallas. Narrowed el alcance restante de la feature 32 (offline/notificaciones/alertas/inventario/auditoria).
 - 2026-07-14: Feature 45 mergeada a master y renombrada `_COMPLETA_`. Arranca desarrollo de feature 46 en branch propia.
