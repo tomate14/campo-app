@@ -1465,6 +1465,12 @@ apx-chart {
   box-shadow: 0 0 20px rgba(255, 184, 77, 0.4);
 }
 
+/* Explicito: las alertas de potrero (feature 47) pueden emitir prioridad BAJA. */
+.timeline-row.baja i {
+  background: #9fe870;
+  box-shadow: 0 0 20px rgba(159, 232, 112, 0.4);
+}
+
 .timeline-row div {
   display: grid;
   gap: 4px;
