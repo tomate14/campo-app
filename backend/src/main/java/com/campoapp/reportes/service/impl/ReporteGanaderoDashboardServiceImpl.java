@@ -48,6 +48,7 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
     private final TratamientoMedicamentoRepository tratamientoRepository;
     private final ControlPrenezRepository controlPrenezRepository;
     private final PartoRepository partoRepository;
+    private final AlertaPotreroRepository alertaPotreroRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -132,7 +133,8 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
                 new ReporteGanaderoDashboardResponse.CostoAlimentacion(feedCostMonth, variation(feedCostMonth, feedCostPreviousMonth), "USD"),
                 new ReporteGanaderoDashboardResponse.ConversionAlimenticia(conversionAlimenticia(feedRecords, recentWeights), "kg alimento / kg ganado"),
                 dietasActivas(diets),
-                alertasOperativas(vaccineAlerts, activePotreros, animalCountByPotrero, pregnancyControls, recentWeights, activeAnimals, diagnostics, today)
+                alertasOperativas(vaccineAlerts, activePotreros, animalCountByPotrero, pregnancyControls, recentWeights, activeAnimals, diagnostics,
+                        alertaPotreroRepository.search(null, AlertaPotrero.ESTADO_ABIERTA), today)
         );
     }
 
@@ -320,7 +322,7 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
                 .toList();
     }
 
-    private List<ReporteGanaderoDashboardResponse.AlertaOperativa> alertasOperativas(List<AplicacionVacuna> vaccines, List<Potrero> potreros, Map<String, Long> animalCountByPotrero, List<ControlPrenez> controls, List<PesajeAnimal> weights, List<Animal> animals, List<DiagnosticoSanitario> diagnostics, LocalDate today) {
+    private List<ReporteGanaderoDashboardResponse.AlertaOperativa> alertasOperativas(List<AplicacionVacuna> vaccines, List<Potrero> potreros, Map<String, Long> animalCountByPotrero, List<ControlPrenez> controls, List<PesajeAnimal> weights, List<Animal> animals, List<DiagnosticoSanitario> diagnostics, List<AlertaPotrero> potreroAlerts, LocalDate today) {
         List<ReporteGanaderoDashboardResponse.AlertaOperativa> alerts = new ArrayList<>();
         vaccines.stream()
                 .filter(v -> v.getProximaDosisFecha() != null && !v.getProximaDosisFecha().isAfter(today.plusDays(3)))
@@ -349,6 +351,18 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
                 .filter(d -> equalsIgnoreCase(d.getEstado(), "ABIERTO") && equalsIgnoreCase(d.getSeveridad(), "CRITICA"))
                 .limit(2)
                 .forEach(d -> alerts.add(new ReporteGanaderoDashboardResponse.AlertaOperativa("Sanidad", "Caso critico abierto", d.getAnimal().getCaravana() + " - " + d.getEnfermedad(), "ALTA", LocalDateTime.now())));
+        // Alertas georreferenciadas de potreros (feature 47): a diferencia de las
+        // derivadas, estas se persisten y traen su propio timestamp de creacion.
+        potreroAlerts.stream()
+                .sorted(Comparator.comparing((AlertaPotrero a) -> gravedadRank(a.getGravedad())).reversed())
+                .limit(3)
+                .forEach(a -> alerts.add(new ReporteGanaderoDashboardResponse.AlertaOperativa(
+                        "Potreros",
+                        "Alerta en " + (a.getPotrero() != null ? a.getPotrero().getNombre() : "potrero"),
+                        a.getObservacion(),
+                        prioridadFromGravedad(a.getGravedad()),
+                        a.getCreatedAt() != null ? a.getCreatedAt() : LocalDateTime.now()
+                )));
         return alerts.stream()
                 .sorted(Comparator.comparing((ReporteGanaderoDashboardResponse.AlertaOperativa a) -> priorityRank(a.prioridad())).reversed())
                 .limit(8)
@@ -499,6 +513,25 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
             case "MEDIA" -> 2;
             case "BAJA" -> 1;
             default -> 0;
+        };
+    }
+
+    private int gravedadRank(String gravedad) {
+        return switch (nullSafe(gravedad).toUpperCase(Locale.ROOT)) {
+            case "CRITICA" -> 4;
+            case "ALTA" -> 3;
+            case "MEDIA" -> 2;
+            case "BAJA" -> 1;
+            default -> 0;
+        };
+    }
+
+    // El dashboard solo distingue ALTA/MEDIA/BAJA: CRITICA se colapsa en ALTA.
+    private String prioridadFromGravedad(String gravedad) {
+        return switch (nullSafe(gravedad).toUpperCase(Locale.ROOT)) {
+            case "CRITICA", "ALTA" -> "ALTA";
+            case "MEDIA" -> "MEDIA";
+            default -> "BAJA";
         };
     }
 
