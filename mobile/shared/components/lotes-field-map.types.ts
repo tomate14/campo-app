@@ -1,4 +1,5 @@
 import type { DeteccionPlaga, Lote } from '../types/agricola'
+import type { AlertaPotrero } from '../types/ganaderia'
 
 export type MapPoint = {
   latitude: number
@@ -24,6 +25,14 @@ export type DeteccionMapItem = {
   coordinate: MapPoint
 }
 
+// Pin de alerta de potrero (feature 47): campanita agrupada por coordenada.
+export type AlertaMapItem = {
+  alerta: AlertaPotrero
+  alertas: AlertaPotrero[]
+  color: string
+  coordinate: MapPoint
+}
+
 export type MapCommand = {
   id: number
   type: 'fit' | 'user' | 'zoom-in' | 'zoom-out'
@@ -34,6 +43,7 @@ export type MapMode = 'satellite' | 'standard' | 'hybrid' | 'terrain'
 export type LotesFieldMapProps = {
   mapItems: LoteMapItem[]
   detections: DeteccionMapItem[]
+  alertas?: AlertaMapItem[]
   initialRegion: MapRegion
   userCoords: MapPoint | null
   locationGranted: boolean
@@ -41,4 +51,5 @@ export type LotesFieldMapProps = {
   mapMode: MapMode
   onLotePress: (id: string) => void
   onDetectionPress: (detecciones: DeteccionPlaga[]) => void
+  onAlertaPress?: (alertas: AlertaPotrero[]) => void
 }

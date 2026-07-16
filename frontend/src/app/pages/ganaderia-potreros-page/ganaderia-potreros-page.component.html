@@ -86,6 +86,24 @@
           <mgl-marker *ngFor="let point of drawingPoints(); let index = index" [lngLat]="[point.lng, point.lat]">
             <div class="vertex"><span>{{ index + 1 }}</span></div>
           </mgl-marker>
+
+          <mgl-marker *ngFor="let pin of alertaPins()" [lngLat]="pin.lngLat">
+            <button
+              class="alerta-pin"
+              type="button"
+              [style.--pin-color]="pin.color"
+              [attr.aria-label]="'Alerta ' + gravedadLabel(pin.alerta.gravedad) + ' en ' + (pin.alerta.potreroNombre || 'potrero')"
+              (click)="openAlertaDetail(pin.alerta); $event.stopPropagation()"
+            >
+              <span class="alerta-pin-head">
+                <svg viewBox="0 0 24 24">
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                </svg>
+              </span>
+              <span class="alerta-pin-tip"></span>
+            </button>
+          </mgl-marker>
         </mgl-map>
 
         <div
@@ -302,6 +320,127 @@
         <button class="btn-primary" type="submit">Guardar potrero</button>
       </footer>
     </form>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="alertaModalOpen()">
+    <form class="alerta-modal" [style.--alerta-color]="gravedadColor(alertaForm().gravedad)" (ngSubmit)="saveAlerta()">
+      <span class="alerta-band"></span>
+      <button class="modal-close" type="button" aria-label="Cerrar" (click)="closeAlertaModal()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+      <div class="modal-head">
+        <span class="modal-icon alerta-icon">
+          <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
+        </span>
+        <div>
+          <h2>Nueva alerta</h2>
+          <p>Registrá un problema georreferenciado en el punto exacto del click.</p>
+        </div>
+      </div>
+
+      <div class="alerta-potrero-chip">
+        <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" /></svg>
+        <div>
+          <small>Potrero</small>
+          <strong>{{ alertaPotrero()?.nombre }}</strong>
+        </div>
+      </div>
+
+      <div class="alerta-field">
+        <span>Gravedad</span>
+        <div class="gravedad-chips">
+          <button
+            *ngFor="let gravedad of gravedades"
+            type="button"
+            [class.active]="alertaForm().gravedad === gravedad.value"
+            [style.--chip-color]="gravedad.color"
+            (click)="updateAlertaForm('gravedad', gravedad.value)"
+          >
+            <i></i>
+            {{ gravedad.label }}
+          </button>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          <span>Fecha</span>
+          <input type="date" [ngModel]="alertaForm().fecha" (ngModelChange)="updateAlertaForm('fecha', $event)" name="alertaFecha" required />
+        </label>
+      </div>
+
+      <label class="full-label">
+        <span>Observación</span>
+        <textarea
+          rows="4"
+          placeholder="Describí el problema: aguada rota, alambrado caído, animal enfermo suelto..."
+          [ngModel]="alertaForm().observacion"
+          (ngModelChange)="updateAlertaForm('observacion', $event)"
+          name="alertaObservacion"
+          required
+        ></textarea>
+      </label>
+
+      <div class="error-box" *ngIf="alertaError()">{{ alertaError() }}</div>
+
+      <footer class="modal-actions">
+        <button class="btn-secondary" type="button" (click)="closeAlertaModal()">Cancelar</button>
+        <button class="btn-primary" type="submit" [disabled]="alertaSaving()">{{ alertaSaving() ? 'Guardando...' : 'Guardar alerta' }}</button>
+      </footer>
+    </form>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="selectedAlerta() as alerta">
+    <article class="alerta-detail-modal" [style.--alerta-color]="gravedadColor(alerta.gravedad)">
+      <span class="alerta-band"></span>
+      <button class="modal-close" type="button" aria-label="Cerrar" (click)="closeAlertaDetail()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+      <div class="modal-head">
+        <span class="modal-icon alerta-icon">
+          <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
+        </span>
+        <div>
+          <h2>{{ alerta.potreroNombre || 'Alerta de potrero' }}</h2>
+          <p>Alerta abierta · {{ formatFecha(alerta.fecha) }}</p>
+        </div>
+      </div>
+
+      <span class="gravedad-badge">
+        <i></i>
+        Gravedad {{ gravedadLabel(alerta.gravedad) }}
+      </span>
+
+      <div class="alerta-detail-grid">
+        <span>
+          <small>Fecha</small>
+          <strong>{{ formatFecha(alerta.fecha) }}</strong>
+        </span>
+        <span>
+          <small>Potrero</small>
+          <strong>{{ alerta.potreroNombre || 'Sin datos' }}</strong>
+        </span>
+        <span>
+          <small>Reportada por</small>
+          <strong>{{ alerta.usuarioNombre || 'Sin datos' }}</strong>
+        </span>
+      </div>
+
+      <section class="detail-section">
+        <h3>Observación</h3>
+        <p>{{ alerta.observacion }}</p>
+      </section>
+
+      <div class="error-box" *ngIf="alertaError()">{{ alertaError() }}</div>
+
+      <footer class="modal-actions">
+        <button class="btn-secondary" type="button" (click)="closeAlertaDetail()">Cerrar</button>
+        <button class="btn-primary" type="button" [disabled]="alertaSaving()" (click)="resolverAlerta(alerta)">
+          <svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7" /></svg>
+          {{ alertaSaving() ? 'Guardando...' : 'Marcar resuelta' }}
+        </button>
+      </footer>
+    </article>
   </div>
 </div>
 

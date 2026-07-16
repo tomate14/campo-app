@@ -5,7 +5,11 @@ import { DrawerActions, useNavigation } from '@react-navigation/native'
 import { useRouter } from 'expo-router'
 import * as Location from 'expo-location'
 import {
+  Bell,
+  CheckCircle2,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Fence,
   Heart,
   Layers,
@@ -27,10 +31,12 @@ import {
 } from 'lucide-react-native'
 import { Colors } from '../../constants/colors'
 import LotesFieldMap from '../../shared/components/lotes-field-map'
+import { formatDateDisplay } from '../../shared/components/ganaderia-form-kit'
 import { useDeletePotrero, usePotrerosMapa } from '../../shared/hooks/usePotreros'
-import type { Lote } from '../../shared/types/agricola'
-import type { Potrero } from '../../shared/types/ganaderia'
-import type { LoteMapItem, MapCommand, MapMode, MapPoint, MapRegion } from '../../shared/components/lotes-field-map.types'
+import { usePotreroAlertas, useResolverAlertaPotrero } from '../../shared/hooks/usePotreroAlertas'
+import type { Lote, SeveridadPlaga } from '../../shared/types/agricola'
+import type { AlertaPotrero, Potrero } from '../../shared/types/ganaderia'
+import type { AlertaMapItem, LoteMapItem, MapCommand, MapMode, MapPoint, MapRegion } from '../../shared/components/lotes-field-map.types'
 
 const c = Colors.dark
 
@@ -56,13 +62,16 @@ const actions: QuickAction[] = [
   { label: 'Sanidad', Icon: Syringe, color: '#6EA8FF', route: '/ganaderia/nueva-sanidad' },
   { label: 'Alimentacion', Icon: Wheat, color: '#FFB84D', route: '/ganaderia/nueva-alimentacion' },
   { label: 'Reproduccion', Icon: Heart, color: '#9A7DFF', route: '/ganaderia/nueva-reproduccion' },
+  { label: 'Alertas', Icon: Bell, color: '#FF8A4C', route: '/ganaderia/nueva-alerta' },
 ]
 
 export default function PotrerosScreen() {
   const navigation = useNavigation()
   const router = useRouter()
   const { data: potreros = [], isLoading } = usePotrerosMapa()
+  const { data: alertas = [] } = usePotreroAlertas()
   const deletePotrero = useDeletePotrero()
+  const resolverAlerta = useResolverAlertaPotrero()
   const [locationStatus, setLocationStatus] = useState<'idle' | 'granted' | 'denied'>('idle')
   const [coords, setCoords] = useState<Location.LocationObjectCoords | null>(null)
   const [mapCommand, setMapCommand] = useState<MapCommand | null>(null)
@@ -70,7 +79,10 @@ export default function PotrerosScreen() {
   const [mapMode, setMapMode] = useState<MapMode>('satellite')
   const [showPotreros, setShowPotreros] = useState(true)
   const [showBubbles, setShowBubbles] = useState(true)
+  const [showAlertas, setShowAlertas] = useState(true)
   const [selectedPotrero, setSelectedPotrero] = useState<Potrero | null>(null)
+  const [selectedAlertas, setSelectedAlertas] = useState<AlertaPotrero[]>([])
+  const [selectedAlertaIndex, setSelectedAlertaIndex] = useState(0)
 
   useEffect(() => {
     let mounted = true
@@ -102,6 +114,7 @@ export default function PotrerosScreen() {
   )
   const allMapItems = useMemo(() => buildMapItems(potreros), [potreros])
   const mapItems = showPotreros ? allMapItems : []
+  const alertaItems = useMemo(() => buildAlertaItems(alertas, allMapItems), [alertas, allMapItems])
   const userPoint = coords ? { latitude: coords.latitude, longitude: coords.longitude } : null
   const initialRegion = useMemo(() => calculateRegion(allMapItems, userPoint), [allMapItems, userPoint])
 
@@ -124,6 +137,7 @@ export default function PotrerosScreen() {
           key={mapMode}
           mapItems={mapItems}
           detections={[]}
+          alertas={showAlertas ? alertaItems : []}
           initialRegion={initialRegion}
           userCoords={userPoint}
           locationGranted={locationStatus === 'granted'}
@@ -131,9 +145,17 @@ export default function PotrerosScreen() {
           mapMode={mapMode}
           onLotePress={(id) => {
             const potrero = potreros.find((item) => item.id === id)
-            if (potrero) setSelectedPotrero(potrero)
+            if (potrero) {
+              setSelectedAlertas([])
+              setSelectedPotrero(potrero)
+            }
           }}
           onDetectionPress={() => undefined}
+          onAlertaPress={(list) => {
+            setSelectedPotrero(null)
+            setSelectedAlertas(list)
+            setSelectedAlertaIndex(0)
+          }}
         />
 
         <View style={styles.mapOverlay} pointerEvents="none" />
@@ -230,6 +252,41 @@ export default function PotrerosScreen() {
           />
         )}
 
+        {selectedAlertas[selectedAlertaIndex] && (
+          <AlertaPreview
+            alerta={selectedAlertas[selectedAlertaIndex]}
+            total={selectedAlertas.length}
+            currentIndex={selectedAlertaIndex}
+            resolving={resolverAlerta.isPending}
+            onPrevious={() => setSelectedAlertaIndex((current) => Math.max(current - 1, 0))}
+            onNext={() => setSelectedAlertaIndex((current) => Math.min(current + 1, selectedAlertas.length - 1))}
+            onClose={() => {
+              setSelectedAlertas([])
+              setSelectedAlertaIndex(0)
+            }}
+            onResolve={() => {
+              const alerta = selectedAlertas[selectedAlertaIndex]
+              Alert.alert('Marcar resuelta', `¿Marcar como resuelta la alerta de "${alerta.potreroNombre ?? 'potrero'}"?`, [
+                { text: 'Cancelar', style: 'cancel' },
+                {
+                  text: 'Marcar resuelta',
+                  onPress: async () => {
+                    try {
+                      await resolverAlerta.mutateAsync(alerta.id)
+                      // Se saca la alerta resuelta de la seleccion; si no quedan, se cierra el preview.
+                      const remaining = selectedAlertas.filter((item) => item.id !== alerta.id)
+                      setSelectedAlertas(remaining)
+                      setSelectedAlertaIndex((current) => Math.min(current, Math.max(remaining.length - 1, 0)))
+                    } catch {
+                      Alert.alert('Error', 'No se pudo marcar la alerta como resuelta.')
+                    }
+                  },
+                },
+              ])
+            }}
+          />
+        )}
+
         <Modal visible={layersOpen} transparent animationType="slide" onRequestClose={() => setLayersOpen(false)}>
           <Pressable style={styles.sheetBackdrop} onPress={() => setLayersOpen(false)} />
           <View style={styles.layersSheet}>
@@ -291,6 +348,18 @@ export default function PotrerosScreen() {
                     onValueChange={setShowBubbles}
                     trackColor={{ false: 'rgba(255,255,255,0.15)', true: 'rgba(159,232,112,0.34)' }}
                     thumbColor={showBubbles ? '#9FE870' : '#A6B0CF'}
+                  />
+                </View>
+                <View style={styles.layerRow}>
+                  <View style={styles.layerCopy}>
+                    <Bell size={18} color="#9FE870" strokeWidth={2} />
+                    <Text style={styles.layerLabel}>Alertas</Text>
+                  </View>
+                  <Switch
+                    value={showAlertas}
+                    onValueChange={setShowAlertas}
+                    trackColor={{ false: 'rgba(255,255,255,0.15)', true: 'rgba(159,232,112,0.34)' }}
+                    thumbColor={showAlertas ? '#9FE870' : '#A6B0CF'}
                   />
                 </View>
               </View>
@@ -405,6 +474,89 @@ function Metric({ label, value }: { label: string; value: string }) {
   )
 }
 
+// Preview inferior de una alerta de potrero (feature 47), con navegacion
+// simple cuando hay varias alertas agrupadas en el mismo pin.
+function AlertaPreview({
+  alerta,
+  total,
+  currentIndex,
+  resolving,
+  onPrevious,
+  onNext,
+  onClose,
+  onResolve,
+}: {
+  alerta: AlertaPotrero
+  total: number
+  currentIndex: number
+  resolving: boolean
+  onPrevious: () => void
+  onNext: () => void
+  onClose: () => void
+  onResolve: () => void
+}) {
+  const color = gravedadColor(alerta.gravedad)
+
+  return (
+    <View style={styles.potreroPreview}>
+      <View style={styles.previewHead}>
+        <View style={[styles.estadoBadge, { borderColor: `${color}80`, backgroundColor: `${color}18` }]}>
+          <Text style={[styles.estadoBadgeText, { color }]}>{alerta.gravedad}</Text>
+        </View>
+        <View style={styles.previewHeadActions}>
+          {total > 1 && (
+            <View style={styles.previewNavigation}>
+              <Pressable
+                style={[styles.previewNavButton, currentIndex === 0 && styles.previewNavButtonDisabled]}
+                disabled={currentIndex === 0}
+                onPress={onPrevious}
+              >
+                <ChevronLeft size={16} color={currentIndex === 0 ? '#5C6A88' : '#FFFFFF'} strokeWidth={2.2} />
+              </Pressable>
+              <Text style={styles.previewNavText}>{currentIndex + 1} de {total}</Text>
+              <Pressable
+                style={[styles.previewNavButton, currentIndex >= total - 1 && styles.previewNavButtonDisabled]}
+                disabled={currentIndex >= total - 1}
+                onPress={onNext}
+              >
+                <ChevronRight size={16} color={currentIndex >= total - 1 ? '#5C6A88' : '#FFFFFF'} strokeWidth={2.2} />
+              </Pressable>
+            </View>
+          )}
+          <Pressable style={styles.previewClose} onPress={onClose}>
+            <X size={15} color="#DCE8F8" strokeWidth={2.2} />
+          </Pressable>
+        </View>
+      </View>
+
+      <View style={styles.alertaTitleRow}>
+        <Bell size={18} color={color} strokeWidth={2.2} />
+        <Text style={styles.previewTitle}>{alerta.potreroNombre || 'Potrero'}</Text>
+      </View>
+      <Text style={styles.previewSubtitle}>Alerta {alerta.estado === 'RESUELTA' ? 'resuelta' : 'abierta'}</Text>
+
+      <View style={styles.metricGrid}>
+        <Metric label="Fecha" value={formatDateDisplay(alerta.fecha)} />
+        <Metric label="Reportada por" value={alerta.usuarioNombre || 'Sin dato'} />
+      </View>
+
+      <View style={styles.observationBox}>
+        <Text style={styles.previewLabel}>Observación</Text>
+        <Text style={styles.observationText}>{alerta.observacion}</Text>
+      </View>
+
+      <Pressable
+        style={[styles.resolveButton, resolving && styles.resolveButtonDisabled]}
+        onPress={onResolve}
+        disabled={resolving}
+      >
+        <CheckCircle2 size={17} color="#081225" strokeWidth={2.4} />
+        <Text style={styles.resolveButtonText}>{resolving ? 'Guardando...' : 'Marcar resuelta'}</Text>
+      </Pressable>
+    </View>
+  )
+}
+
 function buildMapItems(potreros: Potrero[]): LoteMapItem[] {
   return potreros
     .map((potrero, index) => {
@@ -421,6 +573,54 @@ function buildMapItems(potreros: Potrero[]): LoteMapItem[] {
       }
     })
     .filter((item): item is LoteMapItem => Boolean(item))
+}
+
+// Agrupa alertas abiertas por coordenada (misma tecnica que buildDetectionItems
+// de lotes.tsx). Sin latitud/longitud propias, el pin cae en el centro del potrero.
+function buildAlertaItems(alertas: AlertaPotrero[], mapItems: LoteMapItem[]): AlertaMapItem[] {
+  const potreroCenters = new Map(mapItems.map((item) => [item.lote.id, item.center]))
+  const groups = new Map<string, { coordinate: MapPoint; alertas: AlertaPotrero[] }>()
+
+  alertas.forEach((alerta) => {
+    if (alerta.estado === 'RESUELTA') return
+    const coordinate = alertaCoordinate(alerta) ?? potreroCenters.get(alerta.potreroId)
+    if (!coordinate) return
+    const key = `${coordinate.latitude.toFixed(7)},${coordinate.longitude.toFixed(7)}`
+    const current = groups.get(key)
+
+    if (current) {
+      current.alertas.push(alerta)
+      return
+    }
+
+    groups.set(key, { coordinate, alertas: [alerta] })
+  })
+
+  return Array.from(groups.values()).map((group) => {
+    const alerta = group.alertas[0]
+    return {
+      alerta,
+      alertas: group.alertas,
+      color: gravedadColor(alerta.gravedad),
+      coordinate: group.coordinate,
+    }
+  })
+}
+
+function alertaCoordinate(alerta: AlertaPotrero): MapPoint | null {
+  const latitude = Number(alerta.latitud)
+  const longitude = Number(alerta.longitud)
+  if (alerta.latitud == null || alerta.longitud == null) return null
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null
+  return { latitude, longitude }
+}
+
+// Mismo mapeo de colores que severityColorFor de lotes.tsx (decision feature 47).
+function gravedadColor(value?: SeveridadPlaga): string {
+  if (value === 'CRITICA') return '#FF6B6B'
+  if (value === 'ALTA') return '#FF8A4C'
+  if (value === 'MEDIA') return '#FFB84D'
+  return '#9FE870'
 }
 
 function potreroToLote(potrero: Potrero): Lote {
@@ -875,6 +1075,56 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  previewNavigation: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 4,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+  },
+  previewNavButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewNavButtonDisabled: {
+    opacity: 0.5,
+  },
+  previewNavText: {
+    color: '#DCE8F8',
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  alertaTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 9,
+  },
+  resolveButton: {
+    height: 46,
+    marginTop: 14,
+    borderRadius: 23,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#9FE870',
+    shadowColor: '#9FE870',
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+  },
+  resolveButtonDisabled: {
+    opacity: 0.6,
+  },
+  resolveButtonText: {
+    color: '#081225',
+    fontSize: 13,
+    fontWeight: '900',
   },
   previewTitle: {
     color: '#FFFFFF',

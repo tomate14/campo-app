@@ -1,5 +1,6 @@
 import { apiClient as api } from './client'
 import type {
+  AlertaPotrero, AlertaPotreroRequest,
   Animal, AnimalRequest, ApiResponse,
   AplicacionVacunaRequest, AplicacionVacunaResponse,
   ControlPrenezRequest, ControlPrenezResponse,
@@ -34,6 +35,15 @@ export const updatePotrero = (id: string, data: PotreroRequest) =>
 
 export const deletePotrero = (id: string) =>
   api.delete(`/ganaderia/potreros/${id}`)
+
+export const getAlertasPotreros = (params?: { potreroId?: string; estado?: string }) =>
+  api.get<ApiResponse<AlertaPotrero[]>>('/ganaderia/potreros/alertas', { params }).then(r => r.data.data)
+
+export const createAlertaPotrero = (data: AlertaPotreroRequest) =>
+  api.post<ApiResponse<AlertaPotrero>>('/ganaderia/potreros/alertas', data).then(r => r.data.data)
+
+export const resolverAlertaPotrero = (id: string) =>
+  api.put<ApiResponse<AlertaPotrero>>(`/ganaderia/potreros/alertas/${id}/resolver`).then(r => r.data.data)
 
 export const getAnimales = (params?: { caravana?: string; raza?: string; ubicacion?: string; estado?: string }) =>
   api.get<ApiResponse<Animal[]>>('/ganaderia/trazabilidad/animales', { params }).then(r => r.data.data)

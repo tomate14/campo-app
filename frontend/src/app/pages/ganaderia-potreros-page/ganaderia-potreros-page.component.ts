@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NgxMapLibreGLModule } from '@maplibre/ngx-maplibre-gl';
 import type { Feature, FeatureCollection, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
-import type { Potrero, PotreroRequest } from '../../core/models/ganaderia.models';
+import type { AlertaPotrero, AlertaPotreroGravedad, AlertaPotreroRequest, Potrero, PotreroRequest } from '../../core/models/ganaderia.models';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
 import { buildPolygon, computeAreaHectares, computeCentroid, parsePolygon, sanitizePoints, type Point } from '../../shared/lote-geometry';
 
@@ -14,6 +14,14 @@ const STATUS_COLORS: Record<string, string> = {
   DESCANSO: '#6EA8FF',
   MANTENIMIENTO: '#FFB84D',
   INACTIVO: '#A6B0CF',
+};
+
+// Colores por gravedad (feature 47): mismo mapeo que severityColorFor de lotes
+const GRAVEDAD_COLORS: Record<string, string> = {
+  BAJA: '#9FE870',
+  MEDIA: '#FFB84D',
+  ALTA: '#FF8A4C',
+  CRITICA: '#FF6B6B',
 };
 
 @Component({
@@ -38,8 +46,23 @@ export class GanaderiaPotrerosPageComponent {
   protected readonly detailPotrero = signal<Potrero | null>(null);
   protected readonly form = signal<PotreroRequest>(this.emptyForm());
 
+  // Estado de alertas de potrero (feature 47)
+  protected readonly alertas = signal<AlertaPotrero[]>([]);
+  protected readonly alertaModalOpen = signal(false);
+  protected readonly alertaPotrero = signal<Potrero | null>(null);
+  protected readonly alertaForm = signal<AlertaPotreroRequest>(this.emptyAlertaForm());
+  protected readonly selectedAlerta = signal<AlertaPotrero | null>(null);
+  protected readonly alertaSaving = signal(false);
+  protected readonly alertaError = signal<string | null>(null);
+
   protected readonly tipoUsos = ['PASTOREO', 'RESERVA', 'RECRIA', 'MATERNIDAD', 'ENCIERRE', 'OTRO'];
   protected readonly estados = ['ACTIVO', 'DESCANSO', 'MANTENIMIENTO', 'INACTIVO'];
+  protected readonly gravedades: Array<{ value: AlertaPotreroGravedad; label: string; color: string }> = [
+    { value: 'BAJA', label: 'Baja', color: GRAVEDAD_COLORS['BAJA'] },
+    { value: 'MEDIA', label: 'Media', color: GRAVEDAD_COLORS['MEDIA'] },
+    { value: 'ALTA', label: 'Alta', color: GRAVEDAD_COLORS['ALTA'] },
+    { value: 'CRITICA', label: 'Crítica', color: GRAVEDAD_COLORS['CRITICA'] },
+  ];
 
   protected readonly satelliteStyle: StyleSpecification = {
     version: 8,
@@ -86,6 +109,20 @@ export class GanaderiaPotrerosPageComponent {
     };
   });
 
+  // Pins de alertas abiertas: coordenadas propias o centroide del potrero como fallback
+  protected readonly alertaPins = computed<Array<{ alerta: AlertaPotrero; lngLat: [number, number]; color: string }>>(() => {
+    const potreros = this.potreros();
+    return this.alertas()
+      .map((alerta) => {
+        const lngLat = this.resolveAlertaLngLat(alerta, potreros);
+        if (!lngLat) {
+          return null;
+        }
+        return { alerta, lngLat, color: this.gravedadColor(alerta.gravedad) };
+      })
+      .filter((pin): pin is { alerta: AlertaPotrero; lngLat: [number, number]; color: string } => pin !== null);
+  });
+
   protected readonly kpis = computed(() => {
     const potreros = this.potreros();
     const hectares = potreros.reduce((total, item) => total + Number(item.superficieHa || 0), 0);
@@ -101,10 +138,19 @@ export class GanaderiaPotrerosPageComponent {
 
   constructor() {
     this.load();
+    this.loadAlertas();
   }
 
   @HostListener('document:keydown.escape')
   protected onEscape(): void {
+    if (this.selectedAlerta()) {
+      this.closeAlertaDetail();
+      return;
+    }
+    if (this.alertaModalOpen()) {
+      this.closeAlertaModal();
+      return;
+    }
     if (this.detailPotrero()) {
       this.closeDetail();
       return;
@@ -148,7 +194,12 @@ export class GanaderiaPotrerosPageComponent {
   }
 
   protected onMapClick(event: any): void {
-    if (this.modalOpen()) {
+    // Guard de modales: no agregar vertices con cualquier modal abierto
+    if (this.modalOpen() || this.alertaModalOpen() || this.selectedAlerta() || this.detailPotrero()) {
+      return;
+    }
+    // Sin dibujo en curso, el click sobre un potrero es el gesto de alta de alerta (feature 47)
+    if (!this.drawingPoints().length && this.clickHitsPotrero(event)) {
       return;
     }
     const lng = Number(event.lngLat.lng.toFixed(7));
@@ -267,9 +318,112 @@ export class GanaderiaPotrerosPageComponent {
   protected onPotreroClick(event: any): void {
     const id = event?.features?.[0]?.properties?.id;
     const potrero = this.potreros().find((item) => item.id === id);
-    if (potrero) {
-      this.selectedPotrero.set(potrero);
+    if (!potrero) {
+      return;
     }
+    this.selectedPotrero.set(potrero);
+    // Con dibujo en curso u otro modal abierto, el click no abre el alta de alerta
+    if (this.drawingPoints().length || this.modalOpen() || this.alertaModalOpen() || this.selectedAlerta() || this.detailPotrero()) {
+      return;
+    }
+    this.openAlertaModal(potrero, event);
+  }
+
+  protected loadAlertas(): void {
+    this.ganaderiaService.getAlertasPotreros({ estado: 'ABIERTA' }).subscribe({
+      next: (alertas) => this.alertas.set(alertas ?? []),
+      error: () => this.alertas.set([]),
+    });
+  }
+
+  protected openAlertaModal(potrero: Potrero, event?: any): void {
+    const lng = event?.lngLat ? Number(Number(event.lngLat.lng).toFixed(7)) : undefined;
+    const lat = event?.lngLat ? Number(Number(event.lngLat.lat).toFixed(7)) : undefined;
+    this.alertaPotrero.set(potrero);
+    this.alertaError.set(null);
+    this.alertaForm.set({
+      potreroId: potrero.id,
+      fecha: this.todayIso(),
+      gravedad: 'MEDIA',
+      observacion: '',
+      latitud: lat,
+      longitud: lng,
+    });
+    this.alertaModalOpen.set(true);
+  }
+
+  protected closeAlertaModal(): void {
+    this.alertaModalOpen.set(false);
+    this.alertaPotrero.set(null);
+    this.alertaError.set(null);
+  }
+
+  protected updateAlertaForm<K extends keyof AlertaPotreroRequest>(key: K, value: AlertaPotreroRequest[K]): void {
+    this.alertaForm.update((current) => ({ ...current, [key]: value }));
+  }
+
+  protected saveAlerta(): void {
+    const data = this.alertaForm();
+    if (!data.potreroId || !data.fecha || !data.observacion.trim()) {
+      this.alertaError.set('La fecha y la observación son requeridas.');
+      return;
+    }
+    this.alertaSaving.set(true);
+    this.alertaError.set(null);
+    this.ganaderiaService.createAlertaPotrero({ ...data, observacion: data.observacion.trim() }).subscribe({
+      next: () => {
+        this.alertaSaving.set(false);
+        this.closeAlertaModal();
+        this.loadAlertas();
+      },
+      error: () => {
+        this.alertaSaving.set(false);
+        this.alertaError.set('No se pudo guardar la alerta. Intentá nuevamente.');
+      },
+    });
+  }
+
+  protected openAlertaDetail(alerta: AlertaPotrero): void {
+    this.alertaError.set(null);
+    this.selectedAlerta.set(alerta);
+  }
+
+  protected closeAlertaDetail(): void {
+    this.selectedAlerta.set(null);
+    this.alertaError.set(null);
+  }
+
+  protected resolverAlerta(alerta: AlertaPotrero): void {
+    this.alertaSaving.set(true);
+    this.alertaError.set(null);
+    this.ganaderiaService.resolverAlertaPotrero(alerta.id).subscribe({
+      next: () => {
+        this.alertaSaving.set(false);
+        this.closeAlertaDetail();
+        this.loadAlertas();
+      },
+      error: () => {
+        this.alertaSaving.set(false);
+        this.alertaError.set('No se pudo marcar la alerta como resuelta.');
+      },
+    });
+  }
+
+  protected gravedadColor(gravedad?: string): string {
+    return GRAVEDAD_COLORS[String(gravedad ?? '').toUpperCase()] ?? GRAVEDAD_COLORS['MEDIA'];
+  }
+
+  protected gravedadLabel(gravedad?: string): string {
+    const item = this.gravedades.find((option) => option.value === String(gravedad ?? '').toUpperCase());
+    return item ? item.label : this.formatEnum(gravedad);
+  }
+
+  protected formatFecha(fecha?: string): string {
+    if (!fecha) {
+      return 'Sin fecha';
+    }
+    const [year, month, day] = String(fecha).split('T')[0].split('-');
+    return year && month && day ? `${day}/${month}/${year}` : fecha;
   }
 
   protected colorFor(potrero: Potrero): string {
@@ -368,6 +522,55 @@ export class GanaderiaPotrerosPageComponent {
     } catch {
       return null;
     }
+  }
+
+  private clickHitsPotrero(event: any): boolean {
+    try {
+      const features = event?.target?.queryRenderedFeatures?.(event.point, { layers: ['potreros-fill'] });
+      return Array.isArray(features) && features.length > 0;
+    } catch {
+      return false;
+    }
+  }
+
+  private resolveAlertaLngLat(alerta: AlertaPotrero, potreros: Potrero[]): [number, number] | null {
+    if (alerta.longitud != null && alerta.latitud != null) {
+      return [Number(alerta.longitud), Number(alerta.latitud)];
+    }
+    const potrero = potreros.find((item) => item.id === alerta.potreroId);
+    if (!potrero) {
+      return null;
+    }
+    if (potrero.centroideLongitud != null && potrero.centroideLatitud != null) {
+      return [Number(potrero.centroideLongitud), Number(potrero.centroideLatitud)];
+    }
+    const points = parsePolygon(potrero.poligono);
+    if (!points.length) {
+      return null;
+    }
+    const centroid = computeCentroid(points);
+    if (centroid.lng == null || centroid.lat == null) {
+      return null;
+    }
+    return [centroid.lng, centroid.lat];
+  }
+
+  private todayIso(): string {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${now.getFullYear()}-${month}-${day}`;
+  }
+
+  private emptyAlertaForm(): AlertaPotreroRequest {
+    return {
+      potreroId: '',
+      fecha: this.todayIso(),
+      gravedad: 'MEDIA',
+      observacion: '',
+      latitud: undefined,
+      longitud: undefined,
+    };
   }
 
   private computeMapCenter(): [number, number] {

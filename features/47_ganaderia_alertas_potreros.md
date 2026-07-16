@@ -1,7 +1,7 @@
 # 47 - Ganaderia: Alertas en Potreros
 
 ## Estado
-Pendiente.
+Realizada.
 
 ## Origen
 Pedido directo del usuario (2026-07-15): poder registrar alertas sobre un potrero (algo que requiere atencion: aguada rota, alambrado caido, animal enfermo suelto, etc.) desde web y mobile, verlas como pin de campanita sobre el mapa coloreada por gravedad, y que la carga funcione offline (integrada a la feature [24](24_COMPLETA_sincronizacion_offline_first.md)).
@@ -92,8 +92,32 @@ En `ganaderia-potreros-page`, el click sobre el poligono de un potrero (`onPotre
 - Form-kit mobile: `mobile/shared/components/ganaderia-form-kit.tsx`.
 - Migracion siguiente: `V42` (la V41 es de idempotencia).
 
-## Validacion Tecnica (al implementar)
-- `mvn compile` + test de service de alertas (usuario tomado del token, no del request).
-- `npx tsc --noEmit` mobile y `npm run type-check` web.
-- Test de outbox: la URL `/ganaderia/potreros/alertas` debe matchear la regla de alertas y NO la de potrero (regresion del orden de RULES).
-- Prueba manual pendiente documentada: alta offline con modo avion y render del pin tras sincronizar.
+## Implementado
+Desarrollada con los agentes de dominio (backend/mobile/frontend) coordinados por el orquestador.
+
+### Backend
+- Migracion `V42__ganaderia_alertas_potrero.sql` (tabla `alertas_potrero` con FK a potreros, indices por potrero/estado, `deleted_at` por `AuditableEntity`).
+- `AlertaPotrero` entity (potrero como `@ManyToOne LAZY`, gravedad String validada en el service contra `SeveridadPlaga` — misma convencion de enums-como-String del dominio ganaderia).
+- DTOs records `AlertaPotreroRequest` (sin usuarioId) / `AlertaPotreroResponse` (con `potreroNombre` y `usuarioNombre` resuelto contra `auth.entity.User`, fallback al id crudo).
+- `AlertaPotreroService` + impl: `usuarioId` tomado del SecurityContext (patron `IdempotencyFilter.currentUserId()`), `UnauthorizedException` si no hay principal; `resolver(id)` pasa a RESUELTA.
+- `AlertaPotreroController`: `POST /api/v1/ganaderia/potreros/alertas` (201), `GET` con filtros `potreroId`/`estado`, `PUT /{id}/resolver`; permisos `update:animales`/`read:animales`. Sin colision con `GET /potreros/{id}` (segmento literal prioriza).
+- Test `AlertaPotreroServiceImplTest` (5 tests): usuario del token y no del request, rechazo sin autenticacion, gravedad invalida, resolver, 404.
+
+### Mobile
+- Tipos `AlertaPotreroRequest`/`AlertaPotrero` (gravedad reutiliza `SeveridadPlaga`), API `getAlertasPotreros`/`createAlertaPotrero`/`resolverAlertaPotrero`, hook `usePotreroAlertas` (`queryKey ['potreros-alertas', {estado:'ABIERTA'}]`) + mutaciones.
+- Pantalla `ganaderia/nueva-alerta.tsx` (form-kit completo): PotreroSelect, chips de gravedad (default MEDIA), fecha hoy, observacion requerida, captura GPS opcional (patron plagas) con hint de fallback a centroide. Registrada como modal.
+- Quinta burbuja "Alertas" (Bell `#FF8A4C`) en el mapa de potreros.
+- Pins: `DetectionPin` generalizado a `MapPin` parametrizado por icono (native), `createPinElement` con campanita SVG (web); props opcionales `alertas`/`onAlertaPress` en `lotes-field-map` sin romper lotes. Agrupado por coordenada con fallback a centroide del potrero, badge de cantidad, `AlertaPreview` inferior (gravedad/fecha/potrero/usuario/observacion, navegacion "1 de N", boton "Marcar resuelta" con confirmacion). Switch "Alertas" en Capas operativas.
+- Offline: regla `{ /^\/ganaderia\/potreros\/alertas$/, 'Alerta de potrero' }` insertada ANTES de la regla de Potrero (cuya regex tambien matchea esta URL) con comentario; dataset nuevo en `syncDown`; test de regresion `offlineRules.test.ts` (3 casos de matcheo de reglas).
+
+### Web (Angular)
+- Modelos `AlertaPotrero*` + 3 metodos en `GanaderiaService`.
+- `ganaderia-potreros-page`: click en poligono mantiene la seleccion y abre el modal de alta (potrero fijo, coordenadas del click a 7 decimales, chips de gravedad coloreados, fecha hoy, observacion requerida); guard para que el modo dibujo no agregue vertices con modales abiertos ni sobre poligonos.
+- Pins `<mgl-marker>` con campanita SVG en circulo de 34px del color de gravedad, glow, borde blanco y punta, anclado a la coordenada; fallback a centroide.
+- Modal de detalle premium (banda del color de gravedad, badge, fecha/potrero/reportada-por, observacion) con "Marcar resuelta" que refresca y saca el pin; Escape cierra en cadena.
+
+## Validacion Tecnica
+- Backend: `mvn -q compile` limpio; `AlertaPotreroServiceImplTest` 5/5 verde.
+- Mobile: `npx tsc --noEmit` limpio; jest 7/7 (outbox + regresion de orden de RULES). Nota: se agregaron imports de `@jest/globals` a los tests para independizarlos de `@types/jest` (no esta en el arbol).
+- Web: `npm run type-check` limpio. `ng build` compila pero falla el budget de bundle inicial (2.53 MB vs 2.35 MB) — **preexistente**: el branch sin esta feature ya daba 2.51 MB. Candidato a feature nueva de ajuste de budget/recorte de bundle.
+- Prueba manual pendiente documentada: alta offline con modo avion y render del pin tras sincronizar, en dispositivo real.
