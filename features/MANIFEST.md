@@ -17,12 +17,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 49
+- Total de historias registradas: 50
 - Realizadas: 31
 - Parciales: 0
-- Pendientes: 16
+- Pendientes: 17
 - Saltadas: 2
-- Ultima actualizacion: 2026-07-15
+- Ultima actualizacion: 2026-07-16
 
 ## Registro por Feature
 
@@ -78,6 +78,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 46 | `46_COMPLETA_ganaderia_mobile_trazabilidad_sanidad_alimentacion.md` | Ganaderia/Mobile | Realizada | Trazabilidad, Sanidad y Alimentacion activadas en el menu de ganaderia mobile y en sus burbujas de "nueva actividad", clonando campo por campo los formularios web (incluyendo selectores tipo buscador). Pendiente prueba manual en dispositivo real. |
 | 47 | `47_COMPLETA_ganaderia_alertas_potreros.md` | Ganaderia | Realizada | Alertas georreferenciadas sobre potreros implementadas end-to-end: backend (V42, usuario del token, resolver), mobile (burbuja + pantalla + pins campanita + preview + offline outbox/syncdown) y web (alta por click en potrero, pins mgl-marker, detalle con resolver). Pendiente prueba manual en dispositivo real. |
 | 48 | `48_frontend_budget_bundle_inicial.md` | Frontend | Pendiente | `ng build` falla el budget del bundle inicial (2.51+ MB vs 2.35 MB), preexistente a la feature 47: recortar bundle (lazy-loading de charts/mapas) o ajustar budget justificado. |
+| 49 | `49_dashboard_ganadero_alertas_potrero.md` | Ganaderia/Reportes | Pendiente | Integrar las alertas de potrero (feature 47) como sexto generador de la seccion Alertas Operativas del Dashboard Ganadero, con mapeo de gravedad a prioridad y fecha real de creacion. |
 
 ## Registro por Dominio
 
@@ -139,6 +140,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-16: Feature 49 creada para integrar las alertas de potrero al Dashboard Ganadero (seccion Alertas Operativas desactualizada tras la feature 47). Arranca desarrollo en branch propia.
 - 2026-07-16: Feature 47 mergeada a master y renombrada `_COMPLETA_` (referencias en MANIFEST y feature 48 actualizadas).
 - 2026-07-15: Feature 47 realizada end-to-end con los agentes de dominio (backend/mobile/frontend): tabla alertas_potrero (V42) con usuario del token, burbuja y pantalla de alta mobile con GPS, pins de campanita coloreados por gravedad en ambos mapas con preview/detalle y "marcar resuelta", e integracion offline (regla de outbox con orden critico + dataset en sync down + test de regresion). Gates verdes: mvn compile + 5 tests, tsc mobile + 7 tests, type-check web. Queda prueba manual en dispositivo real.
 - 2026-07-15: Feature 48 creada para el budget del bundle inicial de Angular que falla en ng build (preexistente, detectado durante la 47).
