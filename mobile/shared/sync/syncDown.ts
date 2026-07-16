@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import type { QueryClient } from '@tanstack/react-query'
 import { getDeteccionesPlaga, getLotes } from '../api/agricola'
-import { getAnimales, getDietas, getPotreros, getPotrerosMapa, getRazasBovinas, getVacunas } from '../api/ganaderia'
+import { getAlertasPotreros, getAnimales, getDietas, getPotreros, getPotrerosMapa, getRazasBovinas, getVacunas } from '../api/ganaderia'
 import { getOperarios } from '../api/operarios'
 
 const LAST_SYNC_KEY = 'sync_last_down_v1'
@@ -20,6 +20,7 @@ const DATASETS: Array<{ queryKey: unknown[]; fetch: () => Promise<unknown> }> = 
   { queryKey: ['razas-bovinas'], fetch: () => getRazasBovinas() },
   { queryKey: ['dietas'], fetch: () => getDietas() },
   { queryKey: ['plagas-detecciones'], fetch: () => getDeteccionesPlaga() },
+  { queryKey: ['potreros-alertas', { estado: 'ABIERTA' }], fetch: () => getAlertasPotreros({ estado: 'ABIERTA' }) },
 ]
 
 let lastSyncAt: string | null | undefined

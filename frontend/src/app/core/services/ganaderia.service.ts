@@ -4,6 +4,9 @@ import { map } from 'rxjs/operators';
 import { API_BASE_URL } from './api.config';
 import type { ApiResponse } from './api.types';
 import type {
+  AlertaPotrero,
+  AlertaPotreroFilters,
+  AlertaPotreroRequest,
   AplicacionVacuna,
   AplicacionVacunaRequest,
   Animal,
@@ -132,6 +135,21 @@ export class GanaderiaService {
 
   deletePotrero(id: string) {
     return this.http.delete(`${API_BASE_URL}/ganaderia/potreros/${id}`);
+  }
+
+  getAlertasPotreros(params?: AlertaPotreroFilters) {
+    return this.http.get<ApiResponse<AlertaPotrero[]> | AlertaPotrero[]>(`${API_BASE_URL}/ganaderia/potreros/alertas`, { params: cleanParams(params as Record<string, unknown>) })
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createAlertaPotrero(data: AlertaPotreroRequest) {
+    return this.http.post<ApiResponse<AlertaPotrero> | AlertaPotrero>(`${API_BASE_URL}/ganaderia/potreros/alertas`, data)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  resolverAlertaPotrero(id: string) {
+    return this.http.put<ApiResponse<AlertaPotrero> | AlertaPotrero>(`${API_BASE_URL}/ganaderia/potreros/alertas/${id}/resolver`, {})
+      .pipe(map((response) => unwrapApiResponse(response)));
   }
 
   createMovimiento(data: MovimientoAnimalRequest) {

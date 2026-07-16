@@ -111,6 +111,39 @@ export interface PotreroFilters {
   superficieMax?: number
 }
 
+// Alertas de potrero (feature 47): gravedad reutiliza los 4 niveles de SeveridadPlaga
+export type AlertaPotreroGravedad = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA'
+export type AlertaPotreroEstado = 'ABIERTA' | 'RESUELTA'
+
+export interface AlertaPotreroRequest {
+  potreroId: string
+  fecha: string
+  gravedad: AlertaPotreroGravedad | string
+  observacion: string
+  latitud?: number
+  longitud?: number
+}
+
+export interface AlertaPotrero {
+  id: string
+  potreroId: string
+  potreroNombre?: string
+  usuarioId?: string
+  usuarioNombre?: string
+  fecha: string
+  gravedad: AlertaPotreroGravedad | string
+  observacion: string
+  latitud?: number | null
+  longitud?: number | null
+  estado: AlertaPotreroEstado | string
+  createdAt?: string
+}
+
+export interface AlertaPotreroFilters {
+  potreroId?: string
+  estado?: AlertaPotreroEstado | string
+}
+
 export interface GanaderoDashboard {
   ultimaActualizacion: string
   kpis: GanaderoKpi[]

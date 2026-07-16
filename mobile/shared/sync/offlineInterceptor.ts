@@ -15,7 +15,7 @@ type OfflineRule = { pattern: RegExp; label: string }
 
 // Allowlist de mutaciones que pueden operar offline (feature 24):
 // agricultura, ganaderia y operarios. DELETE queda excluido a proposito.
-const RULES: OfflineRule[] = [
+export const RULES: OfflineRule[] = [
   { pattern: /^\/agricola\/lotes(\/[^/]+)?$/, label: 'Lote' },
   { pattern: /^\/agricola\/siembra(\/[^/]+)?$/, label: 'Evento de siembra' },
   { pattern: /^\/agricola\/cosecha(\/[^/]+)?$/, label: 'Registro de cosecha' },
@@ -24,6 +24,8 @@ const RULES: OfflineRule[] = [
   { pattern: /^\/agricola\/plagas\/detecciones$/, label: 'Deteccion de plaga' },
   { pattern: /^\/agricola\/plagas\/detecciones\/[^/]+\/aplicaciones$/, label: 'Aplicacion fitosanitaria' },
   { pattern: /^\/agricola\/plagas\/detecciones\/[^/]+\/seguimientos$/, label: 'Seguimiento de plaga' },
+  // La regla de alertas va ANTES que la de potrero: la regex de potrero tambien matchea /alertas y find devuelve la primera.
+  { pattern: /^\/ganaderia\/potreros\/alertas$/, label: 'Alerta de potrero' },
   { pattern: /^\/ganaderia\/potreros(\/[^/]+)?$/, label: 'Potrero' },
   { pattern: /^\/ganaderia\/trazabilidad\/animales$/, label: 'Animal' },
   { pattern: /^\/ganaderia\/reproduccion\/montas$/, label: 'Monta' },

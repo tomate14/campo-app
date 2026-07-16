@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import MapView, { Marker, Polygon } from 'react-native-maps'
 import type { LatLng, Region } from 'react-native-maps'
-import { Bug, Crosshair, ShieldAlert, Trees } from 'lucide-react-native'
+import { Bell, Bug, Crosshair, ShieldAlert, Trees } from 'lucide-react-native'
 import type { LucideIcon } from 'lucide-react-native'
-import type { DeteccionPlaga } from '../types/agricola'
 import type { LotesFieldMapProps, MapMode, MapPoint, MapRegion } from './lotes-field-map.types'
 
 export default function LotesFieldMap({
   mapItems,
   detections,
+  alertas = [],
   initialRegion,
   userCoords,
   locationGranted,
@@ -17,6 +17,7 @@ export default function LotesFieldMap({
   mapMode,
   onLotePress,
   onDetectionPress,
+  onAlertaPress,
 }: LotesFieldMapProps) {
   const mapRef = useRef<MapView | null>(null)
 
@@ -91,24 +92,41 @@ export default function LotesFieldMap({
             onDetectionPress(item.detecciones)
           }}
         >
-          <DetectionPin deteccion={item.deteccion} color={item.color} count={item.detecciones.length} />
+          <MapPin Icon={iconForType(item.deteccion.tipo)} color={item.color} count={item.detecciones.length} />
+        </Marker>
+      ))}
+
+      {alertas.map((item) => (
+        <Marker
+          key={item.alerta.id}
+          identifier={item.alerta.id}
+          coordinate={toNativePoint(item.coordinate)}
+          anchor={{ x: 0.5, y: 1 }}
+          zIndex={22}
+          tracksViewChanges
+          onPress={(event) => {
+            event.stopPropagation()
+            onAlertaPress?.(item.alertas)
+          }}
+        >
+          <MapPin Icon={Bell} color={item.color} count={item.alertas.length} />
         </Marker>
       ))}
     </MapView>
   )
 }
 
-function DetectionPin({
-  deteccion,
+// Pin generico del mapa (detecciones de plagas y alertas de potrero):
+// cabeza circular coloreada con glow, punta y badge de cantidad.
+function MapPin({
+  Icon,
   color,
   count,
 }: {
-  deteccion: DeteccionPlaga
+  Icon: LucideIcon
   color: string
   count: number
 }) {
-  const Icon = iconForType(deteccion.tipo)
-
   return (
     <View style={styles.pinWrap}>
       <View style={[styles.pinGlow, { backgroundColor: color }]} />

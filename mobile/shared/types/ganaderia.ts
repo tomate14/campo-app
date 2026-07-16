@@ -1,3 +1,5 @@
+import type { SeveridadPlaga } from './agricola'
+
 export interface ApiResponse<T> {
   data: T
   error?: string
@@ -38,6 +40,32 @@ export interface PotreroRequest {
   poligono: string
   centroideLatitud?: number
   centroideLongitud?: number
+}
+
+// Alerta georreferenciada sobre un potrero (feature 47). La gravedad reutiliza
+// los mismos 4 niveles de las plagas de lotes. usuarioId lo asigna el backend.
+export interface AlertaPotreroRequest {
+  potreroId: string
+  fecha: string
+  gravedad: SeveridadPlaga
+  observacion: string
+  latitud?: number
+  longitud?: number
+}
+
+export interface AlertaPotrero {
+  id: string
+  potreroId: string
+  potreroNombre?: string
+  usuarioId?: string
+  usuarioNombre?: string
+  fecha: string
+  gravedad: SeveridadPlaga
+  observacion: string
+  latitud?: number | null
+  longitud?: number | null
+  estado: 'ABIERTA' | 'RESUELTA'
+  createdAt?: string
 }
 
 export interface RazaBovina {

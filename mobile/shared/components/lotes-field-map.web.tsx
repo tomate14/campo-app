@@ -34,22 +34,30 @@ function buildStyle(mode: MapMode): StyleSpecification {
 export default function LotesFieldMap({
   mapItems,
   detections,
+  alertas = [],
   initialRegion,
   userCoords,
   command,
   mapMode,
   onLotePress,
   onDetectionPress,
+  onAlertaPress,
 }: LotesFieldMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
   const detectionMarkersRef = useRef<Marker[]>([])
   const detectionsRef = useRef(detections)
+  const alertMarkersRef = useRef<Marker[]>([])
+  const alertasRef = useRef(alertas)
   const sourceData = useMemo(() => toFeatureCollection(mapItems), [mapItems])
 
   useEffect(() => {
     detectionsRef.current = detections
   }, [detections])
+
+  useEffect(() => {
+    alertasRef.current = alertas
+  }, [alertas])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -110,12 +118,15 @@ export default function LotesFieldMap({
       map.on('mouseenter', 'lotes-fill', () => { map.getCanvas().style.cursor = 'pointer' })
       map.on('mouseleave', 'lotes-fill', () => { map.getCanvas().style.cursor = '' })
       syncDetectionMarkers(map, detectionsRef.current, onDetectionPress, detectionMarkersRef)
+      syncAlertMarkers(map, alertasRef.current, onAlertaPress, alertMarkersRef)
       fitToRegion(map, initialRegion)
     })
 
     return () => {
       detectionMarkersRef.current.forEach((marker) => marker.remove())
       detectionMarkersRef.current = []
+      alertMarkersRef.current.forEach((marker) => marker.remove())
+      alertMarkersRef.current = []
       map.remove()
       mapRef.current = null
     }
@@ -127,8 +138,9 @@ export default function LotesFieldMap({
     const source = map.getSource('lotes') as maplibregl.GeoJSONSource | undefined
     source?.setData(sourceData)
     syncDetectionMarkers(map, detections, onDetectionPress, detectionMarkersRef)
+    syncAlertMarkers(map, alertas, onAlertaPress, alertMarkersRef)
     fitToRegion(map, initialRegion)
-  }, [sourceData, detections, initialRegion])
+  }, [sourceData, detections, alertas, initialRegion])
 
   useEffect(() => {
     const map = mapRef.current
@@ -213,7 +225,7 @@ function syncDetectionMarkers(
 ) {
   markersRef.current.forEach((marker) => marker.remove())
   markersRef.current = detections.map((item) => {
-    const element = createDetectionPinElement(item.color, item.deteccion.tipo, item.detecciones.length)
+    const element = createPinElement(item.color, iconSvgForType(item.deteccion.tipo), item.detecciones.length)
     element.addEventListener('click', (event) => {
       event.stopPropagation()
       onDetectionPress(item.detecciones)
@@ -224,7 +236,27 @@ function syncDetectionMarkers(
   })
 }
 
-function createDetectionPinElement(color: string, tipo?: string, count = 1) {
+// Pins de alertas de potrero (feature 47): campanita coloreada por gravedad.
+function syncAlertMarkers(
+  map: MapLibreMap,
+  alertas: NonNullable<LotesFieldMapProps['alertas']>,
+  onAlertaPress: LotesFieldMapProps['onAlertaPress'],
+  markersRef: MutableRefObject<Marker[]>
+) {
+  markersRef.current.forEach((marker) => marker.remove())
+  markersRef.current = alertas.map((item) => {
+    const element = createPinElement(item.color, bellIconSvg(), item.alertas.length)
+    element.addEventListener('click', (event) => {
+      event.stopPropagation()
+      onAlertaPress?.(item.alertas)
+    })
+    return new maplibregl.Marker({ element, anchor: 'bottom' })
+      .setLngLat([item.coordinate.longitude, item.coordinate.latitude])
+      .addTo(map)
+  })
+}
+
+function createPinElement(color: string, iconSvg: string, count = 1) {
   const wrap = document.createElement('div')
   wrap.style.width = '52px'
   wrap.style.height = '64px'
@@ -259,7 +291,7 @@ function createDetectionPinElement(color: string, tipo?: string, count = 1) {
   head.style.background = 'rgba(11, 23, 48, 0.94)'
   head.style.border = `2px solid ${color}`
   head.style.boxShadow = `0 0 28px ${toRgba(color, 0.32)}, inset 0 1px 0 rgba(255,255,255,0.12)`
-  head.innerHTML = iconSvgForType(tipo)
+  head.innerHTML = iconSvg
   if (count > 1) {
     const badge = document.createElement('div')
     badge.textContent = String(count)
@@ -303,8 +335,15 @@ function createDetectionPinElement(color: string, tipo?: string, count = 1) {
   return wrap
 }
 
+const SVG_COMMON = 'width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"'
+
+// Campanita lucide (Bell) para los pins de alertas de potrero.
+function bellIconSvg() {
+  return `<svg ${SVG_COMMON}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>`
+}
+
 function iconSvgForType(tipo?: string) {
-  const common = 'width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"'
+  const common = SVG_COMMON
   const normalized = tipo?.toUpperCase()
   if (normalized === 'PLAGA') {
     return `<svg ${common}><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.8 3.8-4"/><path d="M17.47 9C19.4 8.8 21 7.1 21 5"/><path d="M18 13h4"/><path d="M21 21c0-2.1-1.7-3.8-3.8-4"/></svg>`

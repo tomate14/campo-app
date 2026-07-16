@@ -173,7 +173,9 @@ svg {
 .map-panel,
 .side-panel,
 .potrero-modal,
-.potrero-detail-modal {
+.potrero-detail-modal,
+.alerta-modal,
+.alerta-detail-modal {
   border: 1px solid rgba(110, 168, 255, .13);
   border-radius: 24px;
   background:
@@ -838,6 +840,240 @@ textarea:focus {
   line-height: 1.6;
 }
 
+/* ---- Alertas de potrero (feature 47) ---- */
+
+.alerta-pin {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.alerta-pin-head {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgba(255, 255, 255, .9);
+  border-radius: 999px;
+  background: var(--pin-color, #FFB84D);
+  color: #081225;
+  box-shadow: 0 0 0 5px rgba(8, 18, 37, .28), 0 0 22px var(--pin-color, #FFB84D);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+
+.alerta-pin:hover .alerta-pin-head {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 0 0 5px rgba(8, 18, 37, .34), 0 0 30px var(--pin-color, #FFB84D);
+}
+
+.alerta-pin-head svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+.alerta-pin-tip {
+  width: 0;
+  height: 0;
+  margin-top: -2px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 9px solid var(--pin-color, #FFB84D);
+  filter: drop-shadow(0 3px 6px rgba(2, 8, 23, .5));
+}
+
+.alerta-modal {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: min(760px, calc(100vh - 48px));
+  overflow: auto;
+  padding: 26px 24px 24px;
+}
+
+.alerta-detail-modal {
+  position: relative;
+  width: min(520px, 100%);
+  max-height: min(700px, calc(100vh - 48px));
+  overflow: auto;
+  padding: 26px 24px 24px;
+}
+
+.alerta-band {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  border-radius: 24px 24px 0 0;
+  background: var(--alerta-color, #FFB84D);
+  box-shadow: 0 0 18px var(--alerta-color, #FFB84D);
+}
+
+.alerta-icon {
+  border-color: rgba(255, 255, 255, .14);
+  background: color-mix(in srgb, var(--alerta-color, #FFB84D) 14%, transparent);
+  color: var(--alerta-color, #FFB84D);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--alerta-color, #FFB84D) 18%, transparent);
+}
+
+.alerta-potrero-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(159, 232, 112, .2);
+  border-radius: 16px;
+  padding: 11px 14px;
+  background: rgba(159, 232, 112, .07);
+}
+
+.alerta-potrero-chip svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  color: #9fe870;
+}
+
+.alerta-potrero-chip small {
+  display: block;
+  color: #8ea0bb;
+  font-size: 11px;
+}
+
+.alerta-potrero-chip strong {
+  display: block;
+  margin-top: 2px;
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: -.02em;
+}
+
+.alerta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+  color: #a6b0cf;
+  font-size: 13px;
+}
+
+.gravedad-chips {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.gravedad-chips button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(110, 168, 255, .16);
+  border-radius: 12px;
+  background: rgba(7, 15, 31, .58);
+  color: #d8e4f6;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color .16s ease, background .16s ease, box-shadow .16s ease;
+}
+
+.gravedad-chips button i {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--chip-color, #FFB84D);
+  box-shadow: 0 0 10px var(--chip-color, #FFB84D);
+}
+
+.gravedad-chips button:hover {
+  border-color: color-mix(in srgb, var(--chip-color, #FFB84D) 45%, transparent);
+}
+
+.gravedad-chips button.active {
+  border-color: color-mix(in srgb, var(--chip-color, #FFB84D) 65%, transparent);
+  background: color-mix(in srgb, var(--chip-color, #FFB84D) 14%, rgba(7, 15, 31, .58));
+  color: #fff;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--chip-color, #FFB84D) 24%, transparent);
+}
+
+.gravedad-badge {
+  width: fit-content;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  border: 1px solid color-mix(in srgb, var(--alerta-color, #FFB84D) 45%, transparent);
+  border-radius: 999px;
+  padding: 0 13px;
+  background: color-mix(in srgb, var(--alerta-color, #FFB84D) 12%, transparent);
+  color: var(--alerta-color, #FFB84D);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.gravedad-badge i {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--alerta-color, #FFB84D);
+  box-shadow: 0 0 10px var(--alerta-color, #FFB84D);
+}
+
+.alerta-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.alerta-detail-grid span {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 16px;
+  background: rgba(7, 15, 31, .42);
+  padding: 12px;
+}
+
+.alerta-detail-grid small,
+.alerta-detail-grid strong {
+  display: block;
+}
+
+.alerta-detail-grid small {
+  color: #8ea0bb;
+  font-size: 11px;
+}
+
+.alerta-detail-grid strong {
+  margin-top: 6px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alerta-modal .error-box,
+.alerta-detail-modal .error-box {
+  margin-top: 14px;
+}
+
+.alerta-detail-modal .modal-actions svg {
+  width: 16px;
+  height: 16px;
+}
+
 @media (max-width: 1280px) {
   .metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -862,6 +1098,11 @@ textarea:focus {
   .metric-grid,
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .gravedad-chips,
+  .alerta-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .map-frame {

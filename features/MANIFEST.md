@@ -17,8 +17,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 48
-- Realizadas: 30
+- Total de historias registradas: 49
+- Realizadas: 31
 - Parciales: 0
 - Pendientes: 16
 - Saltadas: 2
@@ -76,7 +76,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 44 | `44_frontend_modernizacion_graficos_apexcharts.md` | Frontend | Realizada | Graficos compartidos (barras, donut, linea) migrados de SVG plano a ApexCharts con gradientes, glow, curvas suaves y tooltip premium, sin romper el contrato de los componentes. |
 | 45 | `45_COMPLETA_ganaderia_mobile_menu_potreros_alta_edicion.md` | Ganaderia/Mobile | Realizada | Alta/edicion/baja de potreros desde mobile y burbuja "Agregar Reproduccion" (monta, inseminacion, prenez, parto, indice) implementadas. Color por estado del potrero verificado funcionando. Pendiente prueba manual en dispositivo real. |
 | 46 | `46_COMPLETA_ganaderia_mobile_trazabilidad_sanidad_alimentacion.md` | Ganaderia/Mobile | Realizada | Trazabilidad, Sanidad y Alimentacion activadas en el menu de ganaderia mobile y en sus burbujas de "nueva actividad", clonando campo por campo los formularios web (incluyendo selectores tipo buscador). Pendiente prueba manual en dispositivo real. |
-| 47 | `47_ganaderia_alertas_potreros.md` | Ganaderia | Pendiente | Alertas georreferenciadas sobre potreros: usuario logueado + fecha + gravedad (niveles de lotes) + observacion, pin de campanita coloreada por gravedad en mapa web y mobile (burbuja nueva), alta por click en potrero en web y por GPS/centroide en mobile, integrada al offline-first (outbox + sync down). |
+| 47 | `47_ganaderia_alertas_potreros.md` | Ganaderia | Realizada | Alertas georreferenciadas sobre potreros implementadas end-to-end: backend (V42, usuario del token, resolver), mobile (burbuja + pantalla + pins campanita + preview + offline outbox/syncdown) y web (alta por click en potrero, pins mgl-marker, detalle con resolver). Pendiente prueba manual en dispositivo real. |
+| 48 | `48_frontend_budget_bundle_inicial.md` | Frontend | Pendiente | `ng build` falla el budget del bundle inicial (2.51+ MB vs 2.35 MB), preexistente a la feature 47: recortar bundle (lazy-loading de charts/mapas) o ajustar budget justificado. |
 
 ## Registro por Dominio
 
@@ -91,9 +92,9 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 28.
 
 ### Ganaderia
-- Realizadas: 04, 05, 06, 07, 31, 38, 42, 45, 46.
+- Realizadas: 04, 05, 06, 07, 31, 38, 42, 45, 46, 47.
 - Parciales: ninguna.
-- Pendientes: 30, 32, 33, 34, 35, 47.
+- Pendientes: 30, 32, 33, 34, 35.
 
 ### Maquinaria
 - Realizadas: 08, 09.
@@ -135,8 +136,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ### Frontend
 - Realizadas: 44.
+- Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-15: Feature 47 realizada end-to-end con los agentes de dominio (backend/mobile/frontend): tabla alertas_potrero (V42) con usuario del token, burbuja y pantalla de alta mobile con GPS, pins de campanita coloreados por gravedad en ambos mapas con preview/detalle y "marcar resuelta", e integracion offline (regla de outbox con orden critico + dataset en sync down + test de regresion). Gates verdes: mvn compile + 5 tests, tsc mobile + 7 tests, type-check web. Queda prueba manual en dispositivo real.
+- 2026-07-15: Feature 48 creada para el budget del bundle inicial de Angular que falla en ng build (preexistente, detectado durante la 47).
 - 2026-07-15: Feature 47 creada: alertas georreferenciadas en potreros (usuario logueado, fecha, gravedad con los niveles de lotes, observacion), pin de campanita coloreada por gravedad en los mapas de web y mobile, e integracion obligatoria al offline-first de la feature 24. Pendiente de desarrollo.
 - 2026-07-15: Feature 24 mergeada a master y renombrada `_COMPLETA_` (referencias en features 30, 32 y 33 actualizadas).
 - 2026-07-15: Feature 24 realizada: offline-first mobile con Sync Down proactiva (replica local de 10 datasets criticos con las mismas query keys de los hooks), Outbox FIFO persistido con interceptor axios sobre 22 mutaciones de agricultura/ganaderia, filtro backend Idempotency-Key (migracion V41), remap de IDs temporales, banner global de estado y bandeja de pendientes con reintento/descarte. Type-check, compilacion backend y 4 tests de outbox OK; queda prueba manual en dispositivo real.
