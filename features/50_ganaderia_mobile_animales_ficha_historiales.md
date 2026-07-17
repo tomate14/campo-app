@@ -1,7 +1,7 @@
 # 50 - Ganaderia Mobile: Listado de Animales con Ficha e Historiales
 
 ## Estado
-Pendiente.
+Realizada.
 
 ## Origen
 Pedido del usuario (2026-07-16): reorganizar el menu GANADERIA del Drawer mobile y agregar una vista de consulta de animales. Hoy el menu muestra 4 items (Trazabilidad, Sanidad, Alimentacion, Potreros); deben quedar solo **Potreros** y una nueva opcion **Animales**.
@@ -45,6 +45,18 @@ Una unica pantalla parametrizada por `useLocalSearchParams` (`animalId`, `carava
 - Backend (sin cambios): `TrazabilidadAnimalController` (`GET /animales`, `GET /animales/{id}`, `/movimientos`, `/historial-medico`), `AlimentacionController` (`GET /pesajes?animalId=`), `SanidadController` (`GET /aplicaciones|tratamientos|diagnosticos?animalId=`). DTOs: `AnimalDetalleResponse`, `MovimientoAnimalResponse`, `HistorialMedicoAnimalResponse`, `PesajeResponse`, `AplicacionVacunaResponse`, `TratamientoMedicamentoResponse`, `DiagnosticoSanitarioResponse`.
 - Mobile: `mobile/app/(tabs)/_layout.tsx` (Drawer), `mobile/shared/hooks/useAnimales.ts`, `mobile/shared/api/ganaderia.ts`, form-kit (`PotreroSelect`), patron de sheet inferior de `potreros.tsx` (capas) para el sheet de filtros.
 
-## Validacion Tecnica (al implementar)
-- `npx tsc --noEmit` mobile limpio y jest verde.
+## Implementado
+Desarrollada con el agente mobile, coordinada por el orquestador.
+
+- `mobile/app/(tabs)/_layout.tsx`: seccion GANADERIA reducida a **Animales** (`/(tabs)/animales`, icono `Beef` de lucide — representa ganado mejor que `Tag`, que en la app identifica caravana) y **Potreros**. Las pantallas de Trazabilidad/Sanidad/Alimentacion y las burbujas del mapa quedaron intactas (siguen accesibles desde el mapa de potreros). Nueva `Drawer.Screen` registrada.
+- `mobile/shared/api/ganaderia.ts`: `getAnimalDetalle`, `getMovimientosAnimal`, `getHistorialMedicoAnimal`, `getPesajes`, `getAplicaciones`, `getTratamientos`, `getDiagnosticos` (query param `animalId` verificado contra los controllers).
+- `mobile/shared/types/ganaderia.ts`: tipos espejo de `MovimientoAnimalResponse` (con enum de `tipoMovimiento` INGRESO/EGRESO/TRANSFERENCIA/SANIDAD/CONTROL), `HistorialMedicoAnimalResponse` y `AnimalDetalleResponse`, con los campos exactos de los records Java.
+- `mobile/shared/hooks/useAnimalHistorial.ts` (nuevo): hook parametrizado por tipo con mapa de fetchers tipado, query key `['animal-historial', tipo, animalId]` y `enabled: Boolean(animalId)`.
+- `mobile/app/(tabs)/animales.tsx` (nueva pantalla de Drawer): listado de todos los animales con **rows colapsables** (una sola expandida a la vez, `LayoutAnimation` con el guard de `UIManager` para Android), fila colapsada con caravana/raza/potrero/badge de estado, y ficha resumen expandida con la info basica completa (caravana, RFID, sexo, raza, estado, fechas, peso, potrero, madre/padre, observaciones). **Boton de filtros** arriba que abre un sheet inferior (patron del sheet de capas de potreros) con filtro por caravana (texto, local) y por potrero (`PotreroSelect` del form-kit), combinables, con chips de filtros activos removibles bajo el header y contador de resultados. Debajo de la ficha, **fila de chips chicos con scroll horizontal** que abren los historiales: Clinico, Pesos, Movimientos, Vacunas, Tratamientos, Diagnosticos.
+- `mobile/app/ganaderia/animal-historial.tsx` (nueva pantalla modal, registrada en `_layout.tsx`): parametrizada por `animalId`/`caravana`/`tipo`, renderiza cada historial como cards timeline con sus campos principales (severidad de diagnosticos con badge coloreado por los hex de gravedad, `tipoMovimiento` como badge, origen→destino de movimientos resolviendo nombres de potrero contra la replica local), estado vacio "Sin registros" y mensaje de error de red estandar.
+- Offline: sin cambios en `RULES` ni `DATASETS` — no hay mutaciones nuevas y los historiales son on-demand por decision de la spec; el listado de animales ya funciona offline por la replica de la feature 24.
+
+## Validacion Tecnica
+- `npx tsc --noEmit -p tsconfig.json` sobre `mobile/` sin errores.
+- Jest 7/7 verde (suites de outbox y reglas offline sin regresiones).
 - Prueba manual pendiente en dispositivo: expandir/colapsar rows, filtros combinados, apertura de cada historial.

@@ -1,11 +1,13 @@
 import { apiClient as api } from './client'
 import type {
   AlertaPotrero, AlertaPotreroRequest,
-  Animal, AnimalRequest, ApiResponse,
+  Animal, AnimalDetalleResponse, AnimalRequest, ApiResponse,
   AplicacionVacunaRequest, AplicacionVacunaResponse,
   ControlPrenezRequest, ControlPrenezResponse,
   DiagnosticoSanitarioRequest, DiagnosticoSanitarioResponse,
   Dieta, DietaRequest,
+  HistorialMedicoAnimalResponse,
+  MovimientoAnimalResponse,
   IndiceGeneticoRequest, IndiceGeneticoResponse,
   InseminacionRequest, InseminacionResponse,
   MontaRequest, MontaResponse,
@@ -48,6 +50,15 @@ export const resolverAlertaPotrero = (id: string) =>
 export const getAnimales = (params?: { caravana?: string; raza?: string; ubicacion?: string; estado?: string }) =>
   api.get<ApiResponse<Animal[]>>('/ganaderia/trazabilidad/animales', { params }).then(r => r.data.data)
 
+export const getAnimalDetalle = (id: string) =>
+  api.get<ApiResponse<AnimalDetalleResponse>>(`/ganaderia/trazabilidad/animales/${id}`).then(r => r.data.data)
+
+export const getMovimientosAnimal = (id: string) =>
+  api.get<ApiResponse<MovimientoAnimalResponse[]>>(`/ganaderia/trazabilidad/animales/${id}/movimientos`).then(r => r.data.data)
+
+export const getHistorialMedicoAnimal = (id: string) =>
+  api.get<ApiResponse<HistorialMedicoAnimalResponse[]>>(`/ganaderia/trazabilidad/animales/${id}/historial-medico`).then(r => r.data.data)
+
 export const createAnimal = (data: AnimalRequest) =>
   api.post<ApiResponse<Animal>>('/ganaderia/trazabilidad/animales', data).then(r => r.data.data)
 
@@ -75,6 +86,15 @@ export const getVacunas = (params?: { obligatoria?: boolean }) =>
 export const createVacuna = (data: VacunaCatalogoRequest) =>
   api.post<ApiResponse<VacunaCatalogo>>('/ganaderia/sanidad/vacunas', data).then(r => r.data.data)
 
+export const getAplicaciones = (params?: { animalId?: string; vacunaId?: string; desde?: string; hasta?: string }) =>
+  api.get<ApiResponse<AplicacionVacunaResponse[]>>('/ganaderia/sanidad/aplicaciones', { params }).then(r => r.data.data)
+
+export const getTratamientos = (params?: { animalId?: string; desde?: string; hasta?: string }) =>
+  api.get<ApiResponse<TratamientoMedicamentoResponse[]>>('/ganaderia/sanidad/tratamientos', { params }).then(r => r.data.data)
+
+export const getDiagnosticos = (params?: { animalId?: string; estado?: string }) =>
+  api.get<ApiResponse<DiagnosticoSanitarioResponse[]>>('/ganaderia/sanidad/diagnosticos', { params }).then(r => r.data.data)
+
 export const createAplicacion = (data: AplicacionVacunaRequest) =>
   api.post<ApiResponse<AplicacionVacunaResponse>>('/ganaderia/sanidad/aplicaciones', data).then(r => r.data.data)
 
@@ -92,6 +112,9 @@ export const createDieta = (data: DietaRequest) =>
 
 export const createRegistroAlimentacion = (data: RegistroAlimentacionRequest) =>
   api.post<ApiResponse<RegistroAlimentacionResponse>>('/ganaderia/alimentacion/registros', data).then(r => r.data.data)
+
+export const getPesajes = (params?: { animalId?: string; desde?: string; hasta?: string }) =>
+  api.get<ApiResponse<PesajeResponse[]>>('/ganaderia/alimentacion/pesajes', { params }).then(r => r.data.data)
 
 export const createPesaje = (data: PesajeRequest) =>
   api.post<ApiResponse<PesajeResponse>>('/ganaderia/alimentacion/pesajes', data).then(r => r.data.data)

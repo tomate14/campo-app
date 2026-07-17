@@ -18,9 +18,9 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 51
-- Realizadas: 32
+- Realizadas: 33
 - Parciales: 0
-- Pendientes: 17
+- Pendientes: 16
 - Saltadas: 2
 - Ultima actualizacion: 2026-07-16
 
@@ -79,7 +79,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 47 | `47_COMPLETA_ganaderia_alertas_potreros.md` | Ganaderia | Realizada | Alertas georreferenciadas sobre potreros implementadas end-to-end: backend (V42, usuario del token, resolver), mobile (burbuja + pantalla + pins campanita + preview + offline outbox/syncdown) y web (alta por click en potrero, pins mgl-marker, detalle con resolver). Pendiente prueba manual en dispositivo real. |
 | 48 | `48_frontend_budget_bundle_inicial.md` | Frontend | Pendiente | `ng build` falla el budget del bundle inicial (2.51+ MB vs 2.35 MB), preexistente a la feature 47: recortar bundle (lazy-loading de charts/mapas) o ajustar budget justificado. |
 | 49 | `49_COMPLETA_dashboard_ganadero_alertas_potrero.md` | Ganaderia/Reportes | Realizada | Alertas de potrero (feature 47) integradas como sexto generador de la seccion Alertas Operativas del Dashboard Ganadero: gravedad mapeada a prioridad (CRITICA colapsa en ALTA), fecha real de creacion, limit(3) y regla CSS explicita para BAJA. Test del generador 2/2. Pendiente verificacion visual con stack Docker. |
-| 50 | `50_ganaderia_mobile_animales_ficha_historiales.md` | Ganaderia/Mobile | Pendiente | Menu GANADERIA reducido a Potreros + nueva opcion Animales: listado con rows colapsables, filtros por caravana/potrero, ficha resumen del animal y botones chicos para abrir historiales (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos). Solo mobile: el backend ya expone todos los endpoints. |
+| 50 | `50_ganaderia_mobile_animales_ficha_historiales.md` | Ganaderia/Mobile | Realizada | Menu GANADERIA reducido a Animales + Potreros. Nueva vista Animales: listado colapsable con ficha resumen por animal, filtros combinables por caravana/potrero con chips activos, y chips chicos que abren los 6 historiales (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos) en pantalla modal parametrizada. Pendiente prueba manual en dispositivo. |
 
 ## Registro por Dominio
 
@@ -141,6 +141,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-16: Feature 50 realizada con el agente mobile: menu GANADERIA queda en Animales + Potreros, listado de animales con rows colapsables y ficha resumen, filtros por caravana/potrero en sheet inferior, y pantalla modal de historiales por animal (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos) consumiendo los endpoints existentes. tsc y jest verdes; queda prueba manual en dispositivo.
 - 2026-07-16: Feature 50 creada: menu GANADERIA mobile reducido a Potreros + nueva vista Animales con listado colapsable, filtros e historiales por animal. Arranca desarrollo en branch propia.
 - 2026-07-16: Feature 49 mergeada a master y renombrada `_COMPLETA_`.
 - 2026-07-16: Feature 49 realizada: las alertas de potrero abiertas aparecen en la seccion Alertas Operativas del Dashboard Ganadero con prioridad mapeada desde la gravedad y fecha real de creacion. mvn compile + 2 tests verdes y type-check web limpio; verificacion visual pendiente (Docker Desktop apagado en el entorno).

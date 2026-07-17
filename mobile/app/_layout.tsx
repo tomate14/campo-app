@@ -105,6 +105,7 @@ export default function RootLayout() {
           <Stack.Screen name="ganaderia/nueva-sanidad" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="ganaderia/nueva-alimentacion" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="ganaderia/nueva-alerta" options={{ presentation: 'modal', headerShown: false }} />
+          <Stack.Screen name="ganaderia/animal-historial" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="sync/pendientes" options={{ presentation: 'modal', headerShown: false }} />
         </Stack>
 

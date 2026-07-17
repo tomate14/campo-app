@@ -121,6 +121,46 @@ export interface Animal {
   updatedAt?: string
 }
 
+// Espejo de MovimientoAnimal.TipoMovimiento (backend).
+export type TipoMovimientoAnimal = 'INGRESO' | 'EGRESO' | 'TRANSFERENCIA' | 'SANIDAD' | 'CONTROL'
+
+// Espejo de MovimientoAnimalResponse.java (campos exactos del record).
+export interface MovimientoAnimalResponse {
+  id: string
+  animalId: string
+  animalCaravana?: string
+  fecha: string
+  tipoMovimiento: TipoMovimientoAnimal
+  potreroOrigenId?: string
+  potreroDestinoId?: string
+  ubicacionOrigen?: string
+  ubicacionDestino?: string
+  motivo?: string
+  responsable?: string
+  observaciones?: string
+  createdAt?: string
+}
+
+// Espejo de HistorialMedicoAnimalResponse.java (campos exactos del record).
+export interface HistorialMedicoAnimalResponse {
+  id: string
+  animalId: string
+  animalCaravana?: string
+  fecha: string
+  diagnostico?: string
+  tratamiento?: string
+  veterinario?: string
+  observaciones?: string
+  createdAt?: string
+}
+
+// Espejo de AnimalDetalleResponse.java: ficha completa con historiales embebidos.
+export interface AnimalDetalleResponse {
+  animal: Animal
+  movimientos: MovimientoAnimalResponse[]
+  historialMedico: HistorialMedicoAnimalResponse[]
+}
+
 export interface MontaRequest {
   vacaId: string
   toroId: string

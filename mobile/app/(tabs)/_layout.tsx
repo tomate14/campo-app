@@ -4,17 +4,15 @@ import type { DrawerContentComponentProps } from '@react-navigation/drawer'
 import { useRouter } from 'expo-router'
 import { StyleSheet, Text, View } from 'react-native'
 import {
+  Beef,
   CalendarDays,
   CloudSun,
   Fence,
   Home,
   LogOut,
   Map,
-  ScanLine,
-  ShieldPlus,
   Sprout,
   Tractor,
-  Wheat,
   Wrench,
   type LucideIcon,
 } from 'lucide-react-native'
@@ -50,9 +48,7 @@ const sections: DrawerSection[] = [
   {
     title: 'GANADERIA',
     items: [
-      { label: 'Trazabilidad', route: '/ganaderia/nueva-trazabilidad', Icon: ScanLine },
-      { label: 'Sanidad', route: '/ganaderia/nueva-sanidad', Icon: ShieldPlus },
-      { label: 'Alimentacion', route: '/ganaderia/nueva-alimentacion', Icon: Wheat },
+      { label: 'Animales', route: '/(tabs)/animales', Icon: Beef },
       { label: 'Potreros', route: '/(tabs)/potreros', Icon: Fence },
     ],
   },
@@ -143,6 +139,7 @@ export default function DrawerLayout() {
       <Drawer.Screen name="index" options={{ title: 'Inicio' }} />
       <Drawer.Screen name="lotes" options={{ title: 'Lotes' }} />
       <Drawer.Screen name="potreros" options={{ title: 'Potreros' }} />
+      <Drawer.Screen name="animales" options={{ title: 'Animales' }} />
     </Drawer>
   )
 }
