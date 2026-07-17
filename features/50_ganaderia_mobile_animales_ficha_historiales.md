@@ -66,7 +66,22 @@ Desarrollada con el agente mobile, coordinada por el orquestador.
 - Mobile: tipo generico `PageResponse<T>`, `getAnimalesPage`, hook `useAnimalesPage` con `placeholderData` (la lista no parpadea al cambiar de pagina), pantalla con paginador al pie (anterior/siguiente deshabilitados en extremos + "Pagina N de M" + mini spinner durante el fetch), filtros server-side con reset a pagina 0 y colapso de la ficha al paginar, contador del header con `totalElements`.
 - **Fallback offline**: como las queries se pausan sin red (feature 24, `networkMode: 'online'` + onlineManager), la condicion de fallback es `isError || !online` (via `useSyncStatus`); en ese modo la pantalla usa la replica local completa con el filtrado y paginacion de a 20 en el cliente, con aviso "Sin conexion: mostrando datos de la ultima sincronizacion".
 
+### Correccion post-prueba manual: historiales vacios por token vencido
+Bug reportado por el usuario probando contra el stack Docker: el animal 0123 tenia movimientos, historial clinico y vacunas, pero los historiales aparecian vacios en mobile. Diagnostico end-to-end:
+- Los datos estaban intactos (verificado por SQL y por API con curl: los 3 endpoints respondian OK).
+- **Causa raiz**: el access token de la app habia vencido y el cliente mobile **nunca usaba el refresh token** (`refreshAccessToken` existia en `api/auth.ts` pero nadie lo llamaba). La lista de animales "funcionaba" porque ante el error cae a la replica offline; los historiales, que son on-demand sin replica, quedaban vacios.
+- **Agravante descubierto en la verificacion**: el backend devolvia **403** (no 401) ante token vencido, porque `SecurityConfig` no tenia `authenticationEntryPoint` — imposible distinguir "sesion vencida" de "sin permiso".
+
+Fixes aplicados (cubren los 6 botones y toda la app, porque van a nivel del cliente HTTP):
+- `mobile/shared/api/client.ts`: interceptor de respuesta con renovacion de sesion — ante 401/403 renueva con el refresh token (single-flight: N requests simultaneas con 401 disparan un solo refresh) y reintenta la request original una unica vez (`retriedAfterRefresh` evita loops); los endpoints de auth quedan excluidos. Provider `refreshSession` inyectado desde `_layout.tsx` (usa `readRefreshToken` + `refreshAccessToken` + `persistAccessToken` nuevo en `session.ts`; si el refresh fallo se limpia la sesion y el guard redirige al login).
+- `backend/auth/config/SecurityConfig.java`: `authenticationEntryPoint` con `HttpStatusEntryPoint(UNAUTHORIZED)` — no autenticado ahora devuelve 401 (semanticamente correcto); 403 queda solo para permisos reales. El interceptor mobile cubre ambos codigos por compatibilidad con backends sin redeploy.
+- `mobile/shared/sync/syncUp.ts`: 403 ahora pausa la cola del outbox como el 401 (antes mandaba el item a la bandeja de errores como si fuera un error de validacion).
+
+**Verificado end-to-end en el navegador** (expo web servido por el contenedor Docker, que monta el working tree): login real, pantalla Animales con paginacion, ficha del 0123 expandida, y simulacion del bug pisando el access token en localStorage con basura — los historiales de Movimientos, Clinico y Vacunas cargaron sus datos igual (el interceptor renovo la sesion y reintento solo), y la Sync Down completa volvio a correr con 200s.
+
 ## Validacion Tecnica
 - Backend: `mvn -q compile` limpio; `AnimalServicePaginacionTest` 3/3 verde.
 - Mobile: `npx tsc --noEmit -p tsconfig.json` sin errores; jest 7/7 verde.
-- Prueba manual pendiente en dispositivo: expandir/colapsar rows, filtros combinados, paginacion (incluido modo avion con fallback a replica) y apertura de cada historial.
+- Verificacion visual/manual en navegador (expo web del contenedor): menu Drawer reducido, listado paginado, ficha expandible, los 3 historiales con datos del animal 0123, y el flujo de refresh de sesion probado con token invalido.
+- Pendiente en dispositivo fisico: gestos nativos (LayoutAnimation), modo avion con fallback a replica.
+- Nota: el fix de 401 del backend requiere rebuild de la imagen Docker (`docker compose build backend`) para verse en el stack; el fix mobile funciona igual contra el backend viejo (cubre 403).

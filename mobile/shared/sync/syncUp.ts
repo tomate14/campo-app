@@ -40,7 +40,9 @@ export async function drainOutbox(queryClient?: QueryClient): Promise<{ sent: nu
         sent += 1
       } catch (error) {
         const status = isAxiosError(error) ? error.response?.status : undefined
-        const isValidationError = status !== undefined && status >= 400 && status < 500 && status !== 401
+        // 401/403 son problemas de sesion (token vencido), no de datos: pausan
+        // la cola en vez de mandar el item a la bandeja de errores.
+        const isValidationError = status !== undefined && status >= 400 && status < 500 && status !== 401 && status !== 403
         if (isValidationError) {
           await patchOutboxItem(next.opId, {
             status: 'ERROR',
