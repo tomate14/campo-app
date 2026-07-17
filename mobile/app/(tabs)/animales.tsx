@@ -19,6 +19,8 @@ import {
   ArrowRightLeft,
   Beef,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ChevronUp,
   ClipboardList,
   Menu,
@@ -27,10 +29,12 @@ import {
   SlidersHorizontal,
   Stethoscope,
   Syringe,
+  WifiOff,
   X,
   type LucideIcon,
 } from 'lucide-react-native'
-import { useAnimales } from '../../shared/hooks/useAnimales'
+import { useAnimales, useAnimalesPage } from '../../shared/hooks/useAnimales'
+import { useSyncStatus } from '../../shared/sync/SyncProvider'
 import { usePotrerosList } from '../../shared/hooks/usePotreros'
 import {
   PotreroSelect,
@@ -61,14 +65,19 @@ function estadoColor(estado?: string): string {
   return estado?.toUpperCase() === 'ACTIVO' || !estado ? '#9FE870' : '#A6B0CF'
 }
 
+// Tamano fijo de pagina para el listado server-side y el fallback offline.
+const PAGE_SIZE = 20
+
 export default function AnimalesScreen() {
   const navigation = useNavigation()
   const router = useRouter()
-  const { data: animales = [], isLoading } = useAnimales()
   const { data: potreros = [] } = usePotrerosList()
 
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [filtersOpen, setFiltersOpen] = useState(false)
+
+  // Pagina actual (0-based) del listado paginado.
+  const [page, setPage] = useState(0)
 
   // Filtros aplicados (combinables) + borradores del sheet.
   const [caravanaFilter, setCaravanaFilter] = useState('')
@@ -76,14 +85,45 @@ export default function AnimalesScreen() {
   const [caravanaDraft, setCaravanaDraft] = useState('')
   const [potreroDraft, setPotreroDraft] = useState('')
 
-  const filtered = useMemo(() => {
+  // Consulta paginada server-side: los filtros aplicados viajan como params al backend.
+  const pageQuery = useAnimalesPage({
+    caravana: caravanaFilter.trim() || undefined,
+    potreroId: potreroFilter || undefined,
+    page,
+    size: PAGE_SIZE,
+  })
+
+  // Replica local completa (sincronizada por la feature 24): solo se usa como fallback sin conexion.
+  // Sin red la query no llega a isError (onlineManager la pausa), por eso tambien miramos `online`.
+  const { online } = useSyncStatus()
+  const { data: replicaAnimales = [] } = useAnimales()
+  const offlineMode = (pageQuery.isError || !online) && replicaAnimales.length > 0
+
+  // Fallback offline: mismo filtrado local que tenia la pantalla antes de la paginacion server-side.
+  const offlineFiltered = useMemo(() => {
+    if (!offlineMode) return []
     const term = caravanaFilter.trim().toLowerCase()
-    return animales.filter((animal) => {
+    return replicaAnimales.filter((animal) => {
       if (term && !animal.caravana.toLowerCase().includes(term)) return false
       if (potreroFilter && animal.potreroId !== potreroFilter) return false
       return true
     })
-  }, [animales, caravanaFilter, potreroFilter])
+  }, [offlineMode, replicaAnimales, caravanaFilter, potreroFilter])
+
+  // Valores unificados de paginacion para ambos modos (server y fallback offline en cliente).
+  const totalElements = offlineMode ? offlineFiltered.length : pageQuery.data?.totalElements ?? 0
+  const totalPages = offlineMode
+    ? Math.max(1, Math.ceil(offlineFiltered.length / PAGE_SIZE))
+    : Math.max(pageQuery.data?.totalPages ?? 0, 1)
+  const currentPage = Math.min(offlineMode ? page : pageQuery.data?.number ?? page, totalPages - 1)
+  const rows = offlineMode
+    ? offlineFiltered.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE)
+    : pageQuery.data?.content ?? []
+  const isFirstPage = offlineMode ? currentPage === 0 : pageQuery.data?.first ?? true
+  const isLastPage = offlineMode ? currentPage >= totalPages - 1 : pageQuery.data?.last ?? true
+
+  // Con placeholderData la lista anterior queda visible mientras carga la pagina nueva.
+  const isPageChanging = !offlineMode && pageQuery.isFetching && pageQuery.isPlaceholderData
 
   const potreroFilterNombre = useMemo(
     () => potreros.find((potrero) => potrero.id === potreroFilter)?.nombre ?? potreroFilter,
@@ -95,6 +135,19 @@ export default function AnimalesScreen() {
     setExpandedId((current) => (current === id ? null : id))
   }
 
+  // Cambia de pagina colapsando la row expandida para no arrastrar la ficha abierta.
+  const changePage = (nextPage: number) => {
+    if (nextPage < 0) return
+    setExpandedId(null)
+    setPage(nextPage)
+  }
+
+  // Todo cambio de filtros vuelve a la primera pagina.
+  const resetPagination = () => {
+    setExpandedId(null)
+    setPage(0)
+  }
+
   const openFilters = () => {
     setCaravanaDraft(caravanaFilter)
     setPotreroDraft(potreroFilter)
@@ -104,6 +157,7 @@ export default function AnimalesScreen() {
   const applyFilters = () => {
     setCaravanaFilter(caravanaDraft)
     setPotreroFilter(potreroDraft)
+    resetPagination()
     setFiltersOpen(false)
   }
 
@@ -112,7 +166,18 @@ export default function AnimalesScreen() {
     setPotreroDraft('')
     setCaravanaFilter('')
     setPotreroFilter('')
+    resetPagination()
     setFiltersOpen(false)
+  }
+
+  const removeCaravanaFilter = () => {
+    setCaravanaFilter('')
+    resetPagination()
+  }
+
+  const removePotreroFilter = () => {
+    setPotreroFilter('')
+    resetPagination()
   }
 
   const openHistorial = (animal: Animal, tipo: HistorialTipo) => {
@@ -124,7 +189,8 @@ export default function AnimalesScreen() {
 
   const hasActiveFilters = Boolean(caravanaFilter.trim()) || Boolean(potreroFilter)
 
-  if (isLoading) {
+  // Spinner grande solo en la carga inicial (sin datos previos ni placeholder).
+  if (pageQuery.isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#9FE870" />
@@ -140,7 +206,7 @@ export default function AnimalesScreen() {
         </Pressable>
         <View style={styles.headerCopy}>
           <Text style={styles.title}>Animales</Text>
-          <Text style={styles.subtitle}>{filtered.length} {filtered.length === 1 ? 'animal' : 'animales'}</Text>
+          <Text style={styles.subtitle}>{totalElements} {totalElements === 1 ? 'animal' : 'animales'}</Text>
         </View>
         <Pressable style={[styles.circleButton, hasActiveFilters && styles.circleButtonActive]} onPress={openFilters}>
           <SlidersHorizontal size={18} color={hasActiveFilters ? '#9FE870' : '#FFFFFF'} strokeWidth={2} />
@@ -150,13 +216,13 @@ export default function AnimalesScreen() {
       {hasActiveFilters && (
         <View style={styles.filterChipsRow}>
           {Boolean(caravanaFilter.trim()) && (
-            <Pressable style={styles.filterChip} onPress={() => setCaravanaFilter('')}>
+            <Pressable style={styles.filterChip} onPress={removeCaravanaFilter}>
               <Text style={styles.filterChipText}>Caravana: {caravanaFilter.trim()}</Text>
               <X size={13} color="#9FE870" strokeWidth={2.4} />
             </Pressable>
           )}
           {Boolean(potreroFilter) && (
-            <Pressable style={styles.filterChip} onPress={() => setPotreroFilter('')}>
+            <Pressable style={styles.filterChip} onPress={removePotreroFilter}>
               <Text style={styles.filterChipText}>Potrero: {potreroFilterNombre}</Text>
               <X size={13} color="#9FE870" strokeWidth={2.4} />
             </Pressable>
@@ -164,16 +230,52 @@ export default function AnimalesScreen() {
         </View>
       )}
 
+      {offlineMode && (
+        <View style={styles.offlineNotice}>
+          <WifiOff size={13} color="#FFB84D" strokeWidth={2.2} />
+          <Text style={styles.offlineNoticeText}>Sin conexión: mostrando datos de la última sincronización</Text>
+        </View>
+      )}
+
       <FlatList
-        data={filtered}
+        data={rows}
         keyExtractor={(item) => item.id}
+        style={isPageChanging ? styles.listDimmed : undefined}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyBox}>
             <Beef size={30} color="#A6B0CF" strokeWidth={1.6} />
-            <Text style={styles.emptyText}>Sin animales para los filtros aplicados</Text>
+            <Text style={styles.emptyText}>
+              {(pageQuery.isError || !online) && !offlineMode
+                ? 'No se pudo cargar el listado y no hay datos sincronizados'
+                : 'Sin animales para los filtros aplicados'}
+            </Text>
           </View>
+        }
+        ListFooterComponent={
+          totalElements > 0 ? (
+            <View style={styles.paginationBar}>
+              <Pressable
+                style={[styles.pageButton, isFirstPage && styles.pageButtonDisabled]}
+                onPress={() => changePage(currentPage - 1)}
+                disabled={isFirstPage || isPageChanging}
+              >
+                <ChevronLeft size={18} color={isFirstPage ? '#A6B0CF' : '#9FE870'} strokeWidth={2.4} />
+              </Pressable>
+              <View style={styles.pageIndicator}>
+                <Text style={styles.pageIndicatorText}>Página {currentPage + 1} de {totalPages}</Text>
+                {isPageChanging && <ActivityIndicator size="small" color="#9FE870" />}
+              </View>
+              <Pressable
+                style={[styles.pageButton, isLastPage && styles.pageButtonDisabled]}
+                onPress={() => changePage(currentPage + 1)}
+                disabled={isLastPage || isPageChanging}
+              >
+                <ChevronRight size={18} color={isLastPage ? '#A6B0CF' : '#9FE870'} strokeWidth={2.4} />
+              </Pressable>
+            </View>
+          ) : null
         }
         renderItem={({ item }) => (
           <AnimalRow
@@ -385,10 +487,73 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
   },
+  offlineNotice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    marginHorizontal: 18,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,184,77,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,184,77,0.30)',
+  },
+  offlineNoticeText: {
+    flex: 1,
+    color: '#FFB84D',
+    fontSize: 11,
+    fontWeight: '700',
+  },
   listContent: {
     paddingHorizontal: 16,
     paddingBottom: 26,
     gap: 10,
+  },
+  listDimmed: {
+    opacity: 0.55,
+  },
+  paginationBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    marginTop: 6,
+    paddingVertical: 4,
+  },
+  pageButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(159,232,112,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(159,232,112,0.35)',
+  },
+  pageButtonDisabled: {
+    backgroundColor: 'rgba(11,23,48,0.78)',
+    borderColor: 'rgba(255,255,255,0.10)',
+    opacity: 0.5,
+  },
+  pageIndicator: {
+    minWidth: 122,
+    height: 34,
+    paddingHorizontal: 14,
+    borderRadius: 17,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(11,23,48,0.92)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+  },
+  pageIndicatorText: {
+    color: '#DCE8F8',
+    fontSize: 12,
+    fontWeight: '800',
   },
   emptyBox: {
     alignItems: 'center',

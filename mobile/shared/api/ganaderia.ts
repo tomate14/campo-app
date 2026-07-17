@@ -12,6 +12,7 @@ import type {
   InseminacionRequest, InseminacionResponse,
   MontaRequest, MontaResponse,
   PartoRequest, PartoResponse,
+  PageResponse,
   PesajeRequest, PesajeResponse,
   Potrero, PotreroRequest,
   RazaBovina,
@@ -49,6 +50,9 @@ export const resolverAlertaPotrero = (id: string) =>
 
 export const getAnimales = (params?: { caravana?: string; raza?: string; ubicacion?: string; estado?: string }) =>
   api.get<ApiResponse<Animal[]>>('/ganaderia/trazabilidad/animales', { params }).then(r => r.data.data)
+
+export const getAnimalesPage = (params?: { caravana?: string; potreroId?: string; estado?: string; page?: number; size?: number }) =>
+  api.get<ApiResponse<PageResponse<Animal>>>('/ganaderia/trazabilidad/animales/page', { params }).then(r => r.data.data)
 
 export const getAnimalDetalle = (id: string) =>
   api.get<ApiResponse<AnimalDetalleResponse>>(`/ganaderia/trazabilidad/animales/${id}`).then(r => r.data.data)

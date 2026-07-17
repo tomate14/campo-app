@@ -17,6 +17,8 @@ import com.campoapp.ganaderia.repository.MovimientoAnimalRepository;
 import com.campoapp.ganaderia.repository.PotreroRepository;
 import com.campoapp.ganaderia.service.AnimalService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +51,16 @@ public class AnimalServiceImpl implements AnimalService {
                 .map(animal -> toAnimalResponse(animal, assignments.get(animal.getId())))
                 .filter(response -> matchesUbicacion(response, ubicacion))
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AnimalResponse> listAnimalesPaginados(String caravana, String potreroId, String estado, int page, int size) {
+        // Filtro por potrero resuelto en la query contra la asignacion activa de animales_potreros.
+        Page<Animal> animales = animalRepository.findFilteredPage(
+                blankToNull(caravana), blankToNull(potreroId), blankToNull(estado), pageRequest(page, size));
+        Map<String, AnimalPotrero> assignments = activeAssignmentsByAnimalId(animales.getContent());
+        return animales.map(animal -> toAnimalResponse(animal, assignments.get(animal.getId())));
     }
 
     @Override
@@ -316,6 +328,17 @@ public class AnimalServiceImpl implements AnimalService {
 
     private String safe(Object value) {
         return value == null ? "" : String.valueOf(value).replace(",", " ");
+    }
+
+    private String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value;
+    }
+
+    // Mismo patron de normalizacion de paginado que SanidadServiceImpl.
+    private PageRequest pageRequest(int page, int size) {
+        int normalizedPage = Math.max(page, 0);
+        int normalizedSize = Math.min(Math.max(size, 1), 100);
+        return PageRequest.of(normalizedPage, normalizedSize);
     }
 
     private Map<String, AnimalPotrero> activeAssignmentsByAnimalId(List<Animal> animals) {

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,19 @@ public class TrazabilidadAnimalController {
             @RequestParam(required = false) String estado
     ) {
         return ResponseEntity.ok(ApiResponse.ok(animalService.listAnimales(caravana, raza, ubicacion, estado)));
+    }
+
+    @GetMapping("/animales/page")
+    @PreAuthorize("hasAuthority('read:animales')")
+    @Operation(summary = "Listar animales paginados con filtros por caravana, potrero y estado")
+    public ResponseEntity<ApiResponse<Page<AnimalResponse>>> listAnimalesPaginados(
+            @RequestParam(required = false) String caravana,
+            @RequestParam(required = false) String potreroId,
+            @RequestParam(required = false) String estado,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(animalService.listAnimalesPaginados(caravana, potreroId, estado, page, size)));
     }
 
     @GetMapping("/razas-bovinas")
