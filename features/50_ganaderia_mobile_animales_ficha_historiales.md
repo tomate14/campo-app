@@ -39,7 +39,8 @@ Una unica pantalla parametrizada por `useLocalSearchParams` (`animalId`, `carava
 - Mobile: la pantalla consume la pagina del servidor (`useAnimalesPage`, `placeholderData` para no parpadear al cambiar de pagina); filtros server-side con reset a pagina 0.
 
 ## Decisiones
-- Los historiales se consultan on-demand: NO entran en la Sync Down de la feature 24 (serian N requests por animal). Offline muestran el error de red estandar; la lista de animales si funciona offline porque ya esta replicada.
+- ~~Los historiales se consultan on-demand: NO entran en la Sync Down (serian N requests por animal).~~ **Revertida a pedido del usuario**: los historiales deben funcionar offline. Solucion sin N-requests-por-animal: cada tipo pasa a **consulta bulk por coleccion** (una query por tipo, filtrada client-side por animal), con query key estable `['animal-historial', tipo]` que la Sync Down replica. Requirio 2 endpoints bulk nuevos en backend (movimientos e historial medico solo existian por-animal). Candidato a delta sync si el volumen crece.
+- Sync Up: la feature es de consulta (sin mutaciones nuevas); las cargas de estos datos (vacunas/tratamientos/diagnosticos/pesajes de las features 45/46) ya operan offline via el outbox de la feature 24.
 - Se reutiliza el patron visual de cards/chips del resto de ganaderia mobile; sin componentes duplicados (form-kit para el PotreroSelect del filtro).
 
 ## Fuera de alcance

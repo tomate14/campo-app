@@ -197,6 +197,20 @@ public class AnimalServiceImpl implements AnimalService {
         return toHistorialResponses(historialRepository.findByAnimalId(animalId));
     }
 
+    // Listados bulk para la replica offline de mobile: animalId opcional, sin validar existencia
+    // (un id desconocido devuelve lista vacia, igual que los listados filtrados de sanidad).
+    @Override
+    @Transactional(readOnly = true)
+    public List<MovimientoAnimalResponse> listMovimientos(String animalId) {
+        return toMovimientoResponses(movimientoRepository.findFiltered(blankToNull(animalId)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<HistorialMedicoAnimalResponse> listHistorialMedico(String animalId) {
+        return toHistorialResponses(historialRepository.findFiltered(blankToNull(animalId)));
+    }
+
     @Override
     @Transactional(readOnly = true)
     public String exportarSenasaCsv(String estado) {

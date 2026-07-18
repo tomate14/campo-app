@@ -1,9 +1,10 @@
+import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import {
   getAplicaciones,
   getDiagnosticos,
-  getHistorialMedicoAnimal,
-  getMovimientosAnimal,
+  getHistorialMedico,
+  getMovimientos,
   getPesajes,
   getTratamientos,
 } from '../api/ganaderia'
@@ -19,7 +20,9 @@ import type {
 const HISTORIAL_KEY = 'animal-historial'
 
 // Tipos de historial consultables desde la ficha del animal (feature 50).
-// Se piden on-demand: NO entran en la sync down offline (decision de la spec).
+// Cada tipo se consulta bulk (una query key estable por coleccion) para que
+// la sync down (feature 24) replique el historial completo y la pantalla lo
+// lea offline; el filtrado por animal se hace client-side.
 export type HistorialTipo = 'CLINICO' | 'PESOS' | 'MOVIMIENTOS' | 'VACUNAS' | 'TRATAMIENTOS' | 'DIAGNOSTICOS'
 
 export type HistorialData = {
@@ -31,21 +34,32 @@ export type HistorialData = {
   DIAGNOSTICOS: DiagnosticoSanitarioResponse[]
 }
 
-const fetchers: { [T in HistorialTipo]: (animalId: string) => Promise<HistorialData[T]> } = {
-  CLINICO: (animalId) => getHistorialMedicoAnimal(animalId),
-  PESOS: (animalId) => getPesajes({ animalId }),
-  MOVIMIENTOS: (animalId) => getMovimientosAnimal(animalId),
-  VACUNAS: (animalId) => getAplicaciones({ animalId }),
-  TRATAMIENTOS: (animalId) => getTratamientos({ animalId }),
-  DIAGNOSTICOS: (animalId) => getDiagnosticos({ animalId }),
+// Fetchers bulk sin filtro de animal: la misma funcion que usa syncDown, asi
+// la replica hidratada del cache persistido responde estas queries sin red.
+const fetchers: { [T in HistorialTipo]: () => Promise<HistorialData[T]> } = {
+  CLINICO: () => getHistorialMedico(),
+  PESOS: () => getPesajes(),
+  MOVIMIENTOS: () => getMovimientos(),
+  VACUNAS: () => getAplicaciones(),
+  TRATAMIENTOS: () => getTratamientos(),
+  DIAGNOSTICOS: () => getDiagnosticos(),
 }
 
-// Hook parametrizado: una sola query por tipo + animal, habilitada recien
-// cuando hay animalId (la pantalla modal recibe los params por la ruta).
+// Hook parametrizado: una query bulk por tipo (key SIN animalId — es la que
+// replica syncDown) + filtrado en memoria por el animal de la ficha.
 export function useAnimalHistorial<T extends HistorialTipo>(tipo: T, animalId?: string) {
-  return useQuery<HistorialData[T]>({
-    queryKey: [HISTORIAL_KEY, tipo, animalId],
-    queryFn: () => fetchers[tipo](animalId as string),
+  const query = useQuery<HistorialData[T]>({
+    queryKey: [HISTORIAL_KEY, tipo],
+    queryFn: fetchers[tipo],
     enabled: Boolean(animalId),
   })
+
+  const data = useMemo<HistorialData[T] | undefined>(() => {
+    if (!query.data || !animalId) return undefined
+    // Todos los responses de historial exponen animalId (directo o via su Request).
+    const items = query.data as Array<{ animalId: string }>
+    return items.filter((item) => item.animalId === animalId) as HistorialData[T]
+  }, [query.data, animalId])
+
+  return { ...query, data }
 }

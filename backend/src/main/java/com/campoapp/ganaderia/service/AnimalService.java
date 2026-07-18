@@ -17,5 +17,7 @@ public interface AnimalService {
     HistorialMedicoAnimalResponse registrarHistorialMedico(HistorialMedicoAnimalRequest request);
     List<MovimientoAnimalResponse> getMovimientos(String animalId);
     List<HistorialMedicoAnimalResponse> getHistorialMedico(String animalId);
+    List<MovimientoAnimalResponse> listMovimientos(String animalId);
+    List<HistorialMedicoAnimalResponse> listHistorialMedico(String animalId);
     String exportarSenasaCsv(String estado);
 }

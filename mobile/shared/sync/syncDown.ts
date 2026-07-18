@@ -1,7 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import type { QueryClient } from '@tanstack/react-query'
 import { getDeteccionesPlaga, getLotes } from '../api/agricola'
-import { getAlertasPotreros, getAnimales, getDietas, getPotreros, getPotrerosMapa, getRazasBovinas, getVacunas } from '../api/ganaderia'
+import {
+  getAlertasPotreros,
+  getAnimales,
+  getAplicaciones,
+  getDiagnosticos,
+  getDietas,
+  getHistorialMedico,
+  getMovimientos,
+  getPesajes,
+  getPotreros,
+  getPotrerosMapa,
+  getRazasBovinas,
+  getTratamientos,
+  getVacunas,
+} from '../api/ganaderia'
 import { getOperarios } from '../api/operarios'
 
 const LAST_SYNC_KEY = 'sync_last_down_v1'
@@ -21,6 +35,13 @@ const DATASETS: Array<{ queryKey: unknown[]; fetch: () => Promise<unknown> }> = 
   { queryKey: ['dietas'], fetch: () => getDietas() },
   { queryKey: ['plagas-detecciones'], fetch: () => getDeteccionesPlaga() },
   { queryKey: ['potreros-alertas', { estado: 'ABIERTA' }], fetch: () => getAlertasPotreros({ estado: 'ABIERTA' }) },
+  // Historiales del animal replicados para lectura offline (feature 50); candidato a delta sync si el volumen crece.
+  { queryKey: ['animal-historial', 'CLINICO'], fetch: () => getHistorialMedico() },
+  { queryKey: ['animal-historial', 'PESOS'], fetch: () => getPesajes() },
+  { queryKey: ['animal-historial', 'MOVIMIENTOS'], fetch: () => getMovimientos() },
+  { queryKey: ['animal-historial', 'VACUNAS'], fetch: () => getAplicaciones() },
+  { queryKey: ['animal-historial', 'TRATAMIENTOS'], fetch: () => getTratamientos() },
+  { queryKey: ['animal-historial', 'DIAGNOSTICOS'], fetch: () => getDiagnosticos() },
 ]
 
 let lastSyncAt: string | null | undefined

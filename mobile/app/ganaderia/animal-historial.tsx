@@ -16,6 +16,7 @@ import {
 } from 'lucide-react-native'
 import { useAnimalHistorial, type HistorialTipo } from '../../shared/hooks/useAnimalHistorial'
 import { usePotrerosList } from '../../shared/hooks/usePotreros'
+import { useSyncStatus } from '../../shared/sync/SyncProvider'
 import { formatDateDisplay } from '../../shared/components/ganaderia-form-kit'
 import type {
   AplicacionVacunaResponse,
@@ -79,6 +80,10 @@ export default function AnimalHistorialScreen() {
   const HeaderIcon = config.Icon
   const { data, isLoading, isError } = useAnimalHistorial(tipo, animalId)
   const { data: potreros = [] } = usePotrerosList()
+
+  // Sin red la query queda pausada (no llega a isError): se mira `online` para
+  // avisar que no hay replica sincronizada de este historial (feature 50).
+  const { online } = useSyncStatus()
 
   // Los movimientos referencian potreros por id: se resuelven contra la lista
   // replicada offline para mostrar nombres legibles.
@@ -207,7 +212,9 @@ export default function AnimalHistorialScreen() {
             <View style={styles.emptyBox}>
               <HeaderIcon size={30} color="#A6B0CF" strokeWidth={1.6} />
               <Text style={styles.emptyText}>
-                {isError ? 'No se pudieron cargar los registros. Revisá tu conexión.' : 'Sin registros'}
+                {(isError || !online) && !data
+                  ? 'Sin conexión y sin datos sincronizados para este historial.'
+                  : 'Sin registros'}
               </Text>
             </View>
           }

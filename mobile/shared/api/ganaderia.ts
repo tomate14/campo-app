@@ -57,11 +57,13 @@ export const getAnimalesPage = (params?: { caravana?: string; potreroId?: string
 export const getAnimalDetalle = (id: string) =>
   api.get<ApiResponse<AnimalDetalleResponse>>(`/ganaderia/trazabilidad/animales/${id}`).then(r => r.data.data)
 
-export const getMovimientosAnimal = (id: string) =>
-  api.get<ApiResponse<MovimientoAnimalResponse[]>>(`/ganaderia/trazabilidad/animales/${id}/movimientos`).then(r => r.data.data)
+// Listados bulk de trazabilidad (feature 50): sin animalId devuelven todo,
+// asi la sync down replica la coleccion completa para lectura offline.
+export const getMovimientos = (params?: { animalId?: string }) =>
+  api.get<ApiResponse<MovimientoAnimalResponse[]>>('/ganaderia/trazabilidad/movimientos', { params }).then(r => r.data.data)
 
-export const getHistorialMedicoAnimal = (id: string) =>
-  api.get<ApiResponse<HistorialMedicoAnimalResponse[]>>(`/ganaderia/trazabilidad/animales/${id}/historial-medico`).then(r => r.data.data)
+export const getHistorialMedico = (params?: { animalId?: string }) =>
+  api.get<ApiResponse<HistorialMedicoAnimalResponse[]>>('/ganaderia/trazabilidad/historial-medico', { params }).then(r => r.data.data)
 
 export const createAnimal = (data: AnimalRequest) =>
   api.post<ApiResponse<Animal>>('/ganaderia/trazabilidad/animales', data).then(r => r.data.data)
