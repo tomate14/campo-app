@@ -50,7 +50,19 @@
       "Bash(curl -s -o /dev/null -w \"8081:%{http_code}\\\\n\" http://localhost:8081 --max-time 4)",
       "Bash(timeout 300 bash -c 'until curl -s -o /dev/null -w \"%{http_code}\" http://localhost:19006 --max-time 5 | grep -q 200; do sleep 8; done')",
       "Bash(curl -s -o /dev/null -w \"final:%{http_code}\\\\n\" http://localhost:19006 --max-time 8)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:19006 --max-time 10)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:19006 --max-time 10)",
+      "PowerShell(git checkout master)",
+      "PowerShell(git pull --ff-only 2>$null)",
+      "PowerShell(git checkout -b 39_mobile_primer_login_cambio_password_obligatorio)",
+      "PowerShell(git diff mobile/app/\\(auth\\)/login.tsx docker-compose.yml)",
+      "Bash(mvn -q test -Dtest=AuthServiceFirstLoginPasswordTest)",
+      "Bash(curl -s -X POST http://localhost:8080/api/v1/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"ftreintainueve\",\"password\":\"ftreintainueve\"}')",
+      "PowerShell(docker compose build backend)",
+      "PowerShell(docker compose up -d backend)",
+      "PowerShell(cd mobile; npx tsc --noEmit; echo \"tsc exit: $LASTEXITCODE\")",
+      "PowerShell(git merge --no-ff 39_mobile_primer_login_cambio_password_obligatorio -m \"Merge feature 39: cambio obligatorio de password en primer login mobile\")",
+      "PowerShell(git add mobile/shared/sync/SyncProvider.tsx docker-compose.yml mobile/metro.config.js)",
+      "PowerShell(git add SENASA.md .claude/settings.local.json)"
     ]
   }
 }
