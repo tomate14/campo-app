@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,19 @@ public class TrazabilidadAnimalController {
             @RequestParam(required = false) String estado
     ) {
         return ResponseEntity.ok(ApiResponse.ok(animalService.listAnimales(caravana, raza, ubicacion, estado)));
+    }
+
+    @GetMapping("/animales/page")
+    @PreAuthorize("hasAuthority('read:animales')")
+    @Operation(summary = "Listar animales paginados con filtros por caravana, potrero y estado")
+    public ResponseEntity<ApiResponse<Page<AnimalResponse>>> listAnimalesPaginados(
+            @RequestParam(required = false) String caravana,
+            @RequestParam(required = false) String potreroId,
+            @RequestParam(required = false) String estado,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(animalService.listAnimalesPaginados(caravana, potreroId, estado, page, size)));
     }
 
     @GetMapping("/razas-bovinas")
@@ -75,6 +89,15 @@ public class TrazabilidadAnimalController {
         return ResponseEntity.ok(ApiResponse.ok(animalService.getMovimientos(id)));
     }
 
+    @GetMapping("/movimientos")
+    @PreAuthorize("hasAuthority('read:animales')")
+    @Operation(summary = "Listar movimientos de todos los animales, con filtro opcional por animal (replica offline)")
+    public ResponseEntity<ApiResponse<List<MovimientoAnimalResponse>>> listMovimientos(
+            @RequestParam(required = false) String animalId
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(animalService.listMovimientos(animalId)));
+    }
+
     @PostMapping("/movimientos")
     @PreAuthorize("hasAuthority('update:animales')")
     public ResponseEntity<ApiResponse<MovimientoAnimalResponse>> createMovimiento(@Valid @RequestBody MovimientoAnimalRequest request) {
@@ -85,6 +108,15 @@ public class TrazabilidadAnimalController {
     @PreAuthorize("hasAuthority('read:animales')")
     public ResponseEntity<ApiResponse<List<HistorialMedicoAnimalResponse>>> getHistorialMedico(@PathVariable String id) {
         return ResponseEntity.ok(ApiResponse.ok(animalService.getHistorialMedico(id)));
+    }
+
+    @GetMapping("/historial-medico")
+    @PreAuthorize("hasAuthority('read:animales')")
+    @Operation(summary = "Listar historial medico de todos los animales, con filtro opcional por animal (replica offline)")
+    public ResponseEntity<ApiResponse<List<HistorialMedicoAnimalResponse>>> listHistorialMedico(
+            @RequestParam(required = false) String animalId
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(animalService.listHistorialMedico(animalId)));
     }
 
     @PostMapping("/historial-medico")

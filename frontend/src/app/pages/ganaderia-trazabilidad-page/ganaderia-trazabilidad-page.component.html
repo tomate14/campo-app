@@ -112,7 +112,7 @@
             <span class="event-dot"></span>
             <div>
               <strong>{{ movimiento.tipoMovimiento }}</strong>
-              <p>{{ movimiento.fecha }} · {{ movimiento.ubicacionOrigen || 'Origen' }} → {{ movimiento.ubicacionDestino || 'Destino' }}</p>
+              <p>{{ movimiento.fecha }} · {{ movimiento.ubicacionOrigen || movimiento.potreroOrigenNombre || 'Origen' }} → {{ movimiento.ubicacionDestino || movimiento.potreroDestinoNombre || 'Destino' }}</p>
               <p *ngIf="movimiento.motivo">{{ movimiento.motivo }}</p>
             </div>
             <em>Movimiento</em>

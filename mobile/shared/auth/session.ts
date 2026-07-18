@@ -69,6 +69,11 @@ export async function persistSession(session: AuthResponse) {
   ])
 }
 
+// Guarda solo el access token renovado via /auth/refresh (el refresh token no rota).
+export async function persistAccessToken(accessToken: string) {
+  await setItem(ACCESS_TOKEN_KEY, accessToken)
+}
+
 export async function clearSession() {
   await Promise.all([
     removeItem(ACCESS_TOKEN_KEY),

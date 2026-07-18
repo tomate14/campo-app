@@ -18,4 +18,15 @@ public interface HistorialMedicoAnimalRepository extends JpaRepository<Historial
             ORDER BY h.fecha DESC
             """)
     List<HistorialMedicoAnimal> findByAnimalId(@Param("animalId") String animalId);
+
+    // Listado bulk para replica offline: animalId opcional con el patron (:param IS NULL OR ...).
+    @Query("""
+            SELECT h FROM HistorialMedicoAnimal h
+            JOIN FETCH h.animal a
+            WHERE h.deletedAt IS NULL
+              AND a.deletedAt IS NULL
+              AND (:animalId IS NULL OR a.id = :animalId)
+            ORDER BY h.fecha DESC
+            """)
+    List<HistorialMedicoAnimal> findFiltered(@Param("animalId") String animalId);
 }

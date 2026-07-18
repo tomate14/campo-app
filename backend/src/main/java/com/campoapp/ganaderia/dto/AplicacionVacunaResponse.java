@@ -14,6 +14,7 @@ public record AplicacionVacunaResponse(
         LocalDate fechaAplicacion,
         LocalDate proximaDosisFecha,
         String operario,
+        String operarioNombre,
         String loteMarca,
         BigDecimal costoAplicado,
         String observaciones,

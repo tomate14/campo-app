@@ -14,6 +14,7 @@ public record TratamientoMedicamentoResponse(
         String dosis,
         String viaAplicacion,
         String responsable,
+        String responsableNombre,
         String motivo,
         BigDecimal costo,
         String observaciones,

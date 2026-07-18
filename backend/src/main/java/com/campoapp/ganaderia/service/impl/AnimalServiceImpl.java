@@ -17,6 +17,8 @@ import com.campoapp.ganaderia.repository.MovimientoAnimalRepository;
 import com.campoapp.ganaderia.repository.PotreroRepository;
 import com.campoapp.ganaderia.service.AnimalService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,7 @@ public class AnimalServiceImpl implements AnimalService {
     private final PotreroRepository potreroRepository;
     private final AnimalPotreroRepository animalPotreroRepository;
     private final CatalogoRazaBovinaRepository razaRepository;
+    private final OperarioNombreResolver operarioNombreResolver;
 
     @Override
     @Transactional(readOnly = true)
@@ -49,6 +52,16 @@ public class AnimalServiceImpl implements AnimalService {
                 .map(animal -> toAnimalResponse(animal, assignments.get(animal.getId())))
                 .filter(response -> matchesUbicacion(response, ubicacion))
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AnimalResponse> listAnimalesPaginados(String caravana, String potreroId, String estado, int page, int size) {
+        // Filtro por potrero resuelto en la query contra la asignacion activa de animales_potreros.
+        Page<Animal> animales = animalRepository.findFilteredPage(
+                blankToNull(caravana), blankToNull(potreroId), blankToNull(estado), pageRequest(page, size));
+        Map<String, AnimalPotrero> assignments = activeAssignmentsByAnimalId(animales.getContent());
+        return animales.map(animal -> toAnimalResponse(animal, assignments.get(animal.getId())));
     }
 
     @Override
@@ -67,8 +80,8 @@ public class AnimalServiceImpl implements AnimalService {
         AnimalPotrero assignment = animalPotreroRepository.findActiveByAnimalId(animal.getId()).orElse(null);
         return new AnimalDetalleResponse(
                 toAnimalResponse(animal, assignment),
-                movimientoRepository.findByAnimalId(id).stream().map(this::toMovimientoResponse).toList(),
-                historialRepository.findByAnimalId(id).stream().map(this::toHistorialResponse).toList()
+                toMovimientoResponses(movimientoRepository.findByAnimalId(id)),
+                toHistorialResponses(historialRepository.findByAnimalId(id))
         );
     }
 
@@ -153,7 +166,7 @@ public class AnimalServiceImpl implements AnimalService {
         if (potreroDestino != null) {
             moveAnimalToPotrero(animal, potreroDestino, request.fecha(), request.motivo(), request.responsable(), request.observaciones(), saved);
         }
-        return toMovimientoResponse(saved);
+        return toMovimientoResponses(List.of(saved)).get(0);
     }
 
     @Override
@@ -167,21 +180,35 @@ public class AnimalServiceImpl implements AnimalService {
                 .veterinario(request.veterinario())
                 .observaciones(request.observaciones())
                 .build();
-        return toHistorialResponse(historialRepository.save(historial));
+        return toHistorialResponses(List.of(historialRepository.save(historial))).get(0);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<MovimientoAnimalResponse> getMovimientos(String animalId) {
         getActiveAnimal(animalId);
-        return movimientoRepository.findByAnimalId(animalId).stream().map(this::toMovimientoResponse).toList();
+        return toMovimientoResponses(movimientoRepository.findByAnimalId(animalId));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<HistorialMedicoAnimalResponse> getHistorialMedico(String animalId) {
         getActiveAnimal(animalId);
-        return historialRepository.findByAnimalId(animalId).stream().map(this::toHistorialResponse).toList();
+        return toHistorialResponses(historialRepository.findByAnimalId(animalId));
+    }
+
+    // Listados bulk para la replica offline de mobile: animalId opcional, sin validar existencia
+    // (un id desconocido devuelve lista vacia, igual que los listados filtrados de sanidad).
+    @Override
+    @Transactional(readOnly = true)
+    public List<MovimientoAnimalResponse> listMovimientos(String animalId) {
+        return toMovimientoResponses(movimientoRepository.findFiltered(blankToNull(animalId)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<HistorialMedicoAnimalResponse> listHistorialMedico(String animalId) {
+        return toHistorialResponses(historialRepository.findFiltered(blankToNull(animalId)));
     }
 
     @Override
@@ -282,7 +309,14 @@ public class AnimalServiceImpl implements AnimalService {
         );
     }
 
-    private MovimientoAnimalResponse toMovimientoResponse(MovimientoAnimal movimiento) {
+    // Mapea la lista completa resolviendo los responsables en un solo lookup batch (sin N+1).
+    private List<MovimientoAnimalResponse> toMovimientoResponses(List<MovimientoAnimal> movimientos) {
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                movimientos.stream().map(MovimientoAnimal::getResponsable).toList());
+        return movimientos.stream().map(movimiento -> toMovimientoResponse(movimiento, nombres)).toList();
+    }
+
+    private MovimientoAnimalResponse toMovimientoResponse(MovimientoAnimal movimiento, Map<String, String> operarioNombres) {
         return new MovimientoAnimalResponse(
                 movimiento.getId(),
                 movimiento.getAnimal().getId(),
@@ -291,16 +325,27 @@ public class AnimalServiceImpl implements AnimalService {
                 movimiento.getTipoMovimiento(),
                 movimiento.getPotreroOrigen() != null ? movimiento.getPotreroOrigen().getId() : null,
                 movimiento.getPotreroDestino() != null ? movimiento.getPotreroDestino().getId() : null,
+                // Nombre del potrero desde la asociacion; fallback a la ubicacion texto libre legacy.
+                movimiento.getPotreroOrigen() != null ? movimiento.getPotreroOrigen().getNombre() : movimiento.getUbicacionOrigen(),
+                movimiento.getPotreroDestino() != null ? movimiento.getPotreroDestino().getNombre() : movimiento.getUbicacionDestino(),
                 movimiento.getPotreroOrigen() != null ? movimiento.getPotreroOrigen().getNombre() : movimiento.getUbicacionOrigen(),
                 movimiento.getPotreroDestino() != null ? movimiento.getPotreroDestino().getNombre() : movimiento.getUbicacionDestino(),
                 movimiento.getMotivo(),
                 movimiento.getResponsable(),
+                operarioNombreResolver.resolver(movimiento.getResponsable(), operarioNombres),
                 movimiento.getObservaciones(),
                 movimiento.getCreatedAt()
         );
     }
 
-    private HistorialMedicoAnimalResponse toHistorialResponse(HistorialMedicoAnimal historial) {
+    // Mapea la lista completa resolviendo los veterinarios en un solo lookup batch (sin N+1).
+    private List<HistorialMedicoAnimalResponse> toHistorialResponses(List<HistorialMedicoAnimal> historiales) {
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                historiales.stream().map(HistorialMedicoAnimal::getVeterinario).toList());
+        return historiales.stream().map(historial -> toHistorialResponse(historial, nombres)).toList();
+    }
+
+    private HistorialMedicoAnimalResponse toHistorialResponse(HistorialMedicoAnimal historial, Map<String, String> operarioNombres) {
         return new HistorialMedicoAnimalResponse(
                 historial.getId(),
                 historial.getAnimal().getId(),
@@ -309,6 +354,7 @@ public class AnimalServiceImpl implements AnimalService {
                 historial.getDiagnostico(),
                 historial.getTratamiento(),
                 historial.getVeterinario(),
+                operarioNombreResolver.resolver(historial.getVeterinario(), operarioNombres),
                 historial.getObservaciones(),
                 historial.getCreatedAt()
         );
@@ -316,6 +362,17 @@ public class AnimalServiceImpl implements AnimalService {
 
     private String safe(Object value) {
         return value == null ? "" : String.valueOf(value).replace(",", " ");
+    }
+
+    private String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value;
+    }
+
+    // Mismo patron de normalizacion de paginado que SanidadServiceImpl.
+    private PageRequest pageRequest(int page, int size) {
+        int normalizedPage = Math.max(page, 0);
+        int normalizedSize = Math.min(Math.max(size, 1), 100);
+        return PageRequest.of(normalizedPage, normalizedSize);
     }
 
     private Map<String, AnimalPotrero> activeAssignmentsByAnimalId(List<Animal> animals) {

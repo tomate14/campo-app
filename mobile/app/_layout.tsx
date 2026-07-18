@@ -8,7 +8,8 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { useRouter, useSegments } from 'expo-router'
 import { Colors } from '../constants/colors'
-import { readAccessToken } from '../shared/auth/session'
+import { clearSession, persistAccessToken, readAccessToken, readRefreshToken } from '../shared/auth/session'
+import { refreshAccessToken } from '../shared/api/auth'
 import { configureApiClient } from '../shared/api/client'
 import { SyncProvider } from '../shared/sync/SyncProvider'
 import { SyncBanner } from '../shared/components/sync-banner'
@@ -51,6 +52,22 @@ export default function RootLayout() {
           : 'http://localhost:8080/api/v1'
       ),
       getAccessToken: () => readAccessToken(),
+      // Renueva la sesion ante un 401 (access token vencido): sin esto la app
+      // quedaba muda al expirar el token y los historiales aparecian vacios.
+      refreshSession: async () => {
+        const refreshToken = await readRefreshToken()
+        if (!refreshToken) return null
+        try {
+          const newAccessToken = await refreshAccessToken(refreshToken)
+          await persistAccessToken(newAccessToken)
+          return newAccessToken
+        } catch {
+          // Refresh vencido o revocado: se limpia la sesion y el guard de
+          // navegacion redirige al login en la proxima interaccion.
+          await clearSession()
+          return null
+        }
+      },
     })
   }, [])
 
@@ -105,6 +122,7 @@ export default function RootLayout() {
           <Stack.Screen name="ganaderia/nueva-sanidad" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="ganaderia/nueva-alimentacion" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="ganaderia/nueva-alerta" options={{ presentation: 'modal', headerShown: false }} />
+          <Stack.Screen name="ganaderia/animal-historial" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="sync/pendientes" options={{ presentation: 'modal', headerShown: false }} />
         </Stack>
 

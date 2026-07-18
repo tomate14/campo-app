@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/pages/login-page/login-page.component.css"],
-  "sourcesContent": [".login-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; }\n.login-panel { width: min(460px, 100%); padding: 28px; display: flex; flex-direction: column; gap: 20px; }\n.eyebrow { margin: 0; color: #67e8f9; letter-spacing: 0.22em; text-transform: uppercase; font-size: 12px; }\nh1 { margin: 8px 0 0; font-size: 32px; }\n.copy { margin: 8px 0 0; color: var(--muted); }\n.mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }\n.mode-switch .active { border-color: var(--primary); color: #d9f99d; }\n.form { display: flex; flex-direction: column; gap: 14px; }\nlabel { display: flex; flex-direction: column; gap: 8px; }\nspan { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }\n.error { margin: 0; color: #fca5a5; }\r\n"],
-  "mappings": ";AAAA,CAAC;AAAa,cAAY;AAAO,WAAS;AAAM,eAAa;AAAQ,WAAS;AAAM;AACpF,CAAC;AAAc,SAAO,IAAI,KAAK,EAAE;AAAO,WAAS;AAAM,WAAS;AAAM,kBAAgB;AAAQ,OAAK;AAAM;AACzG,CAAC;AAAU,UAAQ;AAAG,SAAO;AAAS,kBAAgB;AAAQ,kBAAgB;AAAW,aAAW;AAAM;AAC1G;AAAK,UAAQ,IAAI,EAAE;AAAG,aAAW;AAAM;AACvC,CAAC;AAAO,UAAQ,IAAI,EAAE;AAAG,SAAO,IAAI;AAAU;AAC9C,CAAC;AAAc,WAAS;AAAM,yBAAuB,IAAI;AAAK,OAAK;AAAM;AACzE,CADC,YACY,CAAC;AAAS,gBAAc,IAAI;AAAY,SAAO;AAAS;AACrE,CAAC;AAAO,WAAS;AAAM,kBAAgB;AAAQ,OAAK;AAAM;AAC1D;AAAQ,WAAS;AAAM,kBAAgB;AAAQ,OAAK;AAAK;AACzD;AAAO,aAAW;AAAM,SAAO,IAAI;AAAU,kBAAgB;AAAW,kBAAgB;AAAQ;AAChG,CAAC;AAAQ,UAAQ;AAAG,SAAO;AAAS;",
-  "names": []
-}

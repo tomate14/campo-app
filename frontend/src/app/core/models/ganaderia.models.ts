@@ -281,10 +281,13 @@ export interface MovimientoAnimal {
   tipoMovimiento: 'INGRESO' | 'EGRESO' | 'TRANSFERENCIA' | 'SANIDAD' | 'CONTROL'
   potreroOrigenId?: string
   potreroDestinoId?: string
+  potreroOrigenNombre?: string
+  potreroDestinoNombre?: string
   ubicacionOrigen?: string
   ubicacionDestino?: string
   motivo?: string
   responsable?: string
+  responsableNombre?: string
   observaciones?: string
   createdAt: string
 }
@@ -310,6 +313,7 @@ export interface HistorialMedicoAnimal {
   diagnostico: string
   tratamiento?: string
   veterinario?: string
+  veterinarioNombre?: string
   observaciones?: string
   createdAt: string
 }
@@ -375,6 +379,7 @@ export interface AplicacionVacuna {
   fechaAplicacion: string
   proximaDosisFecha?: string
   operario?: string
+  operarioNombre?: string
   loteMarca?: string
   costoAplicado?: number
   observaciones?: string
@@ -402,6 +407,7 @@ export interface TratamientoMedicamento {
   dosis?: string
   viaAplicacion?: string
   responsable?: string
+  responsableNombre?: string
   motivo?: string
   costo?: number
   observaciones?: string
@@ -430,6 +436,7 @@ export interface DiagnosticoSanitario {
   severidad: string
   estado: string
   veterinario?: string
+  veterinarioNombre?: string
   tratamientoIndicado?: string
   observaciones?: string
   createdAt: string
@@ -702,6 +709,7 @@ export interface RegistroAlimentacion {
   potreroNombre?: string
   potrero?: string
   responsable?: string
+  responsableNombre?: string
   observaciones?: string
   createdAt: string
 }
@@ -728,6 +736,7 @@ export interface Pesaje {
   condicionCorporal?: number
   metodo?: string
   responsable?: string
+  responsableNombre?: string
   observaciones?: string
   createdAt: string
 }

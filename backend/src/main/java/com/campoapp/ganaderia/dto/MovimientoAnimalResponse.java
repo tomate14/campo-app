@@ -12,10 +12,13 @@ public record MovimientoAnimalResponse(
         MovimientoAnimal.TipoMovimiento tipoMovimiento,
         String potreroOrigenId,
         String potreroDestinoId,
+        String potreroOrigenNombre,
+        String potreroDestinoNombre,
         String ubicacionOrigen,
         String ubicacionDestino,
         String motivo,
         String responsable,
+        String responsableNombre,
         String observaciones,
         LocalDateTime createdAt
 ) {}

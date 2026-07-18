@@ -17,12 +17,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 51
-- Realizadas: 32
+- Total de historias registradas: 52
+- Realizadas: 34
 - Parciales: 0
-- Pendientes: 17
+- Pendientes: 16
 - Saltadas: 2
-- Ultima actualizacion: 2026-07-16
+- Ultima actualizacion: 2026-07-17
 
 ## Registro por Feature
 
@@ -78,8 +78,9 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 46 | `46_COMPLETA_ganaderia_mobile_trazabilidad_sanidad_alimentacion.md` | Ganaderia/Mobile | Realizada | Trazabilidad, Sanidad y Alimentacion activadas en el menu de ganaderia mobile y en sus burbujas de "nueva actividad", clonando campo por campo los formularios web (incluyendo selectores tipo buscador). Pendiente prueba manual en dispositivo real. |
 | 47 | `47_COMPLETA_ganaderia_alertas_potreros.md` | Ganaderia | Realizada | Alertas georreferenciadas sobre potreros implementadas end-to-end: backend (V42, usuario del token, resolver), mobile (burbuja + pantalla + pins campanita + preview + offline outbox/syncdown) y web (alta por click en potrero, pins mgl-marker, detalle con resolver). Pendiente prueba manual en dispositivo real. |
 | 48 | `48_frontend_budget_bundle_inicial.md` | Frontend | Pendiente | `ng build` falla el budget del bundle inicial (2.51+ MB vs 2.35 MB), preexistente a la feature 47: recortar bundle (lazy-loading de charts/mapas) o ajustar budget justificado. |
-| 50 | `50_ganaderia_mobile_animales_ficha_historiales.md` | Ganaderia/Mobile | Pendiente | Menu GANADERIA reducido a Potreros + nueva opcion Animales: listado con rows colapsables, filtros por caravana/potrero, ficha resumen del animal y botones chicos para abrir historiales (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos). Solo mobile: el backend ya expone todos los endpoints. |
 | 49 | `49_COMPLETA_dashboard_ganadero_alertas_potrero.md` | Ganaderia/Reportes | Realizada | Alertas de potrero (feature 47) integradas como sexto generador de la seccion Alertas Operativas del Dashboard Ganadero: gravedad mapeada a prioridad (CRITICA colapsa en ALTA), fecha real de creacion, limit(3) y regla CSS explicita para BAJA. Test del generador 2/2. Pendiente verificacion visual con stack Docker. |
+| 50 | `50_ganaderia_mobile_animales_ficha_historiales.md` | Ganaderia/Mobile | Realizada | Menu GANADERIA reducido a Animales + Potreros. Nueva vista Animales: listado colapsable con ficha resumen por animal, filtros combinables por caravana/potrero con chips activos, y chips chicos que abren los 6 historiales (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos) en pantalla modal parametrizada. Ampliada con paginacion server-side de a 20 (endpoint /animales/page) con fallback offline, refresh de sesion mobile corregido (401/403 + entry point), e historiales replicados para lectura offline (consulta bulk por tipo + 2 endpoints nuevos de movimientos/historial-medico + 6 datasets en sync down). Verificada en navegador contra el stack Docker. |
+| 51 | `51_ganaderia_historiales_nombres_operarios.md` | Ganaderia | Realizada | Historiales y tablas muestran nombres en vez de UUIDs: resolver batch de operarios en backend (OperarioNombreResolver, sin N+1) + potreros por nombre en movimientos/registros, con campos *Nombre nuevos en 7 DTOs consumidos por mobile y web con fallback al valor crudo. Verificado en navegador contra el stack Docker. |
 
 ## Registro por Dominio
 
@@ -141,6 +142,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-18: Feature 50 ampliada para operar offline completa: los 6 historiales del animal pasan a consulta bulk por tipo con query keys estables replicadas por la sync down (2 endpoints bulk nuevos en backend con nombres resueltos, hook con filtrado client-side por animal, mensaje de sin-conexion cuando no hay replica). Sync up sin cambios (la vista es de consulta; las cargas ya operaban via outbox). Gates verdes: mvn compile + 11 tests, tsc + jest.
+- 2026-07-17: Feature 51 realizada (sobre la branch de la 50): los historiales del animal y las tablas web muestran nombres de operarios y potreros en vez de UUIDs. Resolucion batch en backend (helper compartido, texto libre intacto, paginacion sin N+1, 6 tests), consumo con fallback en mobile y web. Verificado en navegador contra el stack Docker con la imagen backend reconstruida.
+- 2026-07-17: Bug de feature 50 corregido y verificado en navegador contra el stack Docker: los historiales del animal aparecian vacios porque el access token vencia y el cliente mobile nunca usaba el refresh token; ademas el backend devolvia 403 (sin entry point) en vez de 401. Se agrego renovacion de sesion single-flight con retry en el cliente axios, entry point 401 en SecurityConfig, y 403 ahora pausa el outbox en vez de marcar error. Se crea la feature 51 (UUIDs de operarios visibles en historiales).
+- 2026-07-17: Feature 50 ampliada a pedido del usuario con paginacion server-side de a 20 en el listado de animales: endpoint GET /animales/page (filtros caravana/potreroId/estado, orden estable, size acotado) siguiendo la convencion /page de sanidad, paginador en la pantalla mobile con placeholderData y fallback offline a la replica local con paginacion cliente. Gates verdes: mvn compile + 3 tests, tsc + jest 7/7.
+- 2026-07-16: Feature 50 realizada con el agente mobile: menu GANADERIA queda en Animales + Potreros, listado de animales con rows colapsables y ficha resumen, filtros por caravana/potrero en sheet inferior, y pantalla modal de historiales por animal (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos) consumiendo los endpoints existentes. tsc y jest verdes; queda prueba manual en dispositivo.
 - 2026-07-16: Feature 50 creada: menu GANADERIA mobile reducido a Potreros + nueva vista Animales con listado colapsable, filtros e historiales por animal. Arranca desarrollo en branch propia.
 - 2026-07-16: Feature 49 mergeada a master y renombrada `_COMPLETA_`.
 - 2026-07-16: Feature 49 realizada: las alertas de potrero abiertas aparecen en la seccion Alertas Operativas del Dashboard Ganadero con prioridad mapeada desde la gravedad y fecha real de creacion. mvn compile + 2 tests verdes y type-check web limpio; verificacion visual pendiente (Docker Desktop apagado en el entorno).
