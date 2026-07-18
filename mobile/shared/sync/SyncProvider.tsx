@@ -7,8 +7,6 @@ import { outboxCounts, subscribeOutbox } from './outbox'
 import { getLastSyncAt, isSyncingDown, runSyncDown, subscribeSyncDown } from './syncDown'
 import { drainOutbox } from './syncUp'
 
-const SYNC_DOWN_INTERVAL_MS = 5 * 60 * 1000
-
 type SyncStatus = {
   online: boolean
   pendingCount: number
@@ -33,7 +31,7 @@ export function useSyncStatus() {
 
 // Orquestador de la feature 24: registra el interceptor de encolado, conecta
 // NetInfo, y dispara subida (outbox) + bajada (replica local) en cada ventana
-// de conectividad: arranque, reconexion, foreground y timer periodico.
+// de conectividad: ingreso a la app, reconexion y regreso al foreground.
 export function SyncProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient()
   const [online, setOnline] = useState(isOnline())
@@ -77,10 +75,6 @@ export function SyncProvider({ children }: { children: ReactNode }) {
       if (state === 'active' && isOnline()) void syncNow()
     })
 
-    const interval = setInterval(() => {
-      if (isOnline()) void runSyncDown(queryClient)
-    }, SYNC_DOWN_INTERVAL_MS)
-
     refreshCounts()
     void getLastSyncAt().then(setLastSyncAt)
     void syncNow()
@@ -91,7 +85,6 @@ export function SyncProvider({ children }: { children: ReactNode }) {
       unsubscribeOutbox()
       unsubscribeSyncDown()
       appStateSubscription.remove()
-      clearInterval(interval)
     }
   }, [queryClient, refreshCounts, syncNow])
 
