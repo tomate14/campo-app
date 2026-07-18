@@ -4,7 +4,7 @@
 Realizada.
 
 ## Origen
-Detectado durante la verificacion en navegador de la feature [50](50_ganaderia_mobile_animales_ficha_historiales.md) y confirmado por el usuario probando: en los historiales del animal, los campos que referencian personas (`responsable`/`operario`/`veterinario` en movimientos, vacunas, **tratamientos, diagnosticos**, pesajes e historial clinico) muestran el **UUID crudo** del operario en vez de su nombre, y en varias actividades tambien se renderiza el **id del potrero** en vez de su nombre. Los DTOs del backend devuelven los ids tal como se persistieron (los formularios de las features 45/46 guardan el id seleccionado) y nadie los resuelve al listar.
+Detectado durante la verificacion en navegador de la feature [50](50_COMPLETA_ganaderia_mobile_animales_ficha_historiales.md) y confirmado por el usuario probando: en los historiales del animal, los campos que referencian personas (`responsable`/`operario`/`veterinario` en movimientos, vacunas, **tratamientos, diagnosticos**, pesajes e historial clinico) muestran el **UUID crudo** del operario en vez de su nombre, y en varias actividades tambien se renderiza el **id del potrero** en vez de su nombre. Los DTOs del backend devuelven los ids tal como se persistieron (los formularios de las features 45/46 guardan el id seleccionado) y nadie los resuelve al listar.
 
 ## Alcance
 **Via elegida: resolver en el backend** (sirve para mobile y web a la vez, y es el patron que el dominio ya usa: `AnimalResponse` resuelve `potreroNombre`/`madreCaravana`, sanidad ya resuelve `animalCaravana`/`vacunaNombre`).
