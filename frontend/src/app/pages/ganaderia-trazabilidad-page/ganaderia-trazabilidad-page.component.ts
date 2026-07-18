@@ -154,7 +154,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       titulo: item.diagnostico,
       fecha: item.fecha,
       detalle: item.tratamiento || 'Sin tratamiento',
-      extra: item.veterinario ? `Veterinario: ${item.veterinario}` : undefined,
+      extra: item.veterinario || item.veterinarioNombre ? `Veterinario: ${item.veterinarioNombre || item.veterinario}` : undefined,
       badge: 'Control médico',
       dotClass: 'event-dot--blue',
     }));
@@ -163,7 +163,7 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       titulo: item.vacunaNombre,
       fecha: item.fechaAplicacion,
       detalle: `Próxima dosis: ${item.proximaDosisFecha || 'Sin fecha'}`,
-      extra: item.operario ? `Responsable: ${item.operario}` : undefined,
+      extra: item.operario || item.operarioNombre ? `Responsable: ${item.operarioNombre || item.operario}` : undefined,
       badge: 'Vacunación',
       dotClass: 'event-dot--green',
     }));

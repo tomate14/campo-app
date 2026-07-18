@@ -18,9 +18,9 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 52
-- Realizadas: 33
+- Realizadas: 34
 - Parciales: 0
-- Pendientes: 17
+- Pendientes: 16
 - Saltadas: 2
 - Ultima actualizacion: 2026-07-17
 
@@ -80,7 +80,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 48 | `48_frontend_budget_bundle_inicial.md` | Frontend | Pendiente | `ng build` falla el budget del bundle inicial (2.51+ MB vs 2.35 MB), preexistente a la feature 47: recortar bundle (lazy-loading de charts/mapas) o ajustar budget justificado. |
 | 49 | `49_COMPLETA_dashboard_ganadero_alertas_potrero.md` | Ganaderia/Reportes | Realizada | Alertas de potrero (feature 47) integradas como sexto generador de la seccion Alertas Operativas del Dashboard Ganadero: gravedad mapeada a prioridad (CRITICA colapsa en ALTA), fecha real de creacion, limit(3) y regla CSS explicita para BAJA. Test del generador 2/2. Pendiente verificacion visual con stack Docker. |
 | 50 | `50_ganaderia_mobile_animales_ficha_historiales.md` | Ganaderia/Mobile | Realizada | Menu GANADERIA reducido a Animales + Potreros. Nueva vista Animales: listado colapsable con ficha resumen por animal, filtros combinables por caravana/potrero con chips activos, y chips chicos que abren los 6 historiales (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos) en pantalla modal parametrizada. Ampliada con paginacion server-side de a 20 (endpoint /animales/page nuevo) con fallback offline a la replica local, y corregido el refresh de sesion mobile (token vencido dejaba los historiales vacios; 401/403 + entry point en backend). Verificada en navegador contra el stack Docker. |
-| 51 | `51_ganaderia_historiales_nombres_operarios.md` | Ganaderia | Pendiente | Los historiales muestran el UUID crudo del operario/responsable en vez del nombre: resolver a nombre (batch en backend o client-side contra la replica). Detectado en la verificacion de la feature 50. |
+| 51 | `51_ganaderia_historiales_nombres_operarios.md` | Ganaderia | Realizada | Historiales y tablas muestran nombres en vez de UUIDs: resolver batch de operarios en backend (OperarioNombreResolver, sin N+1) + potreros por nombre en movimientos/registros, con campos *Nombre nuevos en 7 DTOs consumidos por mobile y web con fallback al valor crudo. Verificado en navegador contra el stack Docker. |
 
 ## Registro por Dominio
 
@@ -142,6 +142,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-17: Feature 51 realizada (sobre la branch de la 50): los historiales del animal y las tablas web muestran nombres de operarios y potreros en vez de UUIDs. Resolucion batch en backend (helper compartido, texto libre intacto, paginacion sin N+1, 6 tests), consumo con fallback en mobile y web. Verificado en navegador contra el stack Docker con la imagen backend reconstruida.
 - 2026-07-17: Bug de feature 50 corregido y verificado en navegador contra el stack Docker: los historiales del animal aparecian vacios porque el access token vencia y el cliente mobile nunca usaba el refresh token; ademas el backend devolvia 403 (sin entry point) en vez de 401. Se agrego renovacion de sesion single-flight con retry en el cliente axios, entry point 401 en SecurityConfig, y 403 ahora pausa el outbox en vez de marcar error. Se crea la feature 51 (UUIDs de operarios visibles en historiales).
 - 2026-07-17: Feature 50 ampliada a pedido del usuario con paginacion server-side de a 20 en el listado de animales: endpoint GET /animales/page (filtros caravana/potreroId/estado, orden estable, size acotado) siguiendo la convencion /page de sanidad, paginador en la pantalla mobile con placeholderData y fallback offline a la replica local con paginacion cliente. Gates verdes: mvn compile + 3 tests, tsc + jest 7/7.
 - 2026-07-16: Feature 50 realizada con el agente mobile: menu GANADERIA queda en Animales + Potreros, listado de animales con rows colapsables y ficha resumen, filtros por caravana/potrero en sheet inferior, y pantalla modal de historiales por animal (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos) consumiendo los endpoints existentes. tsc y jest verdes; queda prueba manual en dispositivo.

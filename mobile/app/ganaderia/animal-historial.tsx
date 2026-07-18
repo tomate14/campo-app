@@ -98,7 +98,7 @@ export default function AnimalHistorialScreen() {
           title: item.diagnostico || 'Consulta clínica',
           rows: [
             ...row('Tratamiento', item.tratamiento),
-            ...row('Veterinario', item.veterinario),
+            ...row('Veterinario', item.veterinarioNombre ?? item.veterinario),
           ],
           observaciones: item.observaciones,
         }))
@@ -111,14 +111,16 @@ export default function AnimalHistorialScreen() {
           rows: [
             ...row('Condición corporal', item.condicionCorporal != null ? String(item.condicionCorporal) : undefined),
             ...row('Método', item.metodo),
-            ...row('Responsable', item.responsable),
+            ...row('Responsable', item.responsableNombre ?? item.responsable),
           ],
           observaciones: item.observaciones,
         }))
       case 'MOVIMIENTOS':
         return (data as MovimientoAnimalResponse[]).map((item) => {
-          const origen = item.ubicacionOrigen || potreroNombre(item.potreroOrigenId)
-          const destino = item.ubicacionDestino || potreroNombre(item.potreroDestinoId)
+          // Se prefiere el nombre resuelto por el backend; la resolucion local
+          // contra la replica de potreros queda como fallback offline.
+          const origen = item.ubicacionOrigen || item.potreroOrigenNombre || potreroNombre(item.potreroOrigenId)
+          const destino = item.ubicacionDestino || item.potreroDestinoNombre || potreroNombre(item.potreroDestinoId)
           return {
             id: item.id,
             fecha: formatFecha(item.fecha),
@@ -126,7 +128,7 @@ export default function AnimalHistorialScreen() {
             badge: { label: item.tipoMovimiento, color: '#FFB84D' },
             rows: [
               ...row('Motivo', item.motivo),
-              ...row('Responsable', item.responsable),
+              ...row('Responsable', item.responsableNombre ?? item.responsable),
             ],
             observaciones: item.observaciones,
           }
@@ -139,7 +141,7 @@ export default function AnimalHistorialScreen() {
           rows: [
             ...row('Próxima dosis', item.proximaDosisFecha ? formatFecha(item.proximaDosisFecha) : undefined),
             ...row('Lote / marca', item.loteMarca),
-            ...row('Operario', item.operario),
+            ...row('Operario', item.operarioNombre ?? item.operario),
           ],
           observaciones: item.observaciones,
         }))
@@ -154,7 +156,7 @@ export default function AnimalHistorialScreen() {
             ...row('Dosis', item.dosis),
             ...row('Vía de aplicación', item.viaAplicacion),
             ...row('Motivo', item.motivo),
-            ...row('Responsable', item.responsable),
+            ...row('Responsable', item.responsableNombre ?? item.responsable),
           ],
           observaciones: item.observaciones,
         }))
@@ -166,7 +168,7 @@ export default function AnimalHistorialScreen() {
           badge: item.severidad ? { label: item.severidad, color: severidadColor(item.severidad) } : undefined,
           rows: [
             ...row('Estado', item.estado),
-            ...row('Veterinario', item.veterinario),
+            ...row('Veterinario', item.veterinarioNombre ?? item.veterinario),
             ...row('Tratamiento indicado', item.tratamientoIndicado),
           ],
           observaciones: item.observaciones,

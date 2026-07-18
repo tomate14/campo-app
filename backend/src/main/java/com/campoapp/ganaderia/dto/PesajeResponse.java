@@ -13,6 +13,7 @@ public record PesajeResponse(
         BigDecimal condicionCorporal,
         String metodo,
         String responsable,
+        String responsableNombre,
         String observaciones,
         LocalDateTime createdAt
 ) {}

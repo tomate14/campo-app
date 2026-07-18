@@ -17,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ public class AlimentacionServiceImpl implements AlimentacionService {
     private final RegistroAlimentacionRepository registroRepository;
     private final PesajeAnimalRepository pesajeRepository;
     private final PotreroRepository potreroRepository;
+    private final OperarioNombreResolver operarioNombreResolver;
 
     @Override
     @Transactional(readOnly = true)
@@ -100,7 +102,7 @@ public class AlimentacionServiceImpl implements AlimentacionService {
     @Override
     @Transactional(readOnly = true)
     public List<RegistroAlimentacionResponse> listRegistros(String animalId, LocalDate desde, LocalDate hasta) {
-        return registroRepository.findFiltered(blankToNull(animalId), desde, hasta).stream().map(this::toRegistroResponse).toList();
+        return toRegistroResponses(registroRepository.findFiltered(blankToNull(animalId), desde, hasta));
     }
 
     @Override
@@ -120,13 +122,13 @@ public class AlimentacionServiceImpl implements AlimentacionService {
                 .responsable(request.responsable())
                 .observaciones(request.observaciones())
                 .build();
-        return toRegistroResponse(registroRepository.save(registro));
+        return toRegistroResponses(List.of(registroRepository.save(registro))).get(0);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PesajeResponse> listPesajes(String animalId, LocalDate desde, LocalDate hasta) {
-        return pesajeRepository.findFiltered(blankToNull(animalId), desde, hasta).stream().map(this::toPesajeResponse).toList();
+        return toPesajeResponses(pesajeRepository.findFiltered(blankToNull(animalId), desde, hasta));
     }
 
     @Override
@@ -142,7 +144,7 @@ public class AlimentacionServiceImpl implements AlimentacionService {
                 .observaciones(request.observaciones())
                 .build();
         animal.setPesoActualKg(request.pesoKg());
-        return toPesajeResponse(pesajeRepository.save(pesaje));
+        return toPesajeResponses(List.of(pesajeRepository.save(pesaje))).get(0);
     }
 
     private BigDecimal calculateAverageGain(List<PesajeAnimal> pesajes) {
@@ -197,7 +199,14 @@ public class AlimentacionServiceImpl implements AlimentacionService {
         return new DietaIngredienteResponse(item.getId(), item.getIngrediente(), item.getProporcionPct(), item.getCostoKg(), item.getMateriaSecaPct());
     }
 
-    private RegistroAlimentacionResponse toRegistroResponse(RegistroAlimentacion registro) {
+    // Mapea la lista completa resolviendo los responsables en un solo lookup batch (sin N+1).
+    private List<RegistroAlimentacionResponse> toRegistroResponses(List<RegistroAlimentacion> registros) {
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                registros.stream().map(RegistroAlimentacion::getResponsable).toList());
+        return registros.stream().map(item -> toRegistroResponse(item, nombres)).toList();
+    }
+
+    private RegistroAlimentacionResponse toRegistroResponse(RegistroAlimentacion registro, Map<String, String> operarioNombres) {
         Potrero potrero = registro.getPotreroRef();
         return new RegistroAlimentacionResponse(
                 registro.getId(),
@@ -207,14 +216,23 @@ public class AlimentacionServiceImpl implements AlimentacionService {
                 registro.getDieta() != null ? registro.getDieta().getNombre() : null,
                 registro.getFecha(), registro.getAlimento(), registro.getCantidadKg(), registro.getCostoTotal(),
                 potrero != null ? potrero.getId() : null,
-                potrero != null ? potrero.getNombre() : null,
+                // potreroNombre resuelve la referencia; fallback al texto libre legacy si no hay potrero asociado.
                 potrero != null ? potrero.getNombre() : registro.getPotrero(),
-                registro.getResponsable(), registro.getObservaciones(), registro.getCreatedAt()
+                potrero != null ? potrero.getNombre() : registro.getPotrero(),
+                registro.getResponsable(),
+                operarioNombreResolver.resolver(registro.getResponsable(), operarioNombres),
+                registro.getObservaciones(), registro.getCreatedAt()
         );
     }
 
-    private PesajeResponse toPesajeResponse(PesajeAnimal pesaje) {
-        return new PesajeResponse(pesaje.getId(), pesaje.getAnimal().getId(), pesaje.getAnimal().getCaravana(), pesaje.getFecha(), pesaje.getPesoKg(), pesaje.getCondicionCorporal(), pesaje.getMetodo(), pesaje.getResponsable(), pesaje.getObservaciones(), pesaje.getCreatedAt());
+    private List<PesajeResponse> toPesajeResponses(List<PesajeAnimal> pesajes) {
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                pesajes.stream().map(PesajeAnimal::getResponsable).toList());
+        return pesajes.stream().map(item -> toPesajeResponse(item, nombres)).toList();
+    }
+
+    private PesajeResponse toPesajeResponse(PesajeAnimal pesaje, Map<String, String> operarioNombres) {
+        return new PesajeResponse(pesaje.getId(), pesaje.getAnimal().getId(), pesaje.getAnimal().getCaravana(), pesaje.getFecha(), pesaje.getPesoKg(), pesaje.getCondicionCorporal(), pesaje.getMetodo(), pesaje.getResponsable(), operarioNombreResolver.resolver(pesaje.getResponsable(), operarioNombres), pesaje.getObservaciones(), pesaje.getCreatedAt());
     }
 
     private Animal getAnimal(String id) {

@@ -41,6 +41,7 @@ public class AnimalServiceImpl implements AnimalService {
     private final PotreroRepository potreroRepository;
     private final AnimalPotreroRepository animalPotreroRepository;
     private final CatalogoRazaBovinaRepository razaRepository;
+    private final OperarioNombreResolver operarioNombreResolver;
 
     @Override
     @Transactional(readOnly = true)
@@ -79,8 +80,8 @@ public class AnimalServiceImpl implements AnimalService {
         AnimalPotrero assignment = animalPotreroRepository.findActiveByAnimalId(animal.getId()).orElse(null);
         return new AnimalDetalleResponse(
                 toAnimalResponse(animal, assignment),
-                movimientoRepository.findByAnimalId(id).stream().map(this::toMovimientoResponse).toList(),
-                historialRepository.findByAnimalId(id).stream().map(this::toHistorialResponse).toList()
+                toMovimientoResponses(movimientoRepository.findByAnimalId(id)),
+                toHistorialResponses(historialRepository.findByAnimalId(id))
         );
     }
 
@@ -165,7 +166,7 @@ public class AnimalServiceImpl implements AnimalService {
         if (potreroDestino != null) {
             moveAnimalToPotrero(animal, potreroDestino, request.fecha(), request.motivo(), request.responsable(), request.observaciones(), saved);
         }
-        return toMovimientoResponse(saved);
+        return toMovimientoResponses(List.of(saved)).get(0);
     }
 
     @Override
@@ -179,21 +180,21 @@ public class AnimalServiceImpl implements AnimalService {
                 .veterinario(request.veterinario())
                 .observaciones(request.observaciones())
                 .build();
-        return toHistorialResponse(historialRepository.save(historial));
+        return toHistorialResponses(List.of(historialRepository.save(historial))).get(0);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<MovimientoAnimalResponse> getMovimientos(String animalId) {
         getActiveAnimal(animalId);
-        return movimientoRepository.findByAnimalId(animalId).stream().map(this::toMovimientoResponse).toList();
+        return toMovimientoResponses(movimientoRepository.findByAnimalId(animalId));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<HistorialMedicoAnimalResponse> getHistorialMedico(String animalId) {
         getActiveAnimal(animalId);
-        return historialRepository.findByAnimalId(animalId).stream().map(this::toHistorialResponse).toList();
+        return toHistorialResponses(historialRepository.findByAnimalId(animalId));
     }
 
     @Override
@@ -294,7 +295,14 @@ public class AnimalServiceImpl implements AnimalService {
         );
     }
 
-    private MovimientoAnimalResponse toMovimientoResponse(MovimientoAnimal movimiento) {
+    // Mapea la lista completa resolviendo los responsables en un solo lookup batch (sin N+1).
+    private List<MovimientoAnimalResponse> toMovimientoResponses(List<MovimientoAnimal> movimientos) {
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                movimientos.stream().map(MovimientoAnimal::getResponsable).toList());
+        return movimientos.stream().map(movimiento -> toMovimientoResponse(movimiento, nombres)).toList();
+    }
+
+    private MovimientoAnimalResponse toMovimientoResponse(MovimientoAnimal movimiento, Map<String, String> operarioNombres) {
         return new MovimientoAnimalResponse(
                 movimiento.getId(),
                 movimiento.getAnimal().getId(),
@@ -303,16 +311,27 @@ public class AnimalServiceImpl implements AnimalService {
                 movimiento.getTipoMovimiento(),
                 movimiento.getPotreroOrigen() != null ? movimiento.getPotreroOrigen().getId() : null,
                 movimiento.getPotreroDestino() != null ? movimiento.getPotreroDestino().getId() : null,
+                // Nombre del potrero desde la asociacion; fallback a la ubicacion texto libre legacy.
+                movimiento.getPotreroOrigen() != null ? movimiento.getPotreroOrigen().getNombre() : movimiento.getUbicacionOrigen(),
+                movimiento.getPotreroDestino() != null ? movimiento.getPotreroDestino().getNombre() : movimiento.getUbicacionDestino(),
                 movimiento.getPotreroOrigen() != null ? movimiento.getPotreroOrigen().getNombre() : movimiento.getUbicacionOrigen(),
                 movimiento.getPotreroDestino() != null ? movimiento.getPotreroDestino().getNombre() : movimiento.getUbicacionDestino(),
                 movimiento.getMotivo(),
                 movimiento.getResponsable(),
+                operarioNombreResolver.resolver(movimiento.getResponsable(), operarioNombres),
                 movimiento.getObservaciones(),
                 movimiento.getCreatedAt()
         );
     }
 
-    private HistorialMedicoAnimalResponse toHistorialResponse(HistorialMedicoAnimal historial) {
+    // Mapea la lista completa resolviendo los veterinarios en un solo lookup batch (sin N+1).
+    private List<HistorialMedicoAnimalResponse> toHistorialResponses(List<HistorialMedicoAnimal> historiales) {
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                historiales.stream().map(HistorialMedicoAnimal::getVeterinario).toList());
+        return historiales.stream().map(historial -> toHistorialResponse(historial, nombres)).toList();
+    }
+
+    private HistorialMedicoAnimalResponse toHistorialResponse(HistorialMedicoAnimal historial, Map<String, String> operarioNombres) {
         return new HistorialMedicoAnimalResponse(
                 historial.getId(),
                 historial.getAnimal().getId(),
@@ -321,6 +340,7 @@ public class AnimalServiceImpl implements AnimalService {
                 historial.getDiagnostico(),
                 historial.getTratamiento(),
                 historial.getVeterinario(),
+                operarioNombreResolver.resolver(historial.getVeterinario(), operarioNombres),
                 historial.getObservaciones(),
                 historial.getCreatedAt()
         );

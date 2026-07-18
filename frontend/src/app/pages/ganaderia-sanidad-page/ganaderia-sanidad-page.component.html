@@ -273,7 +273,7 @@
                 <td><strong>{{ aplicacion.animalCaravana }}</strong></td>
                 <td>{{ aplicacion.fechaAplicacion }}</td>
                 <td>{{ aplicacion.proximaDosisFecha || 'Sin fecha' }}</td>
-                <td>{{ aplicacion.operario || 'Sin responsable' }}</td>
+                <td>{{ aplicacion.operarioNombre || aplicacion.operario || 'Sin responsable' }}</td>
                 <td>{{ aplicacion.loteMarca || 'Sin lote' }}</td>
                 <td>${{ aplicacion.costoAplicado ?? 0 }}</td>
                 <td><span class="catalog-badge" [class.catalog-badge--secondary]="!aplicacion.vacunaObligatoria">{{ aplicacion.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
@@ -309,7 +309,7 @@
                 <td>{{ tratamiento.fechaFin || 'Activo' }}</td>
                 <td>{{ tratamiento.dosis || 'Sin dosis' }}</td>
                 <td>{{ tratamiento.viaAplicacion || 'Sin via' }}</td>
-                <td>{{ tratamiento.responsable || 'Sin responsable' }}</td>
+                <td>{{ tratamiento.responsableNombre || tratamiento.responsable || 'Sin responsable' }}</td>
                 <td>${{ tratamiento.costo ?? 0 }}</td>
               </tr>
             </tbody>
@@ -341,7 +341,7 @@
                 <td>{{ diagnostico.fechaDiagnostico }}</td>
                 <td><span class="severity-pill" [class.severity-pill--critical]="diagnostico.severidad === 'CRITICA'" [class.severity-pill--high]="diagnostico.severidad === 'ALTA'">{{ diagnostico.severidad }}</span></td>
                 <td><span class="catalog-badge" [class.state-chip--danger]="diagnostico.estado === 'ABIERTO' && diagnostico.severidad === 'CRITICA'">{{ diagnostico.estado }}</span></td>
-                <td>{{ diagnostico.veterinario || 'Sin veterinario' }}</td>
+                <td>{{ diagnostico.veterinarioNombre || diagnostico.veterinario || 'Sin veterinario' }}</td>
                 <td>{{ diagnostico.tratamientoIndicado || 'Sin indicar' }}</td>
               </tr>
             </tbody>

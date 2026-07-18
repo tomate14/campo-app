@@ -11,6 +11,7 @@ public record HistorialMedicoAnimalResponse(
         String diagnostico,
         String tratamiento,
         String veterinario,
+        String veterinarioNombre,
         String observaciones,
         LocalDateTime createdAt
 ) {}

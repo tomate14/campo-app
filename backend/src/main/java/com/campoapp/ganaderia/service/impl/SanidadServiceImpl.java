@@ -32,6 +32,7 @@ public class SanidadServiceImpl implements SanidadService {
     private final AplicacionVacunaRepository aplicacionVacunaRepository;
     private final TratamientoMedicamentoRepository tratamientoMedicamentoRepository;
     private final DiagnosticoSanitarioRepository diagnosticoSanitarioRepository;
+    private final OperarioNombreResolver operarioNombreResolver;
 
     @Override
     @Transactional(readOnly = true)
@@ -71,17 +72,18 @@ public class SanidadServiceImpl implements SanidadService {
     @Override
     @Transactional(readOnly = true)
     public List<AplicacionVacunaResponse> listAplicaciones(String animalId, String vacunaId, LocalDate desde, LocalDate hasta) {
-        return aplicacionVacunaRepository.findFiltered(blankToNull(animalId), blankToNull(vacunaId), desde, hasta)
-                .stream()
-                .map(this::toAplicacionResponse)
-                .toList();
+        return toAplicacionResponses(aplicacionVacunaRepository.findFiltered(blankToNull(animalId), blankToNull(vacunaId), desde, hasta));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<AplicacionVacunaResponse> listAplicacionesPaginadas(String animalId, String vacunaId, LocalDate desde, LocalDate hasta, int page, int size) {
-        return aplicacionVacunaRepository.findFilteredPage(blankToNull(animalId), blankToNull(vacunaId), desde, hasta, pageRequest(page, size))
-                .map(this::toAplicacionResponse);
+        Page<AplicacionVacuna> aplicaciones = aplicacionVacunaRepository
+                .findFilteredPage(blankToNull(animalId), blankToNull(vacunaId), desde, hasta, pageRequest(page, size));
+        // Resolucion batch sobre el contenido de la pagina para no agregar N+1 al paginado.
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                aplicaciones.getContent().stream().map(AplicacionVacuna::getOperario).toList());
+        return aplicaciones.map(item -> toAplicacionResponse(item, nombres));
     }
 
     @Override
@@ -105,23 +107,23 @@ public class SanidadServiceImpl implements SanidadService {
                 .observaciones(request.observaciones())
                 .build();
 
-        return toAplicacionResponse(aplicacionVacunaRepository.save(aplicacion));
+        return toAplicacionResponses(List.of(aplicacionVacunaRepository.save(aplicacion))).get(0);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<TratamientoMedicamentoResponse> listTratamientos(String animalId, LocalDate desde, LocalDate hasta) {
-        return tratamientoMedicamentoRepository.findFiltered(blankToNull(animalId), desde, hasta)
-                .stream()
-                .map(this::toTratamientoResponse)
-                .toList();
+        return toTratamientoResponses(tratamientoMedicamentoRepository.findFiltered(blankToNull(animalId), desde, hasta));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<TratamientoMedicamentoResponse> listTratamientosPaginados(String animalId, LocalDate desde, LocalDate hasta, int page, int size) {
-        return tratamientoMedicamentoRepository.findFilteredPage(blankToNull(animalId), desde, hasta, pageRequest(page, size))
-                .map(this::toTratamientoResponse);
+        Page<TratamientoMedicamento> tratamientos = tratamientoMedicamentoRepository
+                .findFilteredPage(blankToNull(animalId), desde, hasta, pageRequest(page, size));
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                tratamientos.getContent().stream().map(TratamientoMedicamento::getResponsable).toList());
+        return tratamientos.map(item -> toTratamientoResponse(item, nombres));
     }
 
     @Override
@@ -139,23 +141,23 @@ public class SanidadServiceImpl implements SanidadService {
                 .costo(request.costo())
                 .observaciones(request.observaciones())
                 .build();
-        return toTratamientoResponse(tratamientoMedicamentoRepository.save(tratamiento));
+        return toTratamientoResponses(List.of(tratamientoMedicamentoRepository.save(tratamiento))).get(0);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<DiagnosticoSanitarioResponse> listDiagnosticos(String animalId, String estado) {
-        return diagnosticoSanitarioRepository.findFiltered(blankToNull(animalId), blankToNull(estado))
-                .stream()
-                .map(this::toDiagnosticoResponse)
-                .toList();
+        return toDiagnosticoResponses(diagnosticoSanitarioRepository.findFiltered(blankToNull(animalId), blankToNull(estado)));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<DiagnosticoSanitarioResponse> listDiagnosticosPaginados(String animalId, String estado, int page, int size) {
-        return diagnosticoSanitarioRepository.findFilteredPage(blankToNull(animalId), blankToNull(estado), pageRequest(page, size))
-                .map(this::toDiagnosticoResponse);
+        Page<DiagnosticoSanitario> diagnosticos = diagnosticoSanitarioRepository
+                .findFilteredPage(blankToNull(animalId), blankToNull(estado), pageRequest(page, size));
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                diagnosticos.getContent().stream().map(DiagnosticoSanitario::getVeterinario).toList());
+        return diagnosticos.map(item -> toDiagnosticoResponse(item, nombres));
     }
 
     @Override
@@ -171,7 +173,7 @@ public class SanidadServiceImpl implements SanidadService {
                 .tratamientoIndicado(request.tratamientoIndicado())
                 .observaciones(request.observaciones())
                 .build();
-        return toDiagnosticoResponse(diagnosticoSanitarioRepository.save(diagnostico));
+        return toDiagnosticoResponses(List.of(diagnosticoSanitarioRepository.save(diagnostico))).get(0);
     }
 
     @Override
@@ -210,17 +212,11 @@ public class SanidadServiceImpl implements SanidadService {
                 .toList();
         List<SanidadDashboardResponse.ResumenAlertaVacunaResponse> alertasPorVacuna = buildResumenAlertasPorVacuna(aplicacionesConAlerta, today);
 
-        List<DiagnosticoSanitarioResponse> diagnosticosRecientes = diagnosticoSanitarioRepository.findFiltered(null, null)
-                .stream()
-                .limit(8)
-                .map(this::toDiagnosticoResponse)
-                .toList();
+        List<DiagnosticoSanitarioResponse> diagnosticosRecientes = toDiagnosticoResponses(
+                diagnosticoSanitarioRepository.findFiltered(null, null).stream().limit(8).toList());
 
-        List<TratamientoMedicamentoResponse> tratamientosRecientes = tratamientoMedicamentoRepository.findFiltered(null, null, null)
-                .stream()
-                .limit(8)
-                .map(this::toTratamientoResponse)
-                .toList();
+        List<TratamientoMedicamentoResponse> tratamientosRecientes = toTratamientoResponses(
+                tratamientoMedicamentoRepository.findFiltered(null, null, null).stream().limit(8).toList());
 
         return new SanidadDashboardResponse(
                 vacunaCatalogoRepository.findByDeletedAtIsNullOrderByNombreAsc().size(),
@@ -367,7 +363,14 @@ public class SanidadServiceImpl implements SanidadService {
         );
     }
 
-    private AplicacionVacunaResponse toAplicacionResponse(AplicacionVacuna aplicacion) {
+    // Mapea la lista completa resolviendo los operarios en un solo lookup batch (sin N+1).
+    private List<AplicacionVacunaResponse> toAplicacionResponses(List<AplicacionVacuna> aplicaciones) {
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                aplicaciones.stream().map(AplicacionVacuna::getOperario).toList());
+        return aplicaciones.stream().map(item -> toAplicacionResponse(item, nombres)).toList();
+    }
+
+    private AplicacionVacunaResponse toAplicacionResponse(AplicacionVacuna aplicacion, Map<String, String> operarioNombres) {
         return new AplicacionVacunaResponse(
                 aplicacion.getId(),
                 aplicacion.getAnimal().getId(),
@@ -378,6 +381,7 @@ public class SanidadServiceImpl implements SanidadService {
                 aplicacion.getFechaAplicacion(),
                 aplicacion.getProximaDosisFecha(),
                 aplicacion.getOperario(),
+                operarioNombreResolver.resolver(aplicacion.getOperario(), operarioNombres),
                 aplicacion.getLoteMarca(),
                 aplicacion.getCostoAplicado(),
                 aplicacion.getObservaciones(),
@@ -385,7 +389,13 @@ public class SanidadServiceImpl implements SanidadService {
         );
     }
 
-    private TratamientoMedicamentoResponse toTratamientoResponse(TratamientoMedicamento tratamiento) {
+    private List<TratamientoMedicamentoResponse> toTratamientoResponses(List<TratamientoMedicamento> tratamientos) {
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                tratamientos.stream().map(TratamientoMedicamento::getResponsable).toList());
+        return tratamientos.stream().map(item -> toTratamientoResponse(item, nombres)).toList();
+    }
+
+    private TratamientoMedicamentoResponse toTratamientoResponse(TratamientoMedicamento tratamiento, Map<String, String> operarioNombres) {
         return new TratamientoMedicamentoResponse(
                 tratamiento.getId(),
                 tratamiento.getAnimal().getId(),
@@ -396,6 +406,7 @@ public class SanidadServiceImpl implements SanidadService {
                 tratamiento.getDosis(),
                 tratamiento.getViaAplicacion(),
                 tratamiento.getResponsable(),
+                operarioNombreResolver.resolver(tratamiento.getResponsable(), operarioNombres),
                 tratamiento.getMotivo(),
                 tratamiento.getCosto(),
                 tratamiento.getObservaciones(),
@@ -403,7 +414,13 @@ public class SanidadServiceImpl implements SanidadService {
         );
     }
 
-    private DiagnosticoSanitarioResponse toDiagnosticoResponse(DiagnosticoSanitario diagnostico) {
+    private List<DiagnosticoSanitarioResponse> toDiagnosticoResponses(List<DiagnosticoSanitario> diagnosticos) {
+        Map<String, String> nombres = operarioNombreResolver.resolverNombres(
+                diagnosticos.stream().map(DiagnosticoSanitario::getVeterinario).toList());
+        return diagnosticos.stream().map(item -> toDiagnosticoResponse(item, nombres)).toList();
+    }
+
+    private DiagnosticoSanitarioResponse toDiagnosticoResponse(DiagnosticoSanitario diagnostico, Map<String, String> operarioNombres) {
         return new DiagnosticoSanitarioResponse(
                 diagnostico.getId(),
                 diagnostico.getAnimal().getId(),
@@ -413,6 +430,7 @@ public class SanidadServiceImpl implements SanidadService {
                 diagnostico.getSeveridad(),
                 diagnostico.getEstado(),
                 diagnostico.getVeterinario(),
+                operarioNombreResolver.resolver(diagnostico.getVeterinario(), operarioNombres),
                 diagnostico.getTratamientoIndicado(),
                 diagnostico.getObservaciones(),
                 diagnostico.getCreatedAt()

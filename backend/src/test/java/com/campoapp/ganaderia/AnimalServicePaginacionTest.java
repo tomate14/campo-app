@@ -11,6 +11,7 @@ import com.campoapp.ganaderia.repository.HistorialMedicoAnimalRepository;
 import com.campoapp.ganaderia.repository.MovimientoAnimalRepository;
 import com.campoapp.ganaderia.repository.PotreroRepository;
 import com.campoapp.ganaderia.service.impl.AnimalServiceImpl;
+import com.campoapp.ganaderia.service.impl.OperarioNombreResolver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -44,6 +45,7 @@ class AnimalServicePaginacionTest {
     @Mock private PotreroRepository potreroRepository;
     @Mock private AnimalPotreroRepository animalPotreroRepository;
     @Mock private CatalogoRazaBovinaRepository razaRepository;
+    @Mock private OperarioNombreResolver operarioNombreResolver;
 
     @InjectMocks
     private AnimalServiceImpl animalService;

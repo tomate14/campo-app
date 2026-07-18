@@ -18,6 +18,7 @@ public record RegistroAlimentacionResponse(
         String potreroNombre,
         String potrero,
         String responsable,
+        String responsableNombre,
         String observaciones,
         LocalDateTime createdAt
 ) {}

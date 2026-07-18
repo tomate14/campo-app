@@ -148,6 +148,10 @@ export interface MovimientoAnimalResponse {
   ubicacionDestino?: string
   motivo?: string
   responsable?: string
+  // Campos resueltos por el backend (feature 51): nombre legible con fallback al crudo.
+  responsableNombre?: string
+  potreroOrigenNombre?: string
+  potreroDestinoNombre?: string
   observaciones?: string
   createdAt?: string
 }
@@ -161,6 +165,8 @@ export interface HistorialMedicoAnimalResponse {
   diagnostico?: string
   tratamiento?: string
   veterinario?: string
+  // Nombre resuelto por el backend (feature 51).
+  veterinarioNombre?: string
   observaciones?: string
   createdAt?: string
 }
@@ -288,6 +294,8 @@ export interface AplicacionVacunaResponse extends AplicacionVacunaRequest {
   id: string
   animalCaravana?: string
   vacunaNombre?: string
+  // Nombre resuelto por el backend (feature 51).
+  operarioNombre?: string
   createdAt?: string
 }
 
@@ -307,6 +315,8 @@ export interface TratamientoMedicamentoRequest {
 export interface TratamientoMedicamentoResponse extends TratamientoMedicamentoRequest {
   id: string
   animalCaravana?: string
+  // Nombre resuelto por el backend (feature 51).
+  responsableNombre?: string
   createdAt?: string
 }
 
@@ -324,6 +334,8 @@ export interface DiagnosticoSanitarioRequest {
 export interface DiagnosticoSanitarioResponse extends DiagnosticoSanitarioRequest {
   id: string
   animalCaravana?: string
+  // Nombre resuelto por el backend (feature 51).
+  veterinarioNombre?: string
   createdAt?: string
 }
 
@@ -372,6 +384,9 @@ export interface RegistroAlimentacionResponse extends RegistroAlimentacionReques
   id: string
   animalCaravana?: string
   dietaNombre?: string
+  // Campos resueltos por el backend (feature 51).
+  responsableNombre?: string
+  potreroNombre?: string
   createdAt?: string
 }
 
@@ -387,6 +402,8 @@ export interface PesajeRequest {
 
 export interface PesajeResponse extends PesajeRequest {
   id: string
+  // Nombre resuelto por el backend (feature 51).
+  responsableNombre?: string
   animalCaravana?: string
   createdAt?: string
 }

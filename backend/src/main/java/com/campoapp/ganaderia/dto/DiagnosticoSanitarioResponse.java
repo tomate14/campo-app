@@ -12,6 +12,7 @@ public record DiagnosticoSanitarioResponse(
         String severidad,
         String estado,
         String veterinario,
+        String veterinarioNombre,
         String tratamientoIndicado,
         String observaciones,
         LocalDateTime createdAt
