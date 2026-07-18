@@ -12,6 +12,12 @@ export async function register(data: RegisterRequest) {
   return response.data.data
 }
 
+// Feature 39: reemplaza la contrasena inicial obligatoria y devuelve tokens nuevos
+export async function changeInitialPassword(data: { currentPassword: string; newPassword: string }) {
+  const response = await apiClient.post<ApiResponse<AuthResponse>>('/auth/first-login/change-password', data)
+  return response.data.data
+}
+
 export async function refreshAccessToken(refreshToken: string) {
   const response = await apiClient.post<ApiResponse<string>>('/auth/refresh', { refreshToken })
   return response.data.data

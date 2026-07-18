@@ -250,6 +250,8 @@ public class OperarioServiceImpl implements OperarioService {
                 .phone(blankToNull(request.telefono()))
                 .active(true)
                 .emailVerified(true)
+                // El usuario generado desde operarios debe cambiar la contraseña inicial en el primer login
+                .mustChangePassword(true)
                 .roles(Set.of(operarioRole))
                 .build();
         return userRepository.save(user);

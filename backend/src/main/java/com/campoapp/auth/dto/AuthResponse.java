@@ -12,6 +12,7 @@ public record AuthResponse(
         String email,
         String name,
         Set<String> roles,
-        Set<String> permissions
+        Set<String> permissions,
+        boolean mustChangePassword
     ) {}
 }

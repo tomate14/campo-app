@@ -17,12 +17,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 52
-- Realizadas: 34
+- Total de historias registradas: 53
+- Realizadas: 35
 - Parciales: 0
 - Pendientes: 16
 - Saltadas: 2
-- Ultima actualizacion: 2026-07-17
+- Ultima actualizacion: 2026-07-18
 
 ## Registro por Feature
 
@@ -68,7 +68,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 36 | `36_maquinaria_mantenimiento_offline_notificaciones_avanzadas.md` | Maquinaria | Pendiente | Mantenimiento avanzado offline/notificaciones pendiente. |
 | 37 | `37_COMPLETA_agricultura_control_plagas_fitosanitarios.md` | Agricultura | Realizada | Core operativo de plagas y aplicaciones fitosanitarias implementado: backend, web, mobile base, mapa con pins y tests. |
 | 38 | `38_COMPLETA_ganaderia_potreros_mapa_interactivo.md` | Ganaderia | Realizada | Pantalla de potreros con mapa interactivo, dibujo de multiples poligonos, popup de alta y persistencia implementada. |
-| 39 | `39_mobile_primer_login_cambio_password_obligatorio.md` | Seguridad/Mobile | Pendiente | Cambio obligatorio de contraseña en primer login mobile para usuarios creados automaticamente desde operarios. |
+| 39 | `39_mobile_primer_login_cambio_password_obligatorio.md` | Seguridad/Mobile | Realizada | Cambio obligatorio de contraseña en primer login mobile: flag `must_change_password` (V43), endpoint `POST /auth/first-login/change-password` con revocación de tokens previos y auditoría, pantalla mobile obligatoria con guard de navegación. Incluye fix preexistente: el login rechazaba usernames de operarios por validación `@Email`. Verificada con tests, curl y navegador contra el stack Docker. |
 | 40 | `40_COMPLETA_operaciones_calendario_operaciones.md` | Operaciones | Realizada | Calendario semanal operativo para ordenes de trabajo, con filtros, chips de operarios, popup de seguimiento, cambio de estado y registro de actividad. |
 | 41 | `41_COMPLETA_roles_menu_permisos.md` | Seguridad/Frontend | Realizada | Pantalla administrativa para definir opciones de menu visibles por rol, con backend persistido y sidebar filtrado por permisos. |
 | 42 | `42_COMPLETA_dashboard_ganadero_ejecutivo.md` | Ganaderia/Reportes | Realizada | Dashboard Ganadero Ejecutivo implementado con endpoint backend-driven, KPIs, graficos, alertas operativas y analitica del rodeo. |
@@ -81,6 +81,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 49 | `49_COMPLETA_dashboard_ganadero_alertas_potrero.md` | Ganaderia/Reportes | Realizada | Alertas de potrero (feature 47) integradas como sexto generador de la seccion Alertas Operativas del Dashboard Ganadero: gravedad mapeada a prioridad (CRITICA colapsa en ALTA), fecha real de creacion, limit(3) y regla CSS explicita para BAJA. Test del generador 2/2. Pendiente verificacion visual con stack Docker. |
 | 50 | `50_COMPLETA_ganaderia_mobile_animales_ficha_historiales.md` | Ganaderia/Mobile | Realizada | Menu GANADERIA reducido a Animales + Potreros. Nueva vista Animales: listado colapsable con ficha resumen por animal, filtros combinables por caravana/potrero con chips activos, y chips chicos que abren los 6 historiales (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos) en pantalla modal parametrizada. Ampliada con paginacion server-side de a 20 (endpoint /animales/page) con fallback offline, refresh de sesion mobile corregido (401/403 + entry point), e historiales replicados para lectura offline (consulta bulk por tipo + 2 endpoints nuevos de movimientos/historial-medico + 6 datasets en sync down). Verificada en navegador contra el stack Docker. |
 | 51 | `51_ganaderia_historiales_nombres_operarios.md` | Ganaderia | Realizada | Historiales y tablas muestran nombres en vez de UUIDs: resolver batch de operarios en backend (OperarioNombreResolver, sin N+1) + potreros por nombre en movimientos/registros, con campos *Nombre nuevos en 7 DTOs consumidos por mobile y web con fallback al valor crudo. Verificado en navegador contra el stack Docker. |
+| 52 | `52_web_primer_login_cambio_password_obligatorio.md` | Seguridad/Frontend | Pendiente | Extender al panel web Angular el flujo de cambio obligatorio de contraseña inicial (feature 39): guard de rutas, pantalla dedicada y consumo del endpoint ya existente en backend. |
 
 ## Registro por Dominio
 
@@ -131,8 +132,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: ninguna.
 
 ### Seguridad
-- Realizadas: 26, 41.
-- Pendientes: 39.
+- Realizadas: 26, 39, 41.
+- Pendientes: 52.
 
 ### Arquitectura/Datos
 - Realizadas: 43.
@@ -142,6 +143,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-18: Feature 39 realizada con los agentes backend y mobile: flag `must_change_password` (V43 + backfill), endpoint `POST /auth/first-login/change-password` (revoca tokens previos, audita, rechaza reutilizar la inicial), pantalla mobile obligatoria `(auth)/cambiar-password` y guard en el gate de navegación (cubre sesión persistida). Fix preexistente: `LoginRequest` exigía formato de email, por lo que los usuarios generados desde operarios nunca habían podido loguearse; se quitó `@Email` del login. Verificada con 5 tests JUnit, batería curl de 10 casos y flujo completo en navegador contra el stack Docker. La evaluación del flujo web se materializó como feature 52 (pendiente).
 - 2026-07-18: Feature 50 mergeada a master y renombrada `_COMPLETA_` (referencias en feature 51 y MANIFEST actualizadas). La feature 51 quedo desarrollada y mergeada dentro del mismo branch (ver entrada del 2026-07-17); su archivo conserva el nombre hasta que se pida marcarla completa.
 - 2026-07-18: Feature 50 ampliada para operar offline completa: los 6 historiales del animal pasan a consulta bulk por tipo con query keys estables replicadas por la sync down (2 endpoints bulk nuevos en backend con nombres resueltos, hook con filtrado client-side por animal, mensaje de sin-conexion cuando no hay replica). Sync up sin cambios (la vista es de consulta; las cargas ya operaban via outbox). Gates verdes: mvn compile + 11 tests, tsc + jest.
 - 2026-07-17: Feature 51 realizada (sobre la branch de la 50): los historiales del animal y las tablas web muestran nombres de operarios y potreros en vez de UUIDs. Resolucion batch en backend (helper compartido, texto libre intacto, paginacion sin N+1, 6 tests), consumo con fallback en mobile y web. Verificado en navegador contra el stack Docker con la imagen backend reconstruida.

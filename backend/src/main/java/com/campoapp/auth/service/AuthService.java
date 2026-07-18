@@ -1,6 +1,7 @@
 package com.campoapp.auth.service;
 
 import com.campoapp.auth.dto.AuthResponse;
+import com.campoapp.auth.dto.FirstLoginChangePasswordRequest;
 import com.campoapp.auth.dto.LoginRequest;
 import com.campoapp.auth.dto.RegisterRequest;
 import com.campoapp.auth.entity.User;
@@ -100,6 +101,46 @@ public class AuthService {
                 .orElseThrow(() -> new UnauthorizedException("Usuario no encontrado"));
     }
 
+    /**
+     * Cambio obligatorio de contraseña en primer login (feature 39).
+     * Solo aplica a usuarios con el flag mustChangePassword activo (generados desde operarios).
+     * Revoca todas las sesiones previas y devuelve tokens nuevos.
+     */
+    @Transactional
+    public AuthResponse changeInitialPassword(String userId, FirstLoginChangePasswordRequest request, String ipAddress) {
+        User user = getCurrentUser(userId);
+
+        if (!user.isMustChangePassword()) {
+            throw new BusinessException("El usuario no tiene un cambio de contraseña inicial pendiente");
+        }
+
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPasswordHash())) {
+            auditService.log(user.getId(), "FIRST_LOGIN_PASSWORD_CHANGE_FAILED", "auth", user.getId(), ipAddress);
+            throw new UnauthorizedException("Credenciales inválidas");
+        }
+
+        // La contraseña inicial es igual al username/email: la nueva no puede repetirla
+        if (request.newPassword().equals(request.currentPassword())
+                || request.newPassword().equalsIgnoreCase(user.getEmail())) {
+            throw new BusinessException("La nueva contraseña no puede ser igual a la contraseña inicial");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        user.setMustChangePassword(false);
+        userRepository.save(user);
+
+        // Invalidar sesiones previas antes de emitir los tokens nuevos
+        tokenService.revokeAllTokens(user.getId());
+
+        String accessToken = tokenService.generateAccessToken(user);
+        String refreshToken = tokenService.generateRefreshToken(user);
+
+        auditService.log(user.getId(), "FIRST_LOGIN_PASSWORD_CHANGED", "auth", user.getId(), ipAddress);
+        log.info("Cambio de contraseña inicial completado para usuario: {}", user.getEmail());
+
+        return buildAuthResponse(user, accessToken, refreshToken);
+    }
+
     private AuthResponse buildAuthResponse(User user, String accessToken, String refreshToken) {
         return new AuthResponse(
                 accessToken,
@@ -109,7 +150,8 @@ public class AuthService {
                         user.getEmail(),
                         user.getName(),
                         user.getRoleNames(),
-                        user.getPermissionNames()
+                        user.getPermissionNames(),
+                        user.isMustChangePassword()
                 )
         );
     }
