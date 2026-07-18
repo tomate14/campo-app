@@ -15,6 +15,7 @@ import { useRouter } from 'expo-router'
 import { Colors } from '../../constants/colors'
 import { login, register } from '../../shared/auth/api'
 import { persistSession } from '../../shared/auth/session'
+import { useSyncStatus } from '../../shared/sync/SyncProvider'
 
 type Mode = 'login' | 'register'
 
@@ -40,6 +41,7 @@ export default function LoginScreen() {
   const scheme = useColorScheme() ?? 'light'
   const c = Colors[scheme]
   const router = useRouter()
+  const { syncNow } = useSyncStatus()
   const styles = createStyles(c)
 
   const [mode, setMode] = useState<Mode>('login')
@@ -80,7 +82,15 @@ export default function LoginScreen() {
           })
 
       await persistSession(session)
-      router.replace('/(tabs)')
+
+      // Feature 39: si la cuenta todavia usa la contrasena inicial, forzar el
+      // cambio antes de entrar a la app (el sync se dispara recien despues)
+      if (session.user.mustChangePassword) {
+        router.replace('/(auth)/cambiar-password' as never)
+      } else {
+        router.replace('/(tabs)')
+        void syncNow()
+      }
     } catch {
       setError('No fue posible autenticar la cuenta.')
     } finally {
@@ -138,7 +148,7 @@ export default function LoginScreen() {
               </>
             )}
 
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.label}>Email o usuario</Text>
             <TextInput
               style={styles.input}
               keyboardType="email-address"

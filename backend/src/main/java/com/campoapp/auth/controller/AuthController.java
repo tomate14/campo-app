@@ -63,9 +63,21 @@ public class AuthController {
         var user = authService.getCurrentUser(userId);
         var userDto = new AuthResponse.UserDto(
                 user.getId(), user.getEmail(), user.getName(),
-                user.getRoleNames(), user.getPermissionNames()
+                user.getRoleNames(), user.getPermissionNames(),
+                user.isMustChangePassword()
         );
         return ResponseEntity.ok(ApiResponse.ok(userDto));
+    }
+
+    @PostMapping("/first-login/change-password")
+    @Operation(summary = "Cambiar la contraseña inicial en el primer login",
+            description = "Solo para usuarios con cambio de contraseña pendiente (generados desde operarios). Revoca las sesiones previas y devuelve tokens nuevos.")
+    public ResponseEntity<ApiResponse<AuthResponse>> changeInitialPassword(
+            @AuthenticationPrincipal String userId,
+            @Valid @RequestBody FirstLoginChangePasswordRequest request,
+            HttpServletRequest httpRequest) {
+        AuthResponse response = authService.changeInitialPassword(userId, request, getClientIp(httpRequest));
+        return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
     private String getClientIp(HttpServletRequest request) {

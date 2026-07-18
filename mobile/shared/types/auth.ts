@@ -4,6 +4,8 @@ export interface AuthUser {
   name: string
   roles: string[]
   permissions: string[]
+  // Feature 39: true cuando la cuenta todavia usa la contrasena inicial y debe cambiarla
+  mustChangePassword?: boolean
 }
 
 export interface AuthResponse {

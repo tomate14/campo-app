@@ -8,7 +8,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { useRouter, useSegments } from 'expo-router'
 import { Colors } from '../constants/colors'
-import { clearSession, persistAccessToken, readAccessToken, readRefreshToken } from '../shared/auth/session'
+import { clearSession, persistAccessToken, readAccessToken, readCurrentUser, readRefreshToken } from '../shared/auth/session'
 import { refreshAccessToken } from '../shared/api/auth'
 import { configureApiClient } from '../shared/api/client'
 import { SyncProvider } from '../shared/sync/SyncProvider'
@@ -80,7 +80,13 @@ export default function RootLayout() {
 
     async function syncNavigation() {
       const token = await readAccessToken()
+      // Feature 39: con sesion persistida se relee el usuario para saber si el
+      // cambio de contrasena inicial sigue pendiente y bloquear el resto de la app
+      const user = token ? await readCurrentUser() : null
       const inAuthGroup = segments[0] === '(auth)'
+      // Cast necesario: los tipos generados de expo-router se actualizan recien al correr el dev server
+      const inChangePassword = inAuthGroup && (segments[1] as string) === 'cambiar-password'
+      const mustChangePassword = user?.mustChangePassword === true
 
       if (cancelled) {
         return
@@ -88,7 +94,9 @@ export default function RootLayout() {
 
       if (!token && !inAuthGroup) {
         router.replace('/(auth)/login')
-      } else if (token && inAuthGroup) {
+      } else if (token && mustChangePassword && !inChangePassword) {
+        router.replace('/(auth)/cambiar-password' as never)
+      } else if (token && !mustChangePassword && inAuthGroup) {
         router.replace('/(tabs)')
       }
 

@@ -33,6 +33,11 @@ public class User extends AuditableEntity {
     @Builder.Default
     private boolean emailVerified = false;
 
+    // Flag de cambio obligatorio de contraseña en primer login (usuarios generados desde operarios)
+    @Column(name = "must_change_password", nullable = false)
+    @Builder.Default
+    private boolean mustChangePassword = false;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_roles",
