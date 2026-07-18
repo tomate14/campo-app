@@ -381,7 +381,7 @@ function AnimalRow({
             <Text style={styles.observationText}>{animal.observaciones || 'Sin observaciones registradas.'}</Text>
           </View>
 
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.historialRow}>
+          <View style={styles.historialGrid}>
             {historialActions.map(({ label, tipo, Icon, color: chipColor }) => (
               <Pressable
                 key={tipo}
@@ -392,7 +392,7 @@ function AnimalRow({
                 <Text style={styles.historialChipText}>{label}</Text>
               </Pressable>
             ))}
-          </ScrollView>
+          </View>
         </View>
       )}
     </View>
@@ -665,15 +665,20 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     marginTop: 4,
   },
-  historialRow: {
+  // Grilla fija de 2 filas x 3 chips (sin scroll horizontal).
+  historialGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
     marginTop: 12,
-    paddingRight: 4,
   },
   historialChip: {
+    flexBasis: '30%',
+    flexGrow: 1,
     height: 34,
-    paddingHorizontal: 11,
+    paddingHorizontal: 6,
     borderRadius: 17,
+    justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 7,
