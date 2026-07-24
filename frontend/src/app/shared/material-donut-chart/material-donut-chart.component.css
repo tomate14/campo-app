@@ -1,6 +1,11 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 .donut-chart {
   position: relative;
-  width: 190px;
+  width: 100%;
 }
 
 apx-chart {

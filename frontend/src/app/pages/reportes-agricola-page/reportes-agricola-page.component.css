@@ -367,97 +367,13 @@ svg {
   font-size: 11px;
 }
 
-.donut-layout {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 24px;
-  min-height: 190px;
-}
-
-.donut-layout app-material-donut-chart {
-  flex: 0 0 auto;
-  width: 150px;
-}
-
-.donut {
-  width: 142px;
-  height: 142px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  box-shadow: 0 0 34px rgba(159, 232, 112, .14);
-}
-
-.donut > div {
-  width: 82px;
-  height: 82px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #0b1730;
-}
-
-.donut strong {
-  margin-bottom: -16px;
-  font-size: 28px;
-  letter-spacing: -.05em;
-}
-
-.donut span {
-  color: #9bb0cc;
-  font-size: 12px;
-}
-
-.crop-list {
-  flex: 1 1 240px;
-  max-width: 360px;
-  display: grid;
-  gap: 12px;
-  align-content: center;
-}
-
-.crop-list div,
-.crop-list footer {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto 52px;
-  align-items: center;
-  column-gap: 10px;
-  color: #c8d6e9;
-  font-size: 12px;
-}
-
-.crop-list span {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.crop-list strong {
-  white-space: nowrap;
-  text-align: right;
-  color: #e8f0fb;
-}
-
-.crop-list small {
-  text-align: right;
-  color: #8ea2bd;
-  font-variant-numeric: tabular-nums;
-}
-
-.crop-list i {
-  flex: 0 0 auto;
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-}
-
-.crop-list footer {
-  padding-top: 12px;
-  border-top: 1px solid rgba(148, 163, 184, .09);
+.distribution-panel app-material-donut-chart {
+  display: block;
+  width: 100%;
+  /* Cap para que el grafico quede compacto (estilo "Distribucion del Rodeo")
+     aunque el panel ocupe todo el ancho cuando la grilla colapsa a 1 columna. */
+  max-width: 480px;
+  margin: 6px auto -6px;
 }
 
 .map-frame {
@@ -654,10 +570,6 @@ svg {
 
   .kpi-grid {
     grid-template-columns: 1fr;
-  }
-
-  .crop-list {
-    max-width: none;
   }
 }
 

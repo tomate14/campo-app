@@ -89,17 +89,7 @@
           <h2>Distribución de lotes por cultivo</h2>
         </div>
         <ng-container *ngIf="distribucion().length; else emptyDistribution">
-          <div class="donut-layout">
-            <app-material-donut-chart [items]="donutItems()" [centerValue]="totalLotes().toString()" centerLabel="lotes" />
-            <div class="crop-list">
-              <div *ngFor="let crop of distribucion(); let index = index">
-                <span><i [style.background]="cropColor(index)"></i>{{ crop.cultivo }}</span>
-                <strong>{{ crop.lotes }} lotes</strong>
-                <small>{{ crop.porcentaje }}%</small>
-              </div>
-              <footer><span>Total</span><strong>{{ totalLotes() }} lotes</strong><small>100%</small></footer>
-            </div>
-          </div>
+          <app-material-donut-chart [items]="donutItems()" [centerValue]="totalLotes().toString()" centerLabel="lotes" />
         </ng-container>
         <ng-template #emptyDistribution><div class="empty-state">Sin lotes activos con cultivo definido.</div></ng-template>
       </article>

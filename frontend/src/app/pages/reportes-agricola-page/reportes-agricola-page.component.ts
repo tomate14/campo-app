@@ -10,7 +10,6 @@ import { MaterialLineChartComponent } from '../../shared/material-line-chart/mat
 import type {
   ReporteAgricolaDashboard,
   ReporteAgricolaKpi,
-  ReporteCultivoDistribucion,
   ReporteCultivoFenologico,
   ReporteLoteMapa,
   ReporteSeriePunto,
@@ -141,21 +140,6 @@ export class ReportesAgricolaPageComponent {
 
   protected serieLabels(series: ReporteSeriePunto[] | undefined): string[] {
     return (series ?? []).map((point) => point.etiqueta);
-  }
-
-  protected donutStyle(distribution: ReporteCultivoDistribucion[]): string {
-    if (!distribution.length) {
-      return 'conic-gradient(rgba(110, 168, 255, .16) 0 100%)';
-    }
-
-    let cursor = 0;
-    const segments = distribution.map((item, index) => {
-      const start = cursor;
-      cursor += Number(item.porcentaje ?? 0);
-      return `${this.cropColor(index)} ${start}% ${cursor}%`;
-    });
-
-    return `conic-gradient(${segments.join(', ')})`;
   }
 
   protected cropColor(index: number): string {

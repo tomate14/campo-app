@@ -29,12 +29,31 @@ export class MaterialDonutChartComponent {
 
   protected readonly chart: any = {
     type: 'donut',
-    height: 190,
+    height: 205,
     toolbar: { show: false },
     background: 'transparent',
+    foreColor: '#A6B0CF',
     animations: { enabled: false },
     dropShadow: { enabled: true, top: 0, left: 0, blur: 8, color: '#9FE870', opacity: 0.25 },
   };
+
+  // Leyenda lateral al estilo "Distribucion del Rodeo": marcador de color por
+  // serie con el porcentaje al lado del color correspondiente.
+  protected readonly legend = computed<any>(() => ({
+    show: true,
+    position: 'right',
+    horizontalAlign: 'center',
+    fontSize: '12px',
+    fontWeight: 600,
+    labels: { colors: '#c8d6e9' },
+    markers: { size: 7, offsetX: -3 },
+    itemMargin: { horizontal: 6, vertical: 5 },
+    formatter: (label: string, opts: any) => {
+      const item = this.items[opts?.seriesIndex ?? -1];
+      const pct = item ? item.percentage : 0;
+      return `${label}   ${pct}%`;
+    },
+  }));
 
   protected readonly fill = computed<any>(() => ({
     type: 'gradient',
@@ -48,11 +67,14 @@ export class MaterialDonutChartComponent {
   protected readonly plotOptions = computed<any>(() => ({
     pie: {
       donut: {
-        size: '72%',
+        size: '66%',
         labels: {
           show: true,
-          name: { show: false },
-          value: { show: false },
+          // El valor central grande (total) y su etiqueta debajo, al estilo
+          // "Distribucion del Rodeo". name/value deben estar habilitados para
+          // que el total se renderice cuando no hay hover.
+          name: { show: true, color: '#8892AD', fontSize: '12px', fontWeight: 600, offsetY: 20 },
+          value: { show: true, color: '#FFFFFF', fontSize: '26px', fontWeight: 800, offsetY: -16 },
           total: {
             show: true,
             showAlways: true,
