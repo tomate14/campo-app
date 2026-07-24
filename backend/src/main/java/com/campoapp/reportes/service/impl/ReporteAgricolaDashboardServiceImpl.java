@@ -80,7 +80,7 @@ public class ReporteAgricolaDashboardServiceImpl implements ReporteAgricolaDashb
                         kpi("ALERTAS_ACTIVAS", "Alertas activas", String.valueOf(alertasActivas), "Agricultura y maquinaria", "red", BigDecimal.valueOf(alertasActivas), List.of()),
                         kpi("LOTES_MONITOREO_PENDIENTE", "Lotes con monitoreo pendiente", String.valueOf(monitoreoPendiente), "Detecciones sin seguimiento últimos 10 días", "blue", BigDecimal.valueOf(monitoreoPendiente), List.of()),
                         kpi("INDICE_SALUD_CULTIVOS", "Índice de salud de cultivos", formatPct(saludPromedio), "Promedio de lotes activos", "green", saludPromedio, List.of()),
-                        kpi("PRECIPITACION_ACUMULADA", "Precipitación acumulada", precipitaciones == null ? null : formatNumber(precipitaciones.promedioMm()) + " mm", precipitaciones == null ? "Sin datos disponibles" : "Promedio de " + precipitaciones.lotesConsiderados() + " lotes con datos", "blue", precipitaciones == null ? null : precipitaciones.promedioMm(), List.of()),
+                        kpi("PRECIPITACION_ACUMULADA", "Precipitación acumulada", precipitaciones == null ? null : formatNumber(precipitaciones.promedioMm()) + " mm", precipitaciones == null ? "Sin datos disponibles" : "Últimos " + PRECIPITACION_DIAS_FALLBACK + " días · " + precipitaciones.lotesConsiderados() + " lotes", "blue", precipitaciones == null ? null : precipitaciones.promedioMm(), List.of()),
                         kpi("COSTO_HECTAREA", "Costo por hectárea", null, "Sin datos disponibles", "purple", null, List.of()),
                         kpi("MARGEN_BRUTO_PROYECTADO", "Margen bruto proyectado", null, "Sin datos disponibles", "green", null, List.of())
                 ),
@@ -149,17 +149,15 @@ public class ReporteAgricolaDashboardServiceImpl implements ReporteAgricolaDashb
     private PrecipitacionData precipitacionesAcumuladas(List<Lote> lotes) {
         BigDecimal total = BigDecimal.ZERO;
         int lotesConsiderados = 0;
-        LocalDate hastaFallback = LocalDate.now().minusDays(1);
-        LocalDate desdeFallback = hastaFallback.minusDays(PRECIPITACION_DIAS_FALLBACK - 1L);
+        // La precipitacion diaria se sincroniza como ventana movil reciente (ver
+        // ClimaScheduler), por lo que la acumulacion se calcula sobre los ultimos
+        // dias disponibles. Atarla al ciclo del cultivo (siembra -> cosecha) dejaba
+        // el KPI en null cuando la cosecha estimada quedaba fuera de esa ventana,
+        // aunque estuviera lloviendo en los dias recientes.
+        LocalDate hasta = LocalDate.now().minusDays(1);
+        LocalDate desde = hasta.minusDays(PRECIPITACION_DIAS_FALLBACK - 1L);
 
         for (Lote lote : lotes) {
-            LocalDate desde = lote.getFechaSiembra();
-            LocalDate hasta = lote.getFechaCosechaEstimada() != null ? lote.getFechaCosechaEstimada() : hastaFallback;
-            if (hasta.isAfter(hastaFallback)) hasta = hastaFallback;
-            if (desde == null || hasta.isBefore(desde)) {
-                desde = desdeFallback;
-                hasta = hastaFallback;
-            }
             if (precipitacionDiariaRepository.contarRegistros(lote.getId(), desde, hasta) == 0) continue;
             total = total.add(precipitacionDiariaRepository.sumarPrecipitaciones(lote.getId(), desde, hasta));
             lotesConsiderados++;
