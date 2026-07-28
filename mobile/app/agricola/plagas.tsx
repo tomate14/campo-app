@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import {
   ActivityIndicator,
   Alert,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -26,10 +27,12 @@ import {
   Search,
   SprayCan,
   User,
+  X,
 } from 'lucide-react-native'
 import type { LucideIcon } from 'lucide-react-native'
 import {
   createAplicacionFitosanitaria,
+  createCatalogoPlaga,
   createDeteccionPlaga,
   createSeguimientoPlaga,
   getAplicacionesFitosanitarias,
@@ -46,6 +49,7 @@ import type {
   AplicacionFitosanitaria,
   AplicacionFitosanitariaRequest,
   CatalogoPlaga,
+  CatalogoPlagaRequest,
   DeteccionPlaga,
   DeteccionPlagaRequest,
   EstadoDeteccionPlaga,
@@ -57,6 +61,7 @@ import type {
   SeguimientoPlaga,
   SeguimientoPlagaRequest,
   SeveridadPlaga,
+  TipoPlaga,
 } from '../../shared/types/agricola'
 import type { Operario } from '../../shared/types/operarios'
 
@@ -71,6 +76,7 @@ type HistoryItem = {
   tone: string
 }
 
+const tipoPlagaOptions: TipoPlaga[] = ['PLAGA', 'ENFERMEDAD', 'MALEZA']
 const severityOptions: SeveridadPlaga[] = ['BAJA', 'MEDIA', 'ALTA', 'CRITICA']
 const stateOptions: EstadoDeteccionPlaga[] = ['ABIERTA', 'EN_TRATAMIENTO', 'CONTROLADA', 'CERRADA']
 const resultOptions: ResultadoSeguimientoPlaga[] = ['SIN_CAMBIOS', 'MEJORA', 'EMPEORA', 'CONTROLADA']
@@ -80,6 +86,19 @@ const tabs: Array<{ mode: Mode; label: string; Icon: LucideIcon }> = [
   { mode: 'seguimiento', label: 'Seguimiento', Icon: Leaf },
   { mode: 'historico', label: 'Histórico', Icon: History },
 ]
+
+// Formulario vacio de alta de plaga de catalogo (default PLAGA, activo)
+function emptyCatalogoForm(): CatalogoPlagaRequest {
+  return {
+    nombreComun: '',
+    nombreCientifico: '',
+    tipo: 'PLAGA',
+    cultivosAfectados: '',
+    umbralAccion: '',
+    sintomas: '',
+    activo: true,
+  }
+}
 
 function nowLocalDateTime() {
   const now = new Date()
@@ -128,6 +147,9 @@ export default function PlagasMobilePage() {
   const [selectedHistoryLoteId, setSelectedHistoryLoteId] = useState('')
   const [historyScope, setHistoryScope] = useState<HistoryScope>(params.deteccionId ? 'deteccion' : 'lote')
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([])
+  const [catalogoModalOpen, setCatalogoModalOpen] = useState(false)
+  const [savingCatalogo, setSavingCatalogo] = useState(false)
+  const [catalogoForm, setCatalogoForm] = useState<CatalogoPlagaRequest>(emptyCatalogoForm)
 
   const [deteccionForm, setDeteccionForm] = useState<DeteccionPlagaRequest>({
     loteId: '',
@@ -260,6 +282,34 @@ export default function PlagasMobilePage() {
     }
   }
 
+  async function saveCatalogoPlaga() {
+    const nombreComun = catalogoForm.nombreComun.trim()
+    if (!nombreComun) {
+      Alert.alert('Nueva plaga', 'Ingresá el nombre común antes de guardar.')
+      return
+    }
+    setSavingCatalogo(true)
+    try {
+      const created = await createCatalogoPlaga({ ...catalogoForm, nombreComun, activo: true })
+      const catalogoData = await getCatalogoPlagas()
+      // Si el alta se resolvio offline el item nuevo puede no venir en el refresco:
+      // lo anteponemos con la respuesta sintetica del outbox para poder seleccionarlo.
+      const nextCatalogo = created?.id && !catalogoData.some(item => item.id === created.id)
+        ? [created, ...catalogoData]
+        : catalogoData
+      setCatalogo(nextCatalogo)
+      if (created?.id) {
+        setDeteccionForm(current => ({ ...current, catalogoPlagaId: created.id }))
+      }
+      setCatalogoModalOpen(false)
+      setCatalogoForm(emptyCatalogoForm())
+    } catch {
+      Alert.alert('Nueva plaga', 'No se pudo guardar la plaga.')
+    } finally {
+      setSavingCatalogo(false)
+    }
+  }
+
   async function saveAplicacion() {
     if (!selectedDetectionId || !aplicacionForm.producto || !aplicacionForm.operarioResponsableId) {
       Alert.alert('Registrar aplicación', 'Seleccioná detección, producto y responsable antes de guardar.')
@@ -389,6 +439,7 @@ export default function PlagasMobilePage() {
               saving={saving}
               onCaptureLocation={captureLocation}
               onSave={saveDeteccion}
+              onAddPlaga={() => setCatalogoModalOpen(true)}
               setForm={setDeteccionForm}
             />
           )}
@@ -438,6 +489,15 @@ export default function PlagasMobilePage() {
           )}
         </View>
       </ScrollView>
+
+      <CatalogoPlagaModal
+        visible={catalogoModalOpen}
+        form={catalogoForm}
+        saving={savingCatalogo}
+        onClose={() => setCatalogoModalOpen(false)}
+        onSave={saveCatalogoPlaga}
+        setForm={setCatalogoForm}
+      />
     </SafeAreaView>
   )
 }
@@ -450,6 +510,7 @@ function DetectionForm({
   saving,
   onCaptureLocation,
   onSave,
+  onAddPlaga,
   setForm,
 }: {
   catalogo: CatalogoPlaga[]
@@ -459,6 +520,7 @@ function DetectionForm({
   saving: boolean
   onCaptureLocation: () => void
   onSave: () => void
+  onAddPlaga: () => void
   setForm: React.Dispatch<React.SetStateAction<DeteccionPlagaRequest>>
 }) {
   return (
@@ -468,7 +530,7 @@ function DetectionForm({
         const lote = lotes.find(item => item.id === id)
         setForm(current => ({ ...current, loteId: id, cultivo: lote?.cultivo }))
       }} />
-      <OptionPicker label="Plaga" items={catalogo.map(item => ({ id: item.id, label: item.nombreComun, sublabel: item.tipo }))} value={form.catalogoPlagaId} onChange={(id) => setForm(current => ({ ...current, catalogoPlagaId: id }))} />
+      <OptionPicker label="Plaga" items={catalogo.map(item => ({ id: item.id, label: item.nombreComun, sublabel: item.tipo }))} value={form.catalogoPlagaId} onChange={(id) => setForm(current => ({ ...current, catalogoPlagaId: id }))} onAdd={onAddPlaga} addLabel="Nueva plaga en el catálogo" />
       <Field label="Fecha" icon={<CalendarDays color="#6EA8FF" size={18} />} value={form.fechaDeteccion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, fechaDeteccion: value }))} />
       <Field label="Cultivo" icon={<Leaf color="#39D0D8" size={18} />} value={form.cultivo ?? ''} onChangeText={(value) => setForm(current => ({ ...current, cultivo: value }))} />
       <ChipGroup label="Severidad" value={form.severidad} options={severityOptions} onChange={(value) => setForm(current => ({ ...current, severidad: value as SeveridadPlaga }))} />
@@ -657,6 +719,48 @@ function HistoryView({
     </>
   )
 }
+function CatalogoPlagaModal({
+  visible,
+  form,
+  saving,
+  onClose,
+  onSave,
+  setForm,
+}: {
+  visible: boolean
+  form: CatalogoPlagaRequest
+  saving: boolean
+  onClose: () => void
+  onSave: () => void
+  setForm: React.Dispatch<React.SetStateAction<CatalogoPlagaRequest>>
+}) {
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+      <View style={styles.modalBackdrop}>
+        <View style={styles.modalCard}>
+          <View style={styles.modalHeader}>
+            <View style={styles.modalHeaderText}>
+              <SectionTitle icon={<Leaf color="#9FE870" size={18} />} title="Nueva plaga" subtitle="Alta en el catálogo sanitario." />
+            </View>
+            <Pressable style={styles.modalClose} onPress={onClose} accessibilityRole="button" accessibilityLabel="Cerrar">
+              <X color="#A6B0CF" size={20} />
+            </Pressable>
+          </View>
+          <ScrollView contentContainerStyle={styles.modalBody} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            <Field label="Nombre común" value={form.nombreComun} onChangeText={(value) => setForm(current => ({ ...current, nombreComun: value }))} />
+            <Field label="Nombre científico" value={form.nombreCientifico ?? ''} onChangeText={(value) => setForm(current => ({ ...current, nombreCientifico: value }))} />
+            <ChipGroup label="Tipo" value={form.tipo} options={tipoPlagaOptions} onChange={(value) => setForm(current => ({ ...current, tipo: value as TipoPlaga }))} />
+            <Field label="Cultivos afectados" value={form.cultivosAfectados ?? ''} onChangeText={(value) => setForm(current => ({ ...current, cultivosAfectados: value }))} />
+            <Field label="Umbral de acción" value={form.umbralAccion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, umbralAccion: value }))} />
+            <Textarea label="Síntomas" value={form.sintomas ?? ''} onChangeText={(value) => setForm(current => ({ ...current, sintomas: value.slice(0, 500) }))} />
+            <PrimaryButton icon={<Plus color="#081225" size={22} />} label={saving ? 'Guardando...' : 'Guardar plaga'} disabled={saving} onPress={onSave} />
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  )
+}
+
 function SectionTitle({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle: string }) {
   return (
     <View style={styles.sectionTitle}>
@@ -669,11 +773,16 @@ function SectionTitle({ icon, title, subtitle }: { icon: React.ReactNode; title:
   )
 }
 
-function OptionPicker({ label, items, value, onChange }: { label: string; items: Array<{ id: string; label: string; sublabel?: string }>; value: string; onChange: (id: string) => void }) {
+function OptionPicker({ label, items, value, onChange, onAdd, addLabel }: { label: string; items: Array<{ id: string; label: string; sublabel?: string }>; value: string; onChange: (id: string) => void; onAdd?: () => void; addLabel?: string }) {
   return (
     <View style={styles.fieldGroup}>
       <Text style={styles.label}>{label}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.optionRow}>
+        {onAdd ? (
+          <Pressable style={styles.addOptionChip} onPress={onAdd} accessibilityRole="button" accessibilityLabel={addLabel ?? 'Agregar'}>
+            <Plus color="#9FE870" size={22} strokeWidth={2.4} />
+          </Pressable>
+        ) : null}
         {items.map(item => {
           const active = item.id === value
           return (
@@ -888,6 +997,7 @@ const styles = StyleSheet.create({
   fieldGroup: { gap: 8 },
   label: { color: '#A6B0CF', fontSize: 11, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase' },
   optionRow: { gap: 8, paddingRight: 4 },
+  addOptionChip: { width: 54, height: 54, borderRadius: 999, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(159,232,112,.06)', borderWidth: 1.5, borderColor: 'rgba(159,232,112,.55)', borderStyle: 'dashed' },
   optionChip: { minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: 7, borderRadius: 18, paddingHorizontal: 14, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)' },
   optionChipActive: { backgroundColor: 'rgba(159,232,112,.13)', borderColor: '#9FE870' },
   optionLabel: { color: '#FFFFFF', fontSize: 13, fontWeight: '700' },
@@ -935,4 +1045,10 @@ const styles = StyleSheet.create({
   timelineTitle: { color: '#FFFFFF', fontSize: 14, fontWeight: '800', marginTop: 4 },
   timelineSubtitle: { color: '#A6B0CF', fontSize: 12, marginTop: 3 },
   timelineDate: { color: '#6EA8FF', fontSize: 11, marginTop: 7 },
+  modalBackdrop: { flex: 1, backgroundColor: 'rgba(4,10,22,.72)', alignItems: 'center', justifyContent: 'center', padding: 18 },
+  modalCard: { width: '100%', maxHeight: '88%', borderRadius: 24, backgroundColor: '#0B1730', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)', padding: 16, gap: 8, shadowColor: '#9FE870', shadowOpacity: 0.14, shadowRadius: 30 },
+  modalHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
+  modalHeaderText: { flex: 1 },
+  modalClose: { width: 38, height: 38, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)' },
+  modalBody: { gap: 14, paddingBottom: 6, paddingTop: 4 },
 })

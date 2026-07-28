@@ -82,11 +82,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 50 | `50_COMPLETA_ganaderia_mobile_animales_ficha_historiales.md` | Ganaderia/Mobile | Realizada | Menu GANADERIA reducido a Animales + Potreros. Nueva vista Animales: listado colapsable con ficha resumen por animal, filtros combinables por caravana/potrero con chips activos, y chips chicos que abren los 6 historiales (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos) en pantalla modal parametrizada. Ampliada con paginacion server-side de a 20 (endpoint /animales/page) con fallback offline, refresh de sesion mobile corregido (401/403 + entry point), e historiales replicados para lectura offline (consulta bulk por tipo + 2 endpoints nuevos de movimientos/historial-medico + 6 datasets en sync down). Verificada en navegador contra el stack Docker. |
 | 51 | `51_ganaderia_historiales_nombres_operarios.md` | Ganaderia | Realizada | Historiales y tablas muestran nombres en vez de UUIDs: resolver batch de operarios en backend (OperarioNombreResolver, sin N+1) + potreros por nombre en movimientos/registros, con campos *Nombre nuevos en 7 DTOs consumidos por mobile y web con fallback al valor crudo. Verificado en navegador contra el stack Docker. |
 | 52 | `52_web_primer_login_cambio_password_obligatorio.md` | Seguridad/Frontend | Pendiente | Extender al panel web Angular el flujo de cambio obligatorio de contraseña inicial (feature 39): guard de rutas, pantalla dedicada y consumo del endpoint ya existente en backend. |
+| 53 | `53_mobile_alta_plaga_catalogo_desde_selector.md` | Agricultura/Mobile | Realizada | Chip circular dashed "+" al inicio del selector de Plaga en la deteccion mobile: abre un modal de alta de plaga de catalogo con los mismos campos que la web (nombre comun, cientifico, tipo PLAGA/ENFERMEDAD/MALEZA, cultivos afectados, umbral de accion, sintomas). Nuevo `createCatalogoPlaga` + `CatalogoPlagaRequest`, refresco del catalogo y seleccion automatica de la plaga creada, y regla del outbox `/agricola/plagas/catalogo` para alta offline. Gate tsc verde. |
 
 ## Registro por Dominio
 
 ### Agricultura
-- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37.
+- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37, 53.
 - Parciales: ninguna.
 - Pendientes: 25, 27, 29.
 
