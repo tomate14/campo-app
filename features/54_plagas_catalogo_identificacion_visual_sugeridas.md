@@ -36,7 +36,7 @@ Implementación pragmática: cálculo en backend sobre el catálogo propio (sin 
 
 ## Fuente de imágenes por nombre científico (a confirmar licencia)
 Propuesta: consultar un banco de biodiversidad por nombre científico y cachear:
-- **GBIF** (`api.gbif.org`, media por especie) o **iNaturalist** (`api.inaturalist.org`).
+- **GBIF** (`api.gbif.org`, media por especie, pagina de la API: https://techdocs.gbif.org/en/openapi/) o **iNaturalist** (`api.inaturalist.org`).
 - Guardar en backend la URL/So thumbnail cacheado por especie para no depender de
   la red en cada consulta y respetar rate limits.
 - Confirmar licencia de reuso de cada imagen (mostrar atribución si corresponde).

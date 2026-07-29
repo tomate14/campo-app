@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F8FAFC"
+      "backgroundColor": "#081225"
     },
     "ios": {
       "supportsTablet": true,
@@ -21,9 +21,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#F8FAFC"
+        "backgroundColor": "#081225"
       },
       "package": "com.campoapp.mobile",
+      "config": { "googleMaps": { "apiKey": "AIzaSyBPUksNK7ELOdVCNvA82KduUm4pODNJ6Oo" } },
       "permissions": ["ACCESS_FINE_LOCATION", "CAMERA"]
     },
     "web": {
