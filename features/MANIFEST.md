@@ -17,12 +17,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 53
+- Total de historias registradas: 61
 - Realizadas: 35
 - Parciales: 0
-- Pendientes: 16
+- Pendientes: 24
 - Saltadas: 2
-- Ultima actualizacion: 2026-07-18
+- Ultima actualizacion: 2026-07-29
 
 ## Registro por Feature
 
@@ -82,13 +82,22 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 50 | `50_COMPLETA_ganaderia_mobile_animales_ficha_historiales.md` | Ganaderia/Mobile | Realizada | Menu GANADERIA reducido a Animales + Potreros. Nueva vista Animales: listado colapsable con ficha resumen por animal, filtros combinables por caravana/potrero con chips activos, y chips chicos que abren los 6 historiales (clinico, pesos, movimientos, vacunas, tratamientos, diagnosticos) en pantalla modal parametrizada. Ampliada con paginacion server-side de a 20 (endpoint /animales/page) con fallback offline, refresh de sesion mobile corregido (401/403 + entry point), e historiales replicados para lectura offline (consulta bulk por tipo + 2 endpoints nuevos de movimientos/historial-medico + 6 datasets en sync down). Verificada en navegador contra el stack Docker. |
 | 51 | `51_ganaderia_historiales_nombres_operarios.md` | Ganaderia | Realizada | Historiales y tablas muestran nombres en vez de UUIDs: resolver batch de operarios en backend (OperarioNombreResolver, sin N+1) + potreros por nombre en movimientos/registros, con campos *Nombre nuevos en 7 DTOs consumidos por mobile y web con fallback al valor crudo. Verificado en navegador contra el stack Docker. |
 | 52 | `52_web_primer_login_cambio_password_obligatorio.md` | Seguridad/Frontend | Pendiente | Extender al panel web Angular el flujo de cambio obligatorio de contraseña inicial (feature 39): guard de rutas, pantalla dedicada y consumo del endpoint ya existente en backend. |
+| 53 | `53_mobile_alta_plaga_catalogo_desde_selector.md` | Agricultura/Mobile | Realizada | Chip circular dashed "+" al inicio del selector de Plaga en la deteccion mobile: abre un modal de alta de plaga de catalogo con los mismos campos que la web (nombre comun, cientifico, tipo PLAGA/ENFERMEDAD/MALEZA, cultivos afectados, umbral de accion, sintomas). Nuevo `createCatalogoPlaga` + `CatalogoPlagaRequest`, refresco del catalogo y seleccion automatica de la plaga creada, y regla del outbox `/agricola/plagas/catalogo` para alta offline. Gate tsc verde. |
+| 54 | `54_plagas_catalogo_identificacion_visual_sugeridas.md` | Agricultura | Pendiente | Catalogo de plagas con imagenes (foto principal + galeria de posibles plagas), area/zona y umbral; identificacion por nombre cientifico mostrando imagenes de referencia (GBIF/iNaturalist, a confirmar licencia) y plagas relacionadas/sugeridas (criterio propuesto: mismo tipo + genero taxonomico + cultivos compartidos + similitud de sintomas). |
+| 55 | `55_agricola_monitoreo_fenologico_estadios_por_cultivo.md` | Agricultura | Pendiente | Catalogo de estadios fenologicos por cultivo (tabla + datos iniciales) y reemplazo del estadio por select con buscador filtrado por cultivo en web y mobile; card de monitoreo fenologico por cultivo (lotes referenciados + historico). |
+| 56 | `56_plagas_captura_multimedia_imagenes_medicion_audio.md` | Agricultura | Pendiente | Captura multimedia en el flujo de plagas: imagenes en deteccion/aplicacion/seguimiento, medicion sobre la foto de planta/surco (enfoque de objeto de referencia sugerido; AR/ARCore como futuro) y nota de audio en seguimiento con play en el historico. Contempla sincronizacion offline de adjuntos. |
+| 57 | `57_plagas_deteccion_area_afectada_responsable_pines_resueltos.md` | Agricultura | Pendiente | Deteccion: circulo proporcional al area afectada en el mapa, % afectado calculado automatico sobre las ha del lote, responsable precargado con el usuario logueado, y pines resueltos que salen del mapa pero quedan en historico con toggle "mostrar resueltos". |
+| 58 | `58_plagas_ordenes_aplicacion_flujo_tercerizado.md` | Agricultura | Pendiente | Orden de aplicacion con flujo tercerizado: campo crea la orden (total de producto = dosis x superficie), tercerizado la recibe (pin en mapa) y registra la aplicacion (cierra la orden), con responsable automatico (logueado) + aplicador seleccionable y aceptacion/rechazo del registro con motivos. |
+| 59 | `59_agricola_ndvi_mapa_de_verdes.md` | Agricultura | Pendiente | Mapa de verdes (NDVI) por lote actualizado cada 15 dias: Sentinel-2 (Copernicus/Sentinel Hub) con NDVI=(NIR-Red)/(NIR+Red), enmascarado de nubes, job programado y overlay sobre el poligono en web y mobile. A confirmar credenciales/licencia. |
+| 60 | `60_agricola_cosecha_perdidas_y_destino.md` | Agricultura | Pendiente | Cosecha con perdidas (area real cosechada %, ha cosechadas, granos perdidos, kg/ha de perdida, tipo y causa: cabezal/cola) diferenciando rendimiento vs perdida, y destino del dia (camion/silo/puerto) con apartado en el dashboard de administracion. |
+| 61 | `61_reportes_dashboard_agricola_precipitaciones_costo_terceros.md` | Reportes/Agricultura | Pendiente | Refinamientos del dashboard agricola: card de precipitaciones con cantidad de dias por lote o poligono completo, y card de costo por hectarea que contemple la facturacion de terceros involucrados (aplicadores/servicios). |
 
 ## Registro por Dominio
 
 ### Agricultura
-- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37.
+- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37, 53.
 - Parciales: ninguna.
-- Pendientes: 25, 27, 29.
+- Pendientes: 25, 27, 29, 54, 55, 56, 57, 58, 59, 60.
 
 ### Clima
 - Realizadas: 02.
@@ -125,7 +134,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ### Reportes
 - Realizadas: 10-reportes.
-- Pendientes: 22.
+- Pendientes: 22, 61.
 
 ### Infraestructura
 - Realizadas: 24.
@@ -143,6 +152,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-29: Creadas 8 features nuevas (54-61) a partir del backlog de cambios de agricultura/plagas, agrupando tareas relacionadas: 54 catalogo de plagas con imagenes + identificacion por nombre cientifico + sugeridas; 55 estadios fenologicos por cultivo (tabla + select buscador) y card por cultivo; 56 captura multimedia en plagas (imagenes + medicion + audio); 57 area afectada georreferenciada + responsable automatico + pines resueltos al historico; 58 ordenes de aplicacion con flujo tercerizado; 59 NDVI/mapa de verdes; 60 cosecha con perdidas y destino; 61 refinamientos del dashboard agricola (precipitaciones por dias y costo/ha con terceros). Todas Pendientes. Se propusieron criterios/herramientas donde el usuario lo pidio (plagas sugeridas, medicion sobre foto, NDVI).
 - 2026-07-24: Feature 16 reformulada tras revisar el estado real del codigo: la base de inventario (catalogo, stock por deposito/lote, movimientos INGRESO/SALIDA/USO/AJUSTE, min/max por insumo, alertas, endpoint y pantalla web) ya esta cubierta por la feature 15. El alcance restante queda en tres frentes: auditoria de discrepancias (conteo fisico + conciliacion por ajuste), disponibilidad offline/sincronizacion en mobile (sobre la feature 24) y lector de codigo de barras EAN/UPC por camara. Transferencias entre almacenes quedan fuera de alcance por decision del usuario; otros refinamientos (almacen como entidad, min/max por almacen, devoluciones/merma, reporte por ubicacion) quedan listados como posibles features futuras.
 - 2026-07-18: Feature 39 mergeada a master y renombrada `_COMPLETA_`.
 - 2026-07-18: Feature 39 realizada con los agentes backend y mobile: flag `must_change_password` (V43 + backfill), endpoint `POST /auth/first-login/change-password` (revoca tokens previos, audita, rechaza reutilizar la inicial), pantalla mobile obligatoria `(auth)/cambiar-password` y guard en el gate de navegación (cubre sesión persistida). Fix preexistente: `LoginRequest` exigía formato de email, por lo que los usuarios generados desde operarios nunca habían podido loguearse; se quitó `@Email` del login. Verificada con 5 tests JUnit, batería curl de 10 casos y flujo completo en navegador contra el stack Docker. La evaluación del flujo web se materializó como feature 52 (pendiente).

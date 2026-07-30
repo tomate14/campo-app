@@ -173,6 +173,18 @@ export interface CatalogoPlaga {
   cultivosAfectados?: string
 }
 
+// Alta de plaga de catalogo (espejo del CatalogoPlagaRequest de la web)
+export interface CatalogoPlagaRequest {
+  nombreComun: string
+  nombreCientifico?: string
+  tipo: TipoPlaga
+  cultivosAfectados?: string
+  descripcion?: string
+  sintomas?: string
+  umbralAccion?: string
+  activo?: boolean
+}
+
 export interface DeteccionPlaga {
   id: string
   loteId: string
