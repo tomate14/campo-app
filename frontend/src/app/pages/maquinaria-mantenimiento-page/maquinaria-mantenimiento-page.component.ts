@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { API_BASE_URL } from '../../core/services/api.config'
 import { MaquinariaService } from '../../core/services/maquinaria.service'
+import { OperariosService } from '../../core/services/operarios.service'
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
+import type { Operario } from '../../core/models/operarios.models'
 import type {
   IntervencionMantenimientoRequest,
   Maquinaria,
@@ -26,9 +27,11 @@ type MaintenanceTab = 'PROGRAMADAS' | 'INTERVENCIONES' | 'PLANES' | 'ALERTAS'
 })
 export class MaquinariaMantenimientoPageComponent implements OnInit {
   private readonly maquinariaService = inject(MaquinariaService)
+  private readonly operariosService = inject(OperariosService)
 
   protected readonly resumen = signal<MantenimientoResumen | null>(null)
   protected readonly maquinas = signal<Maquinaria[]>([])
+  protected readonly operarios = signal<Operario[]>([])
   protected readonly loading = signal(false)
   protected readonly saving = signal(false)
   protected readonly errorMessage = signal('')
@@ -37,11 +40,9 @@ export class MaquinariaMantenimientoPageComponent implements OnInit {
   protected readonly currentPage = signal(1)
   protected readonly pageSize = 3
   protected readonly filters = signal({ maquinariaId: '', estado: '' })
-  protected readonly endpoints = {
-    maquinas: `${API_BASE_URL}/maquinaria/inventario/maquinas`,
-    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
-  }
-  protected readonly activeOperarioParams = { estado: 'ACTIVO' }
+
+  // Solo operarios activos para los combos de responsable/operario
+  protected readonly operariosActivos = computed(() => this.operarios().filter((operario) => operario.estado === 'ACTIVO'))
 
   protected readonly planForm = signal<PlanMantenimientoRequest>({
     maquinariaId: '',
@@ -120,6 +121,15 @@ export class MaquinariaMantenimientoPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAll()
+    this.loadOperarios()
+  }
+
+  // La lista de operarios se carga una sola vez y alimenta todos los combos
+  private loadOperarios() {
+    this.operariosService.getOperarios().subscribe({
+      next: (operarios) => this.operarios.set(operarios),
+      error: () => this.operarios.set([]),
+    })
   }
 
   protected loadAll() {

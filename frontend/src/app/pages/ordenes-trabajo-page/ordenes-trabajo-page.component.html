@@ -197,9 +197,7 @@
           <app-remote-search-select
             label="Operario"
             placeholder="Buscar operario"
-            [endpoint]="endpoints.operarios"
-            [extraParams]="activeOperarioParams"
-            queryParam="search"
+            [options]="operariosActivos()"
             valueField="id"
             labelField="nombreCompleto"
             [subtitleFields]="['rolOperativo', 'documentoNumero']"
@@ -210,8 +208,7 @@
           <app-remote-search-select
             label="Lote"
             placeholder="Buscar lote"
-            [endpoint]="endpoints.lotes"
-            queryParam="nombre"
+            [options]="lotes()"
             valueField="id"
             labelField="nombre"
             [subtitleFields]="['cultivo', 'temporada']"
@@ -248,9 +245,7 @@
           <app-remote-search-select
             label="Responsable"
             placeholder="Buscar responsable"
-            [endpoint]="endpoints.operarios"
-            [extraParams]="activeOperarioParams"
-            queryParam="search"
+            [options]="operariosActivos()"
             valueField="id"
             labelField="nombreCompleto"
             [subtitleFields]="['rolOperativo', 'documentoNumero']"
@@ -270,9 +265,7 @@
           <app-remote-search-select
             label="Responsable"
             placeholder="Buscar responsable"
-            [endpoint]="endpoints.operarios"
-            [extraParams]="activeOperarioParams"
-            queryParam="search"
+            [options]="operariosActivos()"
             valueField="id"
             labelField="nombreCompleto"
             [subtitleFields]="['rolOperativo', 'documentoNumero']"

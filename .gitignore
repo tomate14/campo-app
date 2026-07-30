@@ -2,6 +2,10 @@
 .env
 *.env.local
 
+# Deploy (Vercel): artefactos locales, no se versionan
+.vercel/
+**/.vercel/
+
 # Build outputs
 backend/target/
 frontend/.next/

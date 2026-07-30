@@ -6,8 +6,9 @@ import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
 import { forkJoin, type Observable } from 'rxjs';
 import { AgricolaService } from '../../core/services/agricola.service';
-import { API_BASE_URL } from '../../core/services/api.config';
+import { OperariosService } from '../../core/services/operarios.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
+import type { Operario } from '../../core/models/operarios.models';
 import type {
   AplicacionFitosanitaria,
   AplicacionFitosanitariaRequest,
@@ -55,12 +56,14 @@ type DeteccionPinGroup = {
 })
 export class PlagasPageComponent {
   private readonly agricolaService = inject(AgricolaService);
+  private readonly operariosService = inject(OperariosService);
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
   protected readonly errorMessage = signal('');
   protected readonly dashboard = signal<PlagasDashboard | null>(null);
   protected readonly lotes = signal<Lote[]>([]);
+  protected readonly operarios = signal<Operario[]>([]);
   protected readonly catalogo = signal<CatalogoPlaga[]>([]);
   protected readonly catalogoOpciones = signal<CatalogoPlaga[]>([]);
   protected readonly detecciones = signal<DeteccionPlaga[]>([]);
@@ -90,8 +93,8 @@ export class PlagasPageComponent {
   protected readonly estados: EstadoDeteccionPlaga[] = ['ABIERTA', 'EN_TRATAMIENTO', 'CONTROLADA', 'CERRADA'];
   protected readonly tipos: TipoPlaga[] = ['PLAGA', 'ENFERMEDAD', 'MALEZA'];
   protected readonly resultados: ResultadoSeguimientoPlaga[] = ['SIN_CAMBIOS', 'MEJORA', 'EMPEORA', 'CONTROLADA'];
-  protected readonly operariosEndpoint = `${API_BASE_URL}/operarios/gestion/operarios`;
-  protected readonly activeOperarioParams = { estado: 'ACTIVO' };
+  // Operarios activos para los combos (reemplaza el filtro extraParams estado:ACTIVO)
+  protected readonly operariosActivos = computed(() => this.operarios().filter((operario) => operario.estado === 'ACTIVO'));
 
   protected readonly filters = signal<{ loteId?: string; cultivo?: string; severidad?: SeveridadPlaga; estado?: EstadoDeteccionPlaga }>({});
   protected readonly deteccionForm = signal<DeteccionPlagaRequest>({ loteId: '', catalogoPlagaId: '', severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
@@ -202,6 +205,7 @@ export class PlagasPageComponent {
     forkJoin({
       dashboard: this.agricolaService.getPlagasDashboard(),
       lotes: this.agricolaService.getLotes(),
+      operarios: this.operariosService.getOperarios({ estado: 'ACTIVO' }),
       catalogo: this.agricolaService.getCatalogoPlagasPage({ page: 0, size: this.pageSize }),
       catalogoCompleto: this.agricolaService.getCatalogoPlagas(),
       detecciones: this.agricolaService.getDeteccionesPlagaPage({ ...this.filters(), page: 0, size: this.pageSize }),
@@ -212,6 +216,7 @@ export class PlagasPageComponent {
       next: (data) => {
         this.dashboard.set(data.dashboard);
         this.lotes.set(data.lotes);
+        this.operarios.set(data.operarios);
         this.catalogo.set(data.catalogo.content);
         this.catalogoOpciones.set(data.catalogoCompleto);
         this.detecciones.set(data.detecciones.content);

@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit, inject, signal } from '@angular/core'
+import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { API_BASE_URL } from '../../core/services/api.config'
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
 import { AgricolaService } from '../../core/services/agricola.service'
+import { OperariosService } from '../../core/services/operarios.service'
+import type { Operario } from '../../core/models/operarios.models'
 import type { InsumoAgricola, PageResponse } from '../../core/models/agricola.models'
 import { FinanzasService, type ClienteFinanciero, type ClienteRequest, type CobroRequest, type CobroVenta, type EstadoFactura, type FacturaRequest, type FacturaVenta, type FacturacionDashboard, type MetodoPago, type NotaCreditoRequest, type NotaCreditoVenta, type TipoClienteFiscal, type TipoComprobante } from '../../core/services/finanzas.service'
 
@@ -14,9 +16,12 @@ type Modal = 'CLIENTE' | 'FACTURA' | 'COBRO' | 'NOTA' | 'DETALLE_FACTURA' | null
 export class FinanzasFacturacionPageComponent implements OnInit {
   private readonly service = inject(FinanzasService)
   private readonly agricola = inject(AgricolaService)
+  private readonly operariosService = inject(OperariosService)
   protected readonly API_BASE_URL = API_BASE_URL
-  protected readonly endpoints = { operarios: `${API_BASE_URL}/operarios/gestion/operarios`, clientes: `${API_BASE_URL}/finanzas/facturacion/clientes` }
-  protected readonly activeOperarioParams = { estado: 'ACTIVO' }
+  // Catalogos cargados una sola vez para los selects con buscador (feature 62)
+  protected readonly clientes = signal<ClienteFinanciero[]>([])
+  protected readonly operarios = signal<Operario[]>([])
+  protected readonly operariosActivos = computed(() => this.operarios().filter(o => o.estado === 'ACTIVO'))
   protected readonly dashboard = signal<FacturacionDashboard | null>(null)
   protected readonly clientesPage = signal<PageResponse<ClienteFinanciero> | null>(null)
   protected readonly facturasPage = signal<PageResponse<FacturaVenta> | null>(null)
@@ -45,7 +50,13 @@ export class FinanzasFacturacionPageComponent implements OnInit {
   protected readonly cobroForm = signal<CobroRequest>({ facturaId: '', operarioId: '', fecha: new Date().toISOString().slice(0,10), metodoPago: 'TRANSFERENCIA', importe: 0, referencia: '', observaciones: '' })
   protected readonly notaForm = signal<NotaCreditoRequest>({ facturaId: '', operarioId: '', fecha: new Date().toISOString().slice(0,10), importe: 0, motivo: '' })
 
-  ngOnInit() { this.loadAll(); this.agricola.getInsumosActivos().subscribe({ next: v => this.insumos.set(v), error: () => undefined }) }
+  ngOnInit() {
+    this.loadAll()
+    this.agricola.getInsumosActivos().subscribe({ next: v => this.insumos.set(v), error: () => undefined })
+    // Cargar catalogos una sola vez para los selects con buscador (feature 62)
+    this.service.clientes({ size: 1000 }).subscribe({ next: v => this.clientes.set(v.content), error: () => undefined })
+    this.operariosService.getOperarios().subscribe({ next: v => this.operarios.set(v), error: () => undefined })
+  }
   protected loadAll() { this.loadDashboard(); this.loadFacturas(); this.loadClientes(); this.loadCobros(); this.loadNotas() }
   protected loadDashboard() { this.service.dashboard({ fechaDesde: this.fechaDesde(), fechaHasta: this.fechaHasta() }).subscribe({ next: v => this.dashboard.set(v), error: () => undefined }) }
   protected loadFacturas() { this.service.facturas({ search: this.search(), estado: this.estadoFilter() || undefined, fechaDesde: this.fechaDesde(), fechaHasta: this.fechaHasta(), page: this.facturasPageIndex(), size: this.facturasSize() }).subscribe({ next: v => this.facturasPage.set(v), error: () => this.error.set('No se pudieron cargar las facturas') }) }

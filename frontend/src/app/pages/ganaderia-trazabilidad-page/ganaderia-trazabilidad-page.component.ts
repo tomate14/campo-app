@@ -3,17 +3,20 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
-import { API_BASE_URL } from '../../core/services/api.config';
+import { OperariosService } from '../../core/services/operarios.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import type {
   AplicacionVacuna,
   Animal,
   AnimalDetalle,
   AnimalRequest,
+  CatalogoRazaBovina,
   HistorialMedicoAnimalRequest,
   MovimientoAnimalRequest,
   Pesaje,
+  Potrero,
 } from '../../core/models/ganaderia.models';
+import type { Operario } from '../../core/models/operarios.models';
 
 type HistorialClinicoEvento = {
   tipo: 'CONTROL_MEDICO' | 'VACUNACION' | 'PESAJE';
@@ -34,6 +37,7 @@ type HistorialClinicoEvento = {
 })
 export class GanaderiaTrazabilidadPageComponent implements OnInit {
   private readonly ganaderiaService = inject(GanaderiaService);
+  private readonly operariosService = inject(OperariosService);
 
   protected readonly animales = signal<Animal[]>([]);
   protected readonly selected = signal<AnimalDetalle | null>(null);
@@ -55,21 +59,22 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     { value: 'Femenino', label: 'Femenino' },
     { value: 'Masculino', label: 'Masculino' },
   ];
-  protected readonly endpoints = {
-    animales: `${API_BASE_URL}/ganaderia/trazabilidad/animales`,
-    potreros: `${API_BASE_URL}/ganaderia/potreros`,
-    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
-    razasBovinas: `${API_BASE_URL}/ganaderia/trazabilidad/razas-bovinas`,
-  };
+  // Catalogos que alimentan los selects con buscador, cargados una sola vez en ngOnInit.
+  protected readonly razasBovinas = signal<CatalogoRazaBovina[]>([]);
+  protected readonly potreros = signal<Potrero[]>([]);
+  protected readonly operarios = signal<Operario[]>([]);
   // Los combos de madre/padre se alimentan de la lista de animales ya cargada
   // (una sola llamada a /animales) y se separan por sexo en el front con los
   // helpers isFemale/isMale, en vez de que cada combo vuelva a pegarle al
   // endpoint (evita las N llamadas a /animales al abrir el form).
   protected readonly madreOptions = computed(() => this.animales().filter((animal) => this.isFemale(animal)));
   protected readonly padreOptions = computed(() => this.animales().filter((animal) => this.isMale(animal)));
-  protected readonly activeAnimalParams = { estado: 'ACTIVO' };
-  protected readonly veterinarioParams = { estado: 'ACTIVO', rol: 'VETERINARIO' };
-  protected readonly activeOperarioParams = { estado: 'ACTIVO' };
+  // Replica client-side de los extraParams que antes filtraban en el backend:
+  // operariosActivos = {estado:'ACTIVO'}, veterinarios = {estado:'ACTIVO', rol:'VETERINARIO'}.
+  protected readonly operariosActivos = computed(() => this.operarios().filter((operario) => operario.estado === 'ACTIVO'));
+  protected readonly veterinarios = computed(() =>
+    this.operarios().filter((operario) => operario.estado === 'ACTIVO' && this.isVeterinario(operario)),
+  );
 
   protected readonly animalForm = signal<AnimalRequest>({
     caravana: '',
@@ -187,6 +192,14 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAnimales();
+    this.loadCatalogos();
+  }
+
+  private loadCatalogos() {
+    // Catalogos de selects: una sola carga cada uno (no una llamada por combo).
+    this.ganaderiaService.getRazasBovinas().subscribe((razas) => this.razasBovinas.set(razas));
+    this.ganaderiaService.getPotreros().subscribe((potreros) => this.potreros.set(potreros));
+    this.operariosService.getOperarios().subscribe((operarios) => this.operarios.set(operarios));
   }
 
   protected loadAnimales(selectId?: string) {
@@ -538,5 +551,11 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toUpperCase();
+  }
+
+  // El modelo Operario expone rolOperativo (no un campo rol dedicado), asi que el
+  // filtro de veterinarios se resuelve sobre ese campo en el front.
+  private isVeterinario(operario: Operario) {
+    return (operario.rolOperativo ?? '').toUpperCase().includes('VETERINARIO');
   }
 }

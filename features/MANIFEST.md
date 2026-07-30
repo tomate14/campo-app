@@ -18,9 +18,9 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 62
-- Realizadas: 35
+- Realizadas: 36
 - Parciales: 0
-- Pendientes: 25
+- Pendientes: 24
 - Saltadas: 2
 - Ultima actualizacion: 2026-07-29
 
@@ -91,7 +91,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 59 | `59_agricola_ndvi_mapa_de_verdes.md` | Agricultura | Pendiente | Mapa de verdes (NDVI) por lote actualizado cada 15 dias: Sentinel-2 (Copernicus/Sentinel Hub) con NDVI=(NIR-Red)/(NIR+Red), enmascarado de nubes, job programado y overlay sobre el poligono en web y mobile. A confirmar credenciales/licencia. |
 | 60 | `60_agricola_cosecha_perdidas_y_destino.md` | Agricultura | Pendiente | Cosecha con perdidas (area real cosechada %, ha cosechadas, granos perdidos, kg/ha de perdida, tipo y causa: cabezal/cola) diferenciando rendimiento vs perdida, y destino del dia (camion/silo/puerto) con apartado en el dashboard de administracion. |
 | 61 | `61_reportes_dashboard_agricola_precipitaciones_costo_terceros.md` | Reportes/Agricultura | Pendiente | Refinamientos del dashboard agricola: card de precipitaciones con cantidad de dias por lote o poligono completo, y card de costo por hectarea que contemple la facturacion de terceros involucrados (aplicadores/servicios). |
-| 62 | `62_frontend_selects_buscador_por_options.md` | Frontend | Pendiente | Migrar los 47 usos de `app-remote-search-select` con `[endpoint]` (12 componentes) a `[options]` alimentados por listas cargadas una sola vez en el padre, replicando filtros de extraParams/allowedValues client-side. Evita llamadas redundantes por combo. Caveat en listas grandes/paginadas (facturas, compras). |
+| 62 | `62_frontend_selects_buscador_por_options.md` | Frontend | Realizada | Migrados 44 de 47 `app-remote-search-select` de `[endpoint]` a `[options]` (12 componentes): cada catalogo se carga una sola vez en el padre y los filtros de extraParams/allowedValues se replican client-side (operariosActivos, veterinarios, hembras/machos, etc.). Quedan 3 combos con endpoint a proposito (Factura en cobro/nota, Compra en pago: listas paginadas grandes, con TODO). type-check verde. |
 
 ## Registro por Dominio
 
@@ -149,8 +149,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 43.
 
 ### Frontend
-- Realizadas: 44.
-- Pendientes: 48, 62.
+- Realizadas: 44, 62.
+- Pendientes: 48.
 
 ## Ultimas Actualizaciones
 - 2026-07-29: Feature 53 mergeada a master y renombrada `_COMPLETA_`. Creada la feature 62 para migrar todos los selects con buscador (`app-remote-search-select`) de `[endpoint]` a `[options]` (47 usos en 12 componentes), y arranca su desarrollo.
