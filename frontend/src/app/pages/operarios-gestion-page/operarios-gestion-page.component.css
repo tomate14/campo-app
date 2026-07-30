@@ -282,6 +282,13 @@ textarea:focus {
   color: #ffb84d;
 }
 
+/* Estado PENDIENTE (fichas auto-provisionadas): ambar suave de atencion */
+.badge-pending {
+  border-color: rgba(255, 209, 102, .3);
+  background: rgba(255, 209, 102, .12);
+  color: #ffd166;
+}
+
 .badge-danger,
 .danger-action {
   border-color: rgba(255, 107, 107, .26) !important;

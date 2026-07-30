@@ -17,12 +17,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 62
+- Total de historias registradas: 63
 - Realizadas: 36
 - Parciales: 0
-- Pendientes: 24
+- Pendientes: 25
 - Saltadas: 2
-- Ultima actualizacion: 2026-07-29
+- Ultima actualizacion: 2026-07-30
 
 ## Registro por Feature
 
@@ -92,6 +92,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 60 | `60_agricola_cosecha_perdidas_y_destino.md` | Agricultura | Pendiente | Cosecha con perdidas (area real cosechada %, ha cosechadas, granos perdidos, kg/ha de perdida, tipo y causa: cabezal/cola) diferenciando rendimiento vs perdida, y destino del dia (camion/silo/puerto) con apartado en el dashboard de administracion. |
 | 61 | `61_reportes_dashboard_agricola_precipitaciones_costo_terceros.md` | Reportes/Agricultura | Pendiente | Refinamientos del dashboard agricola: card de precipitaciones con cantidad de dias por lote o poligono completo, y card de costo por hectarea que contemple la facturacion de terceros involucrados (aplicadores/servicios). |
 | 62 | `62_frontend_selects_buscador_por_options.md` | Frontend | Realizada | Migrados 44 de 47 `app-remote-search-select` de `[endpoint]` a `[options]` (12 componentes): cada catalogo se carga una sola vez en el padre y los filtros de extraParams/allowedValues se replican client-side (operariosActivos, veterinarios, hembras/machos, etc.). Quedan 3 combos con endpoint a proposito (Factura en cobro/nota, Compra en pago: listas paginadas grandes, con TODO). type-check verde. |
+| 63 | `63_operarios_todo_usuario_es_operario.md` | Operarios | Pendiente | Bug: el auto-registro desde login inserta solo en `users`, pero el panel de operarios lista solo `operarios`, por lo que los usuarios auto-registrados no aparecen. Modelo objetivo: todo usuario es un operario (1:1). Backend provisiona la ficha de operario al registrarse (legajo autogenerado, documento null, rol `SIN_ASIGNAR`, estado `PENDIENTE`) + backfill idempotente al arranque para usuarios existentes sin ficha; V44 hace `documento_numero` nullable. |
 
 ## Registro por Dominio
 
@@ -117,7 +118,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ### Operarios
 - Realizadas: 12, 13.
-- Pendientes: 14.
+- Pendientes: 14, 63.
 
 ### Operaciones
 - Realizadas: 40.
@@ -153,6 +154,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-30: Feature 63 creada a partir de un bug: un usuario auto-registrado desde el login no aparece en el panel de Gestion de Operarios. Causa: `/auth/register` escribe solo en `users` y el listado consulta solo `operarios` (son tablas separadas, y el registro nunca crea la ficha de operario). Modelo objetivo confirmado por el usuario: todo usuario es un operario (1:1). Solucion: provisionar la ficha de operario en el registro (legajo autogenerado, documento null, rol `SIN_ASIGNAR`, estado `PENDIENTE`), backfill idempotente al arranque para usuarios preexistentes y migracion V44 que hace `operarios.documento_numero` nullable. Verificada end-to-end contra Docker.
 - 2026-07-29: Feature 53 mergeada a master y renombrada `_COMPLETA_`. Creada la feature 62 para migrar todos los selects con buscador (`app-remote-search-select`) de `[endpoint]` a `[options]` (47 usos en 12 componentes), y arranca su desarrollo.
 - 2026-07-29: Creadas 8 features nuevas (54-61) a partir del backlog de cambios de agricultura/plagas, agrupando tareas relacionadas: 54 catalogo de plagas con imagenes + identificacion por nombre cientifico + sugeridas; 55 estadios fenologicos por cultivo (tabla + select buscador) y card por cultivo; 56 captura multimedia en plagas (imagenes + medicion + audio); 57 area afectada georreferenciada + responsable automatico + pines resueltos al historico; 58 ordenes de aplicacion con flujo tercerizado; 59 NDVI/mapa de verdes; 60 cosecha con perdidas y destino; 61 refinamientos del dashboard agricola (precipitaciones por dias y costo/ha con terceros). Todas Pendientes. Se propusieron criterios/herramientas donde el usuario lo pidio (plagas sugeridas, medicion sobre foto, NDVI).
 - 2026-07-24: Feature 16 reformulada tras revisar el estado real del codigo: la base de inventario (catalogo, stock por deposito/lote, movimientos INGRESO/SALIDA/USO/AJUSTE, min/max por insumo, alertas, endpoint y pantalla web) ya esta cubierta por la feature 15. El alcance restante queda en tres frentes: auditoria de discrepancias (conteo fisico + conciliacion por ajuste), disponibilidad offline/sincronizacion en mobile (sobre la feature 24) y lector de codigo de barras EAN/UPC por camara. Transferencias entre almacenes quedan fuera de alcance por decision del usuario; otros refinamientos (almacen como entidad, min/max por almacen, devoluciones/merma, reporte por ubicacion) quedan listados como posibles features futuras.

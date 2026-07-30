@@ -8,6 +8,7 @@ import com.campoapp.auth.entity.User;
 import com.campoapp.auth.repository.UserRepository;
 import com.campoapp.common.exception.BusinessException;
 import com.campoapp.common.exception.UnauthorizedException;
+import com.campoapp.operarios.service.OperarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,7 @@ public class AuthService {
     private final LoginAttemptService loginAttemptService;
     private final AuditService auditService;
     private final PasswordEncoder passwordEncoder;
+    private final OperarioService operarioService;
 
     @Transactional
     public AuthResponse login(LoginRequest request, String ipAddress) {
@@ -78,6 +80,10 @@ public class AuthService {
         userRepository.save(user);
         auditService.log(user.getId(), "USER_REGISTERED", "users", user.getId(), ipAddress);
         log.info("Nuevo usuario registrado: {}", user.getEmail());
+
+        // Todo usuario debe tener ficha de operario (relacion 1:1) para aparecer en
+        // el panel de Gestion de Operarios. Se provisiona en la misma transaccion.
+        operarioService.provisionarDesdeUsuario(user);
 
         String accessToken = tokenService.generateAccessToken(user);
         String refreshToken = tokenService.generateRefreshToken(user);

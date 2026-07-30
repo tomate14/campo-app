@@ -42,6 +42,10 @@ public class OperarioServiceImpl implements OperarioService {
     private static final String DEFAULT_ESTADO = "ACTIVO";
     private static final String DEFAULT_DOCUMENTO_TIPO = "DNI";
     private static final String DEFAULT_DOCUMENTO_ESTADO = "VIGENTE";
+    // Placeholders para fichas auto-provisionadas desde el registro de usuario
+    private static final String ROL_SIN_ASIGNAR = "SIN_ASIGNAR";
+    private static final String ESTADO_PENDIENTE = "PENDIENTE";
+    private static final String DEFAULT_LEGAJO_BASE = "user";
     private final OperarioRepository operarioRepository;
     private final OperarioDocumentoRepository documentoRepository;
     private final OperarioHistorialRolRepository historialRolRepository;
@@ -172,6 +176,66 @@ public class OperarioServiceImpl implements OperarioService {
                 .build();
         operarioRepository.save(operario);
         return toHistorialRolResponse(historialRolRepository.save(historial));
+    }
+
+    @Override
+    @Transactional
+    public Operario provisionarDesdeUsuario(User user) {
+        // Idempotente: si el usuario ya tiene ficha activa no se crea otra
+        if (operarioRepository.existsByUserIdAndDeletedAtIsNull(user.getId())) {
+            return null;
+        }
+        String legajo = generateAvailableLegajoFromEmail(user.getEmail());
+        String[] nombreApellido = splitNombreApellido(user.getName(), legajo);
+        Operario operario = Operario.builder()
+                .user(user)
+                .legajo(legajo)
+                .nombre(nombreApellido[0])
+                .apellido(nombreApellido[1])
+                .documentoTipo(null)
+                .documentoNumero(null)
+                .telefono(blankToNull(user.getPhone()))
+                .rolOperativo(ROL_SIN_ASIGNAR)
+                .estado(ESTADO_PENDIENTE)
+                .build();
+        return operarioRepository.save(operario);
+    }
+
+    /**
+     * Genera un legajo unico tolerante (no exige apellido). Base = local-part del
+     * email normalizado; si queda vacia usa "user". Agrega sufijo numerico ante
+     * colision con legajos activos existentes.
+     */
+    private String generateAvailableLegajoFromEmail(String email) {
+        String localPart = email == null ? "" : email.split("@", 2)[0];
+        String base = normalizeUsername(localPart);
+        if (base.isBlank()) {
+            base = DEFAULT_LEGAJO_BASE;
+        }
+        String candidate = base;
+        int suffix = 1;
+        while (operarioRepository.existsByLegajoAndDeletedAtIsNull(candidate)) {
+            candidate = base + suffix;
+            suffix++;
+        }
+        return candidate;
+    }
+
+    /**
+     * Deriva nombre/apellido de user.name: primer token = nombre, resto = apellido.
+     * Si no hay name usable, nombre = base del legajo y apellido = "" (cadena vacia,
+     * la columna NOT NULL la admite). Nunca devuelve null.
+     */
+    private String[] splitNombreApellido(String name, String legajoBase) {
+        if (name != null && !name.isBlank()) {
+            String[] tokens = name.trim().split("\\s+");
+            String nombre = tokens[0];
+            String apellido = tokens.length > 1
+                    ? String.join(" ", java.util.Arrays.copyOfRange(tokens, 1, tokens.length))
+                    : "";
+            return new String[]{nombre, apellido};
+        }
+        return new String[]{legajoBase, ""};
     }
 
     private OperarioDashboardResponse dashboard() {

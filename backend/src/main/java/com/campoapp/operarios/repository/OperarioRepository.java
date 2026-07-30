@@ -20,6 +20,8 @@ public interface OperarioRepository extends JpaRepository<Operario, String> {
 
     boolean existsByDocumentoNumeroAndDeletedAtIsNull(String documentoNumero);
 
+    boolean existsByUserIdAndDeletedAtIsNull(String userId);
+
     @Query("""
             select o from Operario o
             where o.deletedAt is null
