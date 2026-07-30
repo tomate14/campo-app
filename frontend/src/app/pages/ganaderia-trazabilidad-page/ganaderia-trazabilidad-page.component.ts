@@ -61,8 +61,12 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
     operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
     razasBovinas: `${API_BASE_URL}/ganaderia/trazabilidad/razas-bovinas`,
   };
-  protected readonly madreAllowedValues = { sexo: ['Femenino', 'HEMBRA', 'F'] };
-  protected readonly padreAllowedValues = { sexo: ['Masculino', 'MACHO', 'TORO', 'M'] };
+  // Los combos de madre/padre se alimentan de la lista de animales ya cargada
+  // (una sola llamada a /animales) y se separan por sexo en el front con los
+  // helpers isFemale/isMale, en vez de que cada combo vuelva a pegarle al
+  // endpoint (evita las N llamadas a /animales al abrir el form).
+  protected readonly madreOptions = computed(() => this.animales().filter((animal) => this.isFemale(animal)));
+  protected readonly padreOptions = computed(() => this.animales().filter((animal) => this.isMale(animal)));
   protected readonly activeAnimalParams = { estado: 'ACTIVO' };
   protected readonly veterinarioParams = { estado: 'ACTIVO', rol: 'VETERINARIO' };
   protected readonly activeOperarioParams = { estado: 'ACTIVO' };
