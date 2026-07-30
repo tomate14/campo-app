@@ -17,8 +17,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 64
-- Realizadas: 38
+- Total de historias registradas: 65
+- Realizadas: 39
 - Parciales: 0
 - Pendientes: 24
 - Saltadas: 2
@@ -94,6 +94,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 62 | `62_COMPLETA_frontend_selects_buscador_por_options.md` | Frontend | Realizada | Migrados 44 de 47 `app-remote-search-select` de `[endpoint]` a `[options]` (12 componentes): cada catalogo se carga una sola vez en el padre y los filtros de extraParams/allowedValues se replican client-side (operariosActivos, veterinarios, hembras/machos, etc.). Quedan 3 combos con endpoint a proposito (Factura en cobro/nota, Compra en pago: listas paginadas grandes, con TODO). type-check verde. |
 | 63 | `63_COMPLETA_operarios_todo_usuario_es_operario.md` | Operarios | Realizada | Bug: el auto-registro desde login inserta solo en `users`, pero el panel de operarios lista solo `operarios`, por lo que los usuarios auto-registrados no aparecen. Modelo objetivo: todo usuario es un operario (1:1). Backend provisiona la ficha de operario al registrarse (legajo autogenerado, documento null, rol `SIN_ASIGNAR`, estado `PENDIENTE`) + backfill idempotente al arranque para usuarios existentes sin ficha; V44 hace `documento_numero` nullable. |
 | 64 | `64_COMPLETA_operarios_cambiar_rol_asigna_rol_rbac.md` | Operarios | Realizada | Bug: asignar el rol "operario" desde el panel no daba menu porque solo se cambiaba `operarios.rol_operativo` (texto) y nunca `user_roles` (rol RBAC del que depende el menu). Fix backend: `cambiarRol` (y el alta/edicion) reemplazan el rol RBAC del usuario por el rol elegido; `rol_operativo` pasa a referenciar el nombre del rol. El frontend ya enviaba el roleName RBAC. |
+| 65 | `65_operarios_alta_email.md` | Operarios | Realizada | Campo email en el alta/edicion de operario: opcional, con fallback al autogenerado; backend valida formato (`@Email`) y unicidad y lo usa como email de login del user; la contrasena inicial y el primer login no cambian. Verificada end-to-end contra Docker (alta con/sin email, duplicado e invalido). |
 
 ## Registro por Dominio
 
@@ -118,7 +119,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 36.
 
 ### Operarios
-- Realizadas: 12, 13, 63, 64.
+- Realizadas: 12, 13, 63, 64, 65.
 - Pendientes: 14.
 
 ### Operaciones
@@ -155,6 +156,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-30: Feature 65 realizada: campo email en el alta/edicion de operario. `OperarioRequest.email` (`@Email`, opcional); `createUserForOperario` usa el email informado o cae al username autogenerado (helper `resolveLoginEmail` valida unicidad); `actualizar` sincroniza `user.email`; el frontend suma el input en el modal con precarga en edicion. La contrasena inicial y el primer login no cambian. Verificada end-to-end contra Docker (alta con/sin email, duplicado, invalido; login con email + legajo). Gates verdes. Desarrollada en branch propia; pendiente de merge.
 - 2026-07-30: Feature 51 marcada `_COMPLETA_` (`51_COMPLETA_ganaderia_historiales_nombres_operarios.md`). Ya estaba Realizada y verificada (resolver de nombres de operarios/potreros en historiales); solo restaba el renombre. De paso se corrigio la seccion de dominio Ganaderia, que no listaba 49, 50 ni 51 entre las Realizadas.
 - 2026-07-30: Features 62, 63 y 64 mergeadas a master (en ese orden) y marcadas `_COMPLETA_`: `62_COMPLETA_frontend_selects_buscador_por_options.md`, `63_COMPLETA_operarios_todo_usuario_es_operario.md`, `64_COMPLETA_operarios_cambiar_rol_asigna_rol_rbac.md`. Estado `Realizada` para las tres. Contadores: Realizadas 38, Pendientes 24.
 - 2026-07-30: Feature 64 realizada (descubierta probando la 63): al asignar el rol "operario" a un usuario desde el panel de operarios, el usuario no veia opciones de menu. Causa: el boton "Cambiar rol" solo modificaba `operarios.rol_operativo` (texto descriptivo) y nunca `user_roles` (rol RBAC del que depende `GET /menu-options/me`). Fix backend: `cambiarRol`, el alta y la edicion reemplazan el rol RBAC del usuario por el rol elegido (reemplazo completo de `user_roles`), y `rol_operativo` pasa a ser una referencia al nombre del rol. El frontend ya enviaba el roleName RBAC. Verificada end-to-end contra Docker.

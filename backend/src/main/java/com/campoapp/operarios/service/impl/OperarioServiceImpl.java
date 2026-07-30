@@ -144,6 +144,12 @@ public class OperarioServiceImpl implements OperarioService {
         } else {
             operario.setRolOperativo(required(rolOperativoRequest, "rolOperativo"));
         }
+        // Sincroniza el email de login si se informo uno nuevo (unico entre otros usuarios)
+        User currentUser = operario.getUser();
+        if (currentUser != null && blankToNull(request.email()) != null) {
+            currentUser.setEmail(resolveLoginEmail(request.email(), currentUser.getEmail(), currentUser.getId()));
+            userRepository.save(currentUser);
+        }
         operario.setPermisosOperativos(blankToNull(request.permisosOperativos()));
         operario.setEstado(defaultText(request.estado(), DEFAULT_ESTADO));
         operario.setFechaIngreso(request.fechaIngreso());
@@ -339,8 +345,11 @@ public class OperarioServiceImpl implements OperarioService {
         Role operarioRole = (request.rolOperativo() == null || request.rolOperativo().isBlank())
                 ? resolveRole(DEFAULT_ROLE_NAME)
                 : resolveRole(request.rolOperativo());
+        // Email de login: el informado en el alta o, si viene vacio, el username autogenerado
+        String loginEmail = resolveLoginEmail(request.email(), username, null);
         User user = User.builder()
-                .email(username)
+                .email(loginEmail)
+                // La contraseña inicial sigue siendo el legajo/username generado (el primer login la cambia)
                 .passwordHash(passwordEncoder.encode(username))
                 .name(fullName(request.nombre(), request.apellido()))
                 .phone(blankToNull(request.telefono()))
@@ -351,6 +360,25 @@ public class OperarioServiceImpl implements OperarioService {
                 .roles(Set.of(operarioRole))
                 .build();
         return userRepository.save(user);
+    }
+
+    /**
+     * Resuelve el email de login del operario: usa el informado (trim) o, si viene
+     * vacio, el fallback autogenerado. Valida unicidad contra otros usuarios
+     * (excluye currentUserId en la edicion). Lanza BusinessException si ya existe.
+     */
+    private String resolveLoginEmail(String requested, String fallback, String currentUserId) {
+        String email = blankToNull(requested);
+        if (email == null) {
+            return fallback;
+        }
+        String normalized = email.trim();
+        userRepository.findByEmail(normalized)
+                .filter((user) -> currentUserId == null || !user.getId().equals(currentUserId))
+                .ifPresent((user) -> {
+                    throw new BusinessException("Ya existe un usuario con el email: " + normalized);
+                });
+        return normalized;
     }
 
     /**

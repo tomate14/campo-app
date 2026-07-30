@@ -121,6 +121,8 @@ export class OperariosGestionPageComponent implements OnInit {
       this.editingId.set(operario.id)
       this.operarioForm.set({
         userId: operario.userId,
+        // El email de login es el username del usuario asociado
+        email: operario.username,
         nombre: operario.nombre,
         apellido: operario.apellido,
         documentoTipo: operario.documentoTipo,
@@ -234,6 +236,8 @@ export class OperariosGestionPageComponent implements OnInit {
       ...form,
       salarioBase: this.toNumber(form.salarioBase),
       userId: form.userId || undefined,
+      // Email vacio -> undefined: el backend autogenera el usuario
+      email: form.email?.trim() || undefined,
     }
   }
 
@@ -245,6 +249,7 @@ export class OperariosGestionPageComponent implements OnInit {
 
   private emptyOperario(): OperarioRequest {
     return {
+      email: '',
       nombre: '',
       apellido: '',
       documentoTipo: 'DNI',

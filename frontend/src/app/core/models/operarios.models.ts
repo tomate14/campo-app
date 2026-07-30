@@ -25,6 +25,7 @@ export interface Operario {
 
 export interface OperarioRequest {
   userId?: string
+  email?: string
   nombre: string
   apellido: string
   documentoTipo?: string
