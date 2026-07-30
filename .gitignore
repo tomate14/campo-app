@@ -24,3 +24,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.iml
+.vercel
+.env*
+!.env.example

@@ -17,10 +17,10 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 61
+- Total de historias registradas: 62
 - Realizadas: 35
 - Parciales: 0
-- Pendientes: 24
+- Pendientes: 25
 - Saltadas: 2
 - Ultima actualizacion: 2026-07-29
 
@@ -91,6 +91,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 59 | `59_agricola_ndvi_mapa_de_verdes.md` | Agricultura | Pendiente | Mapa de verdes (NDVI) por lote actualizado cada 15 dias: Sentinel-2 (Copernicus/Sentinel Hub) con NDVI=(NIR-Red)/(NIR+Red), enmascarado de nubes, job programado y overlay sobre el poligono en web y mobile. A confirmar credenciales/licencia. |
 | 60 | `60_agricola_cosecha_perdidas_y_destino.md` | Agricultura | Pendiente | Cosecha con perdidas (area real cosechada %, ha cosechadas, granos perdidos, kg/ha de perdida, tipo y causa: cabezal/cola) diferenciando rendimiento vs perdida, y destino del dia (camion/silo/puerto) con apartado en el dashboard de administracion. |
 | 61 | `61_reportes_dashboard_agricola_precipitaciones_costo_terceros.md` | Reportes/Agricultura | Pendiente | Refinamientos del dashboard agricola: card de precipitaciones con cantidad de dias por lote o poligono completo, y card de costo por hectarea que contemple la facturacion de terceros involucrados (aplicadores/servicios). |
+| 62 | `62_infraestructura_despliegue_vercel_contenedores.md` | Infraestructura | Pendiente | Despliegue productivo en Vercel Services con contenedores Angular/Spring Boot, MySQL externo, cron HTTP, configuracion segura y verificacion end-to-end. |
 
 ## Registro por Dominio
 
@@ -138,7 +139,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ### Infraestructura
 - Realizadas: 24.
-- Pendientes: ninguna.
+- Pendientes: 62.
 
 ### Seguridad
 - Realizadas: 26, 39, 41.
@@ -152,6 +153,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-29: Creada la feature 62 para adaptar y desplegar Campo App en Vercel con servicios contenerizados, persistencia externa, cron HTTP y configuracion productiva segura.
 - 2026-07-29: Creadas 8 features nuevas (54-61) a partir del backlog de cambios de agricultura/plagas, agrupando tareas relacionadas: 54 catalogo de plagas con imagenes + identificacion por nombre cientifico + sugeridas; 55 estadios fenologicos por cultivo (tabla + select buscador) y card por cultivo; 56 captura multimedia en plagas (imagenes + medicion + audio); 57 area afectada georreferenciada + responsable automatico + pines resueltos al historico; 58 ordenes de aplicacion con flujo tercerizado; 59 NDVI/mapa de verdes; 60 cosecha con perdidas y destino; 61 refinamientos del dashboard agricola (precipitaciones por dias y costo/ha con terceros). Todas Pendientes. Se propusieron criterios/herramientas donde el usuario lo pidio (plagas sugeridas, medicion sobre foto, NDVI).
 - 2026-07-24: Feature 16 reformulada tras revisar el estado real del codigo: la base de inventario (catalogo, stock por deposito/lote, movimientos INGRESO/SALIDA/USO/AJUSTE, min/max por insumo, alertas, endpoint y pantalla web) ya esta cubierta por la feature 15. El alcance restante queda en tres frentes: auditoria de discrepancias (conteo fisico + conciliacion por ajuste), disponibilidad offline/sincronizacion en mobile (sobre la feature 24) y lector de codigo de barras EAN/UPC por camara. Transferencias entre almacenes quedan fuera de alcance por decision del usuario; otros refinamientos (almacen como entidad, min/max por almacen, devoluciones/merma, reporte por ubicacion) quedan listados como posibles features futuras.
 - 2026-07-18: Feature 39 mergeada a master y renombrada `_COMPLETA_`.

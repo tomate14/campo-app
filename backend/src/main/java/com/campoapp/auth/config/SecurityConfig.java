@@ -3,6 +3,7 @@ package com.campoapp.auth.config;
 import com.campoapp.auth.security.JwtAuthenticationFilter;
 import com.campoapp.common.idempotency.IdempotencyFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +28,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Configuration
 @EnableWebSecurity
@@ -36,6 +38,9 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final IdempotencyFilter idempotencyFilter;
+
+    @Value("${FRONTEND_URL:}")
+    private String frontendUrl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -54,6 +59,7 @@ public class SecurityConfig {
                                 "/api/v1/auth/register",
                                 "/api/v1/auth/refresh",
                                 "/api/v1/auth/oauth/**",
+                                "/api/v1/internal/cron/**",
                                 "/api/v1/docs/**",
                                 "/api/v1/swagger-ui/**",
                                 "/actuator/health",
@@ -94,11 +100,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of(
-                "http://localhost:3000",    // frontend dev
-                "http://localhost:19006",   // expo web dev
-                "${FRONTEND_URL:}"          // producción
-        ));
+        List<String> configuredOrigins = Stream.concat(
+                        Stream.of("http://localhost:3000", "http://localhost:19006"),
+                        Stream.of(frontendUrl.split(","))
+                )
+                .map(String::trim)
+                .filter(origin -> !origin.isBlank())
+                .distinct()
+                .toList();
+        config.setAllowedOriginPatterns(configuredOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Idempotency-Key"));
         config.setAllowCredentials(true);

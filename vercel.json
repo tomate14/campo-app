@@ -1,0 +1,44 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["bom1"],
+  "services": {
+    "frontend": {
+      "root": "frontend/",
+      "entrypoint": "Dockerfile.vercel",
+      "runtime": "container"
+    },
+    "backend": {
+      "root": "backend/",
+      "entrypoint": "Dockerfile.vercel",
+      "runtime": "container"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "frontend"
+      }
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/v1/internal/cron/clima/sync",
+      "schedule": "30 4 * * *"
+    },
+    {
+      "path": "/api/v1/internal/cron/clima/precipitaciones",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/v1/internal/cron/idempotency/purge",
+      "schedule": "30 6 * * *"
+    }
+  ]
+}

@@ -12,6 +12,7 @@ public class ClimaProperties {
 
     private OpenMeteo openMeteo = new OpenMeteo();
     private Sync sync = new Sync();
+    private int cacheMaxAgeMinutes = 30;
     private int retencionDias = 30;
     private int forecastDays = 7;
 

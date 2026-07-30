@@ -8,11 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -43,8 +41,6 @@ public class IdempotencyFilter extends OncePerRequestFilter {
     public static final String HEADER = "Idempotency-Key";
     private static final Set<String> METHODS = Set.of("POST", "PUT");
     private static final int MAX_KEY_LENGTH = 64;
-    private static final int RETENTION_DAYS = 30;
-
     private final IdempotencyKeyRepository repository;
 
     @Override
@@ -121,13 +117,4 @@ public class IdempotencyFilter extends OncePerRequestFilter {
         return auth != null && auth.getPrincipal() instanceof String principal ? principal : null;
     }
 
-    /** Limpieza diaria de claves viejas para que la tabla no crezca sin limite. */
-    @Scheduled(cron = "0 30 3 * * *")
-    @Transactional
-    public void purgeExpiredKeys() {
-        int removed = repository.deleteByCreatedAtBefore(LocalDateTime.now().minusDays(RETENTION_DAYS));
-        if (removed > 0) {
-            log.info("Idempotencia: {} claves vencidas eliminadas", removed);
-        }
-    }
 }

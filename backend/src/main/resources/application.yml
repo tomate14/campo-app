@@ -3,7 +3,7 @@ spring:
     name: campo-app-backend
 
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:campo_db}?useSSL=false&serverTimezone=America/Argentina/Buenos_Aires&allowPublicKeyRetrieval=true
+    url: '${DB_URL:jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:campo_db}?sslMode=${DB_SSL_MODE:DISABLED}&serverTimezone=America/Argentina/Buenos_Aires&allowPublicKeyRetrieval=true}'
     username: ${DB_USER:campo_user}
     password: ${DB_PASS:campo_pass}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -50,6 +50,7 @@ oauth2:
 clima:
   open-meteo:
     base-url: https://api.open-meteo.com/v1
+  cache-max-age-minutes: ${CLIMA_CACHE_MAX_AGE_MINUTES:30}
   sync:
     enabled: ${CLIMA_SYNC_ENABLED:true}
     intervalo-ms: ${CLIMA_SYNC_INTERVALO_MS:1800000}
@@ -73,9 +74,22 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 
 server:
-  port: 8080
+  port: ${PORT:8080}
   servlet:
     context-path: /
+
+app:
+  scheduling:
+    enabled: ${APP_SCHEDULING_ENABLED:true}
+
+cron:
+  secret: ${CRON_SECRET:}
+
+idempotency:
+  retention-days: ${IDEMPOTENCY_RETENTION_DAYS:30}
+  cleanup:
+    cron: ${IDEMPOTENCY_CLEANUP_CRON:0 30 3 * * *}
+    zone: ${IDEMPOTENCY_CLEANUP_ZONE:America/Argentina/Buenos_Aires}
 
 ---
 spring:

@@ -28,6 +28,7 @@ import org.springframework.web.client.RestClientException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -130,12 +131,16 @@ public class ClimaServiceImpl implements ClimaService {
     }
 
     @Override
+    @Transactional
     public Optional<DatoClimaResponse> obtenerActual(String loteId) {
+        refreshCacheIfStale(loteId);
         return datoClimaRepository.findUltimoByLoteId(loteId).map(this::toResponse);
     }
 
     @Override
+    @Transactional
     public List<PronosticoResponse> obtenerPronostico(String loteId) {
+        refreshCacheIfStale(loteId);
         return pronosticoRepository.findByLoteIdDesde(loteId, LocalDate.now())
                 .stream().map(this::toPronosticoResponse).toList();
     }
@@ -153,6 +158,26 @@ public class ClimaServiceImpl implements ClimaService {
         LocalDate desde = hasta.minusDays(Math.max(1, dias) - 1L);
         return precipitacionDiariaRepository.findByLoteIdAndFechaBetween(loteId, desde, hasta)
                 .stream().map(this::toPrecipitacionResponse).toList();
+    }
+
+    private void refreshCacheIfStale(String loteId) {
+        Optional<DatoClima> latest = datoClimaRepository.findUltimoByLoteId(loteId);
+        int maxAgeMinutes = Math.max(1, properties.getCacheMaxAgeMinutes());
+        boolean stale = latest
+                .map(dato -> dato.getTimestampUtc().isBefore(
+                        LocalDateTime.now(ZoneOffset.UTC).minusMinutes(maxAgeMinutes)))
+                .orElse(true);
+
+        if (!stale || !properties.isConfigured()) {
+            return;
+        }
+
+        try {
+            sincronizarLote(loteId);
+        } catch (RuntimeException exception) {
+            log.warn("No se pudo refrescar el cache climatico del lote {}: {}",
+                    loteId, exception.getMessage());
+        }
     }
 
     private DatoClimaResponse doSincronizar(Lote lote) {

@@ -1,0 +1,45 @@
+FROM maven:3.9-eclipse-temurin-17 AS builder
+
+WORKDIR /app
+
+COPY pom.xml .
+RUN mvn dependency:go-offline -B -q
+
+COPY src ./src
+RUN mvn clean package -DskipTests -B -q
+
+FROM golang:1.24-alpine AS launcher
+
+WORKDIR /src
+
+COPY deploy/vercel-launcher.go .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -trimpath -ldflags="-s -w" -o /out/vercel-launcher vercel-launcher.go
+
+FROM eclipse-temurin:17-jre AS runtime
+
+WORKDIR /app
+
+RUN groupadd -r spring && useradd -r -g spring spring
+
+COPY --from=builder /app/target/*.jar app.jar
+COPY --from=launcher /out/vercel-launcher /usr/local/bin/vercel-launcher
+RUN chown spring:spring app.jar && chmod 0755 /usr/local/bin/vercel-launcher
+
+USER spring
+
+ENV PORT=80
+ENV APPLICATION_PORT=8081
+ENV STARTUP_TIMEOUT_SECONDS=120
+ENV SPRING_PROFILES_ACTIVE=vercel
+
+EXPOSE 80
+
+ENTRYPOINT ["/usr/local/bin/vercel-launcher"]
+
+CMD ["/opt/java/openjdk/bin/java", \
+  "-XX:+UseContainerSupport", \
+  "-XX:MaxRAMPercentage=75.0", \
+  "-XX:InitialRAMPercentage=20.0", \
+  "-Djava.security.egd=file:/dev/./urandom", \
+  "-jar", "app.jar"]

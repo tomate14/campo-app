@@ -2,7 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { SessionService } from './session.service';
 
-export const API_BASE_URL = 'http://localhost:8080/api/v1';
+export const API_BASE_URL = '/api/v1';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const session = inject(SessionService);

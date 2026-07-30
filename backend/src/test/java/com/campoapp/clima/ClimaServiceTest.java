@@ -166,8 +166,6 @@ class ClimaServiceTest {
 
     @Test
     void obtenerHistorico_deberiaRespetar_limiteRetencion() {
-        ClimaProperties propiedades = mock(ClimaProperties.class);
-        when(propiedades.getRetencionDias()).thenReturn(30);
         when(datoClimaRepository.findHistorico(eq("lote-001"), any(LocalDateTime.class)))
                 .thenReturn(List.of(dato));
 
