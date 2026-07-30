@@ -22,6 +22,7 @@ import com.campoapp.operarios.repository.OperarioHistorialRolRepository;
 import com.campoapp.operarios.repository.OperarioRepository;
 import com.campoapp.operarios.service.OperarioService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,11 +35,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OperarioServiceImpl implements OperarioService {
 
+    // Rol RBAC por defecto cuando el alta no informa un rol explicito
+    private static final String DEFAULT_ROLE_NAME = "operario";
     private static final String DEFAULT_ESTADO = "ACTIVO";
     private static final String DEFAULT_DOCUMENTO_TIPO = "DNI";
     private static final String DEFAULT_DOCUMENTO_ESTADO = "VIGENTE";
@@ -124,7 +128,22 @@ public class OperarioServiceImpl implements OperarioService {
         operario.setTelefono(blankToNull(request.telefono()));
         operario.setDireccion(blankToNull(request.direccion()));
         operario.setFechaNacimiento(request.fechaNacimiento());
-        operario.setRolOperativo(required(request.rolOperativo(), "rolOperativo"));
+        // Sincroniza el rol RBAC del usuario para no dejar el panel y el RBAC desincronizados
+        String rolOperativoRequest = request.rolOperativo();
+        if (rolOperativoRequest != null && !rolOperativoRequest.isBlank()) {
+            User user = operario.getUser();
+            if (user != null) {
+                Role role = resolveRole(rolOperativoRequest);
+                assignSingleRole(user, role);
+                operario.setRolOperativo(role.getName());
+            } else {
+                log.warn("Operario {} sin usuario asociado: se guarda solo el texto del rol '{}'",
+                        operario.getId(), rolOperativoRequest);
+                operario.setRolOperativo(rolOperativoRequest.trim());
+            }
+        } else {
+            operario.setRolOperativo(required(rolOperativoRequest, "rolOperativo"));
+        }
         operario.setPermisosOperativos(blankToNull(request.permisosOperativos()));
         operario.setEstado(defaultText(request.estado(), DEFAULT_ESTADO));
         operario.setFechaIngreso(request.fechaIngreso());
@@ -164,7 +183,18 @@ public class OperarioServiceImpl implements OperarioService {
     public OperarioHistorialRolResponse cambiarRol(OperarioHistorialRolRequest request) {
         Operario operario = findOperario(request.operarioId());
         String rolAnterior = operario.getRolOperativo();
-        String rolNuevo = required(request.rolNuevo(), "rolNuevo");
+        // Resuelve y valida el rol RBAC solicitado contra el catalogo 'roles'
+        Role role = resolveRole(request.rolNuevo());
+        // Sincroniza el rol RBAC del usuario asociado para que el menu refleje el rol elegido
+        User user = operario.getUser();
+        if (user != null) {
+            assignSingleRole(user, role);
+        } else {
+            log.warn("Operario {} sin usuario asociado: no se pudo sincronizar el rol RBAC '{}'",
+                    operario.getId(), role.getName());
+        }
+        // El campo referencia el nombre canonico del rol resuelto
+        String rolNuevo = role.getName();
         operario.setRolOperativo(rolNuevo);
         OperarioHistorialRol historial = OperarioHistorialRol.builder()
                 .operario(operario)
@@ -305,8 +335,10 @@ public class OperarioServiceImpl implements OperarioService {
     }
 
     private User createUserForOperario(OperarioRequest request, String username) {
-        Role operarioRole = roleRepository.findByName("operario")
-                .orElseThrow(() -> new IllegalStateException("Rol 'operario' no encontrado. Verificar migracion V1."));
+        // Usa el rol RBAC informado en el alta; si no viene, cae al rol por defecto "operario"
+        Role operarioRole = (request.rolOperativo() == null || request.rolOperativo().isBlank())
+                ? resolveRole(DEFAULT_ROLE_NAME)
+                : resolveRole(request.rolOperativo());
         User user = User.builder()
                 .email(username)
                 .passwordHash(passwordEncoder.encode(username))
@@ -319,6 +351,29 @@ public class OperarioServiceImpl implements OperarioService {
                 .roles(Set.of(operarioRole))
                 .build();
         return userRepository.save(user);
+    }
+
+    /**
+     * Resuelve un rol del catalogo 'roles' por nombre. Normaliza (trim) y, si no
+     * hay match exacto, reintenta en minuscula (el catalogo esta en minusculas:
+     * admin, contador, encargado, jefe_campo, operario, super_admin, supervisor,
+     * tractorista, veterinario). Lanza BusinessException si el rol no existe.
+     */
+    private Role resolveRole(String roleName) {
+        String normalized = required(roleName, "rolNuevo");
+        return roleRepository.findByName(normalized)
+                .or(() -> roleRepository.findByName(normalized.toLowerCase(Locale.ROOT)))
+                .orElseThrow(() -> new BusinessException("Rol inexistente: " + roleName));
+    }
+
+    /**
+     * Reemplaza por completo los roles RBAC del usuario por exactamente {role} y
+     * persiste. Es reemplazo total (no acumulacion) para que el menu del usuario
+     * refleje unicamente el rol elegido.
+     */
+    private void assignSingleRole(User user, Role role) {
+        user.setRoles(new java.util.HashSet<>(Set.of(role)));
+        userRepository.save(user);
     }
 
     private String generateAvailableUsername(String nombre, String apellido) {
