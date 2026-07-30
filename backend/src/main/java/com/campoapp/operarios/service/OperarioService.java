@@ -7,6 +7,8 @@ import com.campoapp.operarios.dto.OperarioHistorialRolResponse;
 import com.campoapp.operarios.dto.OperarioRequest;
 import com.campoapp.operarios.dto.OperarioResponse;
 import com.campoapp.operarios.dto.OperarioResumenResponse;
+import com.campoapp.auth.entity.User;
+import com.campoapp.operarios.entity.Operario;
 
 import java.util.List;
 
@@ -19,4 +21,11 @@ public interface OperarioService {
     void eliminar(String id);
     OperarioDocumentoResponse agregarDocumento(OperarioDocumentoRequest request);
     OperarioHistorialRolResponse cambiarRol(OperarioHistorialRolRequest request);
+
+    /**
+     * Garantiza la ficha de operario 1:1 para un usuario. Idempotente: si el usuario
+     * ya tiene ficha activa no crea otra. La ficha se crea en estado PENDIENTE, con
+     * rol SIN_ASIGNAR y sin documento (lo completa RRHH luego).
+     */
+    Operario provisionarDesdeUsuario(User user);
 }

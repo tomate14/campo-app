@@ -44,6 +44,7 @@
         <span>Estado</span>
         <select [ngModel]="filters().estado" (ngModelChange)="filters.update(f => ({ ...f, estado: $event }))">
           <option value="">Todos</option>
+          <option value="PENDIENTE">Pendiente</option>
           <option value="ACTIVO">Activo</option>
           <option value="DISPONIBLE">Disponible</option>
           <option value="LICENCIA">Licencia</option>
@@ -100,11 +101,11 @@
                     </div>
                   </td>
                   <td><strong>{{ operario.username || operario.legajo }}</strong></td>
-                  <td>{{ operario.documentoNumero }}</td>
+                  <td>{{ operario.documentoNumero || '—' }}</td>
                   <td>{{ roleLabel(operario.rolOperativo) }}</td>
                   <td>{{ operario.telefono || 'Sin dato' }}</td>
                   <td>{{ operario.fechaIngreso ? (operario.fechaIngreso | date:'dd/MM/yyyy') : 'Sin dato' }}</td>
-                  <td><span class="badge" [class.badge-warning]="statusClass(operario.estado) === 'warning'" [class.badge-danger]="statusClass(operario.estado) === 'danger'">{{ operario.estado }}</span></td>
+                  <td><span class="badge" [class.badge-warning]="statusClass(operario.estado) === 'warning'" [class.badge-pending]="statusClass(operario.estado) === 'pending'" [class.badge-danger]="statusClass(operario.estado) === 'danger'">{{ operario.estado }}</span></td>
                   <td>
                     <div class="row-actions">
                       <button type="button" title="Editar" (click)="openOperarioModal(operario); $event.stopPropagation()">
@@ -149,7 +150,7 @@
 
         <div class="context-metrics">
           <div><span>Usuario</span><strong>{{ operario.username || operario.legajo }}</strong></div>
-          <div><span>Documento</span><strong>{{ operario.documentoNumero }}</strong></div>
+          <div><span>Documento</span><strong>{{ operario.documentoNumero || 'Sin documento' }}</strong></div>
           <div><span>Estado</span><strong>{{ operario.estado }}</strong></div>
           <div><span>Salario</span><strong>{{ formatCurrency(operario.salarioBase) }}</strong></div>
         </div>

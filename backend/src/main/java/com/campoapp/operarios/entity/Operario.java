@@ -42,7 +42,9 @@ public class Operario extends AuditableEntity {
     @Column(name = "documento_tipo", length = 20)
     private String documentoTipo;
 
-    @Column(name = "documento_numero", nullable = false, length = 40)
+    // Nullable: las fichas auto-provisionadas desde el registro no tienen documento
+    // hasta que RRHH lo cargue (ver migracion V44). El alta manual sigue exigiendolo.
+    @Column(name = "documento_numero", length = 40)
     private String documentoNumero;
 
     @Column(length = 60)

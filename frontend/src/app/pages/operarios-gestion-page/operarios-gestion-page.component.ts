@@ -210,6 +210,8 @@ export class OperariosGestionPageComponent implements OnInit {
   protected statusClass(status?: string) {
     const normalized = (status ?? '').toUpperCase()
     if (normalized === 'INACTIVO' || normalized === 'SUSPENDIDO') return 'danger'
+    // Fichas auto-provisionadas llegan como PENDIENTE: estilo de atencion ambar
+    if (normalized === 'PENDIENTE') return 'pending'
     if (normalized === 'LICENCIA') return 'warning'
     return 'success'
   }
