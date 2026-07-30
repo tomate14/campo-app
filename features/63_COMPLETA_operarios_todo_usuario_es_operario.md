@@ -70,4 +70,6 @@ cada `user` tenga **siempre** su fila en `operarios`.
 - Feature 15 (gestión de operarios), 39 (first-login / must_change_password).
 
 ## Estado
-Pendiente.
+Realizada. Verificada end-to-end contra el stack Docker (V44 aplica, backfill
+provisiona al admin, un usuario recién registrado aparece en el panel con estado
+PENDIENTE y documento vacío). Mergeada a master.

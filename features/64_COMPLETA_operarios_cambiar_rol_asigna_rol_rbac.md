@@ -74,4 +74,6 @@ operativo" → "Rol" para reflejar que es el rol real.
 - Feature 41 (roles/menú por permisos), 63 (todo usuario es un operario).
 
 ## Estado
-Pendiente.
+Realizada. Verificada end-to-end contra el stack Docker (cambiar a operario →
+user_roles=operario y /menu-options/me=19; cambiar a contador → reemplaza y
+menú=6; rol inexistente → error limpio). Mergeada a master.
