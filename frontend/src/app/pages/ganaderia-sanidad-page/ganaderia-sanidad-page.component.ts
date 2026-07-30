@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { API_BASE_URL } from '../../core/services/api.config';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
+import { OperariosService } from '../../core/services/operarios.service';
+import type { Operario } from '../../core/models/operarios.models';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import type {
   Animal,
@@ -30,6 +32,7 @@ type SanidadTab = 'APLICACIONES' | 'TRATAMIENTOS' | 'DIAGNOSTICOS';
 })
 export class GanaderiaSanidadPageComponent implements OnInit {
   private readonly ganaderiaService = inject(GanaderiaService);
+  private readonly operariosService = inject(OperariosService);
 
   protected readonly loading = signal(false);
   protected readonly saving = signal(false);
@@ -37,6 +40,7 @@ export class GanaderiaSanidadPageComponent implements OnInit {
 
   protected readonly dashboard = signal<SanidadDashboard | null>(null);
   protected readonly animales = signal<Animal[]>([]);
+  protected readonly operarios = signal<Operario[]>([]);
   protected readonly vacunas = signal<VacunaCatalogo[]>([]);
   protected readonly aplicaciones = signal<AplicacionVacuna[]>([]);
   protected readonly tratamientos = signal<TratamientoMedicamento[]>([]);
@@ -117,6 +121,15 @@ export class GanaderiaSanidadPageComponent implements OnInit {
     observaciones: '',
   });
 
+  // Operarios activos: replica client-side de extraParams { estado: 'ACTIVO' }.
+  protected readonly operariosActivos = computed(() =>
+    this.operarios().filter((operario) => this.normalizeToken(operario.estado) === 'ACTIVO'),
+  );
+  // Veterinarios habilitados: replica client-side de extraParams { estado: 'ACTIVO', rol: 'VETERINARIO' }.
+  protected readonly veterinarios = computed(() =>
+    this.operariosActivos().filter((operario) => this.normalizeToken(operario.rolOperativo) === 'VETERINARIO'),
+  );
+
   protected readonly alertasCriticas = computed(() =>
     (this.dashboard()?.alertasVacunas ?? []).filter((item) => item.estado === 'VENCIDA').length,
   );
@@ -178,6 +191,11 @@ export class GanaderiaSanidadPageComponent implements OnInit {
   protected loadAll() {
     this.loading.set(true);
     this.errorMessage.set('');
+    // Carga unica de operarios; el filtrado por estado/rol se resuelve con computeds en memoria.
+    this.operariosService.getOperarios().subscribe({
+      next: (operarios) => this.operarios.set(operarios),
+      error: () => this.operarios.set([]),
+    });
     this.ganaderiaService.getAnimales({ estado: 'ACTIVO' }).subscribe({
       next: (animales) => {
         this.animales.set(animales);
@@ -473,6 +491,15 @@ export class GanaderiaSanidadPageComponent implements OnInit {
       tratamientoIndicado: form.tratamientoIndicado || undefined,
       observaciones: form.observaciones || undefined,
     };
+  }
+
+  // Normaliza texto (NFD + mayusculas, sin acentos) para comparar estado/rol de operarios.
+  private normalizeToken(value?: string) {
+    return (value ?? '')
+      .trim()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .toUpperCase();
   }
 
   private failLoad() {

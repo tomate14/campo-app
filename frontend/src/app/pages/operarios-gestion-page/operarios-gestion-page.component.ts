@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { API_BASE_URL } from '../../core/services/api.config'
 import { AdminMenuService } from '../../core/services/admin-menu.service'
 import { OperariosService } from '../../core/services/operarios.service'
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
@@ -38,13 +37,13 @@ export class OperariosGestionPageComponent implements OnInit {
   protected readonly pageSize = 8
   protected readonly filters = signal({ search: '', estado: '', rol: '' })
   protected readonly editingId = signal<string | null>(null)
-  protected readonly operariosEndpoint = `${API_BASE_URL}/operarios/gestion/operarios`
-  protected readonly activeOperarioParams = { estado: 'ACTIVO' }
 
   protected readonly operarioForm = signal<OperarioRequest>(this.emptyOperario())
   protected readonly documentoForm = signal<OperarioDocumentoRequest>(this.emptyDocumento())
   protected readonly rolForm = signal<OperarioHistorialRolRequest>(this.emptyRol())
 
+  // Operarios activos para el combo de responsable (reutiliza la lista ya cargada en resumen; reemplaza extraParams estado:ACTIVO)
+  protected readonly operariosActivos = computed(() => (this.resumen()?.operarios ?? []).filter((operario) => operario.estado === 'ACTIVO'))
   protected readonly selectedOperario = computed(() => this.resumen()?.operarios.find((operario) => operario.id === this.selectedId()) ?? null)
   protected readonly totalItems = computed(() => this.resumen()?.operarios.length ?? 0)
   protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalItems() / this.pageSize)))

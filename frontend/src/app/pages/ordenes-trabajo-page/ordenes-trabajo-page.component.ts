@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { API_BASE_URL } from '../../core/services/api.config'
 import { AgricolaService } from '../../core/services/agricola.service'
 import { OperariosService } from '../../core/services/operarios.service'
 import { OrdenesTrabajoService } from '../../core/services/ordenes-trabajo.service'
@@ -32,12 +31,6 @@ export class OrdenesTrabajoPageComponent implements OnInit {
   private readonly operariosService = inject(OperariosService)
   private readonly agricolaService = inject(AgricolaService)
 
-  protected readonly endpoints = {
-    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
-    lotes: `${API_BASE_URL}/agricola/lotes`,
-  }
-  protected readonly activeOperarioParams = { estado: 'ACTIVO' }
-
   protected readonly resumen = signal<OrdenTrabajoResumen | null>(null)
   protected readonly operarios = signal<Operario[]>([])
   protected readonly lotes = signal<Lote[]>([])
@@ -60,6 +53,9 @@ export class OrdenesTrabajoPageComponent implements OnInit {
   protected readonly ordenForm = signal<OrdenTrabajoRequest>(this.emptyOrden())
   protected readonly actividadForm = signal<OrdenTrabajoActividadRequest>(this.emptyActividad())
   protected readonly cierreForm = signal<OrdenTrabajoCierreRequest>(this.emptyCierre())
+
+  // Operarios activos para los combos (reemplaza el filtro extraParams estado:ACTIVO)
+  protected readonly operariosActivos = computed(() => this.operarios().filter((operario) => operario.estado === 'ACTIVO'))
 
   protected readonly ordenes = computed(() => this.resumen()?.ordenes ?? [])
   protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.ordenes().length / this.pageSize)))

@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { API_BASE_URL } from '../../core/services/api.config';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
+import { OperariosService } from '../../core/services/operarios.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import type {
   AlimentacionResumen,
   Animal,
   DietaRequest,
   PesajeRequest,
+  Potrero,
   RegistroAlimentacionRequest,
 } from '../../core/models/ganaderia.models';
+import type { Operario } from '../../core/models/operarios.models';
 
 type AlimentacionTab = 'DIETAS' | 'SUMINISTROS' | 'PESAJES' | 'ALERTAS';
 
@@ -23,6 +25,7 @@ type AlimentacionTab = 'DIETAS' | 'SUMINISTROS' | 'PESAJES' | 'ALERTAS';
 })
 export class GanaderiaAlimentacionPageComponent implements OnInit {
   private readonly ganaderiaService = inject(GanaderiaService);
+  private readonly operariosService = inject(OperariosService);
 
   protected readonly resumen = signal<AlimentacionResumen | null>(null);
   protected readonly animales = signal<Animal[]>([]);
@@ -33,12 +36,11 @@ export class GanaderiaAlimentacionPageComponent implements OnInit {
   protected readonly modal = signal<'DIETA' | 'SUMINISTRO' | 'PESAJE' | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = 3;
-  protected readonly endpoints = {
-    animales: `${API_BASE_URL}/ganaderia/trazabilidad/animales`,
-    potreros: `${API_BASE_URL}/ganaderia/potreros`,
-    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
-  };
-  protected readonly activeOperarioParams = { estado: 'ACTIVO' };
+  // Catalogos que alimentan los selects con buscador, cargados una sola vez.
+  protected readonly potreros = signal<Potrero[]>([]);
+  protected readonly operarios = signal<Operario[]>([]);
+  // Solo operarios activos para el combo de responsable (replica extraParams {estado:'ACTIVO'}).
+  protected readonly operariosActivos = computed(() => this.operarios().filter((operario) => operario.estado === 'ACTIVO'));
   protected readonly metodoPesajeOptions = [
     { value: 'Balanza electronica', label: 'Balanza electronica' },
     { value: 'Balanza mecanica', label: 'Balanza mecanica' },
@@ -115,6 +117,13 @@ export class GanaderiaAlimentacionPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAll();
+    this.loadCatalogos();
+  }
+
+  private loadCatalogos() {
+    // Los catalogos de potreros y operarios se cargan una sola vez (no por combo).
+    this.ganaderiaService.getPotreros().subscribe((potreros) => this.potreros.set(potreros));
+    this.operariosService.getOperarios().subscribe((operarios) => this.operarios.set(operarios));
   }
 
   protected loadAll() {

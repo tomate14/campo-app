@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit, inject, signal } from '@angular/core'
+import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { API_BASE_URL } from '../../core/services/api.config'
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
 import { AgricolaService } from '../../core/services/agricola.service'
+import { OperariosService } from '../../core/services/operarios.service'
+import type { Operario } from '../../core/models/operarios.models'
 import type { InsumoAgricola, PageResponse } from '../../core/models/agricola.models'
 import type { MetodoPago, TipoClienteFiscal } from '../../core/services/finanzas.service'
 import { FinanzasComprasService, type CompraProveedor, type CompraRequest, type ComprasDashboard, type EstadoCompra, type PagoProveedor, type PagoProveedorRequest, type ProveedorFinanciero, type ProveedorRequest, type TipoComprobanteCompra } from '../../core/services/finanzas-compras.service'
@@ -21,14 +23,15 @@ type Modal = 'PROVEEDOR' | 'COMPRA' | 'PAGO' | 'DETALLE_COMPRA' | null
 export class FinanzasComprasPageComponent implements OnInit {
   private readonly service = inject(FinanzasComprasService)
   private readonly agricola = inject(AgricolaService)
+  private readonly operariosService = inject(OperariosService)
   protected readonly API_BASE_URL = API_BASE_URL
   protected readonly endpoints = {
-    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
-    proveedores: `${API_BASE_URL}/finanzas/compras-proveedores/proveedores`,
     compras: `${API_BASE_URL}/finanzas/compras-proveedores/compras`,
-    insumos: `${API_BASE_URL}/inventario/insumos`,
   }
-  protected readonly activeOperarioParams = { estado: 'ACTIVO' }
+  // Catalogos cargados una sola vez para los selects con buscador (feature 62)
+  protected readonly proveedores = signal<ProveedorFinanciero[]>([])
+  protected readonly operarios = signal<Operario[]>([])
+  protected readonly operariosActivos = computed(() => this.operarios().filter(o => o.estado === 'ACTIVO'))
   protected readonly dashboard = signal<ComprasDashboard | null>(null)
   protected readonly proveedoresPage = signal<PageResponse<ProveedorFinanciero> | null>(null)
   protected readonly comprasPage = signal<PageResponse<CompraProveedor> | null>(null)
@@ -62,6 +65,9 @@ export class FinanzasComprasPageComponent implements OnInit {
   ngOnInit() {
     this.loadAll()
     this.agricola.getInsumosActivos().subscribe({ next: v => this.insumos.set(v), error: () => undefined })
+    // Cargar catalogos una sola vez para los selects con buscador (feature 62)
+    this.service.proveedores({ size: 1000 }).subscribe({ next: v => this.proveedores.set(v.content), error: () => undefined })
+    this.operariosService.getOperarios().subscribe({ next: v => this.operarios.set(v), error: () => undefined })
   }
 
   protected loadAll() { this.loadDashboard(); this.loadCompras(); this.loadProveedores(); this.loadPagos() }

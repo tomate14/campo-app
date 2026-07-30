@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { API_BASE_URL } from '../../core/services/api.config'
+import { AgricolaService } from '../../core/services/agricola.service'
 import { MaquinariaService } from '../../core/services/maquinaria.service'
+import { OperariosService } from '../../core/services/operarios.service'
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
+import type { Lote } from '../../core/models/agricola.models'
+import type { Operario } from '../../core/models/operarios.models'
 import type {
   DocumentoMaquinariaRequest,
   EstadoMaquinariaRequest,
@@ -24,6 +27,8 @@ type MaquinariaModal = 'MAQUINA' | 'USO' | 'DOCUMENTO' | 'ESTADO' | null
 })
 export class MaquinariaInventarioPageComponent implements OnInit {
   private readonly maquinariaService = inject(MaquinariaService)
+  private readonly operariosService = inject(OperariosService)
+  private readonly agricolaService = inject(AgricolaService)
 
   protected readonly resumen = signal<MaquinariaResumen | null>(null)
   protected readonly selectedId = signal('')
@@ -33,12 +38,14 @@ export class MaquinariaInventarioPageComponent implements OnInit {
   protected readonly modal = signal<MaquinariaModal>(null)
   protected readonly currentPage = signal(1)
   protected readonly pageSize = 5
-  protected readonly endpoints = {
-    maquinas: `${API_BASE_URL}/maquinaria/inventario/maquinas`,
-    lotes: `${API_BASE_URL}/agricola/lotes`,
-    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
-  }
-  protected readonly activeOperarioParams = { estado: 'ACTIVO' }
+
+  // Catalogos cargados una sola vez para alimentar los combos con buscador
+  protected readonly maquinas = signal<Maquinaria[]>([])
+  protected readonly operarios = signal<Operario[]>([])
+  protected readonly lotes = signal<Lote[]>([])
+
+  // Solo operarios activos para los combos de responsable/operario
+  protected readonly operariosActivos = computed(() => this.operarios().filter((operario) => operario.estado === 'ACTIVO'))
 
   protected readonly filters = signal({ tipo: '', estado: '', ubicacion: '' })
 
@@ -114,6 +121,23 @@ export class MaquinariaInventarioPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadResumen()
+    this.loadCatalogos()
+  }
+
+  // Carga unica de maquinas, operarios y lotes para los combos con buscador
+  private loadCatalogos() {
+    this.maquinariaService.getMaquinas().subscribe({
+      next: (maquinas) => this.maquinas.set(maquinas),
+      error: () => this.maquinas.set([]),
+    })
+    this.operariosService.getOperarios().subscribe({
+      next: (operarios) => this.operarios.set(operarios),
+      error: () => this.operarios.set([]),
+    })
+    this.agricolaService.getLotes().subscribe({
+      next: (lotes) => this.lotes.set(lotes),
+      error: () => this.lotes.set([]),
+    })
   }
 
   protected loadResumen() {

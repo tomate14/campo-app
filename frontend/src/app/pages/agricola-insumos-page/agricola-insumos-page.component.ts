@@ -2,7 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AgricolaService } from '../../core/services/agricola.service';
-import { API_BASE_URL } from '../../core/services/api.config';
+import { FinanzasComprasService, type ProveedorFinanciero } from '../../core/services/finanzas-compras.service';
+import { OperariosService } from '../../core/services/operarios.service';
+import type { Operario } from '../../core/models/operarios.models';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import type {
   InsumoAgricola,
@@ -30,6 +32,8 @@ type ModalType = 'INSUMO' | 'STOCK' | 'MOVIMIENTO' | null;
 })
 export class AgricolaInsumosPageComponent implements OnInit {
   private readonly agricolaService = inject(AgricolaService);
+  private readonly comprasService = inject(FinanzasComprasService);
+  private readonly operariosService = inject(OperariosService);
 
   protected readonly dashboard = signal<InsumosDashboard | null>(null);
   protected readonly insumosPage = signal<PageResponse<InsumoAgricola> | null>(null);
@@ -46,11 +50,10 @@ export class AgricolaInsumosPageComponent implements OnInit {
   protected readonly activeDetailTab = signal<'STOCK' | 'MOVIMIENTOS'>('STOCK');
   protected readonly activeAlertTab = signal<'REORDEN' | 'VENCIMIENTOS'>('REORDEN');
   protected readonly errorMessage = signal('');
-  protected readonly endpoints = {
-    operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
-    proveedores: `${API_BASE_URL}/finanzas/compras-proveedores/proveedores`,
-  };
-  protected readonly activeOperarioParams = { estado: 'ACTIVO' };
+  // Catalogos cargados una sola vez para los selects con buscador (feature 62)
+  protected readonly proveedores = signal<ProveedorFinanciero[]>([]);
+  protected readonly operarios = signal<Operario[]>([]);
+  protected readonly operariosActivos = computed(() => this.operarios().filter((o) => o.estado === 'ACTIVO'));
   protected readonly filters = signal<{ search: string; tipo: '' | TipoInsumoAgricola; activo: '' | 'true' | 'false' }>({ search: '', tipo: '', activo: '' });
   protected readonly insumoPageIndex = signal(0);
   protected readonly stockPageIndex = signal(0);
@@ -139,6 +142,9 @@ export class AgricolaInsumosPageComponent implements OnInit {
     this.loadMovimientos();
     this.agricolaService.getLotes().subscribe({ next: (lotes) => this.lotes.set(lotes), error: () => undefined });
     this.agricolaService.getInsumosActivos().subscribe({ next: (insumos) => this.insumosActivos.set(insumos), error: () => undefined });
+    // Cargar catalogos una sola vez para los selects con buscador (feature 62)
+    this.comprasService.proveedores({ size: 1000 }).subscribe({ next: (page) => this.proveedores.set(page.content), error: () => undefined });
+    this.operariosService.getOperarios().subscribe({ next: (operarios) => this.operarios.set(operarios), error: () => undefined });
   }
 
   protected loadDashboard() {
