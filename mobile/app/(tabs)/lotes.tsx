@@ -48,7 +48,6 @@ import type { DeteccionMapItem, LoteMapItem, MapCommand, MapMode, MapPoint, MapR
 
 const c = Colors.dark
 
-const palette = ['#9FE870', '#6EA8FF', '#9A7DFF', '#FFB84D', '#39D0D8', '#75E4B3']
 const defaultRegion: MapRegion = {
   latitude: -34.6037,
   longitude: -58.3816,
@@ -571,7 +570,7 @@ function LoteHistoryPanel({
 
 function buildMapItems(lotes: Lote[], detecciones: DeteccionPlaga[]): LoteMapItem[] {
   return lotes
-    .map((lote, index) => {
+    .map((lote) => {
       const polygon = parsePolygon(lote.poligono)
       const fallback = fallbackCoordinate(lote)
       const coordinates = polygon.length >= 3 ? polygon : fallback ? [fallback] : []
@@ -579,7 +578,7 @@ function buildMapItems(lotes: Lote[], detecciones: DeteccionPlaga[]): LoteMapIte
 
       return {
         lote,
-        color: loteHealthColor(lote.id, detecciones) ?? palette[index % palette.length],
+        color: loteHealthColor(lote.id, detecciones),
         polygon: polygon.length >= 3 ? polygon : fallbackSquare(fallback as MapPoint),
         center: polygon.length >= 3 ? centroid(polygon) : fallback as MapPoint,
       }
@@ -629,7 +628,7 @@ function detectionCoordinate(deteccion: DeteccionPlaga): MapPoint | null {
   return { latitude, longitude }
 }
 
-function loteHealthColor(loteId: string, detecciones: DeteccionPlaga[]): string | null {
+function loteHealthColor(loteId: string, detecciones: DeteccionPlaga[]): string {
   const severities = detecciones
     .filter((deteccion) => deteccion.loteId === loteId && ['ABIERTA', 'EN_TRATAMIENTO'].includes(deteccion.estado))
     .map((deteccion) => deteccion.severidad)
@@ -638,7 +637,8 @@ function loteHealthColor(loteId: string, detecciones: DeteccionPlaga[]): string 
   if (severities.includes('ALTA')) return '#FF8A4C'
   if (severities.includes('MEDIA')) return '#FFB84D'
   if (severities.includes('BAJA')) return '#A3E635'
-  return null
+  // Lote sano (sin detecciones abiertas): verde, identico a la web
+  return '#9FE870'
 }
 
 function severityColorFor(value?: SeveridadPlaga): string {

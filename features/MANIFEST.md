@@ -17,8 +17,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 68
-- Realizadas: 42
+- Total de historias registradas: 69
+- Realizadas: 43
 - Parciales: 0
 - Pendientes: 24
 - Saltadas: 2
@@ -98,11 +98,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 66 | `66_plagas_web_pin_deteccion_sin_coordenadas.md` | Agricultura | Realizada | Bug de paridad web/mobile en el mapa de detecciones de plagas: una deteccion sin coordenadas propias no dibujaba pin en el web (solo en la tabla), mientras que mobile la ubica en el centro del lote. Fix: el web replica el fallback del mobile (computed `loteCenters` + centroide del poligono) en el computed `pins()`. Verificado contra Docker (1 -> 2 markers). Resuelto en el branch de la feature 65 por pedido del usuario. |
 | 67 | `67_frontend_sidebar_scrollbar_colapsado.md` | Frontend | Realizada | Sidebar colapsado: scrollbar vertical con la identidad verde premium (Firefox `scrollbar-color`/`-width` + `::-webkit-scrollbar`) y `overflow-x: hidden` para eliminar la barra horizontal cuando el menu esta colapsado. Solo CSS del `dashboard-shell`. Verificado con estilos computados. Resuelto en el branch de la feature 65 por pedido del usuario. |
 | 68 | `68_plagas_web_alta_deteccion_gps_automatico.md` | Agricultura | Realizada | Al crear una deteccion en el web, se captura automaticamente la posicion GPS del navegador (equivalente al boton de GPS del mobile), evitando detecciones sin coordenadas. Nuevo `capturarUbicacionActual()` + `nuevaDeteccion()` y boton "Usar mi ubicacion (GPS)"; nuevo valor de enum `WEB_GPS`. Verificado contra Docker (auto-fill con mock + backend acepta WEB_GPS). Resuelto en el branch de la feature 65 por pedido del usuario. |
+| 69 | `69_mobile_color_lote_sano_paridad_web.md` | Agricultura/Mobile | Realizada | El color de relleno del lote no coincidia entre web y mobile: solo diferia el lote sano (sin detecciones abiertas). Web usa siempre `#9FE870`; mobile devolvia null y caia en una paleta rotativa por indice. Fix en mobile (`lotes.tsx`): `loteHealthColor` devuelve `#9FE870` en su rama final y se elimina el fallback de paleta (y la constante sin uso). tsc verde. Resuelto en el branch de la feature 65 por pedido del usuario. |
 
 ## Registro por Dominio
 
 ### Agricultura
-- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37, 53, 66, 68.
+- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37, 53, 66, 68, 69.
 - Parciales: ninguna.
 - Pendientes: 25, 27, 29, 54, 55, 56, 57, 58, 59, 60.
 
@@ -159,6 +160,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-30: Feature 69 realizada: el color de relleno del lote no coincidia entre web y mobile. Web y mobile ya compartian criterio (salud por severidad de detecciones abiertas) y los hex de CRITICA/ALTA/MEDIA/BAJA; la unica diferencia era el lote sano: web siempre `#9FE870`, mobile devolvia null y caia en una paleta rotativa por indice (cada lote sano de otro color, y el ambar colisionaba con MEDIA). Fix en mobile (`lotes.tsx`): `loteHealthColor` devuelve `#9FE870` en la rama final y se elimina el fallback `palette[index % ...]` (+ la constante `palette` sin uso). tsc de mobile verde. Resuelto en el branch de la feature 65 por pedido del usuario.
 - 2026-07-30: Feature 68 realizada: al crear una deteccion en el web se captura automaticamente la posicion GPS del navegador (emula el boton de GPS del mobile), evitando que se generen detecciones sin coordenadas (causa raiz del pin faltante de la feature 66). `capturarUbicacionActual()` (navigator.geolocation, high accuracy, precisionMetros) + `nuevaDeteccion()` en el boton "Registrar evento" + boton visible "Usar mi ubicacion (GPS)"; nuevo valor de enum `WEB_GPS` (back y front). Verificado contra Docker: el form abre con lat/lng precargadas (mock de getCurrentPosition) y el backend acepta/persiste WEB_GPS. Resuelto en el branch de la feature 65 por pedido del usuario.
 - 2026-07-30: Feature 67 realizada (solo CSS del sidebar): con el menu colapsado se veian dos scrollbars grises por defecto. Se le dio a la barra vertical la identidad verde premium de Campo App (`scrollbar-color`/`scrollbar-width` + `::-webkit-scrollbar` con gradiente verde->azul) y se elimino la barra horizontal en colapsado (`.collapsed .nav-section { overflow-x: hidden }`). Verificado con estilos computados contra Docker. Resuelto en el branch de la feature 65 por pedido del usuario.
 - 2026-07-30: Feature 66 realizada (bug de paridad web/mobile): en el mapa web de detecciones de plagas, una deteccion sin coordenadas propias no dibujaba pin (solo aparecia en la tabla), mientras que mobile la ubicaba en el centro del lote. Se replico ese fallback en el web (`plagas-page.component.ts`: computed `loteCenters` + helper de centroide del poligono; `pins()` cae al centro del lote si la deteccion no trae coords). Verificado contra Docker con el dato real: el mapa paso de 1 a 2 markers, en paridad con la tabla y con mobile. Resuelto en el branch de la feature 65 por pedido explicito del usuario.
