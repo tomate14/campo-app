@@ -129,11 +129,35 @@
   gap: 7px;
   overflow-y: auto;
   padding-right: 2px;
+  /* Scrollbar con la identidad verde de Campo App (Firefox) */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(159, 232, 112, 0.45) transparent;
+}
+
+/* Scrollbar con la identidad verde de Campo App (WebKit/Chromium) */
+.nav-section::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.nav-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav-section::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(159, 232, 112, 0.55), rgba(110, 168, 255, 0.45));
+}
+
+.nav-section::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(159, 232, 112, 0.85), rgba(110, 168, 255, 0.7));
 }
 
 .collapsed .nav-section {
   align-items: center;
   width: 100%;
+  /* Colapsado: sin scroll horizontal, elimina la barra del eje X */
+  overflow-x: hidden;
 }
 
 .section-title {

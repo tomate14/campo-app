@@ -17,8 +17,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 66
-- Realizadas: 40
+- Total de historias registradas: 67
+- Realizadas: 41
 - Parciales: 0
 - Pendientes: 24
 - Saltadas: 2
@@ -96,6 +96,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 64 | `64_COMPLETA_operarios_cambiar_rol_asigna_rol_rbac.md` | Operarios | Realizada | Bug: asignar el rol "operario" desde el panel no daba menu porque solo se cambiaba `operarios.rol_operativo` (texto) y nunca `user_roles` (rol RBAC del que depende el menu). Fix backend: `cambiarRol` (y el alta/edicion) reemplazan el rol RBAC del usuario por el rol elegido; `rol_operativo` pasa a referenciar el nombre del rol. El frontend ya enviaba el roleName RBAC. |
 | 65 | `65_operarios_alta_email.md` | Operarios | Realizada | Campo email en el alta/edicion de operario: opcional, con fallback al autogenerado; backend valida formato (`@Email`) y unicidad y lo usa como email de login del user; la contrasena inicial y el primer login no cambian. Verificada end-to-end contra Docker (alta con/sin email, duplicado e invalido). |
 | 66 | `66_plagas_web_pin_deteccion_sin_coordenadas.md` | Agricultura | Realizada | Bug de paridad web/mobile en el mapa de detecciones de plagas: una deteccion sin coordenadas propias no dibujaba pin en el web (solo en la tabla), mientras que mobile la ubica en el centro del lote. Fix: el web replica el fallback del mobile (computed `loteCenters` + centroide del poligono) en el computed `pins()`. Verificado contra Docker (1 -> 2 markers). Resuelto en el branch de la feature 65 por pedido del usuario. |
+| 67 | `67_frontend_sidebar_scrollbar_colapsado.md` | Frontend | Realizada | Sidebar colapsado: scrollbar vertical con la identidad verde premium (Firefox `scrollbar-color`/`-width` + `::-webkit-scrollbar`) y `overflow-x: hidden` para eliminar la barra horizontal cuando el menu esta colapsado. Solo CSS del `dashboard-shell`. Verificado con estilos computados. Resuelto en el branch de la feature 65 por pedido del usuario. |
 
 ## Registro por Dominio
 
@@ -153,10 +154,11 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 43.
 
 ### Frontend
-- Realizadas: 44, 62.
+- Realizadas: 44, 62, 67.
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-30: Feature 67 realizada (solo CSS del sidebar): con el menu colapsado se veian dos scrollbars grises por defecto. Se le dio a la barra vertical la identidad verde premium de Campo App (`scrollbar-color`/`scrollbar-width` + `::-webkit-scrollbar` con gradiente verde->azul) y se elimino la barra horizontal en colapsado (`.collapsed .nav-section { overflow-x: hidden }`). Verificado con estilos computados contra Docker. Resuelto en el branch de la feature 65 por pedido del usuario.
 - 2026-07-30: Feature 66 realizada (bug de paridad web/mobile): en el mapa web de detecciones de plagas, una deteccion sin coordenadas propias no dibujaba pin (solo aparecia en la tabla), mientras que mobile la ubicaba en el centro del lote. Se replico ese fallback en el web (`plagas-page.component.ts`: computed `loteCenters` + helper de centroide del poligono; `pins()` cae al centro del lote si la deteccion no trae coords). Verificado contra Docker con el dato real: el mapa paso de 1 a 2 markers, en paridad con la tabla y con mobile. Resuelto en el branch de la feature 65 por pedido explicito del usuario.
 - 2026-07-30: Feature 65 realizada: campo email en el alta/edicion de operario. `OperarioRequest.email` (`@Email`, opcional); `createUserForOperario` usa el email informado o cae al username autogenerado (helper `resolveLoginEmail` valida unicidad); `actualizar` sincroniza `user.email`; el frontend suma el input en el modal con precarga en edicion. La contrasena inicial y el primer login no cambian. Verificada end-to-end contra Docker (alta con/sin email, duplicado, invalido; login con email + legajo). Gates verdes. Desarrollada en branch propia; pendiente de merge.
 - 2026-07-30: Feature 51 marcada `_COMPLETA_` (`51_COMPLETA_ganaderia_historiales_nombres_operarios.md`). Ya estaba Realizada y verificada (resolver de nombres de operarios/potreros en historiales); solo restaba el renombre. De paso se corrigio la seccion de dominio Ganaderia, que no listaba 49, 50 ni 51 entre las Realizadas.
