@@ -150,21 +150,40 @@ export class PlagasPageComponent {
     ? 'Seleccioná un punto para registrar una detección web. Los pins muestran alertas ya cargadas.'
     : 'Vista global de los lotes filtrados. Seleccioná un lote específico para registrar una detección.'
   );
+  // Centro (centroide) de cada lote a partir de su poligono, para ubicar
+  // detecciones sin coordenadas propias (fallback igual al del mobile).
+  private readonly loteCenters = computed<Map<string, { lat: number; lng: number }>>(() => {
+    const centers = new Map<string, { lat: number; lng: number }>();
+    this.lotes().forEach((lote) => {
+      const center = this.loteCenterFromPolygon(lote.poligono);
+      if (center) {
+        centers.set(lote.id, center);
+      }
+    });
+    return centers;
+  });
   protected readonly pins = computed<DeteccionPinGroup[]>(() => {
     const filters = this.filters();
     const groups = new Map<string, DeteccionPinGroup>();
 
+    const loteCenters = this.loteCenters();
     this.mapDetecciones().forEach((item) => {
-      const hasCoords = item.latitud !== undefined && item.longitud !== undefined;
       const sameLote = !filters.loteId || item.loteId === filters.loteId;
       const sameCultivo = !filters.cultivo || item.cultivo?.toLowerCase().includes(filters.cultivo.toLowerCase()) || false;
       const sameSeveridad = !filters.severidad || item.severidad === filters.severidad;
       const sameEstado = !filters.estado || item.estado === filters.estado;
-      if (!hasCoords || !sameLote || !sameCultivo || !sameSeveridad || !sameEstado) return;
+      if (!sameLote || !sameCultivo || !sameSeveridad || !sameEstado) return;
 
-      const latitud = Number(item.latitud);
-      const longitud = Number(item.longitud);
-      if (!Number.isFinite(latitud) || !Number.isFinite(longitud)) return;
+      // Coordenada propia de la deteccion; si no trae, fallback al centro del lote
+      // (mismo criterio que mobile, para que web y mobile muestren los mismos pines)
+      let latitud = Number(item.latitud);
+      let longitud = Number(item.longitud);
+      if (!Number.isFinite(latitud) || !Number.isFinite(longitud)) {
+        const center = loteCenters.get(item.loteId);
+        if (!center) return;
+        latitud = center.lat;
+        longitud = center.lng;
+      }
 
       const key = `${latitud.toFixed(7)},${longitud.toFixed(7)}`;
       const current = groups.get(key);
@@ -675,6 +694,28 @@ export class PlagasPageComponent {
 
     const sum = valid.reduce((acc, [lng, lat]) => [acc[0] + lng, acc[1] + lat], [0, 0]);
     return [sum[0] / valid.length, sum[1] / valid.length];
+  }
+
+  // Centroide (promedio de vertices) del poligono de un lote; null si no hay poligono valido.
+  private loteCenterFromPolygon(poligono?: string | null): { lat: number; lng: number } | null {
+    if (!poligono) {
+      return null;
+    }
+    try {
+      const geometry = JSON.parse(poligono) as Polygon | MultiPolygon;
+      if (geometry.type !== 'Polygon' && geometry.type !== 'MultiPolygon') {
+        return null;
+      }
+      const coords = this.flattenCoordinates(geometry)
+        .filter(([lng, lat]) => Number.isFinite(lng) && Number.isFinite(lat));
+      if (!coords.length) {
+        return null;
+      }
+      const sum = coords.reduce((acc, [lng, lat]) => [acc[0] + lng, acc[1] + lat], [0, 0]);
+      return { lng: sum[0] / coords.length, lat: sum[1] / coords.length };
+    } catch {
+      return null;
+    }
   }
 
   private flattenCoordinates(geometry: Polygon | MultiPolygon): [number, number][] {

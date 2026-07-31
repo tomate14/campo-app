@@ -17,8 +17,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 65
-- Realizadas: 39
+- Total de historias registradas: 66
+- Realizadas: 40
 - Parciales: 0
 - Pendientes: 24
 - Saltadas: 2
@@ -95,11 +95,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 63 | `63_COMPLETA_operarios_todo_usuario_es_operario.md` | Operarios | Realizada | Bug: el auto-registro desde login inserta solo en `users`, pero el panel de operarios lista solo `operarios`, por lo que los usuarios auto-registrados no aparecen. Modelo objetivo: todo usuario es un operario (1:1). Backend provisiona la ficha de operario al registrarse (legajo autogenerado, documento null, rol `SIN_ASIGNAR`, estado `PENDIENTE`) + backfill idempotente al arranque para usuarios existentes sin ficha; V44 hace `documento_numero` nullable. |
 | 64 | `64_COMPLETA_operarios_cambiar_rol_asigna_rol_rbac.md` | Operarios | Realizada | Bug: asignar el rol "operario" desde el panel no daba menu porque solo se cambiaba `operarios.rol_operativo` (texto) y nunca `user_roles` (rol RBAC del que depende el menu). Fix backend: `cambiarRol` (y el alta/edicion) reemplazan el rol RBAC del usuario por el rol elegido; `rol_operativo` pasa a referenciar el nombre del rol. El frontend ya enviaba el roleName RBAC. |
 | 65 | `65_operarios_alta_email.md` | Operarios | Realizada | Campo email en el alta/edicion de operario: opcional, con fallback al autogenerado; backend valida formato (`@Email`) y unicidad y lo usa como email de login del user; la contrasena inicial y el primer login no cambian. Verificada end-to-end contra Docker (alta con/sin email, duplicado e invalido). |
+| 66 | `66_plagas_web_pin_deteccion_sin_coordenadas.md` | Agricultura | Realizada | Bug de paridad web/mobile en el mapa de detecciones de plagas: una deteccion sin coordenadas propias no dibujaba pin en el web (solo en la tabla), mientras que mobile la ubica en el centro del lote. Fix: el web replica el fallback del mobile (computed `loteCenters` + centroide del poligono) en el computed `pins()`. Verificado contra Docker (1 -> 2 markers). Resuelto en el branch de la feature 65 por pedido del usuario. |
 
 ## Registro por Dominio
 
 ### Agricultura
-- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37, 53.
+- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37, 53, 66.
 - Parciales: ninguna.
 - Pendientes: 25, 27, 29, 54, 55, 56, 57, 58, 59, 60.
 
@@ -156,6 +157,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-07-30: Feature 66 realizada (bug de paridad web/mobile): en el mapa web de detecciones de plagas, una deteccion sin coordenadas propias no dibujaba pin (solo aparecia en la tabla), mientras que mobile la ubicaba en el centro del lote. Se replico ese fallback en el web (`plagas-page.component.ts`: computed `loteCenters` + helper de centroide del poligono; `pins()` cae al centro del lote si la deteccion no trae coords). Verificado contra Docker con el dato real: el mapa paso de 1 a 2 markers, en paridad con la tabla y con mobile. Resuelto en el branch de la feature 65 por pedido explicito del usuario.
 - 2026-07-30: Feature 65 realizada: campo email en el alta/edicion de operario. `OperarioRequest.email` (`@Email`, opcional); `createUserForOperario` usa el email informado o cae al username autogenerado (helper `resolveLoginEmail` valida unicidad); `actualizar` sincroniza `user.email`; el frontend suma el input en el modal con precarga en edicion. La contrasena inicial y el primer login no cambian. Verificada end-to-end contra Docker (alta con/sin email, duplicado, invalido; login con email + legajo). Gates verdes. Desarrollada en branch propia; pendiente de merge.
 - 2026-07-30: Feature 51 marcada `_COMPLETA_` (`51_COMPLETA_ganaderia_historiales_nombres_operarios.md`). Ya estaba Realizada y verificada (resolver de nombres de operarios/potreros en historiales); solo restaba el renombre. De paso se corrigio la seccion de dominio Ganaderia, que no listaba 49, 50 ni 51 entre las Realizadas.
 - 2026-07-30: Features 62, 63 y 64 mergeadas a master (en ese orden) y marcadas `_COMPLETA_`: `62_COMPLETA_frontend_selects_buscador_por_options.md`, `63_COMPLETA_operarios_todo_usuario_es_operario.md`, `64_COMPLETA_operarios_cambiar_rol_asigna_rol_rbac.md`. Estado `Realizada` para las tres. Contadores: Realizadas 38, Pendientes 24.
