@@ -305,6 +305,43 @@ export class PlagasPageComponent {
     return Math.min(this.currentPage() * this.pageSize, this.totalItems());
   }
 
+  protected readonly capturandoUbicacion = signal(false);
+
+  // Alta de deteccion desde el boton: abre el form y precarga la ubicacion actual
+  // por GPS del navegador (equivalente web al boton de GPS del mobile).
+  protected nuevaDeteccion() {
+    this.openModal('DETECCION');
+    this.capturarUbicacionActual();
+  }
+
+  // Captura la posicion actual del navegador y la vuelca al form de deteccion.
+  // Si el GPS se deniega o falla, se puede seguir cargando por click en el mapa.
+  protected capturarUbicacionActual() {
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
+      return;
+    }
+    this.capturandoUbicacion.set(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitud = Number(position.coords.latitude.toFixed(7));
+        const longitud = Number(position.coords.longitude.toFixed(7));
+        const precisionMetros = Number.isFinite(position.coords.accuracy)
+          ? Math.round(position.coords.accuracy)
+          : undefined;
+        this.deteccionForm.update((form) => ({
+          ...form,
+          latitud,
+          longitud,
+          precisionMetros,
+          origenGeolocalizacion: 'WEB_GPS',
+        }));
+        this.capturandoUbicacion.set(false);
+      },
+      () => this.capturandoUbicacion.set(false),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
+    );
+  }
+
   protected openModal(type: ModalType, deteccion?: DeteccionPlaga) {
     this.selectedDeteccion.set(deteccion ?? null);
     if (type !== 'HISTORICO') {

@@ -7,7 +7,7 @@
     </div>
     <div class="head-actions">
       <button class="btn-secondary" type="button" (click)="openModal('CATALOGO')">Nuevo cat&aacute;logo</button>
-      <button class="btn-primary" type="button" (click)="openModal('DETECCION')">Registrar evento</button>
+      <button class="btn-primary" type="button" (click)="nuevaDeteccion()">Registrar evento</button>
     </div>
   </header>
 
@@ -188,6 +188,7 @@
           <label><span>Estado</span><select [ngModel]="deteccionForm().estado" (ngModelChange)="deteccionForm.update(f => ({ ...f, estado: $event }))"><option *ngFor="let item of estados" [value]="item">{{ item }}</option></select></label>
           <label><span>Latitud</span><input type="number" step="0.0000001" [ngModel]="deteccionForm().latitud" (ngModelChange)="deteccionForm.update(f => ({ ...f, latitud: $event }))" /></label>
           <label><span>Longitud</span><input type="number" step="0.0000001" [ngModel]="deteccionForm().longitud" (ngModelChange)="deteccionForm.update(f => ({ ...f, longitud: $event }))" /></label>
+          <label class="gps-field"><span>Ubicaci&oacute;n</span><button class="btn-secondary gps-locate" type="button" [disabled]="capturandoUbicacion()" (click)="capturarUbicacionActual()"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8Z"/></svg>{{ capturandoUbicacion() ? 'Ubicando…' : 'Usar mi ubicación (GPS)' }}</button></label>
           <label><span>&Aacute;rea afectada ha</span><input type="number" [ngModel]="deteccionForm().areaAfectadaHa" (ngModelChange)="deteccionForm.update(f => ({ ...f, areaAfectadaHa: $event }))" /></label>
           <label><span>% afectado</span><input type="number" [ngModel]="deteccionForm().porcentajeAfectado" (ngModelChange)="deteccionForm.update(f => ({ ...f, porcentajeAfectado: $event }))" /></label>
           <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="deteccionForm().responsableId" (valueChange)="deteccionForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>
