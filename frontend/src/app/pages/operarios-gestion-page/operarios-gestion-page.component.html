@@ -193,6 +193,7 @@
           <label><span>Rol</span><select [ngModel]="operarioForm().rolOperativo" (ngModelChange)="operarioForm.update(f => ({ ...f, rolOperativo: $event }))"><option *ngFor="let role of roleOptions()" [value]="role.roleName">{{ roleLabel(role.roleName) }}</option></select></label>
           <label><span>Nombre</span><input [ngModel]="operarioForm().nombre" (ngModelChange)="operarioForm.update(f => ({ ...f, nombre: $event }))" /></label>
           <label><span>Apellido</span><input [ngModel]="operarioForm().apellido" (ngModelChange)="operarioForm.update(f => ({ ...f, apellido: $event }))" /></label>
+          <label><span>Email</span><input type="email" placeholder="Opcional: se autogenera si se deja vacío" [ngModel]="operarioForm().email" (ngModelChange)="operarioForm.update(f => ({ ...f, email: $event }))" /></label>
           <label><span>Documento</span><input [ngModel]="operarioForm().documentoNumero" (ngModelChange)="operarioForm.update(f => ({ ...f, documentoNumero: $event }))" /></label>
           <label><span>Estado</span><select [ngModel]="operarioForm().estado" (ngModelChange)="operarioForm.update(f => ({ ...f, estado: $event }))"><option>ACTIVO</option><option>DISPONIBLE</option><option>LICENCIA</option><option>SUSPENDIDO</option><option>INACTIVO</option></select></label>
           <label><span>Teléfono</span><input [ngModel]="operarioForm().telefono" (ngModelChange)="operarioForm.update(f => ({ ...f, telefono: $event }))" /></label>
