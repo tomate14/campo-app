@@ -10,7 +10,8 @@ import java.util.Optional;
 
 public interface UtilidadOpcionRepository extends JpaRepository<UtilidadOpcion, String> {
 
-    List<UtilidadOpcion> findByCategoriaAndActivoTrueAndDeletedAtIsNullOrderByOrdenAscValorAsc(String categoria);
+    // Orden alfabetico por valor (regla del apartado Utilidades).
+    List<UtilidadOpcion> findByCategoriaAndActivoTrueAndDeletedAtIsNullOrderByValorAsc(String categoria);
 
     boolean existsByCategoriaAndValorAndDeletedAtIsNull(String categoria, String valor);
 

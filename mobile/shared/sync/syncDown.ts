@@ -36,6 +36,8 @@ const DATASETS: Array<{ queryKey: unknown[]; fetch: () => Promise<unknown> }> = 
   { queryKey: ['plagas-detecciones'], fetch: () => getDeteccionesPlaga() },
   // Catalogo de destino de cosecha (feature 60): misma key que useUtilidadOpciones.
   { queryKey: ['utilidad-opciones', 'DESTINO_COSECHA'], fetch: () => getUtilidadOpciones('DESTINO_COSECHA') },
+  // Catalogo de tipo de perdida de cosecha (feature 70): misma key que useUtilidadOpciones.
+  { queryKey: ['utilidad-opciones', 'TIPO_PERDIDA_COSECHA'], fetch: () => getUtilidadOpciones('TIPO_PERDIDA_COSECHA') },
   { queryKey: ['potreros-alertas', { estado: 'ABIERTA' }], fetch: () => getAlertasPotreros({ estado: 'ABIERTA' }) },
   // Historiales del animal replicados para lectura offline (feature 50); candidato a delta sync si el volumen crece.
   { queryKey: ['animal-historial', 'CLINICO'], fetch: () => getHistorialMedico() },

@@ -1,7 +1,5 @@
 export type TipoEvento = 'SIEMBRA' | 'MONITOREO_FENOLOGICO' | 'ALERTA' | 'TRATAMIENTO'
 export type CalidadGrano = 'PREMIUM' | 'ESTANDAR' | 'DESCUENTO'
-// Tipo de pérdida de cosecha (feature 60): cabezal, cola u otra causa.
-export type TipoPerdidaCosecha = 'CABEZAL' | 'COLA' | 'OTRO'
 export type TipoPlaga = 'PLAGA' | 'ENFERMEDAD' | 'MALEZA'
 export type SeveridadPlaga = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 export type EstadoDeteccionPlaga = 'ABIERTA' | 'EN_TRATAMIENTO' | 'CONTROLADA' | 'CERRADA'
@@ -113,7 +111,8 @@ export interface RegistroCosecha {
   hectareasCosechadas?: number
   perdidaKgHa?: number
   granosPerdidosKg?: number
-  tipoPerdida?: TipoPerdidaCosecha
+  // Feature 70: tipoPerdida ahora es el valor del catálogo configurable TIPO_PERDIDA_COSECHA.
+  tipoPerdida?: string
   destino?: string
   destinoCantidadTn?: number
   createdAt: string
@@ -132,7 +131,8 @@ export interface RegistroCosechaRequest {
   hectareasCosechadas?: number
   perdidaKgHa?: number
   granosPerdidosKg?: number
-  tipoPerdida?: TipoPerdidaCosecha
+  // Feature 70: tipoPerdida ahora es el valor del catálogo configurable TIPO_PERDIDA_COSECHA.
+  tipoPerdida?: string
   destino?: string
   destinoCantidadTn?: number
 }

@@ -1,7 +1,6 @@
 package com.campoapp.agricultura.dto;
 
 import com.campoapp.agricultura.entity.RegistroCosecha.CalidadGrano;
-import com.campoapp.agricultura.entity.TipoPerdidaCosecha;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +22,7 @@ public record RegistroCosechaResponse(
         BigDecimal hectareasCosechadas,
         BigDecimal perdidaKgHa,
         BigDecimal granosPerdidosKg,
-        TipoPerdidaCosecha tipoPerdida,
+        String tipoPerdida,
 
         // --- Feature 60: destino del dia ---
         String destino,

@@ -22,7 +22,7 @@ public class UtilidadOpcionServiceImpl implements UtilidadOpcionService {
 
     @Override
     public List<UtilidadOpcionResponse> listarPorCategoria(String categoria) {
-        return repository.findByCategoriaAndActivoTrueAndDeletedAtIsNullOrderByOrdenAscValorAsc(categoria)
+        return repository.findByCategoriaAndActivoTrueAndDeletedAtIsNullOrderByValorAsc(categoria)
                 .stream().map(this::toResponse).toList();
     }
 

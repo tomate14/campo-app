@@ -202,6 +202,33 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  /* Feature 70: máximo 4 opciones visibles; el resto se navega con scroll vertical.
+     4 filas de 46px + 3 gaps de 8px = 208px. */
+  max-height: 208px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Espacio para que la scrollbar no tape el botón de eliminar. */
+  padding-right: 6px;
+  /* Scrollbar con la identidad verde premium (igual que el sidebar). */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(159, 232, 112, 0.45) transparent;
+}
+
+.catalog-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.catalog-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.catalog-list::-webkit-scrollbar-thumb {
+  background: rgba(159, 232, 112, 0.45);
+  border-radius: 999px;
+}
+
+.catalog-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(159, 232, 112, 0.65);
 }
 
 .catalog-item {

@@ -50,9 +50,10 @@ public class RegistroCosecha extends AuditableEntity {
     @Column(name = "granos_perdidos_kg", precision = 12, scale = 2)
     private BigDecimal granosPerdidosKg;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_perdida", length = 40)
-    private TipoPerdidaCosecha tipoPerdida;
+    // Tipo de perdida: catalogo configurable de Utilidades (categoria TIPO_PERDIDA_COSECHA).
+    // Se guarda el string elegido para permitir dar de alta nuevos tipos desde el apartado.
+    @Column(name = "tipo_perdida", length = 160)
+    private String tipoPerdida;
 
     // --- Feature 60: destino del dia ---
     @Column(name = "destino", length = 160)

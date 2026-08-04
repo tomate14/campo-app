@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import type { CalidadGrano, EventoSiembra, EventoSiembraRequest, Lote, RegistroCosecha, RegistroCosechaRequest, TipoEvento, TipoPerdidaCosecha } from '../../core/models/agricola.models';
+import type { CalidadGrano, EventoSiembra, EventoSiembraRequest, Lote, RegistroCosecha, RegistroCosechaRequest, TipoEvento } from '../../core/models/agricola.models';
 import { AgricolaService } from '../../core/services/agricola.service';
 import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
 
@@ -28,7 +28,6 @@ export class SiembraPageComponent implements OnInit {
   protected promedio?: { loteId: string; rendimientoPromedioKgHa: number };
   protected readonly tipos: TipoEvento[] = ['SIEMBRA', 'MONITOREO_FENOLOGICO', 'ALERTA', 'TRATAMIENTO'];
   protected readonly calidades: CalidadGrano[] = ['PREMIUM', 'ESTANDAR', 'DESCUENTO'];
-  protected readonly tiposPerdida: TipoPerdidaCosecha[] = ['CABEZAL', 'COLA', 'OTRO'];
   protected form: EventoSiembraRequest = { loteId: '', tipoEvento: 'SIEMBRA', fecha: new Date().toISOString().slice(0, 10) };
   protected cosechaForm: RegistroCosechaRequest = { loteId: '', fecha: new Date().toISOString().slice(0, 10), rendimientoKgHa: 0, toneladasTotal: 0 };
 

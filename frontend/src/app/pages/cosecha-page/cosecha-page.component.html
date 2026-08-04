@@ -72,13 +72,13 @@
           <label><span>Pérdida (kg/ha)</span><input [(ngModel)]="form.perdidaKgHa" name="perdidaKgHa" type="number" step="0.01" min="0" /></label>
           <label><span>Granos perdidos (kg)</span><input [(ngModel)]="form.granosPerdidosKg" name="granosPerdidosKg" type="number" step="0.01" min="0" /></label>
         </div>
-        <label>
-          <span>Tipo de pérdida</span>
-          <select [(ngModel)]="form.tipoPerdida" name="tipoPerdida">
-            <option [ngValue]="undefined">Sin clasificar</option>
-            <option *ngFor="let tipo of tiposPerdida" [ngValue]="tipo">{{ tipo }}</option>
-          </select>
-        </label>
+        <app-configurable-select
+          categoria="TIPO_PERDIDA_COSECHA"
+          label="Tipo de pérdida"
+          placeholder="Seleccionar tipo de pérdida..."
+          [value]="form.tipoPerdida ?? ''"
+          (valueChange)="form.tipoPerdida = $event"
+        ></app-configurable-select>
 
         <p class="form-section-title">Destino del día</p>
         <app-configurable-select

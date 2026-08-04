@@ -6,10 +6,9 @@ import { Colors } from '../../constants/colors'
 import { useLotes } from '../../shared/hooks/useLotes'
 import { useCreateCosecha } from '../../shared/hooks/useCosecha'
 import { useUtilidadOpciones } from '../../shared/hooks/useUtilidades'
-import type { CalidadGrano, TipoPerdidaCosecha } from '../../shared/types/agricola'
+import type { CalidadGrano } from '../../shared/types/agricola'
 
 const CALIDADES: CalidadGrano[] = ['PREMIUM', 'ESTANDAR', 'DESCUENTO']
-const TIPOS_PERDIDA: TipoPerdidaCosecha[] = ['CABEZAL', 'COLA', 'OTRO']
 
 export default function RegistroCosechaScreen() {
   const scheme = useColorScheme() ?? 'light'
@@ -18,6 +17,7 @@ export default function RegistroCosechaScreen() {
   const params = useLocalSearchParams<{ loteId?: string }>()
   const { data: lotes = [] } = useLotes()
   const { data: destinos = [] } = useUtilidadOpciones('DESTINO_COSECHA')
+  const { data: tiposPerdida = [] } = useUtilidadOpciones('TIPO_PERDIDA_COSECHA')
   const createCosecha = useCreateCosecha()
 
   const [loteId, setLoteId] = useState(params.loteId ?? '')
@@ -31,7 +31,7 @@ export default function RegistroCosechaScreen() {
   const [hectareasCosechadas, setHectareasCosechadas] = useState('')
   const [perdidaKgHa, setPerdidaKgHa] = useState('')
   const [granosPerdidosKg, setGranosPerdidosKg] = useState('')
-  const [tipoPerdida, setTipoPerdida] = useState<TipoPerdidaCosecha | ''>('')
+  const [tipoPerdida, setTipoPerdida] = useState('')
   const [destino, setDestino] = useState('')
   const [destinoCantidadTn, setDestinoCantidadTn] = useState('')
   const [observaciones, setObservaciones] = useState('')
@@ -183,13 +183,17 @@ export default function RegistroCosechaScreen() {
 
         <View style={styles.row}>
           <Text style={styles.label}>Tipo de perdida</Text>
-          <View style={styles.chips}>
-            {TIPOS_PERDIDA.map((tipo) => (
-              <TouchableOpacity key={tipo} style={[styles.chip, tipoPerdida === tipo && styles.chipActive]} onPress={() => setTipoPerdida(tipoPerdida === tipo ? '' : tipo)} activeOpacity={0.8}>
-                <Text style={[styles.chipText, tipoPerdida === tipo && styles.chipTextActive]}>{tipo}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          {tiposPerdida.length > 0 ? (
+            <View style={styles.chips}>
+              {tiposPerdida.map((opcion) => (
+                <TouchableOpacity key={opcion.id} style={[styles.chip, tipoPerdida === opcion.valor && styles.chipActive]} onPress={() => setTipoPerdida(tipoPerdida === opcion.valor ? '' : opcion.valor)} activeOpacity={0.8}>
+                  <Text style={[styles.chipText, tipoPerdida === opcion.valor && styles.chipTextActive]}>{opcion.valor}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : (
+            <Text style={styles.subtitle}>No hay tipos de perdida configurados. Se administran desde Utilidades en la web.</Text>
+          )}
         </View>
 
         <View style={styles.row}>

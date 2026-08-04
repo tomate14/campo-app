@@ -28,6 +28,11 @@ const CATALOGOS: CatalogoDef[] = [
     titulo: 'Destino de la cosecha',
     descripcion: 'Destinos disponibles al registrar una cosecha (camión, silo, puerto, etc.).',
   },
+  {
+    categoria: 'TIPO_PERDIDA_COSECHA',
+    titulo: 'Tipo de pérdida',
+    descripcion: 'Tipos de pérdida de cosecha (cabezal, cola, etc.).',
+  },
 ];
 
 @Component({

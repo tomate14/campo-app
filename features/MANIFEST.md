@@ -17,8 +17,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 69
-- Realizadas: 44
+- Total de historias registradas: 70
+- Realizadas: 45
 - Parciales: 0
 - Pendientes: 23
 - Saltadas: 2
@@ -99,11 +99,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 67 | `67_COMPLETA_frontend_sidebar_scrollbar_colapsado.md` | Frontend | Realizada | Sidebar colapsado: scrollbar vertical con la identidad verde premium (Firefox `scrollbar-color`/`-width` + `::-webkit-scrollbar`) y `overflow-x: hidden` para eliminar la barra horizontal cuando el menu esta colapsado. Solo CSS del `dashboard-shell`. Verificado con estilos computados. Resuelto en el branch de la feature 65 por pedido del usuario. |
 | 68 | `68_COMPLETA_plagas_web_alta_deteccion_gps_automatico.md` | Agricultura | Realizada | Al crear una deteccion en el web, se captura automaticamente la posicion GPS del navegador (equivalente al boton de GPS del mobile), evitando detecciones sin coordenadas. Nuevo `capturarUbicacionActual()` + `nuevaDeteccion()` y boton "Usar mi ubicacion (GPS)"; nuevo valor de enum `WEB_GPS`. Verificado contra Docker (auto-fill con mock + backend acepta WEB_GPS). Resuelto en el branch de la feature 65 por pedido del usuario. |
 | 69 | `69_COMPLETA_mobile_color_lote_sano_paridad_web.md` | Agricultura/Mobile | Realizada | El color de relleno del lote no coincidia entre web y mobile: solo diferia el lote sano (sin detecciones abiertas). Web usa siempre `#9FE870`; mobile devolvia null y caia en una paleta rotativa por indice. Fix en mobile (`lotes.tsx`): `loteHealthColor` devuelve `#9FE870` en su rama final y se elimina el fallback de paleta (y la constante sin uso). tsc verde. Resuelto en el branch de la feature 65 por pedido del usuario. |
+| 70 | `70_utilidades_tipo_perdida_catalogo_y_reglas.md` | Agricultura | Realizada | Refina el apartado Utilidades (feature 60): el tipo de perdida de cosecha pasa a ser un catalogo configurable (`TIPO_PERDIDA_COSECHA`, V47 + ALTER de la columna a VARCHAR; tipoPerdida deja de ser enum en back/web/mobile) con dropdown + boton "+" en el form de cosecha. Regla del apartado Utilidades: cada catalogo muestra maximo 4 opciones + scrollbar Y verde premium, orden alfabetico (repo `OrderByValorAsc`), datos en la tabla generica. Verificado end-to-end contra Docker. Desarrollada en el branch de la feature 60. |
 
 ## Registro por Dominio
 
 ### Agricultura
-- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37, 53, 60, 66, 68, 69.
+- Realizadas: 00, 00_01, 01, 03, 10-reportes, 37, 53, 60, 66, 68, 69, 70.
 - Parciales: ninguna.
 - Pendientes: 25, 27, 29, 54, 55, 56, 57, 58, 59.
 
@@ -160,6 +161,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+- 2026-08-04: Feature 70 realizada (refinamiento del apartado Utilidades de la 60): el "tipo de perdida" de cosecha pasa a ser un catalogo configurable (`TIPO_PERDIDA_COSECHA`) en vez de un enum fijo, con dropdown + boton "+" para altas; el campo de cosecha toma sus opciones de la tabla (V47 seedea Cabezal/Cola/Otro y hace `tipo_perdida` VARCHAR; back/web/mobile pasan tipoPerdida de enum a string). Regla general del apartado Utilidades (aplica a todo catalogo): maximo 4 opciones visibles + scrollbar vertical verde premium, orden alfabetico (repo `OrderByValorAsc`), datos en la tabla generica `utilidad_opcion`. Verificado end-to-end contra Docker (orden alfabetico con alta de prueba, cosecha con string, max 4+scroll en la pantalla Utilidades, alta/baja OK). Gates verdes. Desarrollada en el branch de la feature 60.
 - 2026-08-04: Feature 60 realizada (backend + web + mobile). Cosecha con perdidas (area real %, ha cosechadas, granos perdidos, kg/ha, tipo cabezal/cola/otro) y destino del dia + apartado `resumenCosecha` en el dashboard agricola. Nuevo modulo "Utilidades": V45 crea la tabla generica `utilidad_opcion` (categoria/valor/activo/orden) + seed DESTINO_COSECHA (Camion/Silo/Puerto), permisos `read:utilidades`/`write:utilidades` asignados a super_admin y admin, y la opcion de menu `utilidades` con visibilidad por rol; CRUD `/api/v1/utilidades/opciones` (read/write). V46 extiende `registros_cosecha` (tipo_perdida como ENUM MySQL para pasar el validate de Hibernate). Web: pantalla Utilidades + sidebar + ruta, componente reutilizable `configurable-select` (dropdown + boton "+"), form de cosecha ampliado y seccion de dashboard. Mobile: form de cosecha con selector de destino desde el catalogo (alta solo en web). Verificado end-to-end contra Docker (admin con el permiso, menu, catalogo GET/POST, alta de cosecha con perdidas/destino, dashboard con datos). Se agrego el permiso al usuario admin@campoapp.com (rol super_admin) via V45. Gates verdes. Desarrollada en branch propia; pendiente de merge.
 - 2026-07-30: Feature 60 ampliada (spec): se agrega un apartado "Utilidades" en el menu (con permiso RBAC propio via feature 41) para administrar catalogos configurables que alimentan dropdowns del sistema. Primer catalogo: destino de la cosecha (dropdown con opciones base camion/silo/puerto + boton "+" para dar de alta un string nuevo), guardado en una tabla nueva (se recomienda generica: id/categoria/valor/activo/orden). Modulo reutilizable; otros dropdowns que lo usaran se especificaran mas adelante. Sigue Pendiente.
 - 2026-07-30: Features 65, 66, 67, 68 y 69 mergeadas a master (branch `65_operarios_alta_email`) y marcadas `_COMPLETA_`. Contadores sin cambios (ya estaban Realizadas): Total 69, Realizadas 43, Pendientes 24, Saltadas 2.

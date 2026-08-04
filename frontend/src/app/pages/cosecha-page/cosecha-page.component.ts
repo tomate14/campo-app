@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import type { CalidadGrano, Lote, RegistroCosecha, RegistroCosechaRequest, TipoPerdidaCosecha } from '../../core/models/agricola.models';
+import type { CalidadGrano, Lote, RegistroCosecha, RegistroCosechaRequest } from '../../core/models/agricola.models';
 import { AgricolaService } from '../../core/services/agricola.service';
 import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
 
@@ -21,7 +21,6 @@ export class CosechaPageComponent implements OnInit {
   protected showForm = false;
   protected promedio?: { loteId: string; rendimientoPromedioKgHa: number };
   protected readonly calidades: CalidadGrano[] = ['PREMIUM', 'ESTANDAR', 'DESCUENTO'];
-  protected readonly tiposPerdida: TipoPerdidaCosecha[] = ['CABEZAL', 'COLA', 'OTRO'];
   protected form: RegistroCosechaRequest = { loteId: '', fecha: new Date().toISOString().slice(0, 10), rendimientoKgHa: 0, toneladasTotal: 0 };
 
   ngOnInit() {
