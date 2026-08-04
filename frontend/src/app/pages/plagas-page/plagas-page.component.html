@@ -183,7 +183,7 @@
           <label><span>Lote</span><select [ngModel]="deteccionForm().loteId" (ngModelChange)="deteccionForm.update(f => ({ ...f, loteId: $event }))"><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
           <label><span>Plaga</span><select [ngModel]="deteccionForm().catalogoPlagaId" (ngModelChange)="deteccionForm.update(f => ({ ...f, catalogoPlagaId: $event }))"><option *ngFor="let item of catalogoOpciones()" [value]="item.id">{{ item.nombreComun }}</option></select></label>
           <label><span>Fecha</span><input type="datetime-local" [ngModel]="deteccionForm().fechaDeteccion" (ngModelChange)="deteccionForm.update(f => ({ ...f, fechaDeteccion: $event }))" /></label>
-          <label><span>Cultivo</span><input [ngModel]="deteccionForm().cultivo" (ngModelChange)="deteccionForm.update(f => ({ ...f, cultivo: $event }))" /></label>
+          <app-configurable-select categoria="CULTIVO" label="Cultivo" placeholder="Seleccionar cultivo..." [value]="deteccionForm().cultivo" (valueChange)="deteccionForm.update(f => ({ ...f, cultivo: $event }))"></app-configurable-select>
           <label><span>Severidad</span><select [ngModel]="deteccionForm().severidad" (ngModelChange)="deteccionForm.update(f => ({ ...f, severidad: $event }))"><option *ngFor="let item of severidades" [value]="item">{{ item }}</option></select></label>
           <label><span>Estado</span><select [ngModel]="deteccionForm().estado" (ngModelChange)="deteccionForm.update(f => ({ ...f, estado: $event }))"><option *ngFor="let item of estados" [value]="item">{{ item }}</option></select></label>
           <label><span>Latitud</span><input type="number" step="0.0000001" [ngModel]="deteccionForm().latitud" (ngModelChange)="deteccionForm.update(f => ({ ...f, latitud: $event }))" /></label>
@@ -260,7 +260,7 @@
         <div class="form-grid">
           <label><span>Nombre com&uacute;n</span><input [ngModel]="catalogoForm().nombreComun" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreComun: $event }))" /></label>
           <label><span>Nombre cient&iacute;fico</span><input [ngModel]="catalogoForm().nombreCientifico" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreCientifico: $event }))" /></label>
-          <label><span>Tipo</span><select [ngModel]="catalogoForm().tipo" (ngModelChange)="catalogoForm.update(f => ({ ...f, tipo: $event }))"><option *ngFor="let item of tipos" [value]="item">{{ item }}</option></select></label>
+          <app-configurable-select categoria="TIPO_PLAGA" label="Tipo" placeholder="Seleccionar tipo..." [value]="catalogoForm().tipo" (valueChange)="catalogoForm.update(f => ({ ...f, tipo: $event }))"></app-configurable-select>
           <label><span>Cultivos afectados</span><input [ngModel]="catalogoForm().cultivosAfectados" (ngModelChange)="catalogoForm.update(f => ({ ...f, cultivosAfectados: $event }))" /></label>
           <label><span>Umbral de acci&oacute;n</span><input [ngModel]="catalogoForm().umbralAccion" (ngModelChange)="catalogoForm.update(f => ({ ...f, umbralAccion: $event }))" /></label>
         </div>

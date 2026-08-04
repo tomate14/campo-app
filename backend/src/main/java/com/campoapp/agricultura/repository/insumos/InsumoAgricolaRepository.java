@@ -1,7 +1,6 @@
 package com.campoapp.agricultura.repository.insumos;
 
 import com.campoapp.agricultura.entity.insumos.InsumoAgricola;
-import com.campoapp.agricultura.entity.insumos.TipoInsumoAgricola;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,7 +28,7 @@ public interface InsumoAgricolaRepository extends JpaRepository<InsumoAgricola, 
         order by i.nombre asc
         """)
     Page<InsumoAgricola> findFiltered(@Param("search") String search,
-                                      @Param("tipo") TipoInsumoAgricola tipo,
+                                      @Param("tipo") String tipo,
                                       @Param("activo") Boolean activo,
                                       Pageable pageable);
 

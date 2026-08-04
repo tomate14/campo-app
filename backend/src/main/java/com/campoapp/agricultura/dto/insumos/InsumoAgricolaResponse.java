@@ -1,8 +1,5 @@
 package com.campoapp.agricultura.dto.insumos;
 
-import com.campoapp.agricultura.entity.insumos.TipoInsumoAgricola;
-import com.campoapp.agricultura.entity.insumos.UnidadMedidaInsumo;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,10 +8,10 @@ public record InsumoAgricolaResponse(
         String id,
         String codigo,
         String nombre,
-        TipoInsumoAgricola tipo,
+        String tipo,
         String marca,
         String presentacion,
-        UnidadMedidaInsumo unidadMedida,
+        String unidadMedida,
         String principioActivo,
         String proveedorId,
         String proveedor,

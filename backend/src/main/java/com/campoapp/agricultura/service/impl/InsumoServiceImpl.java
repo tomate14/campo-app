@@ -68,7 +68,7 @@ public class InsumoServiceImpl implements InsumoService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<InsumoAgricolaResponse> listarInsumos(String search, TipoInsumoAgricola tipo, Boolean activo, int page, int size) {
+    public Page<InsumoAgricolaResponse> listarInsumos(String search, String tipo, Boolean activo, int page, int size) {
         return insumoRepository.findFiltered(search, tipo, activo, PageRequest.of(page, size))
                 .map(this::toInsumoResponse);
     }

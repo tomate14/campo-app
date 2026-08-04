@@ -4,12 +4,15 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { Colors } from '../../constants/colors'
 import { useCreateLote } from '../../shared/hooks/useLotes'
+import { useUtilidadOpciones } from '../../shared/hooks/useUtilidades'
 
 export default function NuevoLoteScreen() {
   const scheme = useColorScheme() ?? 'light'
   const c = Colors[scheme]
   const router = useRouter()
   const createLote = useCreateLote()
+  // Catalogo configurable de cultivos de Utilidades (feature 71)
+  const { data: cultivoOpciones = [] } = useUtilidadOpciones('CULTIVO')
 
   const [nombre, setNombre] = useState('')
   const [area, setArea] = useState('')
@@ -35,6 +38,14 @@ export default function NuevoLoteScreen() {
       fontSize: 14, textAlignVertical: 'top',
     },
     row: { gap: 8 },
+    chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+    chip: {
+      minHeight: 44, justifyContent: 'center', borderRadius: 12, paddingHorizontal: 14,
+      borderWidth: 1, borderColor: c.border, backgroundColor: c.card,
+    },
+    chipActive: { borderColor: c.primary, backgroundColor: c.primary },
+    chipText: { color: c.foreground, fontSize: 14, fontWeight: '600' },
+    chipTextActive: { color: c.primaryForeground },
     actions: { flexDirection: 'row', gap: 12, marginTop: 12 },
     btnPrimary: {
       flex: 1, height: 52, borderRadius: 14, backgroundColor: c.primary,
@@ -58,7 +69,7 @@ export default function NuevoLoteScreen() {
       await createLote.mutateAsync({
         nombre: nombre.trim(),
         area: Number(area),
-        cultivo: cultivo.trim().toUpperCase(),
+        cultivo: cultivo.trim(),
         temporada: temporada.trim(),
         latitud: latitud.trim() ? Number(latitud) : undefined,
         longitud: longitud.trim() ? Number(longitud) : undefined,
@@ -85,7 +96,25 @@ export default function NuevoLoteScreen() {
 
         <View style={styles.row}>
           <Text style={styles.label}>Cultivo</Text>
-          <TextInput value={cultivo} onChangeText={setCultivo} style={styles.input} placeholder="MAIZ" placeholderTextColor={c.mutedForeground} />
+          {cultivoOpciones.length > 0 ? (
+            <View style={styles.chipRow}>
+              {cultivoOpciones.map(opcion => {
+                const active = cultivo === opcion.valor
+                return (
+                  <TouchableOpacity
+                    key={opcion.id}
+                    style={[styles.chip, active && styles.chipActive]}
+                    onPress={() => setCultivo(active ? '' : opcion.valor)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[styles.chipText, active && styles.chipTextActive]}>{opcion.valor}</Text>
+                  </TouchableOpacity>
+                )
+              })}
+            </View>
+          ) : (
+            <TextInput value={cultivo} onChangeText={setCultivo} style={styles.input} placeholder="MAIZ" placeholderTextColor={c.mutedForeground} />
+          )}
         </View>
 
         <View style={styles.row}>

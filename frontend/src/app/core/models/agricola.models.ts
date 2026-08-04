@@ -233,10 +233,12 @@ export interface InsumoAgricola {
   id: string
   codigo: string
   nombre: string
-  tipo: TipoInsumoAgricola
+  // Feature 71: tipo pasa a ser el valor del catálogo configurable TIPO_INSUMO.
+  tipo: string
   marca?: string
   presentacion?: string
-  unidadMedida: UnidadMedidaInsumo
+  // Feature 71: unidad pasa a ser el valor del catálogo configurable UNIDAD_INSUMO.
+  unidadMedida: string
   principioActivo?: string
   proveedorId?: string
   proveedor?: string
@@ -258,10 +260,11 @@ export interface InsumoAgricola {
 export interface InsumoAgricolaRequest {
   codigo: string
   nombre: string
-  tipo: TipoInsumoAgricola
+  // Feature 71: catálogos configurables TIPO_INSUMO y UNIDAD_INSUMO.
+  tipo: string
   marca?: string
   presentacion?: string
-  unidadMedida: UnidadMedidaInsumo
+  unidadMedida: string
   principioActivo?: string
   proveedorId?: string
   proveedor?: string
@@ -441,7 +444,8 @@ export interface CatalogoPlaga {
   id: string
   nombreComun: string
   nombreCientifico?: string
-  tipo: TipoPlaga
+  // Feature 71: tipo pasa a ser el valor del catálogo configurable TIPO_PLAGA.
+  tipo: string
   cultivosAfectados?: string
   descripcion?: string
   sintomas?: string
@@ -454,7 +458,8 @@ export interface CatalogoPlaga {
 export interface CatalogoPlagaRequest {
   nombreComun: string
   nombreCientifico?: string
-  tipo: TipoPlaga
+  // Feature 71: catálogo configurable TIPO_PLAGA.
+  tipo: string
   cultivosAfectados?: string
   descripcion?: string
   sintomas?: string
@@ -468,7 +473,8 @@ export interface DeteccionPlaga {
   loteNombre: string
   catalogoPlagaId: string
   plagaNombre: string
-  tipo: TipoPlaga
+  // Feature 71: viene del catálogo configurable TIPO_PLAGA (string libre).
+  tipo: string
   fechaDeteccion: string
   cultivo?: string
   severidad: SeveridadPlaga

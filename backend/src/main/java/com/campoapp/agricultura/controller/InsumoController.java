@@ -1,7 +1,6 @@
 package com.campoapp.agricultura.controller;
 
 import com.campoapp.agricultura.dto.insumos.*;
-import com.campoapp.agricultura.entity.insumos.TipoInsumoAgricola;
 import com.campoapp.agricultura.service.InsumoService;
 import com.campoapp.common.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +34,7 @@ public class InsumoController {
     @Operation(summary = "Listar catalogo de insumos paginado")
     public ResponseEntity<ApiResponse<Page<InsumoAgricolaResponse>>> listar(
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) TipoInsumoAgricola tipo,
+            @RequestParam(required = false) String tipo,
             @RequestParam(required = false) Boolean activo,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {

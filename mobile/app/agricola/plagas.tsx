@@ -61,9 +61,9 @@ import type {
   SeguimientoPlaga,
   SeguimientoPlagaRequest,
   SeveridadPlaga,
-  TipoPlaga,
 } from '../../shared/types/agricola'
 import type { Operario } from '../../shared/types/operarios'
+import { useUtilidadOpciones } from '../../shared/hooks/useUtilidades'
 
 type Mode = 'deteccion' | 'aplicacion' | 'seguimiento' | 'historico'
 type HistoryScope = 'deteccion' | 'lote'
@@ -76,7 +76,6 @@ type HistoryItem = {
   tone: string
 }
 
-const tipoPlagaOptions: TipoPlaga[] = ['PLAGA', 'ENFERMEDAD', 'MALEZA']
 const severityOptions: SeveridadPlaga[] = ['BAJA', 'MEDIA', 'ALTA', 'CRITICA']
 const stateOptions: EstadoDeteccionPlaga[] = ['ABIERTA', 'EN_TRATAMIENTO', 'CONTROLADA', 'CERRADA']
 const resultOptions: ResultadoSeguimientoPlaga[] = ['SIN_CAMBIOS', 'MEJORA', 'EMPEORA', 'CONTROLADA']
@@ -150,6 +149,12 @@ export default function PlagasMobilePage() {
   const [catalogoModalOpen, setCatalogoModalOpen] = useState(false)
   const [savingCatalogo, setSavingCatalogo] = useState(false)
   const [catalogoForm, setCatalogoForm] = useState<CatalogoPlagaRequest>(emptyCatalogoForm)
+
+  // Catalogos configurables de Utilidades (feature 71): tipo de plaga y cultivo.
+  const { data: tipoPlagaOpciones = [] } = useUtilidadOpciones('TIPO_PLAGA')
+  const { data: cultivoOpciones = [] } = useUtilidadOpciones('CULTIVO')
+  const tipoPlagaValues = useMemo(() => tipoPlagaOpciones.map(opcion => opcion.valor), [tipoPlagaOpciones])
+  const cultivoValues = useMemo(() => cultivoOpciones.map(opcion => opcion.valor), [cultivoOpciones])
 
   const [deteccionForm, setDeteccionForm] = useState<DeteccionPlagaRequest>({
     loteId: '',
@@ -433,6 +438,7 @@ export default function PlagasMobilePage() {
           {mode === 'deteccion' && (
             <DetectionForm
               catalogo={catalogo}
+              cultivoOptions={cultivoValues}
               form={deteccionForm}
               lotes={lotes}
               operarios={operarios}
@@ -493,6 +499,7 @@ export default function PlagasMobilePage() {
       <CatalogoPlagaModal
         visible={catalogoModalOpen}
         form={catalogoForm}
+        tipoOptions={tipoPlagaValues}
         saving={savingCatalogo}
         onClose={() => setCatalogoModalOpen(false)}
         onSave={saveCatalogoPlaga}
@@ -504,6 +511,7 @@ export default function PlagasMobilePage() {
 
 function DetectionForm({
   catalogo,
+  cultivoOptions,
   form,
   lotes,
   operarios,
@@ -514,6 +522,7 @@ function DetectionForm({
   setForm,
 }: {
   catalogo: CatalogoPlaga[]
+  cultivoOptions: string[]
   form: DeteccionPlagaRequest
   lotes: Lote[]
   operarios: Operario[]
@@ -523,6 +532,11 @@ function DetectionForm({
   onAddPlaga: () => void
   setForm: React.Dispatch<React.SetStateAction<DeteccionPlagaRequest>>
 }) {
+  // El cultivo autocompletado desde el lote se conserva como chip activo aunque no este en el catalogo.
+  const cultivoChips = useMemo(() => {
+    if (form.cultivo && !cultivoOptions.includes(form.cultivo)) return [form.cultivo, ...cultivoOptions]
+    return cultivoOptions
+  }, [cultivoOptions, form.cultivo])
   return (
     <>
       <SectionTitle icon={<Crosshair color="#9FE870" size={18} />} title="Nueva detección" subtitle="Registro geolocalizado de plaga o enfermedad." />
@@ -532,7 +546,11 @@ function DetectionForm({
       }} />
       <OptionPicker label="Plaga" items={catalogo.map(item => ({ id: item.id, label: item.nombreComun, sublabel: item.tipo }))} value={form.catalogoPlagaId} onChange={(id) => setForm(current => ({ ...current, catalogoPlagaId: id }))} onAdd={onAddPlaga} addLabel="Nueva plaga en el catálogo" />
       <Field label="Fecha" icon={<CalendarDays color="#6EA8FF" size={18} />} value={form.fechaDeteccion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, fechaDeteccion: value }))} />
-      <Field label="Cultivo" icon={<Leaf color="#39D0D8" size={18} />} value={form.cultivo ?? ''} onChangeText={(value) => setForm(current => ({ ...current, cultivo: value }))} />
+      {cultivoOptions.length > 0 ? (
+        <ChipGroup label="Cultivo" value={form.cultivo ?? ''} options={cultivoChips} onChange={(value) => setForm(current => ({ ...current, cultivo: value }))} />
+      ) : (
+        <Field label="Cultivo" icon={<Leaf color="#39D0D8" size={18} />} value={form.cultivo ?? ''} onChangeText={(value) => setForm(current => ({ ...current, cultivo: value }))} />
+      )}
       <ChipGroup label="Severidad" value={form.severidad} options={severityOptions} onChange={(value) => setForm(current => ({ ...current, severidad: value as SeveridadPlaga }))} />
       <ChipGroup label="Estado" value={form.estado ?? 'ABIERTA'} options={stateOptions} onChange={(value) => setForm(current => ({ ...current, estado: value as EstadoDeteccionPlaga }))} />
       <View style={styles.gridTwo}>
@@ -722,6 +740,7 @@ function HistoryView({
 function CatalogoPlagaModal({
   visible,
   form,
+  tipoOptions,
   saving,
   onClose,
   onSave,
@@ -729,6 +748,7 @@ function CatalogoPlagaModal({
 }: {
   visible: boolean
   form: CatalogoPlagaRequest
+  tipoOptions: string[]
   saving: boolean
   onClose: () => void
   onSave: () => void
@@ -749,7 +769,7 @@ function CatalogoPlagaModal({
           <ScrollView contentContainerStyle={styles.modalBody} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
             <Field label="Nombre común" value={form.nombreComun} onChangeText={(value) => setForm(current => ({ ...current, nombreComun: value }))} />
             <Field label="Nombre científico" value={form.nombreCientifico ?? ''} onChangeText={(value) => setForm(current => ({ ...current, nombreCientifico: value }))} />
-            <ChipGroup label="Tipo" value={form.tipo} options={tipoPlagaOptions} onChange={(value) => setForm(current => ({ ...current, tipo: value as TipoPlaga }))} />
+            <ChipGroup label="Tipo" value={form.tipo} options={tipoOptions} onChange={(value) => setForm(current => ({ ...current, tipo: value }))} />
             <Field label="Cultivos afectados" value={form.cultivosAfectados ?? ''} onChangeText={(value) => setForm(current => ({ ...current, cultivosAfectados: value }))} />
             <Field label="Umbral de acción" value={form.umbralAccion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, umbralAccion: value }))} />
             <Textarea label="Síntomas" value={form.sintomas ?? ''} onChangeText={(value) => setForm(current => ({ ...current, sintomas: value.slice(0, 500) }))} />

@@ -33,6 +33,27 @@ const CATALOGOS: CatalogoDef[] = [
     titulo: 'Tipo de pérdida',
     descripcion: 'Tipos de pérdida de cosecha (cabezal, cola, etc.).',
   },
+  // Feature 71: catálogos configurables para cultivo, plagas e insumos.
+  {
+    categoria: 'CULTIVO',
+    titulo: 'Cultivos',
+    descripcion: 'Cultivos disponibles para lotes y detecciones.',
+  },
+  {
+    categoria: 'TIPO_PLAGA',
+    titulo: 'Tipo de plaga',
+    descripcion: 'Tipos del catálogo de plagas (plaga, enfermedad, maleza).',
+  },
+  {
+    categoria: 'TIPO_INSUMO',
+    titulo: 'Tipo de insumo',
+    descripcion: 'Tipos de insumo agrícola.',
+  },
+  {
+    categoria: 'UNIDAD_INSUMO',
+    titulo: 'Unidad de insumo',
+    descripcion: 'Unidades de medida de insumos.',
+  },
 ];
 
 @Component({
@@ -76,7 +97,7 @@ export class UtilidadesPageComponent implements OnInit {
 
   protected eliminar(categoria: string, opcion: UtilidadOpcion): void {
     this.patch(categoria, { error: null });
-    this.utilidadesService.deleteUtilidadOpcion(opcion.id).subscribe({
+    this.utilidadesService.deleteUtilidadOpcion(categoria, opcion.id).subscribe({
       next: () => this.reloadAfterMutation(categoria),
       error: () => this.patch(categoria, { error: 'No se pudo eliminar la opción.' }),
     });

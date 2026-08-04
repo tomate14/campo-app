@@ -41,8 +41,8 @@ public class UtilidadController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('write:utilidades')")
     @Operation(summary = "Eliminar (soft delete) una opción de catálogo")
-    public ResponseEntity<Void> eliminar(@PathVariable String id) {
-        utilidadOpcionService.eliminar(id);
+    public ResponseEntity<Void> eliminar(@PathVariable String id, @RequestParam String categoria) {
+        utilidadOpcionService.eliminar(categoria, id);
         return ResponseEntity.noContent().build();
     }
 }

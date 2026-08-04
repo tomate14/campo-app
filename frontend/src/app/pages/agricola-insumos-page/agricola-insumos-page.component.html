@@ -34,7 +34,7 @@
       <span>Tipo</span>
       <select [ngModel]="filters().tipo" (ngModelChange)="filters.update(f => ({ ...f, tipo: $event }))">
         <option value="">Todos</option>
-        <option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option>
+        <option *ngFor="let opcion of tipoInsumoOpciones()" [value]="opcion.valor">{{ opcion.valor }}</option>
       </select>
     </label>
     <label>
@@ -280,8 +280,8 @@
   <div class="form-grid">
     <label><span>Codigo</span><input [ngModel]="insumoForm().codigo" (ngModelChange)="insumoForm.update(f => ({ ...f, codigo: $event }))" /></label>
     <label><span>Nombre</span><input [ngModel]="insumoForm().nombre" (ngModelChange)="insumoForm.update(f => ({ ...f, nombre: $event }))" /></label>
-    <label><span>Tipo</span><select [ngModel]="insumoForm().tipo" (ngModelChange)="insumoForm.update(f => ({ ...f, tipo: $event }))"><option *ngFor="let tipo of tipoOptions" [value]="tipo">{{ tipo }}</option></select></label>
-    <label><span>Unidad</span><select [ngModel]="insumoForm().unidadMedida" (ngModelChange)="insumoForm.update(f => ({ ...f, unidadMedida: $event }))"><option *ngFor="let unidad of unidadOptions" [value]="unidad">{{ unidad }}</option></select></label>
+    <app-configurable-select categoria="TIPO_INSUMO" label="Tipo" placeholder="Seleccionar tipo..." [value]="insumoForm().tipo" (valueChange)="insumoForm.update(f => ({ ...f, tipo: $event }))"></app-configurable-select>
+    <app-configurable-select categoria="UNIDAD_INSUMO" label="Unidad" placeholder="Seleccionar unidad..." [value]="insumoForm().unidadMedida" (valueChange)="insumoForm.update(f => ({ ...f, unidadMedida: $event }))"></app-configurable-select>
     <label><span>Marca</span><input [ngModel]="insumoForm().marca" (ngModelChange)="insumoForm.update(f => ({ ...f, marca: $event }))" /></label>
     <label><span>Presentacion</span><input [ngModel]="insumoForm().presentacion" (ngModelChange)="insumoForm.update(f => ({ ...f, presentacion: $event }))" /></label>
     <label><span>Precio unitario</span><input type="number" [ngModel]="insumoForm().precioUnitario" (ngModelChange)="insumoForm.update(f => ({ ...f, precioUnitario: $event }))" /></label>

@@ -35,12 +35,12 @@ public class PlagasServiceImpl implements PlagasService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public List<CatalogoPlagaResponse> listarCatalogo(TipoPlaga tipo) {
+    public List<CatalogoPlagaResponse> listarCatalogo(String tipo) {
         return catalogoRepository.search(tipo).stream().map(this::toCatalogoResponse).toList();
     }
 
     @Override
-    public Page<CatalogoPlagaResponse> listarCatalogoPaginado(TipoPlaga tipo, int page, int size) {
+    public Page<CatalogoPlagaResponse> listarCatalogoPaginado(String tipo, int page, int size) {
         return catalogoRepository.searchPage(tipo, pageRequest(page, size)).map(this::toCatalogoResponse);
     }
 
@@ -329,7 +329,7 @@ public class PlagasServiceImpl implements PlagasService {
     }
 
     private DeteccionPlagaResponse toDeteccionResponse(DeteccionPlaga item) {
-        return new DeteccionPlagaResponse(item.getId(), item.getLote().getId(), item.getLote().getNombre(), item.getCatalogoPlaga().getId(), item.getCatalogoPlaga().getNombreComun(), item.getCatalogoPlaga().getTipo().name(), item.getFechaDeteccion(), item.getCultivo(), item.getSeveridad(), item.getAreaAfectadaHa(), item.getPorcentajeAfectado(), item.getEstado(), item.getLatitud(), item.getLongitud(), item.getPrecisionMetros(), item.getOrigenGeolocalizacion(), item.getFotoUrl(), item.getFotoNombre(), item.getFotoContentType(), item.getFotoTamanioBytes(), item.getDescripcion(), item.getResponsable(), operarioNombre(item.getResponsable()), item.getCreatedAt(), item.getUpdatedAt());
+        return new DeteccionPlagaResponse(item.getId(), item.getLote().getId(), item.getLote().getNombre(), item.getCatalogoPlaga().getId(), item.getCatalogoPlaga().getNombreComun(), item.getCatalogoPlaga().getTipo(), item.getFechaDeteccion(), item.getCultivo(), item.getSeveridad(), item.getAreaAfectadaHa(), item.getPorcentajeAfectado(), item.getEstado(), item.getLatitud(), item.getLongitud(), item.getPrecisionMetros(), item.getOrigenGeolocalizacion(), item.getFotoUrl(), item.getFotoNombre(), item.getFotoContentType(), item.getFotoTamanioBytes(), item.getDescripcion(), item.getResponsable(), operarioNombre(item.getResponsable()), item.getCreatedAt(), item.getUpdatedAt());
     }
 
     private AplicacionFitosanitariaResponse toAplicacionResponse(AplicacionFitosanitaria item) {

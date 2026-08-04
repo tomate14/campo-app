@@ -4,8 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { AgricolaService } from '../../core/services/agricola.service';
 import { FinanzasComprasService, type ProveedorFinanciero } from '../../core/services/finanzas-compras.service';
 import { OperariosService } from '../../core/services/operarios.service';
+import { UtilidadesService } from '../../core/services/utilidades.service';
 import type { Operario } from '../../core/models/operarios.models';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
+import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
 import type {
   InsumoAgricola,
   InsumoAgricolaRequest,
@@ -16,9 +18,8 @@ import type {
   PageResponse,
   StockInsumo,
   StockInsumoRequest,
-  TipoInsumoAgricola,
   TipoMovimientoInsumo,
-  UnidadMedidaInsumo,
+  UtilidadOpcion,
 } from '../../core/models/agricola.models';
 
 type ModalType = 'INSUMO' | 'STOCK' | 'MOVIMIENTO' | null;
@@ -26,7 +27,7 @@ type ModalType = 'INSUMO' | 'STOCK' | 'MOVIMIENTO' | null;
 @Component({
   selector: 'app-agricola-insumos-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent, ConfigurableSelectComponent],
   templateUrl: './agricola-insumos-page.component.html',
   styleUrl: './agricola-insumos-page.component.css',
 })
@@ -34,6 +35,7 @@ export class AgricolaInsumosPageComponent implements OnInit {
   private readonly agricolaService = inject(AgricolaService);
   private readonly comprasService = inject(FinanzasComprasService);
   private readonly operariosService = inject(OperariosService);
+  private readonly utilidadesService = inject(UtilidadesService);
 
   protected readonly dashboard = signal<InsumosDashboard | null>(null);
   protected readonly insumosPage = signal<PageResponse<InsumoAgricola> | null>(null);
@@ -54,7 +56,7 @@ export class AgricolaInsumosPageComponent implements OnInit {
   protected readonly proveedores = signal<ProveedorFinanciero[]>([]);
   protected readonly operarios = signal<Operario[]>([]);
   protected readonly operariosActivos = computed(() => this.operarios().filter((o) => o.estado === 'ACTIVO'));
-  protected readonly filters = signal<{ search: string; tipo: '' | TipoInsumoAgricola; activo: '' | 'true' | 'false' }>({ search: '', tipo: '', activo: '' });
+  protected readonly filters = signal<{ search: string; tipo: string; activo: '' | 'true' | 'false' }>({ search: '', tipo: '', activo: '' });
   protected readonly insumoPageIndex = signal(0);
   protected readonly stockPageIndex = signal(0);
   protected readonly movimientosPageIndex = signal(0);
@@ -67,18 +69,18 @@ export class AgricolaInsumosPageComponent implements OnInit {
   protected readonly vencimientosPageSize = signal(8);
   protected readonly pageSizeOptions = [5, 8, 10, 20, 50];
 
-  protected readonly tipoOptions: TipoInsumoAgricola[] = ['SEMILLA', 'FERTILIZANTE', 'FITOSANITARIO', 'HERBICIDA', 'FUNGICIDA', 'INSECTICIDA', 'COADYUVANTE', 'COMBUSTIBLE', 'OTRO'];
-  protected readonly unidadOptions: UnidadMedidaInsumo[] = ['KG', 'L', 'UN', 'BOLSA', 'DOSIS', 'TN'];
+  // Feature 71: opciones del catálogo configurable TIPO_INSUMO para el filtro de listado.
+  protected readonly tipoInsumoOpciones = signal<UtilidadOpcion[]>([]);
   protected readonly movimientoOptions: TipoMovimientoInsumo[] = ['INGRESO', 'USO', 'SALIDA', 'AJUSTE'];
   protected readonly insumosSelectOptions = computed(() => this.insumosActivos() as object[]);
 
   protected readonly insumoForm = signal<InsumoAgricolaRequest>({
     codigo: '',
     nombre: '',
-    tipo: 'SEMILLA',
+    tipo: '',
     marca: '',
     presentacion: '',
-    unidadMedida: 'KG',
+    unidadMedida: '',
     principioActivo: '',
     proveedorId: '',
     proveedor: '',
@@ -145,6 +147,8 @@ export class AgricolaInsumosPageComponent implements OnInit {
     // Cargar catalogos una sola vez para los selects con buscador (feature 62)
     this.comprasService.proveedores({ size: 1000 }).subscribe({ next: (page) => this.proveedores.set(page.content), error: () => undefined });
     this.operariosService.getOperarios().subscribe({ next: (operarios) => this.operarios.set(operarios), error: () => undefined });
+    // Feature 71: opciones del catálogo TIPO_INSUMO para el filtro de listado.
+    this.utilidadesService.getUtilidadOpciones('TIPO_INSUMO').subscribe({ next: (opciones) => this.tipoInsumoOpciones.set(opciones), error: () => undefined });
   }
 
   protected loadDashboard() {
@@ -198,10 +202,10 @@ export class AgricolaInsumosPageComponent implements OnInit {
     this.insumoForm.set({
       codigo: '',
       nombre: '',
-      tipo: 'SEMILLA',
+      tipo: '',
       marca: '',
       presentacion: '',
-      unidadMedida: 'KG',
+      unidadMedida: '',
       principioActivo: '',
       proveedorId: '',
       proveedor: '',

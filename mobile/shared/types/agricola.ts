@@ -1,6 +1,5 @@
 export type TipoEvento = 'SIEMBRA' | 'MONITOREO_FENOLOGICO' | 'ALERTA' | 'TRATAMIENTO'
 export type CalidadGrano = 'PREMIUM' | 'ESTANDAR' | 'DESCUENTO'
-export type TipoPlaga = 'PLAGA' | 'ENFERMEDAD' | 'MALEZA'
 export type SeveridadPlaga = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 export type EstadoDeteccionPlaga = 'ABIERTA' | 'EN_TRATAMIENTO' | 'CONTROLADA' | 'CERRADA'
 export type ResultadoSeguimientoPlaga = 'SIN_CAMBIOS' | 'MEJORA' | 'EMPEORA' | 'CONTROLADA'
@@ -196,7 +195,8 @@ export interface ApiResponse<T> {
 export interface CatalogoPlaga {
   id: string
   nombreComun: string
-  tipo: TipoPlaga
+  // Catalogo configurable TIPO_PLAGA (feature 71): antes enum, ahora string libre del catalogo
+  tipo: string
   cultivosAfectados?: string
 }
 
@@ -204,7 +204,8 @@ export interface CatalogoPlaga {
 export interface CatalogoPlagaRequest {
   nombreComun: string
   nombreCientifico?: string
-  tipo: TipoPlaga
+  // Catalogo configurable TIPO_PLAGA (feature 71): antes enum, ahora string libre del catalogo
+  tipo: string
   cultivosAfectados?: string
   descripcion?: string
   sintomas?: string

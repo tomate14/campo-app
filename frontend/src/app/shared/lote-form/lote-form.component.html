@@ -10,13 +10,13 @@
         <label><span>Nombre</span><input [(ngModel)]="model.nombre" name="nombre" required /></label>
         <label><span>Temporada</span><input [(ngModel)]="model.temporada" name="temporada" required /></label>
         <label><span>Area (ha)</span><input [(ngModel)]="model.area" name="area" required type="number" step="0.01" /></label>
-        <label>
-          <span>Cultivo</span>
-          <select [(ngModel)]="model.cultivo" name="cultivo" required>
-            <option value="">Seleccionar...</option>
-            <option *ngFor="let cultivo of cultivos" [value]="cultivo">{{ cultivo }}</option>
-          </select>
-        </label>
+        <app-configurable-select
+          categoria="CULTIVO"
+          label="Cultivo"
+          placeholder="Seleccionar cultivo..."
+          [value]="model.cultivo"
+          (valueChange)="model.cultivo = $event"
+        ></app-configurable-select>
         <label><span>Latitud</span><input [(ngModel)]="model.latitud" name="latitud" type="number" step="0.0000001" /></label>
         <label><span>Longitud</span><input [(ngModel)]="model.longitud" name="longitud" type="number" step="0.0000001" /></label>
         <label><span>pH minimo</span><input [(ngModel)]="model.phMinimo" name="phMinimo" type="number" step="0.01" /></label>

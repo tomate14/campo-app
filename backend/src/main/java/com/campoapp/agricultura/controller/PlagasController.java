@@ -3,7 +3,6 @@ package com.campoapp.agricultura.controller;
 import com.campoapp.agricultura.dto.plagas.*;
 import com.campoapp.agricultura.entity.plagas.EstadoDeteccionPlaga;
 import com.campoapp.agricultura.entity.plagas.SeveridadPlaga;
-import com.campoapp.agricultura.entity.plagas.TipoPlaga;
 import com.campoapp.agricultura.service.PlagasService;
 import com.campoapp.common.dto.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +31,7 @@ public class PlagasController {
     @GetMapping("/catalogo")
     @PreAuthorize("hasAuthority('read:lotes')")
     @Operation(summary = "Listar catalogo de plagas, enfermedades y malezas")
-    public ResponseEntity<ApiResponse<List<CatalogoPlagaResponse>>> catalogo(@RequestParam(required = false) TipoPlaga tipo) {
+    public ResponseEntity<ApiResponse<List<CatalogoPlagaResponse>>> catalogo(@RequestParam(required = false) String tipo) {
         return ResponseEntity.ok(ApiResponse.ok(plagasService.listarCatalogo(tipo)));
     }
 
@@ -40,7 +39,7 @@ public class PlagasController {
     @PreAuthorize("hasAuthority('read:lotes')")
     @Operation(summary = "Listar catalogo paginado")
     public ResponseEntity<ApiResponse<Page<CatalogoPlagaResponse>>> catalogoPaginado(
-            @RequestParam(required = false) TipoPlaga tipo,
+            @RequestParam(required = false) String tipo,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(ApiResponse.ok(plagasService.listarCatalogoPaginado(tipo, page, size)));

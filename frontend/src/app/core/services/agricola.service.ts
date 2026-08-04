@@ -39,9 +39,7 @@ import type {
   SeveridadPlaga,
   StockInsumo,
   StockInsumoRequest,
-  TipoPlaga,
   TipoEvento,
-  TipoInsumoAgricola,
   PlagasDashboard,
 } from '../models/agricola.models';
 
@@ -211,11 +209,11 @@ export class AgricolaService {
     return this.http.get<ApiResponse<PlagasDashboard> | PlagasDashboard>(`${API_BASE_URL}/agricola/plagas/dashboard`).pipe(map((response) => unwrapApiResponse(response)));
   }
 
-  getCatalogoPlagas(tipo?: TipoPlaga) {
+  getCatalogoPlagas(tipo?: string) {
     return this.http.get<ApiResponse<CatalogoPlaga[]> | CatalogoPlaga[]>(`${API_BASE_URL}/agricola/plagas/catalogo`, { params: tipo ? { tipo } : undefined }).pipe(map((response) => unwrapApiResponse(response)));
   }
 
-  getCatalogoPlagasPage(params?: { tipo?: TipoPlaga; page?: number; size?: number }) {
+  getCatalogoPlagasPage(params?: { tipo?: string; page?: number; size?: number }) {
     return this.http.get<ApiResponse<PageResponse<CatalogoPlaga>> | PageResponse<CatalogoPlaga>>(`${API_BASE_URL}/agricola/plagas/catalogo/page`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
   }
 
@@ -279,7 +277,7 @@ export class AgricolaService {
     return this.http.get<ApiResponse<InsumosDashboard> | InsumosDashboard>(`${API_BASE_URL}/inventario/insumos/dashboard`).pipe(map((response) => unwrapApiResponse(response)));
   }
 
-  getInsumos(params?: { search?: string; tipo?: TipoInsumoAgricola; activo?: boolean; page?: number; size?: number }) {
+  getInsumos(params?: { search?: string; tipo?: string; activo?: boolean; page?: number; size?: number }) {
     return this.http.get<ApiResponse<PageResponse<InsumoAgricola>> | PageResponse<InsumoAgricola>>(`${API_BASE_URL}/inventario/insumos`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
   }
 
