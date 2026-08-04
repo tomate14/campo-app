@@ -64,6 +64,32 @@
           </select>
         </label>
         <label><span>Humedad</span><input [(ngModel)]="form.humedad" name="humedad" type="number" step="0.1" /></label>
+
+        <p class="form-section-title">Pérdidas de cosecha</p>
+        <div class="form-grid-2">
+          <label><span>Área real cosechada (%)</span><input [(ngModel)]="form.areaRealCosechadaPct" name="areaRealCosechadaPct" type="number" step="0.01" min="0" /></label>
+          <label><span>Hectáreas cosechadas</span><input [(ngModel)]="form.hectareasCosechadas" name="hectareasCosechadas" type="number" step="0.01" min="0" /></label>
+          <label><span>Pérdida (kg/ha)</span><input [(ngModel)]="form.perdidaKgHa" name="perdidaKgHa" type="number" step="0.01" min="0" /></label>
+          <label><span>Granos perdidos (kg)</span><input [(ngModel)]="form.granosPerdidosKg" name="granosPerdidosKg" type="number" step="0.01" min="0" /></label>
+        </div>
+        <app-configurable-select
+          categoria="TIPO_PERDIDA_COSECHA"
+          label="Tipo de pérdida"
+          placeholder="Seleccionar tipo de pérdida..."
+          [value]="form.tipoPerdida ?? ''"
+          (valueChange)="form.tipoPerdida = $event"
+        ></app-configurable-select>
+
+        <p class="form-section-title">Destino del día</p>
+        <app-configurable-select
+          categoria="DESTINO_COSECHA"
+          label="Destino"
+          placeholder="Seleccionar destino..."
+          [value]="form.destino ?? ''"
+          (valueChange)="form.destino = $event"
+        ></app-configurable-select>
+        <label><span>Cantidad enviada (tn)</span><input [(ngModel)]="form.destinoCantidadTn" name="destinoCantidadTn" type="number" step="0.01" min="0" /></label>
+
         <label><span>Observaciones</span><textarea [(ngModel)]="form.observaciones" name="observaciones" rows="4"></textarea></label>
         <div class="actions">
           <button class="btn-secondary" type="button" (click)="showForm = false">Cancelar</button>

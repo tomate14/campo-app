@@ -155,3 +155,21 @@ h2 { margin: 0; font-size: 34px; letter-spacing: -0.04em; }
 
 @media (max-width: 1100px) { .cycle-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 720px) { .cycle-tabs-bar, .cycle-toolbar, .cycle-pagination--bottom { align-items: flex-start; flex-direction: column; } .cycle-tabs button { min-height: 42px; } .cycle-card-grid { grid-template-columns: 1fr; padding: 14px; } }
+
+/* Feature 60: subtitulos y grilla de campos de perdidas/destino en el form de cosecha */
+.form-section-title {
+  margin: 6px 0 -2px;
+  color: #9fe870;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 520px) {
+  .form-grid-2 { grid-template-columns: 1fr; }
+}

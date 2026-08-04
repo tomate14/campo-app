@@ -134,6 +134,11 @@
         <svg viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>
         <span *ngIf="!collapsed()">Roles y menú</span>
       </a>
+
+      <a *ngIf="isMenuVisible('utilidades')" routerLink="/utilidades" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Utilidades' : ''">
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4l-6 6a1.5 1.5 0 0 0 2.1 2.1l6-6a4 4 0 0 0 5.4-5.4l-2.3 2.3-2.1-2.1 2.3-2.3Z" /></svg>
+        <span *ngIf="!collapsed()">Utilidades</span>
+      </a>
       <div class="section-title" *ngIf="!collapsed()">Finanzas</div>
 
       <a *ngIf="isMenuVisible('finanzas-facturacion')" routerLink="/finanzas/facturacion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Facturacion' : ''">

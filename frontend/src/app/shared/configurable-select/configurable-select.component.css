@@ -1,0 +1,185 @@
+.cfg-select {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.cfg-label {
+  color: #a6b0cf;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.cfg-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.cfg-input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.cfg-native {
+  width: 100%;
+  min-height: 44px;
+  appearance: none;
+  border: 1px solid rgba(159, 232, 112, 0.2);
+  border-radius: 14px;
+  background: rgba(8, 18, 37, 0.9);
+  color: #f0f5ff;
+  padding: 0 38px 0 14px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+.cfg-native:focus {
+  border-color: rgba(159, 232, 112, 0.46);
+  box-shadow: 0 0 0 3px rgba(159, 232, 112, 0.1);
+}
+
+.cfg-native option {
+  background: #0b1730;
+  color: #f0f5ff;
+}
+
+.cfg-caret {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  fill: none;
+  stroke: #9fe870;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cfg-add-btn {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(159, 232, 112, 0.28);
+  border-radius: 14px;
+  background: rgba(159, 232, 112, 0.08);
+  color: #9fe870;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.cfg-add-btn:hover {
+  background: rgba(159, 232, 112, 0.16);
+  border-color: rgba(159, 232, 112, 0.5);
+}
+
+.cfg-add-btn:active {
+  transform: scale(0.94);
+}
+
+.cfg-add-btn.active {
+  background: rgba(159, 232, 112, 0.2);
+  border-color: rgba(159, 232, 112, 0.6);
+}
+
+.cfg-add-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cfg-inline-form {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.cfg-inline-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 42px;
+  border: 1px solid rgba(159, 232, 112, 0.2);
+  border-radius: 12px;
+  background: rgba(8, 18, 37, 0.9);
+  color: #f0f5ff;
+  padding: 0 13px;
+  font-size: 14px;
+  outline: none;
+}
+
+.cfg-inline-input:focus {
+  border-color: rgba(159, 232, 112, 0.46);
+  box-shadow: 0 0 0 3px rgba(159, 232, 112, 0.1);
+}
+
+.cfg-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(159, 232, 112, 0.4);
+  border-radius: 12px;
+  background: rgba(159, 232, 112, 0.14);
+  color: #9fe870;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cfg-confirm:hover {
+  background: rgba(159, 232, 112, 0.22);
+}
+
+.cfg-confirm svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cfg-cancel {
+  width: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 107, 107, 0.28);
+  border-radius: 12px;
+  background: rgba(255, 107, 107, 0.08);
+  color: #ff6b6b;
+  cursor: pointer;
+}
+
+.cfg-cancel:hover {
+  background: rgba(255, 107, 107, 0.16);
+}
+
+.cfg-cancel svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cfg-error {
+  margin: 0;
+  color: #ff6b6b;
+  font-size: 12px;
+}

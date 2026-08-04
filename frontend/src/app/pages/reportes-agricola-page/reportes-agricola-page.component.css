@@ -646,3 +646,143 @@ svg {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+/* Feature 60: seccion de cosecha (destino y perdidas) en el dashboard */
+.harvest-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.harvest-panel {
+  min-height: auto;
+}
+
+.harvest-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.harvest-metric {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(159, 232, 112, .16);
+  border-radius: 16px;
+  background: rgba(8, 18, 37, .6);
+}
+
+.harvest-metric__icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: #9fe870;
+  background: rgba(159, 232, 112, .1);
+}
+
+.harvest-metric__icon.warn {
+  color: #ffb84d;
+  background: rgba(255, 184, 77, .1);
+}
+
+.harvest-metric__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.harvest-metric__label {
+  margin: 0 0 4px;
+  color: #a6b0cf;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.harvest-metric strong {
+  color: #fff;
+  font-size: 22px;
+  letter-spacing: -.03em;
+}
+
+.harvest-destinos {
+  display: grid;
+  gap: 8px;
+}
+
+.harvest-destinos__title {
+  margin: 0 0 2px;
+  color: #edf5ff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.harvest-destino {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid rgba(148, 163, 184, .12);
+  border-radius: 14px;
+  background: rgba(8, 18, 37, .55);
+}
+
+.harvest-destino__icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: #6ea8ff;
+  background: rgba(110, 168, 255, .1);
+}
+
+.harvest-destino__icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.harvest-destino__copy {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.harvest-destino__copy strong {
+  color: #f0f5ff;
+  font-size: 14px;
+}
+
+.harvest-destino__copy small {
+  color: #8ea0bb;
+  font-size: 11px;
+}
+
+.harvest-destino__value {
+  color: #9fe870;
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.harvest-empty {
+  flex-direction: column;
+  gap: 10px;
+  min-height: 130px;
+  color: #8ea0bb;
+}
+
+.harvest-empty svg {
+  width: 36px;
+  height: 36px;
+  color: #9fe870;
+  opacity: .5;
+}

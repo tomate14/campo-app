@@ -15,5 +15,16 @@ public record RegistroCosechaResponse(
         CalidadGrano calidadGrano,
         BigDecimal humedad,
         String observaciones,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+
+        // --- Feature 60: perdidas de cosecha ---
+        BigDecimal areaRealCosechadaPct,
+        BigDecimal hectareasCosechadas,
+        BigDecimal perdidaKgHa,
+        BigDecimal granosPerdidosKg,
+        String tipoPerdida,
+
+        // --- Feature 60: destino del dia ---
+        String destino,
+        BigDecimal destinoCantidadTn
 ) {}

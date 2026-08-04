@@ -87,6 +87,15 @@ export interface RegistroCosecha {
   calidadGrano?: CalidadGrano
   humedad?: number
   observaciones?: string
+  // Perdidas de cosecha y destino del dia (feature 60)
+  areaRealCosechadaPct?: number
+  hectareasCosechadas?: number
+  perdidaKgHa?: number
+  granosPerdidosKg?: number
+  // Catalogo configurable TIPO_PERDIDA_COSECHA (feature 70): antes enum, ahora string libre del catalogo
+  tipoPerdida?: string
+  destino?: string
+  destinoCantidadTn?: number
   createdAt: string
 }
 
@@ -98,6 +107,24 @@ export interface RegistroCosechaRequest {
   calidadGrano?: CalidadGrano
   humedad?: number
   observaciones?: string
+  // Perdidas de cosecha y destino del dia (feature 60)
+  areaRealCosechadaPct?: number
+  hectareasCosechadas?: number
+  perdidaKgHa?: number
+  granosPerdidosKg?: number
+  // Catalogo configurable TIPO_PERDIDA_COSECHA (feature 70): antes enum, ahora string libre del catalogo
+  tipoPerdida?: string
+  destino?: string
+  destinoCantidadTn?: number
+}
+
+// Opcion de catalogo configurable (modulo Utilidades, feature 60)
+export interface UtilidadOpcion {
+  id: string
+  categoria: string
+  valor: string
+  activo: boolean
+  orden: number
 }
 
 export interface PropiedadSuelo {

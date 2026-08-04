@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import type { QueryClient } from '@tanstack/react-query'
-import { getDeteccionesPlaga, getLotes } from '../api/agricola'
+import { getDeteccionesPlaga, getLotes, getUtilidadOpciones } from '../api/agricola'
 import {
   getAlertasPotreros,
   getAnimales,
@@ -34,6 +34,10 @@ const DATASETS: Array<{ queryKey: unknown[]; fetch: () => Promise<unknown> }> = 
   { queryKey: ['razas-bovinas'], fetch: () => getRazasBovinas() },
   { queryKey: ['dietas'], fetch: () => getDietas() },
   { queryKey: ['plagas-detecciones'], fetch: () => getDeteccionesPlaga() },
+  // Catalogo de destino de cosecha (feature 60): misma key que useUtilidadOpciones.
+  { queryKey: ['utilidad-opciones', 'DESTINO_COSECHA'], fetch: () => getUtilidadOpciones('DESTINO_COSECHA') },
+  // Catalogo de tipo de perdida de cosecha (feature 70): misma key que useUtilidadOpciones.
+  { queryKey: ['utilidad-opciones', 'TIPO_PERDIDA_COSECHA'], fetch: () => getUtilidadOpciones('TIPO_PERDIDA_COSECHA') },
   { queryKey: ['potreros-alertas', { estado: 'ABIERTA' }], fetch: () => getAlertasPotreros({ estado: 'ABIERTA' }) },
   // Historiales del animal replicados para lectura offline (feature 50); candidato a delta sync si el volumen crece.
   { queryKey: ['animal-historial', 'CLINICO'], fetch: () => getHistorialMedico() },

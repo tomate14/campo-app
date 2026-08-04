@@ -69,7 +69,9 @@ class CosechaServiceTest {
         RegistroCosechaRequest request = new RegistroCosechaRequest(
                 "lote-2", LocalDate.now(),
                 new BigDecimal("7800.00"), new BigDecimal("1560.00"),
-                CalidadGrano.ESTANDAR, new BigDecimal("15.2"), "Sin novedades");
+                CalidadGrano.ESTANDAR, new BigDecimal("15.2"), "Sin novedades",
+                // Campos nuevos de perdidas/destino (feature 60), opcionales
+                null, null, null, null, null, null, null);
 
         when(loteRepository.findActiveById("lote-2")).thenReturn(Optional.of(lote));
         when(cosechaRepository.save(any(RegistroCosecha.class))).thenReturn(cosecha);

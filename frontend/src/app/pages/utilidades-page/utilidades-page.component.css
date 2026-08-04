@@ -1,0 +1,316 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  color: #f8fbff;
+}
+
+.util-head__title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.util-head__icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  color: #9fe870;
+  border-radius: 16px;
+  border: 1px solid rgba(159, 232, 112, 0.2);
+  background: rgba(159, 232, 112, 0.08);
+  box-shadow: 0 0 28px rgba(159, 232, 112, 0.14);
+}
+
+.util-head__icon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #9fe870;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.util-head h2 {
+  margin: 0;
+  font-size: 32px;
+  letter-spacing: -0.045em;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: #a6b0cf;
+  font-size: 14px;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 18px;
+}
+
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid rgba(159, 232, 112, 0.2);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(159, 232, 112, 0.08), transparent 36%),
+    linear-gradient(180deg, rgba(11, 23, 48, 0.92), rgba(8, 18, 37, 0.94));
+  box-shadow: 0 18px 42px rgba(2, 8, 23, 0.3), 0 0 0 1px rgba(159, 232, 112, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.catalog-card__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.catalog-card__badge {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  color: #9fe870;
+  border-radius: 13px;
+  background: rgba(159, 232, 112, 0.1);
+}
+
+.catalog-card__badge svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.catalog-card__copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.catalog-card__copy h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #f0f5ff;
+  letter-spacing: -0.02em;
+}
+
+.catalog-card__copy p {
+  margin: 5px 0 0;
+  color: #a6b0cf;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.catalog-card__count {
+  flex: 0 0 auto;
+  border: 1px solid rgba(159, 232, 112, 0.22);
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: #9fe870;
+  background: rgba(159, 232, 112, 0.07);
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.catalog-add {
+  display: flex;
+  gap: 9px;
+}
+
+.catalog-add input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid rgba(159, 232, 112, 0.2);
+  border-radius: 14px;
+  background: rgba(8, 18, 37, 0.9);
+  color: #f0f5ff;
+  padding: 0 14px;
+  font-size: 14px;
+  outline: none;
+}
+
+.catalog-add input:focus {
+  border-color: rgba(159, 232, 112, 0.46);
+  box-shadow: 0 0 0 3px rgba(159, 232, 112, 0.1);
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(159, 232, 112, 0.4);
+  border-radius: 14px;
+  background: rgba(159, 232, 112, 0.14);
+  color: #9fe870;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-add:hover {
+  background: rgba(159, 232, 112, 0.22);
+}
+
+.btn-add svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.catalog-error {
+  margin: 0;
+  color: #ff6b6b;
+  font-size: 12.5px;
+}
+
+.catalog-loading {
+  color: #a6b0cf;
+  font-size: 13px;
+}
+
+.catalog-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* Feature 70: máximo 4 opciones visibles; el resto se navega con scroll vertical.
+     4 filas de 46px + 3 gaps de 8px = 208px. */
+  max-height: 208px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Espacio para que la scrollbar no tape el botón de eliminar. */
+  padding-right: 6px;
+  /* Scrollbar con la identidad verde premium (igual que el sidebar). */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(159, 232, 112, 0.45) transparent;
+}
+
+.catalog-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.catalog-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.catalog-list::-webkit-scrollbar-thumb {
+  background: rgba(159, 232, 112, 0.45);
+  border-radius: 999px;
+}
+
+.catalog-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(159, 232, 112, 0.65);
+}
+
+.catalog-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 14px;
+  background: rgba(8, 18, 37, 0.7);
+}
+
+.catalog-item__dot {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #9fe870;
+  box-shadow: 0 0 12px rgba(159, 232, 112, 0.55);
+}
+
+.catalog-item__value {
+  flex: 1;
+  min-width: 0;
+  color: #edf3ff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.catalog-item__delete {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 107, 107, 0.24);
+  border-radius: 11px;
+  background: rgba(255, 107, 107, 0.06);
+  color: #ff6b6b;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.catalog-item__delete:hover {
+  background: rgba(255, 107, 107, 0.16);
+}
+
+.catalog-item__delete svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.catalog-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 22px;
+  border: 1px dashed rgba(148, 163, 184, 0.2);
+  border-radius: 16px;
+  color: #8ea0bb;
+  text-align: center;
+}
+
+.catalog-empty svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.6;
+}
+
+.catalog-empty p {
+  margin: 0;
+  font-size: 13px;
+}

@@ -25,5 +25,27 @@ public record RegistroCosechaRequest(
         @DecimalMin(value = "0.0") @DecimalMax(value = "100.0")
         BigDecimal humedad,
 
-        String observaciones
+        String observaciones,
+
+        // --- Feature 60: perdidas de cosecha ---
+        @DecimalMin(value = "0.0") @DecimalMax(value = "100.0")
+        BigDecimal areaRealCosechadaPct,
+
+        @PositiveOrZero
+        BigDecimal hectareasCosechadas,
+
+        @PositiveOrZero
+        BigDecimal perdidaKgHa,
+
+        @PositiveOrZero
+        BigDecimal granosPerdidosKg,
+
+        // Tipo de perdida: valor del catalogo TIPO_PERDIDA_COSECHA (string libre)
+        String tipoPerdida,
+
+        // --- Feature 60: destino del dia ---
+        String destino,
+
+        @PositiveOrZero
+        BigDecimal destinoCantidadTn
 ) {}

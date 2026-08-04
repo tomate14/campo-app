@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Colors } from '../../constants/colors'
 import { useLotes } from '../../shared/hooks/useLotes'
 import { useCreateCosecha } from '../../shared/hooks/useCosecha'
+import { useUtilidadOpciones } from '../../shared/hooks/useUtilidades'
 import type { CalidadGrano } from '../../shared/types/agricola'
 
 const CALIDADES: CalidadGrano[] = ['PREMIUM', 'ESTANDAR', 'DESCUENTO']
@@ -15,6 +16,8 @@ export default function RegistroCosechaScreen() {
   const router = useRouter()
   const params = useLocalSearchParams<{ loteId?: string }>()
   const { data: lotes = [] } = useLotes()
+  const { data: destinos = [] } = useUtilidadOpciones('DESTINO_COSECHA')
+  const { data: tiposPerdida = [] } = useUtilidadOpciones('TIPO_PERDIDA_COSECHA')
   const createCosecha = useCreateCosecha()
 
   const [loteId, setLoteId] = useState(params.loteId ?? '')
@@ -23,6 +26,14 @@ export default function RegistroCosechaScreen() {
   const [toneladasTotal, setToneladasTotal] = useState('')
   const [calidadGrano, setCalidadGrano] = useState<CalidadGrano>('ESTANDAR')
   const [humedad, setHumedad] = useState('')
+  // Perdidas de cosecha y destino del dia (feature 60)
+  const [areaRealCosechadaPct, setAreaRealCosechadaPct] = useState('')
+  const [hectareasCosechadas, setHectareasCosechadas] = useState('')
+  const [perdidaKgHa, setPerdidaKgHa] = useState('')
+  const [granosPerdidosKg, setGranosPerdidosKg] = useState('')
+  const [tipoPerdida, setTipoPerdida] = useState('')
+  const [destino, setDestino] = useState('')
+  const [destinoCantidadTn, setDestinoCantidadTn] = useState('')
   const [observaciones, setObservaciones] = useState('')
 
   useEffect(() => {
@@ -35,6 +46,7 @@ export default function RegistroCosechaScreen() {
     container: { flex: 1, backgroundColor: c.background },
     content: { padding: 20, gap: 14 },
     title: { fontSize: 24, fontWeight: '700', color: c.foreground },
+    sectionTitle: { fontSize: 18, fontWeight: '700', color: c.foreground, marginTop: 6 },
     subtitle: { fontSize: 14, color: c.mutedForeground },
     label: { fontSize: 13, fontWeight: '600', color: c.mutedForeground, textTransform: 'uppercase', letterSpacing: 0.4 },
     chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
@@ -79,6 +91,13 @@ export default function RegistroCosechaScreen() {
         toneladasTotal: Number(toneladasTotal),
         calidadGrano,
         humedad: humedad ? Number(humedad) : undefined,
+        areaRealCosechadaPct: areaRealCosechadaPct ? Number(areaRealCosechadaPct) : undefined,
+        hectareasCosechadas: hectareasCosechadas ? Number(hectareasCosechadas) : undefined,
+        perdidaKgHa: perdidaKgHa ? Number(perdidaKgHa) : undefined,
+        granosPerdidosKg: granosPerdidosKg ? Number(granosPerdidosKg) : undefined,
+        tipoPerdida: tipoPerdida || undefined,
+        destino: destino || undefined,
+        destinoCantidadTn: destinoCantidadTn ? Number(destinoCantidadTn) : undefined,
         observaciones: observaciones || undefined,
       })
       Alert.alert('Exito', 'Cosecha registrada correctamente.', [{ text: 'OK', onPress: () => router.back() }])
@@ -135,6 +154,71 @@ export default function RegistroCosechaScreen() {
         <View style={styles.row}>
           <Text style={styles.label}>Humedad</Text>
           <TextInput value={humedad} onChangeText={setHumedad} style={styles.input} keyboardType="decimal-pad" placeholder="14.2" placeholderTextColor={c.mutedForeground} />
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.sectionTitle}>Perdidas de cosecha</Text>
+          <Text style={styles.subtitle}>La cosechadora junta el rendimiento; la perdida es lo que queda en el campo.</Text>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Area real cosechada (%)</Text>
+          <TextInput value={areaRealCosechadaPct} onChangeText={setAreaRealCosechadaPct} style={styles.input} keyboardType="decimal-pad" placeholder="95" placeholderTextColor={c.mutedForeground} />
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Hectareas cosechadas</Text>
+          <TextInput value={hectareasCosechadas} onChangeText={setHectareasCosechadas} style={styles.input} keyboardType="decimal-pad" placeholder="48.5" placeholderTextColor={c.mutedForeground} />
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Perdida kg/ha</Text>
+          <TextInput value={perdidaKgHa} onChangeText={setPerdidaKgHa} style={styles.input} keyboardType="decimal-pad" placeholder="120" placeholderTextColor={c.mutedForeground} />
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Granos perdidos (kg)</Text>
+          <TextInput value={granosPerdidosKg} onChangeText={setGranosPerdidosKg} style={styles.input} keyboardType="decimal-pad" placeholder="5800" placeholderTextColor={c.mutedForeground} />
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Tipo de perdida</Text>
+          {tiposPerdida.length > 0 ? (
+            <View style={styles.chips}>
+              {tiposPerdida.map((opcion) => (
+                <TouchableOpacity key={opcion.id} style={[styles.chip, tipoPerdida === opcion.valor && styles.chipActive]} onPress={() => setTipoPerdida(tipoPerdida === opcion.valor ? '' : opcion.valor)} activeOpacity={0.8}>
+                  <Text style={[styles.chipText, tipoPerdida === opcion.valor && styles.chipTextActive]}>{opcion.valor}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : (
+            <Text style={styles.subtitle}>No hay tipos de perdida configurados. Se administran desde Utilidades en la web.</Text>
+          )}
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.sectionTitle}>Destino del dia</Text>
+          <Text style={styles.subtitle}>A donde fue la cosecha del dia y la cantidad correspondiente.</Text>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Destino</Text>
+          {destinos.length > 0 ? (
+            <View style={styles.chips}>
+              {destinos.map((opcion) => (
+                <TouchableOpacity key={opcion.id} style={[styles.chip, destino === opcion.valor && styles.chipActive]} onPress={() => setDestino(destino === opcion.valor ? '' : opcion.valor)} activeOpacity={0.8}>
+                  <Text style={[styles.chipText, destino === opcion.valor && styles.chipTextActive]}>{opcion.valor}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : (
+            <Text style={styles.subtitle}>No hay destinos configurados. Se administran desde Utilidades en la web.</Text>
+          )}
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Cantidad al destino (tn)</Text>
+          <TextInput value={destinoCantidadTn} onChangeText={setDestinoCantidadTn} style={styles.input} keyboardType="decimal-pad" placeholder="60" placeholderTextColor={c.mutedForeground} />
         </View>
 
         <View style={styles.row}>

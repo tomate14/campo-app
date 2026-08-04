@@ -90,8 +90,31 @@ public class ReporteAgricolaDashboardServiceImpl implements ReporteAgricolaDashb
                 lotesMapa(lotes, saludPorLote),
                 List.of(),
                 alertasRecientes(detecciones, eventos, mantenimientos),
-                tareasRecomendadas(eventos, detecciones, mantenimientos)
+                tareasRecomendadas(eventos, detecciones, mantenimientos),
+                resumenCosecha(cosechas)
         );
+    }
+
+    // Feature 60: consolida toneladas totales, perdida promedio y destino del grano.
+    private ReporteAgricolaDashboardResponse.ResumenCosecha resumenCosecha(List<RegistroCosecha> cosechas) {
+        BigDecimal toneladasTotales = cosechas.stream()
+                .map(RegistroCosecha::getToneladasTotal)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal perdidaPromedio = average(cosechas.stream().map(RegistroCosecha::getPerdidaKgHa));
+
+        List<ReporteAgricolaDashboardResponse.DestinoResumen> destinos = cosechas.stream()
+                .filter(c -> c.getDestino() != null && !c.getDestino().isBlank())
+                .collect(Collectors.groupingBy(c -> c.getDestino().trim(), TreeMap::new, Collectors.toList()))
+                .entrySet().stream()
+                .map(e -> new ReporteAgricolaDashboardResponse.DestinoResumen(
+                        e.getKey(),
+                        e.getValue().stream().map(RegistroCosecha::getDestinoCantidadTn).filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add),
+                        e.getValue().size()))
+                .toList();
+
+        return new ReporteAgricolaDashboardResponse.ResumenCosecha(toneladasTotales, perdidaPromedio, destinos);
     }
 
     private ReporteAgricolaDashboardResponse.Kpi kpi(String codigo, String titulo, String valor, String subtitulo, String tono, BigDecimal valorNumerico, List<ReporteAgricolaDashboardResponse.SeriePunto> tendencia) {

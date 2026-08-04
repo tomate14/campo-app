@@ -3,11 +3,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { CalidadGrano, Lote, RegistroCosecha, RegistroCosechaRequest } from '../../core/models/agricola.models';
 import { AgricolaService } from '../../core/services/agricola.service';
+import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
 
 @Component({
   selector: 'app-cosecha-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ConfigurableSelectComponent],
   templateUrl: './cosecha-page.component.html',
   styleUrl: './cosecha-page.component.css',
 })

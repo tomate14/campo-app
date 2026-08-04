@@ -15,8 +15,22 @@ public record ReporteAgricolaDashboardResponse(
         List<LoteMapa> lotesMapa,
         List<SeriePunto> evolucionSalud,
         List<AlertaResumen> alertasRecientes,
-        List<TareaResumen> tareasRecomendadas
+        List<TareaResumen> tareasRecomendadas,
+        ResumenCosecha resumenCosecha
 ) {
+    // Feature 60: consolidado de destino y perdidas de cosecha.
+    public record ResumenCosecha(
+            BigDecimal toneladasTotales,
+            BigDecimal perdidaPromedioKgHa,
+            List<DestinoResumen> destinos
+    ) {}
+
+    public record DestinoResumen(
+            String destino,
+            BigDecimal cantidadTn,
+            long registros
+    ) {}
+
     public record Kpi(
             String codigo,
             String titulo,

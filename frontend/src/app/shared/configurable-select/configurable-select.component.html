@@ -1,0 +1,53 @@
+<div class="cfg-select">
+  <span class="cfg-label" *ngIf="label">{{ label }}</span>
+
+  <div class="cfg-row">
+    <div class="cfg-input-wrap">
+      <select
+        class="cfg-native"
+        [ngModel]="value"
+        (ngModelChange)="onSelectChange($event)"
+        [attr.disabled]="loading() ? '' : null"
+      >
+        <option value="">{{ loading() ? 'Cargando...' : placeholder }}</option>
+        <option *ngFor="let opcion of options()" [value]="opcion.valor">{{ opcion.valor }}</option>
+      </select>
+      <svg class="cfg-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+    </div>
+
+    <button
+      type="button"
+      class="cfg-add-btn"
+      [class.active]="adding()"
+      (click)="toggleAdd()"
+      [attr.aria-label]="adding() ? 'Cerrar alta de opción' : 'Agregar opción nueva'"
+      title="Agregar opción nueva"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke-dasharray="3 3" />
+        <path d="M12 8v8" />
+        <path d="M8 12h8" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="cfg-inline-form" *ngIf="adding()">
+    <input
+      class="cfg-inline-input"
+      type="text"
+      [(ngModel)]="newValue"
+      placeholder="Nueva opción..."
+      (keydown.enter)="confirmAdd()"
+      (keydown.escape)="cancelAdd()"
+    />
+    <button type="button" class="cfg-confirm" (click)="confirmAdd()" [attr.disabled]="saving() ? '' : null">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4 10-11" /></svg>
+      {{ saving() ? 'Guardando...' : 'Confirmar' }}
+    </button>
+    <button type="button" class="cfg-cancel" (click)="cancelAdd()" aria-label="Cancelar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+    </button>
+  </div>
+
+  <p class="cfg-error" *ngIf="error()">{{ error() }}</p>
+</div>
