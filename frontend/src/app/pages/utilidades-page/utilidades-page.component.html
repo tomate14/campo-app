@@ -1,0 +1,79 @@
+<div class="page">
+  <header class="util-head">
+    <div class="util-head__title">
+      <div class="util-head__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4l-6 6a1.5 1.5 0 0 0 2.1 2.1l6-6a4 4 0 0 0 5.4-5.4l-2.3 2.3-2.1-2.1 2.3-2.3Z" />
+        </svg>
+      </div>
+      <div>
+        <p class="eyebrow">Campo App · Configuración</p>
+        <h2>Utilidades</h2>
+        <p class="subtitle">Administrá los catálogos configurables que alimentan los dropdowns del sistema.</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="catalog-grid">
+    <article class="catalog-card" *ngFor="let catalogo of catalogos()">
+      <div class="catalog-card__head">
+        <div class="catalog-card__badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 7l8-4 8 4-8 4-8-4Z" />
+            <path d="M4 7v10l8 4 8-4V7" />
+            <path d="M12 11v10" />
+          </svg>
+        </div>
+        <div class="catalog-card__copy">
+          <h3>{{ catalogo.def.titulo }}</h3>
+          <p>{{ catalogo.def.descripcion }}</p>
+        </div>
+        <span class="catalog-card__count">{{ catalogo.opciones.length }} opción(es)</span>
+      </div>
+
+      <form class="catalog-add" (ngSubmit)="agregar(catalogo.def.categoria)">
+        <input
+          type="text"
+          [(ngModel)]="catalogo.nuevo"
+          [name]="'nuevo-' + catalogo.def.categoria"
+          placeholder="Nueva opción..."
+          autocomplete="off"
+        />
+        <button type="submit" class="btn-add" [attr.disabled]="catalogo.saving ? '' : null">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          {{ catalogo.saving ? 'Guardando...' : 'Agregar' }}
+        </button>
+      </form>
+
+      <p class="catalog-error" *ngIf="catalogo.error">{{ catalogo.error }}</p>
+
+      <div class="catalog-loading" *ngIf="catalogo.loading">Cargando opciones...</div>
+
+      <ul class="catalog-list" *ngIf="!catalogo.loading && catalogo.opciones.length">
+        <li class="catalog-item" *ngFor="let opcion of catalogo.opciones">
+          <span class="catalog-item__dot" aria-hidden="true"></span>
+          <span class="catalog-item__value">{{ opcion.valor }}</span>
+          <button
+            type="button"
+            class="catalog-item__delete"
+            (click)="eliminar(catalogo.def.categoria, opcion)"
+            [attr.aria-label]="'Eliminar ' + opcion.valor"
+            title="Eliminar"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16" />
+              <path d="M9 7V4h6v3" />
+              <path d="M6 7l1 13h10l1-13" />
+              <path d="M10 11v6M14 11v6" />
+            </svg>
+          </button>
+        </li>
+      </ul>
+
+      <div class="catalog-empty" *ngIf="!catalogo.loading && !catalogo.opciones.length">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14v11H5z" /><path d="M9 8V5h6v3" /><path d="M9 13h6" /></svg>
+        <p>Sin opciones cargadas todavía. Agregá la primera arriba.</p>
+      </div>
+    </article>
+  </section>
+</div>

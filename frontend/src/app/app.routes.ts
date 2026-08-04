@@ -21,6 +21,7 @@ import { OperariosGestionPageComponent } from './pages/operarios-gestion-page/op
 import { OrdenesTrabajoPageComponent } from './pages/ordenes-trabajo-page/ordenes-trabajo-page.component';
 import { OperacionesCalendarioPageComponent } from './pages/operaciones-calendario-page/operaciones-calendario-page.component';
 import { AdminRolesMenuPageComponent } from './pages/admin-roles-menu-page/admin-roles-menu-page.component';
+import { UtilidadesPageComponent } from './pages/utilidades-page/utilidades-page.component';
 import { FinanzasFacturacionPageComponent } from './pages/finanzas-facturacion-page/finanzas-facturacion-page.component';
 import { FinanzasComprasPageComponent } from './pages/finanzas-compras-page/finanzas-compras-page.component';
 import { FinanzasReportesPageComponent } from './pages/finanzas-reportes-page/finanzas-reportes-page.component';
@@ -53,6 +54,7 @@ export const routes: Routes = [
       { path: 'operarios/ordenes', component: OrdenesTrabajoPageComponent },
       { path: 'operaciones/calendario', component: OperacionesCalendarioPageComponent },
       { path: 'admin/roles-menu', component: AdminRolesMenuPageComponent },
+      { path: 'utilidades', component: UtilidadesPageComponent },
       { path: 'finanzas/facturacion', component: FinanzasFacturacionPageComponent },
       { path: 'finanzas/compras-proveedores', component: FinanzasComprasPageComponent },
       { path: 'finanzas/reportes', component: FinanzasReportesPageComponent },

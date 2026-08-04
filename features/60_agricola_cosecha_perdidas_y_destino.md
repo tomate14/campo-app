@@ -77,4 +77,30 @@ decisión técnica al implementar.)
   (roles/menú y permisos, para el apartado Utilidades).
 
 ## Estado
-Pendiente.
+Realizada.
+
+## Resumen de implementación
+- **Backend**: migración `V45` (tabla `utilidad_opcion` id/categoria/valor/activo/orden
+  + seed destino Camión/Silo/Puerto; permisos `read:utilidades`/`write:utilidades`
+  asignados a super_admin y admin; opción de menú `utilidades` y su visibilidad
+  por rol) y `V46` (campos de pérdidas/destino en `registros_cosecha`;
+  `tipo_perdida` como ENUM MySQL para validar con Hibernate). Módulo Utilidades
+  (`com.campoapp.utilidades`: entidad/repo/service/controller) con
+  `GET/POST/DELETE /api/v1/utilidades/opciones` protegidos por permisos.
+  `RegistroCosecha` + DTOs + service extendidos (áreaReal%, ha cosechadas,
+  perdidaKgHa, granosPerdidosKg, tipoPerdida CABEZAL/COLA/OTRO, destino,
+  destinoCantidadTn). Dashboard agrícola con sub-record `resumenCosecha`
+  (toneladas totales, pérdida promedio kg/ha, destinos agrupados).
+- **Frontend web**: pantalla `Utilidades` (lista/alta/baja por catálogo) + item de
+  sidebar (`isMenuVisible('utilidades')`) + ruta `/utilidades`; componente
+  reutilizable `configurable-select` (dropdown + botón "+" con alta inline y
+  auto-selección); form de cosecha con los campos de pérdidas y el destino
+  configurable; sección "Cosecha: destino y pérdidas" en el dashboard.
+- **Mobile**: form de cosecha (`registro-cosecha.tsx`) con campos de pérdidas y
+  selector de destino alimentado por el catálogo (`useUtilidadOpciones`), sumado
+  a la sync down para offline; el alta de opciones queda solo en web.
+- **Verificado end-to-end contra Docker**: admin tiene `read/write:utilidades`,
+  ve el menú, GET/POST del catálogo de destino, alta de cosecha con pérdidas y
+  destino persistida, y `resumenCosecha` del dashboard con datos. Pantalla
+  Utilidades web renderiza el catálogo. Gates: `mvn compile` + test-compile,
+  `npm run type-check`, `tsc` mobile — verdes.

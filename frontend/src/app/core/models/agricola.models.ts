@@ -1,5 +1,7 @@
 export type TipoEvento = 'SIEMBRA' | 'MONITOREO_FENOLOGICO' | 'ALERTA' | 'TRATAMIENTO'
 export type CalidadGrano = 'PREMIUM' | 'ESTANDAR' | 'DESCUENTO'
+// Tipo de pérdida de cosecha (feature 60): cabezal, cola u otra causa.
+export type TipoPerdidaCosecha = 'CABEZAL' | 'COLA' | 'OTRO'
 export type TipoPlaga = 'PLAGA' | 'ENFERMEDAD' | 'MALEZA'
 export type SeveridadPlaga = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 export type EstadoDeteccionPlaga = 'ABIERTA' | 'EN_TRATAMIENTO' | 'CONTROLADA' | 'CERRADA'
@@ -106,6 +108,14 @@ export interface RegistroCosecha {
   calidadGrano?: CalidadGrano
   humedad?: number
   observaciones?: string
+  // Feature 60: pérdidas de cosecha y destino del día (todos opcionales).
+  areaRealCosechadaPct?: number
+  hectareasCosechadas?: number
+  perdidaKgHa?: number
+  granosPerdidosKg?: number
+  tipoPerdida?: TipoPerdidaCosecha
+  destino?: string
+  destinoCantidadTn?: number
   createdAt: string
 }
 
@@ -117,6 +127,28 @@ export interface RegistroCosechaRequest {
   calidadGrano?: CalidadGrano
   humedad?: number
   observaciones?: string
+  // Feature 60: pérdidas de cosecha y destino del día (todos opcionales).
+  areaRealCosechadaPct?: number
+  hectareasCosechadas?: number
+  perdidaKgHa?: number
+  granosPerdidosKg?: number
+  tipoPerdida?: TipoPerdidaCosecha
+  destino?: string
+  destinoCantidadTn?: number
+}
+
+// Feature 60: opción de catálogo configurable del módulo Utilidades.
+export interface UtilidadOpcion {
+  id: string
+  categoria: string
+  valor: string
+  activo: boolean
+  orden: number
+}
+
+export interface UtilidadOpcionRequest {
+  categoria: string
+  valor: string
 }
 
 export interface PropiedadSuelo {
@@ -569,6 +601,20 @@ export interface ReporteAgricolaDashboard {
   evolucionSalud: ReporteSeriePunto[]
   alertasRecientes: ReporteAlertaResumen[]
   tareasRecomendadas: ReporteTareaResumen[]
+  // Feature 60: resumen de destino y pérdidas de cosecha (aditivo, opcional).
+  resumenCosecha?: ReporteResumenCosecha
+}
+
+export interface ReporteResumenCosecha {
+  toneladasTotales: number
+  perdidaPromedioKgHa: number | null
+  destinos: ReporteDestinoCosecha[]
+}
+
+export interface ReporteDestinoCosecha {
+  destino: string
+  cantidadTn: number
+  registros: number
 }
 
 export interface ReporteAgricolaKpi {

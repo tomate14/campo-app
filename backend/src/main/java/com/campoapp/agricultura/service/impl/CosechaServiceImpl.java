@@ -46,6 +46,13 @@ public class CosechaServiceImpl implements CosechaService {
                 .calidadGrano(request.calidadGrano())
                 .humedad(request.humedad())
                 .observaciones(request.observaciones())
+                .areaRealCosechadaPct(request.areaRealCosechadaPct())
+                .hectareasCosechadas(request.hectareasCosechadas())
+                .perdidaKgHa(request.perdidaKgHa())
+                .granosPerdidosKg(request.granosPerdidosKg())
+                .tipoPerdida(request.tipoPerdida())
+                .destino(request.destino())
+                .destinoCantidadTn(request.destinoCantidadTn())
                 .build();
 
         return toResponse(cosechaRepository.save(cosecha));
@@ -61,6 +68,13 @@ public class CosechaServiceImpl implements CosechaService {
         cosecha.setCalidadGrano(request.calidadGrano());
         cosecha.setHumedad(request.humedad());
         cosecha.setObservaciones(request.observaciones());
+        cosecha.setAreaRealCosechadaPct(request.areaRealCosechadaPct());
+        cosecha.setHectareasCosechadas(request.hectareasCosechadas());
+        cosecha.setPerdidaKgHa(request.perdidaKgHa());
+        cosecha.setGranosPerdidosKg(request.granosPerdidosKg());
+        cosecha.setTipoPerdida(request.tipoPerdida());
+        cosecha.setDestino(request.destino());
+        cosecha.setDestinoCantidadTn(request.destinoCantidadTn());
         return toResponse(cosechaRepository.save(cosecha));
     }
 
@@ -93,7 +107,14 @@ public class CosechaServiceImpl implements CosechaService {
                 r.getCalidadGrano(),
                 r.getHumedad(),
                 r.getObservaciones(),
-                r.getCreatedAt()
+                r.getCreatedAt(),
+                r.getAreaRealCosechadaPct(),
+                r.getHectareasCosechadas(),
+                r.getPerdidaKgHa(),
+                r.getGranosPerdidosKg(),
+                r.getTipoPerdida(),
+                r.getDestino(),
+                r.getDestinoCantidadTn()
         );
     }
 }

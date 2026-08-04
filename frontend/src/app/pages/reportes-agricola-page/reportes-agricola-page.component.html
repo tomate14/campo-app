@@ -183,6 +183,62 @@
         <ng-template #emptyTasks><div class="empty-state">Sin tareas recomendadas registradas.</div></ng-template>
       </article>
     </section>
+
+    <section class="harvest-row">
+      <article class="panel harvest-panel">
+        <div class="panel-head">
+          <h2>Cosecha: destino y pérdidas</h2>
+          <span>{{ resumenCosecha() ? ((resumenCosecha()!.toneladasTotales | number:'1.0-1') + ' tn') : 'Sin datos' }}</span>
+        </div>
+
+        <ng-container *ngIf="resumenCosecha() as resumen; else emptyHarvest">
+          <div class="harvest-metrics">
+            <div class="harvest-metric">
+              <span class="harvest-metric__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg>
+              </span>
+              <div>
+                <p class="harvest-metric__label">Toneladas totales</p>
+                <strong>{{ resumen.toneladasTotales | number:'1.0-1' }} tn</strong>
+              </div>
+            </div>
+            <div class="harvest-metric">
+              <span class="harvest-metric__icon warn" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3l9 16H3L12 3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+              </span>
+              <div>
+                <p class="harvest-metric__label">Pérdida promedio</p>
+                <strong>{{ resumen.perdidaPromedioKgHa !== null ? ((resumen.perdidaPromedioKgHa | number:'1.0-1') + ' kg/ha') : 'Sin datos' }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="harvest-destinos" *ngIf="destinosCosecha().length; else emptyDestinos">
+            <p class="harvest-destinos__title">Destinos del grano</p>
+            <div class="harvest-destino" *ngFor="let destino of destinosCosecha()">
+              <span class="harvest-destino__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 7h11v8H3z" /><path d="M14 10h4l3 3v2h-7z" /><path d="M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /></svg>
+              </span>
+              <div class="harvest-destino__copy">
+                <strong>{{ destino.destino }}</strong>
+                <small>{{ destino.registros }} registro(s)</small>
+              </div>
+              <span class="harvest-destino__value">{{ destino.cantidadTn | number:'1.0-1' }} tn</span>
+            </div>
+          </div>
+          <ng-template #emptyDestinos>
+            <div class="empty-state">Sin destinos registrados en la campaña.</div>
+          </ng-template>
+        </ng-container>
+
+        <ng-template #emptyHarvest>
+          <div class="empty-state harvest-empty">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg>
+            <p>Sin cosechas cargadas con destino o pérdidas todavía.</p>
+          </div>
+        </ng-template>
+      </article>
+    </section>
   </ng-container>
 </div>
 

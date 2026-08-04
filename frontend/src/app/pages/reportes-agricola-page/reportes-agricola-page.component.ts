@@ -78,6 +78,9 @@ export class ReportesAgricolaPageComponent {
   protected readonly evolucionSalud = computed(() => this.dashboard()?.evolucionSalud ?? []);
   protected readonly alertas = computed(() => this.dashboard()?.alertasRecientes ?? []);
   protected readonly tareas = computed(() => this.dashboard()?.tareasRecomendadas ?? []);
+  // Feature 60: resumen de destino y pérdidas de cosecha.
+  protected readonly resumenCosecha = computed(() => this.dashboard()?.resumenCosecha ?? null);
+  protected readonly destinosCosecha = computed(() => this.resumenCosecha()?.destinos ?? []);
   protected readonly cropHealthIndex = computed(() => this.kpiByCodigo('INDICE_SALUD_CULTIVOS')?.valorNumerico ?? 0);
 
   protected readonly mapData = computed<FeatureCollection<Polygon | MultiPolygon>>(() => {

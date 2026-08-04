@@ -6,6 +6,7 @@ import type {
   RegistroCosecha, RegistroCosechaRequest,
   PropiedadSuelo, PropiedadSueloRequest,
   HistoricoCultivo, HistoricoCultivoRequest, RotacionRecomendacion,
+  UtilidadOpcion,
 } from '../types/agricola'
 
 export const getLotes = (params?: LoteFilters) =>
@@ -126,6 +127,10 @@ export const getAplicacionesFitosanitarias = () =>
 
 export const getSeguimientosPlaga = () =>
   api.get<ApiResponse<SeguimientoPlaga[]>>('/agricola/plagas/seguimientos').then(r => r.data.data)
+
+// Catalogo configurable de Utilidades (feature 60): opciones por categoria
+export const getUtilidadOpciones = (categoria: string) =>
+  api.get<ApiResponse<UtilidadOpcion[]>>('/utilidades/opciones', { params: { categoria } }).then(r => r.data.data)
 
 function unwrapListResponse<T>(response: ApiResponse<T[]> | T[]): T[] {
   return Array.isArray(response) ? response : response.data

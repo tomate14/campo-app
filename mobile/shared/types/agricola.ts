@@ -1,5 +1,6 @@
 export type TipoEvento = 'SIEMBRA' | 'MONITOREO_FENOLOGICO' | 'ALERTA' | 'TRATAMIENTO'
 export type CalidadGrano = 'PREMIUM' | 'ESTANDAR' | 'DESCUENTO'
+export type TipoPerdidaCosecha = 'CABEZAL' | 'COLA' | 'OTRO'
 export type TipoPlaga = 'PLAGA' | 'ENFERMEDAD' | 'MALEZA'
 export type SeveridadPlaga = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 export type EstadoDeteccionPlaga = 'ABIERTA' | 'EN_TRATAMIENTO' | 'CONTROLADA' | 'CERRADA'
@@ -87,6 +88,14 @@ export interface RegistroCosecha {
   calidadGrano?: CalidadGrano
   humedad?: number
   observaciones?: string
+  // Perdidas de cosecha y destino del dia (feature 60)
+  areaRealCosechadaPct?: number
+  hectareasCosechadas?: number
+  perdidaKgHa?: number
+  granosPerdidosKg?: number
+  tipoPerdida?: TipoPerdidaCosecha
+  destino?: string
+  destinoCantidadTn?: number
   createdAt: string
 }
 
@@ -98,6 +107,23 @@ export interface RegistroCosechaRequest {
   calidadGrano?: CalidadGrano
   humedad?: number
   observaciones?: string
+  // Perdidas de cosecha y destino del dia (feature 60)
+  areaRealCosechadaPct?: number
+  hectareasCosechadas?: number
+  perdidaKgHa?: number
+  granosPerdidosKg?: number
+  tipoPerdida?: TipoPerdidaCosecha
+  destino?: string
+  destinoCantidadTn?: number
+}
+
+// Opcion de catalogo configurable (modulo Utilidades, feature 60)
+export interface UtilidadOpcion {
+  id: string
+  categoria: string
+  valor: string
+  activo: boolean
+  orden: number
 }
 
 export interface PropiedadSuelo {

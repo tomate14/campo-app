@@ -1,6 +1,7 @@
 package com.campoapp.agricultura.dto;
 
 import com.campoapp.agricultura.entity.RegistroCosecha.CalidadGrano;
+import com.campoapp.agricultura.entity.TipoPerdidaCosecha;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,5 +26,26 @@ public record RegistroCosechaRequest(
         @DecimalMin(value = "0.0") @DecimalMax(value = "100.0")
         BigDecimal humedad,
 
-        String observaciones
+        String observaciones,
+
+        // --- Feature 60: perdidas de cosecha ---
+        @DecimalMin(value = "0.0") @DecimalMax(value = "100.0")
+        BigDecimal areaRealCosechadaPct,
+
+        @PositiveOrZero
+        BigDecimal hectareasCosechadas,
+
+        @PositiveOrZero
+        BigDecimal perdidaKgHa,
+
+        @PositiveOrZero
+        BigDecimal granosPerdidosKg,
+
+        TipoPerdidaCosecha tipoPerdida,
+
+        // --- Feature 60: destino del dia ---
+        String destino,
+
+        @PositiveOrZero
+        BigDecimal destinoCantidadTn
 ) {}
