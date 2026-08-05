@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import type { AgriculturaAnalytics, AnalyticsFiltros, Lote } from '../../core/models/agricola.models';
 import { AgricolaService } from '../../core/services/agricola.service';
 import { MaterialBarChartComponent, type MaterialBarPoint } from '../../shared/material-bar-chart/material-bar-chart.component';
+import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
 
 @Component({
   selector: 'app-analytics-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, MaterialBarChartComponent],
+  imports: [CommonModule, FormsModule, MaterialBarChartComponent, ConfigurableSelectComponent],
   templateUrl: './analytics-page.component.html',
   styleUrl: './analytics-page.component.css',
 })

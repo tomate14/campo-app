@@ -1,9 +1,9 @@
 package com.campoapp.utilidades.service.impl;
 
 import com.campoapp.common.exception.BusinessException;
-import com.campoapp.common.exception.ResourceNotFoundException;
 import com.campoapp.utilidades.dto.UtilidadOpcionRequest;
 import com.campoapp.utilidades.dto.UtilidadOpcionResponse;
+import com.campoapp.utilidades.service.CatalogoUtilidadRegistry;
 import com.campoapp.utilidades.service.UtilidadOpcionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,41 +13,28 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
  * Fachada generica del modulo Utilidades (feature 71).
  * Cada catalogo configurable vive en su propia tabla {@code utilidad_*} con el
  * mismo esquema. La categoria enviada por el cliente NO se interpola nunca como
- * nombre de tabla: siempre se resuelve contra la whitelist {@link #CATALOGOS} y
- * se usa el valor del mapa. Esa es la defensa contra SQL injection por nombre de
- * tabla; los valores y filtros van siempre por parametros preparados.
+ * nombre de tabla: siempre se resuelve contra la whitelist central
+ * {@link CatalogoUtilidadRegistry} y se usa el valor del mapa. Esa es la defensa
+ * contra SQL injection por nombre de tabla; los valores y filtros van siempre por
+ * parametros preparados.
  */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UtilidadOpcionServiceImpl implements UtilidadOpcionService {
 
-    // Whitelist inmutable categoria -> tabla fisica.
-    private static final Map<String, String> CATALOGOS = Map.of(
-            "DESTINO_COSECHA", "utilidad_destino_cosecha",
-            "TIPO_PERDIDA_COSECHA", "utilidad_tipo_perdida",
-            "CULTIVO", "utilidad_cultivo",
-            "TIPO_PLAGA", "utilidad_tipo_plaga",
-            "TIPO_INSUMO", "utilidad_tipo_insumo",
-            "UNIDAD_INSUMO", "utilidad_unidad_insumo"
-    );
-
     private final JdbcTemplate jdbcTemplate;
+    private final CatalogoUtilidadRegistry registry;
 
-    // Resuelve la tabla contra la whitelist. Categoria desconocida -> 404.
+    // Resuelve la tabla contra la whitelist central. Categoria desconocida -> 404.
     private String resolveTabla(String categoria) {
-        String tabla = categoria == null ? null : CATALOGOS.get(categoria.trim());
-        if (tabla == null) {
-            throw new ResourceNotFoundException("Categoría de utilidad no soportada: " + categoria);
-        }
-        return tabla;
+        return registry.tablaDe(categoria);
     }
 
     @Override

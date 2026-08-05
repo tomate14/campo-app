@@ -142,14 +142,15 @@ CREATE TABLE IF NOT EXISTS aplicaciones_fitosanitarias (
     INDEX idx_aplicacion_fito_deleted_at_repair (deleted_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Feature 72: catalogo_plagas.tipo guarda el id fijo del catalogo utilidad_tipo_plaga (no el string).
 INSERT INTO catalogo_plagas (id, nombre_comun, nombre_cientifico, tipo, cultivos_afectados, descripcion, sintomas, umbral_accion, activo)
-SELECT UUID(), 'Oruga cogollera', 'Spodoptera frugiperda', 'PLAGA', 'MAIZ,SORGO', 'Lepidoptero de alto impacto en cultivos estivales.', 'Perforaciones en hojas y dano en cogollo.', 'Monitorear desde V2; intervenir con dano activo en cogollo.', b'1'
+SELECT UUID(), 'Oruga cogollera', 'Spodoptera frugiperda', 'tpla-plaga', 'MAIZ,SORGO', 'Lepidoptero de alto impacto en cultivos estivales.', 'Perforaciones en hojas y dano en cogollo.', 'Monitorear desde V2; intervenir con dano activo en cogollo.', b'1'
 WHERE NOT EXISTS (SELECT 1 FROM catalogo_plagas WHERE nombre_comun = 'Oruga cogollera');
 
 INSERT INTO catalogo_plagas (id, nombre_comun, nombre_cientifico, tipo, cultivos_afectados, descripcion, sintomas, umbral_accion, activo)
-SELECT UUID(), 'Roya asiatica', 'Phakopsora pachyrhizi', 'ENFERMEDAD', 'SOJA', 'Enfermedad foliar con alto potencial de perdida.', 'Pustulas y amarillamiento foliar.', 'Aplicar ante primeras pustulas y condiciones predisponentes.', b'1'
+SELECT UUID(), 'Roya asiatica', 'Phakopsora pachyrhizi', 'tpla-enfermedad', 'SOJA', 'Enfermedad foliar con alto potencial de perdida.', 'Pustulas y amarillamiento foliar.', 'Aplicar ante primeras pustulas y condiciones predisponentes.', b'1'
 WHERE NOT EXISTS (SELECT 1 FROM catalogo_plagas WHERE nombre_comun = 'Roya asiatica');
 
 INSERT INTO catalogo_plagas (id, nombre_comun, nombre_cientifico, tipo, cultivos_afectados, descripcion, sintomas, umbral_accion, activo)
-SELECT UUID(), 'Yuyo colorado', 'Amaranthus quitensis', 'MALEZA', 'SOJA,MAIZ,GIRASOL', 'Maleza competitiva con resistencia frecuente.', 'Emergencia escalonada y alta competencia.', 'Control temprano antes de 10 cm.', b'1'
+SELECT UUID(), 'Yuyo colorado', 'Amaranthus quitensis', 'tpla-maleza', 'SOJA,MAIZ,GIRASOL', 'Maleza competitiva con resistencia frecuente.', 'Emergencia escalonada y alta competencia.', 'Control temprano antes de 10 cm.', b'1'
 WHERE NOT EXISTS (SELECT 1 FROM catalogo_plagas WHERE nombre_comun = 'Yuyo colorado');

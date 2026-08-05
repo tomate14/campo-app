@@ -13,6 +13,7 @@ import com.campoapp.agricultura.repository.plagas.SeguimientoPlagaRepository;
 import com.campoapp.agricultura.service.impl.PlagasServiceImpl;
 import com.campoapp.common.exception.ResourceNotFoundException;
 import com.campoapp.operarios.repository.OperarioRepository;
+import com.campoapp.utilidades.service.UtilidadNombreResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,13 +37,14 @@ class PlagasServiceTest {
     @Mock private SeguimientoPlagaRepository seguimientoRepository;
     @Mock private LoteRepository loteRepository;
     @Mock private OperarioRepository operarioRepository;
+    @Mock private UtilidadNombreResolver utilidadNombreResolver;
 
     private PlagasServiceImpl service;
     private Lote lote;
 
     @BeforeEach
     void setUp() {
-        service = new PlagasServiceImpl(catalogoRepository, deteccionRepository, aplicacionRepository, seguimientoRepository, loteRepository, operarioRepository, new ObjectMapper());
+        service = new PlagasServiceImpl(catalogoRepository, deteccionRepository, aplicacionRepository, seguimientoRepository, loteRepository, operarioRepository, new ObjectMapper(), utilidadNombreResolver);
         lote = new Lote();
         lote.setNombre("Lote Norte");
         lote.setCultivo("MAIZ");

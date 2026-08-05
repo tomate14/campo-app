@@ -34,7 +34,7 @@
       <span>Tipo</span>
       <select [ngModel]="filters().tipo" (ngModelChange)="filters.update(f => ({ ...f, tipo: $event }))">
         <option value="">Todos</option>
-        <option *ngFor="let opcion of tipoInsumoOpciones()" [value]="opcion.valor">{{ opcion.valor }}</option>
+        <option *ngFor="let opcion of tipoInsumoOpciones()" [value]="opcion.id">{{ opcion.valor }}</option>
       </select>
     </label>
     <label>
@@ -92,8 +92,8 @@
                 <strong>{{ insumo.nombre }}</strong>
                 <small>{{ insumo.codigo }} · {{ insumo.marca || 'Sin marca' }}</small>
               </td>
-              <td><span class="pill">{{ insumo.tipo }}</span></td>
-              <td>{{ number(insumo.stockTotal) }} {{ insumo.unidadMedida }}</td>
+              <td><span class="pill">{{ insumo.tipoNombre }}</span></td>
+              <td>{{ number(insumo.stockTotal) }} {{ insumo.unidadMedidaNombre }}</td>
               <td>{{ number(insumo.stockMinimo) }}</td>
               <td>{{ date(insumo.proximoVencimiento) }}</td>
               <td>{{ money(insumo.precioUnitario) }}</td>
@@ -161,10 +161,10 @@
             <tbody>
               <tr *ngFor="let item of reordenPage()?.content || []">
                 <td><strong>{{ item.nombre }}</strong><small>{{ item.codigo }} - {{ item.marca || 'Sin marca' }}</small></td>
-                <td><span class="pill">{{ item.tipo }}</span></td>
+                <td><span class="pill">{{ item.tipoNombre }}</span></td>
                 <td>{{ number(item.stockTotal) }}</td>
                 <td>{{ number(item.stockMinimo) }}</td>
-                <td>{{ item.unidadMedida }}</td>
+                <td>{{ item.unidadMedidaNombre }}</td>
                 <td><span class="status danger">Reorden</span></td>
               </tr>
               <tr *ngIf="!(reordenPage()?.content || []).length">

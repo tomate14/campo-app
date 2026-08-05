@@ -130,7 +130,8 @@ export class PlagasPageComponent {
     const filters = this.filters();
     return this.lotes().filter((lote) => {
       const sameLote = !filters.loteId || lote.id === filters.loteId;
-      const sameCultivo = !filters.cultivo || lote.cultivo?.toLowerCase().includes(filters.cultivo.toLowerCase());
+      // Feature 72: cultivo es un id de catalogo, se compara por igualdad exacta (id contra id).
+      const sameCultivo = !filters.cultivo || lote.cultivo === filters.cultivo;
       return sameLote && sameCultivo;
     });
   });
@@ -168,7 +169,8 @@ export class PlagasPageComponent {
     const loteCenters = this.loteCenters();
     this.mapDetecciones().forEach((item) => {
       const sameLote = !filters.loteId || item.loteId === filters.loteId;
-      const sameCultivo = !filters.cultivo || item.cultivo?.toLowerCase().includes(filters.cultivo.toLowerCase()) || false;
+      // Feature 72: cultivo es un id de catalogo, se compara por igualdad exacta (id contra id).
+      const sameCultivo = !filters.cultivo || item.cultivo === filters.cultivo;
       const sameSeveridad = !filters.severidad || item.severidad === filters.severidad;
       const sameEstado = !filters.estado || item.estado === filters.estado;
       if (!sameLote || !sameCultivo || !sameSeveridad || !sameEstado) return;

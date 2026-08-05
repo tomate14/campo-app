@@ -8,6 +8,8 @@ import com.campoapp.agricultura.repository.RendimientoRepository;
 import com.campoapp.agricultura.service.AnalyticsService;
 import com.campoapp.agricultura.service.PredictorService;
 import com.campoapp.clima.entity.DatoClima;
+import com.campoapp.utilidades.service.CatalogoUtilidadRegistry;
+import com.campoapp.utilidades.service.UtilidadNombreResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     private final AnalisisRepository analisisRepository;
     private final MetricaRepository metricaRepository;
     private final PredictorService predictorService;
+    private final UtilidadNombreResolver utilidadNombreResolver;
 
     @Override
     public AgriculturaAnalyticsResponse obtenerAnalytics(
@@ -100,6 +103,10 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     }
 
     private List<AgriculturaAnalyticsResponse.LoteMetric> buildLoteMetrics(List<RegistroCosecha> cosechas) {
+        // Feature 72: la etiqueta de cultivo se resuelve del id al valor del catalogo.
+        Map<String, String> cultivos = utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.CULTIVO,
+                cosechas.stream().map(c -> c.getLote().getCultivo()).toList());
         return cosechas.stream()
                 .collect(Collectors.groupingBy(c -> c.getLote().getId()))
                 .values().stream()
@@ -108,7 +115,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
                     return new AgriculturaAnalyticsResponse.LoteMetric(
                             first.getLote().getId(),
                             first.getLote().getNombre(),
-                            first.getLote().getCultivo(),
+                            utilidadNombreResolver.resolver(first.getLote().getCultivo(), cultivos),
                             first.getLote().getTemporada(),
                             first.getLote().getArea(),
                             average(items.stream().map(RegistroCosecha::getRendimientoKgHa).toList()),
@@ -122,11 +129,15 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     }
 
     private List<AgriculturaAnalyticsResponse.CultivoMetric> buildCultivoMetrics(List<RegistroCosecha> cosechas) {
+        // Feature 72: se agrupa por id de cultivo pero la etiqueta se resuelve a valor.
+        Map<String, String> cultivos = utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.CULTIVO,
+                cosechas.stream().map(c -> c.getLote().getCultivo()).toList());
         return cosechas.stream()
                 .collect(Collectors.groupingBy(c -> c.getLote().getCultivo()))
                 .entrySet().stream()
                 .map(entry -> new AgriculturaAnalyticsResponse.CultivoMetric(
-                        entry.getKey(),
+                        utilidadNombreResolver.resolver(entry.getKey(), cultivos),
                         average(entry.getValue().stream().map(RegistroCosecha::getRendimientoKgHa).toList()),
                         sum(entry.getValue().stream().map(RegistroCosecha::getToneladasTotal).toList()),
                         entry.getValue().size()

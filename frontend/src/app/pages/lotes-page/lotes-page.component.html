@@ -18,10 +18,13 @@
         <span>Temporada</span>
         <input [ngModel]="filters().temporada" (ngModelChange)="updateFilter('temporada', $event)" placeholder="2026" />
       </label>
-      <label>
-        <span>Cultivo</span>
-        <input [ngModel]="filters().cultivo" (ngModelChange)="updateFilter('cultivo', $event)" placeholder="MAIZ" />
-      </label>
+      <app-configurable-select
+        categoria="CULTIVO"
+        label="Cultivo"
+        placeholder="Todos"
+        [value]="filters().cultivo ?? ''"
+        (valueChange)="updateFilter('cultivo', $event || undefined)"
+      ></app-configurable-select>
       <label>
         <span>Area minima</span>
         <input [ngModel]="filters().areaMin" (ngModelChange)="updateFilter('areaMin', $event ? +$event : undefined)" type="number" step="0.01" />
@@ -66,7 +69,7 @@
               <h3>{{ lote.nombre }}</h3>
               <div class="meta-inline">
                 <span class="icon-chip"><svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg></span>
-                <span>{{ lote.cultivo }}</span>
+                <span>{{ lote.cultivoNombre }}</span>
                 <span class="divider">•</span>
                 <span class="icon-chip"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></span>
                 <span>{{ latestSeason(lote) }}</span>
@@ -84,7 +87,7 @@
                 <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg></span>
                 <div>
                   <span class="info-label">Cultivo</span>
-                  <strong>{{ lote.cultivo }}</strong>
+                  <strong>{{ lote.cultivoNombre }}</strong>
                 </div>
               </div>
               <div class="info-item">

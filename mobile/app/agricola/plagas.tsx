@@ -61,6 +61,7 @@ import type {
   SeguimientoPlaga,
   SeguimientoPlagaRequest,
   SeveridadPlaga,
+  UtilidadOpcion,
 } from '../../shared/types/agricola'
 import type { Operario } from '../../shared/types/operarios'
 import { useUtilidadOpciones } from '../../shared/hooks/useUtilidades'
@@ -91,7 +92,8 @@ function emptyCatalogoForm(): CatalogoPlagaRequest {
   return {
     nombreComun: '',
     nombreCientifico: '',
-    tipo: 'PLAGA',
+    // tipo guarda el id del catalogo TIPO_PLAGA (feature 72); se elige en el formulario
+    tipo: '',
     cultivosAfectados: '',
     umbralAccion: '',
     sintomas: '',
@@ -150,11 +152,10 @@ export default function PlagasMobilePage() {
   const [savingCatalogo, setSavingCatalogo] = useState(false)
   const [catalogoForm, setCatalogoForm] = useState<CatalogoPlagaRequest>(emptyCatalogoForm)
 
-  // Catalogos configurables de Utilidades (feature 71): tipo de plaga y cultivo.
+  // Catalogos configurables de Utilidades (feature 72): tipo de plaga y cultivo.
+  // Los pickers guardan el id de la opcion; el label mostrado es el valor.
   const { data: tipoPlagaOpciones = [] } = useUtilidadOpciones('TIPO_PLAGA')
   const { data: cultivoOpciones = [] } = useUtilidadOpciones('CULTIVO')
-  const tipoPlagaValues = useMemo(() => tipoPlagaOpciones.map(opcion => opcion.valor), [tipoPlagaOpciones])
-  const cultivoValues = useMemo(() => cultivoOpciones.map(opcion => opcion.valor), [cultivoOpciones])
 
   const [deteccionForm, setDeteccionForm] = useState<DeteccionPlagaRequest>({
     loteId: '',
@@ -438,7 +439,7 @@ export default function PlagasMobilePage() {
           {mode === 'deteccion' && (
             <DetectionForm
               catalogo={catalogo}
-              cultivoOptions={cultivoValues}
+              cultivoOptions={cultivoOpciones}
               form={deteccionForm}
               lotes={lotes}
               operarios={operarios}
@@ -499,7 +500,7 @@ export default function PlagasMobilePage() {
       <CatalogoPlagaModal
         visible={catalogoModalOpen}
         form={catalogoForm}
-        tipoOptions={tipoPlagaValues}
+        tipoOptions={tipoPlagaOpciones}
         saving={savingCatalogo}
         onClose={() => setCatalogoModalOpen(false)}
         onSave={saveCatalogoPlaga}
@@ -522,7 +523,7 @@ function DetectionForm({
   setForm,
 }: {
   catalogo: CatalogoPlaga[]
-  cultivoOptions: string[]
+  cultivoOptions: UtilidadOpcion[]
   form: DeteccionPlagaRequest
   lotes: Lote[]
   operarios: Operario[]
@@ -532,22 +533,27 @@ function DetectionForm({
   onAddPlaga: () => void
   setForm: React.Dispatch<React.SetStateAction<DeteccionPlagaRequest>>
 }) {
-  // El cultivo autocompletado desde el lote se conserva como chip activo aunque no este en el catalogo.
+  // Chips de cultivo por id (feature 72): value = opcion.id, label = opcion.valor.
+  // El cultivo autocompletado desde el lote se conserva como chip activo aunque no este en el catalogo activo.
   const cultivoChips = useMemo(() => {
-    if (form.cultivo && !cultivoOptions.includes(form.cultivo)) return [form.cultivo, ...cultivoOptions]
-    return cultivoOptions
-  }, [cultivoOptions, form.cultivo])
+    const base = cultivoOptions.map(opcion => ({ id: opcion.id, label: opcion.valor }))
+    if (form.cultivo && !cultivoOptions.some(opcion => opcion.id === form.cultivo)) {
+      const selectedLote = lotes.find(lote => lote.id === form.loteId)
+      return [{ id: form.cultivo, label: selectedLote?.cultivoNombre ?? form.cultivo }, ...base]
+    }
+    return base
+  }, [cultivoOptions, form.cultivo, form.loteId, lotes])
   return (
     <>
       <SectionTitle icon={<Crosshair color="#9FE870" size={18} />} title="Nueva detección" subtitle="Registro geolocalizado de plaga o enfermedad." />
-      <OptionPicker label="Lote" items={lotes.map(lote => ({ id: lote.id, label: lote.nombre, sublabel: lote.cultivo }))} value={form.loteId} onChange={(id) => {
+      <OptionPicker label="Lote" items={lotes.map(lote => ({ id: lote.id, label: lote.nombre, sublabel: lote.cultivoNombre ?? lote.cultivo }))} value={form.loteId} onChange={(id) => {
         const lote = lotes.find(item => item.id === id)
         setForm(current => ({ ...current, loteId: id, cultivo: lote?.cultivo }))
       }} />
-      <OptionPicker label="Plaga" items={catalogo.map(item => ({ id: item.id, label: item.nombreComun, sublabel: item.tipo }))} value={form.catalogoPlagaId} onChange={(id) => setForm(current => ({ ...current, catalogoPlagaId: id }))} onAdd={onAddPlaga} addLabel="Nueva plaga en el catálogo" />
+      <OptionPicker label="Plaga" items={catalogo.map(item => ({ id: item.id, label: item.nombreComun, sublabel: item.tipoNombre ?? item.tipo }))} value={form.catalogoPlagaId} onChange={(id) => setForm(current => ({ ...current, catalogoPlagaId: id }))} onAdd={onAddPlaga} addLabel="Nueva plaga en el catálogo" />
       <Field label="Fecha" icon={<CalendarDays color="#6EA8FF" size={18} />} value={form.fechaDeteccion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, fechaDeteccion: value }))} />
       {cultivoOptions.length > 0 ? (
-        <ChipGroup label="Cultivo" value={form.cultivo ?? ''} options={cultivoChips} onChange={(value) => setForm(current => ({ ...current, cultivo: value }))} />
+        <IdChipGroup label="Cultivo" value={form.cultivo ?? ''} options={cultivoChips} onChange={(id) => setForm(current => ({ ...current, cultivo: id }))} />
       ) : (
         <Field label="Cultivo" icon={<Leaf color="#39D0D8" size={18} />} value={form.cultivo ?? ''} onChangeText={(value) => setForm(current => ({ ...current, cultivo: value }))} />
       )}
@@ -706,7 +712,7 @@ function HistoryView({
       {historyScope === 'deteccion' ? (
         <OptionPicker label="Deteccion" items={detecciones.map(item => ({ id: item.id, label: item.plagaNombre, sublabel: item.loteNombre }))} value={selectedDetectionId} onChange={setSelectedDetectionId} />
       ) : (
-        <OptionPicker label="Lote" items={lotes.map(lote => ({ id: lote.id, label: lote.nombre, sublabel: lote.cultivo }))} value={selectedHistoryLoteId} onChange={setSelectedHistoryLoteId} />
+        <OptionPicker label="Lote" items={lotes.map(lote => ({ id: lote.id, label: lote.nombre, sublabel: lote.cultivoNombre ?? lote.cultivo }))} value={selectedHistoryLoteId} onChange={setSelectedHistoryLoteId} />
       )}
       <Pressable style={styles.secondaryAction} onPress={onRefresh}>
         <History color="#9FE870" size={18} />
@@ -748,7 +754,7 @@ function CatalogoPlagaModal({
 }: {
   visible: boolean
   form: CatalogoPlagaRequest
-  tipoOptions: string[]
+  tipoOptions: UtilidadOpcion[]
   saving: boolean
   onClose: () => void
   onSave: () => void
@@ -769,7 +775,7 @@ function CatalogoPlagaModal({
           <ScrollView contentContainerStyle={styles.modalBody} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
             <Field label="Nombre común" value={form.nombreComun} onChangeText={(value) => setForm(current => ({ ...current, nombreComun: value }))} />
             <Field label="Nombre científico" value={form.nombreCientifico ?? ''} onChangeText={(value) => setForm(current => ({ ...current, nombreCientifico: value }))} />
-            <ChipGroup label="Tipo" value={form.tipo} options={tipoOptions} onChange={(value) => setForm(current => ({ ...current, tipo: value }))} />
+            <IdChipGroup label="Tipo" value={form.tipo} options={tipoOptions.map(opcion => ({ id: opcion.id, label: opcion.valor }))} onChange={(id) => setForm(current => ({ ...current, tipo: id }))} />
             <Field label="Cultivos afectados" value={form.cultivosAfectados ?? ''} onChangeText={(value) => setForm(current => ({ ...current, cultivosAfectados: value }))} />
             <Field label="Umbral de acción" value={form.umbralAccion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, umbralAccion: value }))} />
             <Textarea label="Síntomas" value={form.sintomas ?? ''} onChangeText={(value) => setForm(current => ({ ...current, sintomas: value.slice(0, 500) }))} />
@@ -828,6 +834,25 @@ function ChipGroup({ label, value, options, onChange }: { label: string; value: 
           return (
             <Pressable key={option} style={[styles.statusChip, active && styles.statusChipActive]} onPress={() => onChange(option)}>
               <Text style={[styles.statusChipText, active && styles.statusChipTextActive]}>{option.replace('_', ' ')}</Text>
+            </Pressable>
+          )
+        })}
+      </View>
+    </View>
+  )
+}
+
+// Chips que guardan el id de una opcion de catalogo mostrando su valor (feature 72).
+function IdChipGroup({ label, value, options, onChange }: { label: string; value: string; options: Array<{ id: string; label: string }>; onChange: (id: string) => void }) {
+  return (
+    <View style={styles.fieldGroup}>
+      <Text style={styles.label}>{label}</Text>
+      <View style={styles.chipRow}>
+        {options.map(option => {
+          const active = option.id === value
+          return (
+            <Pressable key={option.id} style={[styles.statusChip, active && styles.statusChipActive]} onPress={() => onChange(option.id)}>
+              <Text style={[styles.statusChipText, active && styles.statusChipTextActive]}>{option.label}</Text>
             </Pressable>
           )
         })}

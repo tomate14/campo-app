@@ -18,6 +18,8 @@ import com.campoapp.maquinaria.entity.MantenimientoProgramado;
 import com.campoapp.maquinaria.repository.MantenimientoProgramadoRepository;
 import com.campoapp.reportes.dto.ReporteAgricolaDashboardResponse;
 import com.campoapp.reportes.service.ReporteAgricolaDashboardService;
+import com.campoapp.utilidades.service.CatalogoUtilidadRegistry;
+import com.campoapp.utilidades.service.UtilidadNombreResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +49,7 @@ public class ReporteAgricolaDashboardServiceImpl implements ReporteAgricolaDashb
     private final SeguimientoPlagaRepository seguimientoRepository;
     private final PrecipitacionDiariaRepository precipitacionDiariaRepository;
     private final MantenimientoProgramadoRepository mantenimientoRepository;
+    private final UtilidadNombreResolver utilidadNombreResolver;
 
     @Override
     @Transactional(readOnly = true)
@@ -104,12 +107,16 @@ public class ReporteAgricolaDashboardServiceImpl implements ReporteAgricolaDashb
 
         BigDecimal perdidaPromedio = average(cosechas.stream().map(RegistroCosecha::getPerdidaKgHa));
 
+        // Feature 72: destino se agrupa por id pero la etiqueta se muestra resuelta a valor.
+        Map<String, String> destinoNombres = utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.DESTINO_COSECHA,
+                cosechas.stream().map(RegistroCosecha::getDestino).toList());
         List<ReporteAgricolaDashboardResponse.DestinoResumen> destinos = cosechas.stream()
                 .filter(c -> c.getDestino() != null && !c.getDestino().isBlank())
                 .collect(Collectors.groupingBy(c -> c.getDestino().trim(), TreeMap::new, Collectors.toList()))
                 .entrySet().stream()
                 .map(e -> new ReporteAgricolaDashboardResponse.DestinoResumen(
-                        e.getKey(),
+                        utilidadNombreResolver.resolver(e.getKey(), destinoNombres),
                         e.getValue().stream().map(RegistroCosecha::getDestinoCantidadTn).filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add),
                         e.getValue().size()))
                 .toList();
@@ -122,14 +129,19 @@ public class ReporteAgricolaDashboardServiceImpl implements ReporteAgricolaDashb
     }
 
     private List<ReporteAgricolaDashboardResponse.CultivoFenologico> estadosFenologicos(List<EventoSiembra> eventos) {
+        // Feature 72: la etiqueta del cultivo se resuelve del id al valor del catalogo.
+        Map<String, String> cultivos = utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.CULTIVO,
+                eventos.stream().map(e -> e.getLote().getCultivo()).toList());
         return eventos.stream()
                 .filter(e -> e.getTipoEvento() == EventoSiembra.TipoEvento.MONITOREO_FENOLOGICO)
                 .filter(e -> e.getEstadoFenologico() != null && !e.getEstadoFenologico().isBlank())
                 .collect(Collectors.toMap(e -> normalize(e.getLote().getCultivo()), Function.identity(), (a, b) -> a.getFecha().isAfter(b.getFecha()) ? a : b))
                 .values()
                 .stream()
-                .sorted(Comparator.comparing(e -> e.getLote().getCultivo()))
-                .map(e -> new ReporteAgricolaDashboardResponse.CultivoFenologico(e.getLote().getCultivo(), e.getEstadoFenologico(), e.getFecha()))
+                .map(e -> new ReporteAgricolaDashboardResponse.CultivoFenologico(
+                        utilidadNombreResolver.resolver(e.getLote().getCultivo(), cultivos), e.getEstadoFenologico(), e.getFecha()))
+                .sorted(Comparator.comparing(ReporteAgricolaDashboardResponse.CultivoFenologico::cultivo, Comparator.nullsLast(Comparator.naturalOrder())))
                 .toList();
     }
 
@@ -220,23 +232,31 @@ public class ReporteAgricolaDashboardServiceImpl implements ReporteAgricolaDashb
 
     private List<ReporteAgricolaDashboardResponse.CultivoDistribucion> distribucion(List<Lote> lotes) {
         BigDecimal total = lotes.stream().map(Lote::getArea).filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
+        // Feature 72: se agrupa por id de cultivo pero la etiqueta se resuelve a valor.
+        Map<String, String> cultivos = utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.CULTIVO, lotes.stream().map(Lote::getCultivo).toList());
         Map<String, List<Lote>> byCrop = lotes.stream().collect(Collectors.groupingBy(l -> normalize(l.getCultivo())));
         return byCrop.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
                 .map(entry -> {
                     BigDecimal area = entry.getValue().stream().map(Lote::getArea).filter(Objects::nonNull).reduce(BigDecimal.ZERO, BigDecimal::add);
                     BigDecimal pct = total.signum() == 0 ? BigDecimal.ZERO : area.multiply(BigDecimal.valueOf(100)).divide(total, 1, RoundingMode.HALF_UP);
-                    return new ReporteAgricolaDashboardResponse.CultivoDistribucion(entry.getKey(), entry.getValue().size(), area, pct);
+                    return new ReporteAgricolaDashboardResponse.CultivoDistribucion(
+                            utilidadNombreResolver.resolver(entry.getKey(), cultivos), entry.getValue().size(), area, pct);
                 })
+                .sorted(Comparator.comparing(ReporteAgricolaDashboardResponse.CultivoDistribucion::cultivo, Comparator.nullsLast(Comparator.naturalOrder())))
                 .toList();
     }
 
     private List<ReporteAgricolaDashboardResponse.LoteMapa> lotesMapa(List<Lote> lotes, Map<String, SaludLote> saludPorLote) {
+        // Feature 72: la etiqueta de cultivo del pin se resuelve del id al valor del catalogo.
+        Map<String, String> cultivos = utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.CULTIVO, lotes.stream().map(Lote::getCultivo).toList());
         return lotes.stream()
                 .filter(l -> l.getPoligono() != null && !l.getPoligono().isBlank())
                 .map(l -> {
                     SaludLote salud = saludPorLote.get(l.getId());
-                    return new ReporteAgricolaDashboardResponse.LoteMapa(l.getId(), l.getNombre(), l.getCultivo(), l.getArea(), l.getPoligono(), salud.label(), salud.color());
+                    return new ReporteAgricolaDashboardResponse.LoteMapa(l.getId(), l.getNombre(),
+                            utilidadNombreResolver.resolver(l.getCultivo(), cultivos), l.getArea(), l.getPoligono(), salud.label(), salud.color());
                 })
                 .toList();
     }

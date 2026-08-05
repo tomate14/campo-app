@@ -522,7 +522,7 @@ function LoteHistoryPanel({
         <View>
           <Text style={styles.historyEyebrow}>Historial del lote</Text>
           <Text style={styles.historyTitle}>{lote.nombre}</Text>
-          <Text style={styles.historySubtitle}>{lote.cultivo} · {lote.area} ha</Text>
+          <Text style={styles.historySubtitle}>{lote.cultivoNombre ?? lote.cultivo} · {lote.area} ha</Text>
         </View>
         <View style={styles.historyActions}>
           <Pressable style={[styles.previewClose, styles.weatherButton]} onPress={onWeather}>
@@ -717,7 +717,7 @@ function buildLoteHistory(
     id: item.id,
     tipo: item.tipoEvento === 'SIEMBRA' ? 'Siembra' : 'Evento',
     titulo: item.estadoFenologico || item.tipoEvento,
-    detalle: item.descripcion || lote.cultivo,
+    detalle: item.descripcion || lote.cultivoNombre || lote.cultivo,
     fecha: item.fecha,
     estado: item.tipoEvento,
     color: '#9FE870',

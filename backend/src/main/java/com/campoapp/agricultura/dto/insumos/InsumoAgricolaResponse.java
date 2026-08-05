@@ -9,9 +9,13 @@ public record InsumoAgricolaResponse(
         String codigo,
         String nombre,
         String tipo,
+        // Feature 72: valor resuelto del catalogo TIPO_INSUMO (tipo sigue siendo el id).
+        String tipoNombre,
         String marca,
         String presentacion,
         String unidadMedida,
+        // Feature 72: valor resuelto del catalogo UNIDAD_INSUMO (unidadMedida sigue siendo el id).
+        String unidadMedidaNombre,
         String principioActivo,
         String proveedorId,
         String proveedor,

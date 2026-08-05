@@ -24,7 +24,7 @@
 
     <section class="filters-card">
       <label><span>Lote</span><select [ngModel]="filters().loteId" (ngModelChange)="filters.update(f => ({ ...f, loteId: $event || undefined }))"><option value="">Todos</option><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
-      <label><span>Cultivo</span><input [ngModel]="filters().cultivo" (ngModelChange)="filters.update(f => ({ ...f, cultivo: $event || undefined }))" /></label>
+      <app-configurable-select categoria="CULTIVO" label="Cultivo" placeholder="Todos" [value]="filters().cultivo ?? ''" (valueChange)="filters.update(f => ({ ...f, cultivo: $event || undefined }))"></app-configurable-select>
       <label><span>Severidad</span><select [ngModel]="filters().severidad" (ngModelChange)="filters.update(f => ({ ...f, severidad: $event || undefined }))"><option value="">Todas</option><option *ngFor="let item of severidades" [value]="item">{{ item }}</option></select></label>
       <label><span>Estado</span><select [ngModel]="filters().estado" (ngModelChange)="filters.update(f => ({ ...f, estado: $event || undefined }))"><option value="">Todos</option><option *ngFor="let item of estados" [value]="item">{{ item }}</option></select></label>
       <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>
@@ -51,10 +51,10 @@
             <button class="map-pin" type="button" [style.--pin-color]="pinColor(pin.detecciones[0].severidad)" (click)="$event.stopPropagation(); openPinCard(pin)">
               <span class="map-pin__glow"></span>
               <span class="map-pin__head">
-                <svg *ngIf="pin.detecciones[0].tipo === 'PLAGA'" viewBox="0 0 24 24"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.8 3.8-4"/><path d="M17.47 9C19.4 8.8 21 7.1 21 5"/><path d="M18 13h4"/><path d="M21 21c0-2.1-1.7-3.8-3.8-4"/></svg>
-                <svg *ngIf="pin.detecciones[0].tipo === 'MALEZA'" viewBox="0 0 24 24"><path d="M17 14v6"/><path d="M7 14v6"/><path d="M12 20V8"/><path d="M12 8C8 8 6 6 6 3c3 0 6 2 6 5Z"/><path d="M12 8c4 0 6-2 6-5-3 0-6 2-6 5Z"/><path d="M7 14c-3 0-5-2-5-5 3 0 5 2 5 5Z"/><path d="M17 14c3 0 5-2 5-5-3 0-5 2-5 5Z"/></svg>
-                <svg *ngIf="pin.detecciones[0].tipo === 'ENFERMEDAD'" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-8 8.7C7.5 20.5 4 18 4 13V5l8-3 8 3v8Z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-                <svg *ngIf="pin.detecciones[0].tipo !== 'PLAGA' && pin.detecciones[0].tipo !== 'MALEZA' && pin.detecciones[0].tipo !== 'ENFERMEDAD'" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/></svg>
+                <svg *ngIf="(pin.detecciones[0].tipoNombre | uppercase) === 'PLAGA'" viewBox="0 0 24 24"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.8 3.8-4"/><path d="M17.47 9C19.4 8.8 21 7.1 21 5"/><path d="M18 13h4"/><path d="M21 21c0-2.1-1.7-3.8-3.8-4"/></svg>
+                <svg *ngIf="(pin.detecciones[0].tipoNombre | uppercase) === 'MALEZA'" viewBox="0 0 24 24"><path d="M17 14v6"/><path d="M7 14v6"/><path d="M12 20V8"/><path d="M12 8C8 8 6 6 6 3c3 0 6 2 6 5Z"/><path d="M12 8c4 0 6-2 6-5-3 0-6 2-6 5Z"/><path d="M7 14c-3 0-5-2-5-5 3 0 5 2 5 5Z"/><path d="M17 14c3 0 5-2 5-5-3 0-5 2-5 5Z"/></svg>
+                <svg *ngIf="(pin.detecciones[0].tipoNombre | uppercase) === 'ENFERMEDAD'" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-8 8.7C7.5 20.5 4 18 4 13V5l8-3 8 3v8Z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                <svg *ngIf="(pin.detecciones[0].tipoNombre | uppercase) !== 'PLAGA' && (pin.detecciones[0].tipoNombre | uppercase) !== 'MALEZA' && (pin.detecciones[0].tipoNombre | uppercase) !== 'ENFERMEDAD'" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/></svg>
                 <span class="map-pin__count" *ngIf="pin.detecciones.length > 1">{{ pin.detecciones.length }}</span>
               </span>
               <span class="map-pin__tip"></span>
@@ -108,9 +108,9 @@
           <thead><tr><th>Plaga</th><th>Lote</th><th>Cultivo</th><th>Fecha</th><th>Severidad</th><th>Estado</th><th>&Aacute;rea</th><th>Responsable</th><th>Acciones</th></tr></thead>
           <tbody>
             <tr *ngFor="let item of detecciones()">
-              <td><strong>{{ item.plagaNombre }}</strong><small>{{ item.tipo }}</small></td>
+              <td><strong>{{ item.plagaNombre }}</strong><small>{{ item.tipoNombre }}</small></td>
               <td>{{ item.loteNombre }}</td>
-              <td>{{ item.cultivo || '-' }}</td>
+              <td>{{ item.cultivoNombre || '-' }}</td>
               <td>{{ item.fechaDeteccion | date:'dd/MM/yyyy HH:mm' }}</td>
               <td><span class="badge" [class]="severityClass(item.severidad)">{{ item.severidad }}</span></td>
               <td>{{ item.estado }}</td>
@@ -157,7 +157,7 @@
           <tbody>
             <tr *ngFor="let item of catalogo()">
               <td><strong>{{ item.nombreComun }}</strong><small>Cat&aacute;logo</small></td>
-              <td><span class="badge">{{ item.tipo }}</span></td>
+              <td><span class="badge">{{ item.tipoNombre }}</span></td>
               <td>{{ item.nombreCientifico || '-' }}</td>
               <td>{{ item.cultivosAfectados || '-' }}</td>
               <td>{{ item.umbralAccion || '-' }}</td>
@@ -231,7 +231,7 @@
           <p>{{ historialModalSubtitle() }}</p>
         </div>
         <div class="history-summary">
-          <span class="badge" *ngIf="historialLote() as lote">{{ lote.cultivo }}</span>
+          <span class="badge" *ngIf="historialLote() as lote">{{ lote.cultivoNombre }}</span>
           <strong>{{ historialEventos().length }} evento(s)</strong>
           <small *ngIf="selectedDeteccion() as deteccion">Origen: {{ deteccion.plagaNombre }}</small>
         </div>

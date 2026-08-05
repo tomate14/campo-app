@@ -1,8 +1,11 @@
 -- Feature 71: el modulo Utilidades pasa a "una tabla por catalogo".
 -- Cada catalogo configurable tiene su propia tabla con prefijo utilidad_ y el
 -- mismo esquema (id, valor, activo, orden, timestamps, deleted_at, UNIQUE(valor)).
--- Se migran los catalogos existentes (destino y tipo de perdida) desde la tabla
--- generica utilidad_opcion, se seedean los nuevos y se elimina utilidad_opcion.
+-- Feature 72: los campos que referencian estos catalogos guardan el ID de la fila
+-- (no el string valor). Por eso los seeds usan ids fijos legibles (slugs estables)
+-- en lugar de UUID(): asi las referencias de otras tablas apuntan a un id conocido
+-- y renombrar una opcion no rompe las referencias. Se seedean los 6 catalogos
+-- fresh (incluidos destino y tipo de perdida) y se elimina utilidad_opcion.
 
 -- 1) Catalogo: destino de la cosecha.
 CREATE TABLE utilidad_destino_cosecha (
@@ -82,52 +85,53 @@ CREATE TABLE utilidad_unidad_insumo (
     CONSTRAINT uk_utilidad_unidad_insumo_valor UNIQUE (valor)
 );
 
--- Migracion de datos existentes desde la tabla generica utilidad_opcion.
-INSERT INTO utilidad_destino_cosecha (id, valor, activo, orden, created_at, updated_at, deleted_at)
-SELECT id, valor, activo, orden, created_at, updated_at, deleted_at
-FROM utilidad_opcion
-WHERE categoria = 'DESTINO_COSECHA';
+-- Feature 72: seed de destino de cosecha con ids fijos legibles.
+INSERT INTO utilidad_destino_cosecha (id, valor, activo, orden, created_at, updated_at) VALUES
+    ('dest-camion', 'Camión', TRUE, 1, NOW(6), NOW(6)),
+    ('dest-silo',   'Silo',   TRUE, 2, NOW(6), NOW(6)),
+    ('dest-puerto', 'Puerto', TRUE, 3, NOW(6), NOW(6));
 
-INSERT INTO utilidad_tipo_perdida (id, valor, activo, orden, created_at, updated_at, deleted_at)
-SELECT id, valor, activo, orden, created_at, updated_at, deleted_at
-FROM utilidad_opcion
-WHERE categoria = 'TIPO_PERDIDA_COSECHA';
+-- Feature 72: seed de tipo de perdida de cosecha con ids fijos legibles.
+INSERT INTO utilidad_tipo_perdida (id, valor, activo, orden, created_at, updated_at) VALUES
+    ('tperd-cabezal', 'Cabezal', TRUE, 1, NOW(6), NOW(6)),
+    ('tperd-cola',    'Cola',    TRUE, 2, NOW(6), NOW(6)),
+    ('tperd-otro',    'Otro',    TRUE, 3, NOW(6), NOW(6));
 
--- Seed: cultivos base.
+-- Seed: cultivos base (ids fijos referenciados por lotes/detecciones).
 INSERT INTO utilidad_cultivo (id, valor, activo, orden, created_at, updated_at) VALUES
-    (UUID(), 'SOJA',    TRUE, 1, NOW(6), NOW(6)),
-    (UUID(), 'MAIZ',    TRUE, 2, NOW(6), NOW(6)),
-    (UUID(), 'TRIGO',   TRUE, 3, NOW(6), NOW(6)),
-    (UUID(), 'GIRASOL', TRUE, 4, NOW(6), NOW(6)),
-    (UUID(), 'SORGO',   TRUE, 5, NOW(6), NOW(6)),
-    (UUID(), 'OTRO',    TRUE, 6, NOW(6), NOW(6));
+    ('cult-soja',    'SOJA',    TRUE, 1, NOW(6), NOW(6)),
+    ('cult-maiz',    'MAIZ',    TRUE, 2, NOW(6), NOW(6)),
+    ('cult-trigo',   'TRIGO',   TRUE, 3, NOW(6), NOW(6)),
+    ('cult-girasol', 'GIRASOL', TRUE, 4, NOW(6), NOW(6)),
+    ('cult-sorgo',   'SORGO',   TRUE, 5, NOW(6), NOW(6)),
+    ('cult-otro',    'OTRO',    TRUE, 6, NOW(6), NOW(6));
 
--- Seed: tipos de plaga base (los que antes eran el enum TipoPlaga).
+-- Seed: tipos de plaga base (referenciados por catalogo_plagas.tipo, ver V12/V17).
 INSERT INTO utilidad_tipo_plaga (id, valor, activo, orden, created_at, updated_at) VALUES
-    (UUID(), 'PLAGA',      TRUE, 1, NOW(6), NOW(6)),
-    (UUID(), 'ENFERMEDAD', TRUE, 2, NOW(6), NOW(6)),
-    (UUID(), 'MALEZA',     TRUE, 3, NOW(6), NOW(6));
+    ('tpla-plaga',      'PLAGA',      TRUE, 1, NOW(6), NOW(6)),
+    ('tpla-enfermedad', 'ENFERMEDAD', TRUE, 2, NOW(6), NOW(6)),
+    ('tpla-maleza',     'MALEZA',     TRUE, 3, NOW(6), NOW(6));
 
 -- Seed: tipos de insumo base (los que antes eran el enum TipoInsumoAgricola).
 INSERT INTO utilidad_tipo_insumo (id, valor, activo, orden, created_at, updated_at) VALUES
-    (UUID(), 'SEMILLA',      TRUE, 1, NOW(6), NOW(6)),
-    (UUID(), 'FERTILIZANTE', TRUE, 2, NOW(6), NOW(6)),
-    (UUID(), 'FITOSANITARIO', TRUE, 3, NOW(6), NOW(6)),
-    (UUID(), 'HERBICIDA',    TRUE, 4, NOW(6), NOW(6)),
-    (UUID(), 'FUNGICIDA',    TRUE, 5, NOW(6), NOW(6)),
-    (UUID(), 'INSECTICIDA',  TRUE, 6, NOW(6), NOW(6)),
-    (UUID(), 'COADYUVANTE',  TRUE, 7, NOW(6), NOW(6)),
-    (UUID(), 'COMBUSTIBLE',  TRUE, 8, NOW(6), NOW(6)),
-    (UUID(), 'OTRO',         TRUE, 9, NOW(6), NOW(6));
+    ('tins-semilla',       'SEMILLA',       TRUE, 1, NOW(6), NOW(6)),
+    ('tins-fertilizante',  'FERTILIZANTE',  TRUE, 2, NOW(6), NOW(6)),
+    ('tins-fitosanitario', 'FITOSANITARIO', TRUE, 3, NOW(6), NOW(6)),
+    ('tins-herbicida',     'HERBICIDA',     TRUE, 4, NOW(6), NOW(6)),
+    ('tins-fungicida',     'FUNGICIDA',     TRUE, 5, NOW(6), NOW(6)),
+    ('tins-insecticida',   'INSECTICIDA',   TRUE, 6, NOW(6), NOW(6)),
+    ('tins-coadyuvante',   'COADYUVANTE',   TRUE, 7, NOW(6), NOW(6)),
+    ('tins-combustible',   'COMBUSTIBLE',   TRUE, 8, NOW(6), NOW(6)),
+    ('tins-otro',          'OTRO',          TRUE, 9, NOW(6), NOW(6));
 
 -- Seed: unidades de medida de insumo base (los que antes eran el enum UnidadMedidaInsumo).
 INSERT INTO utilidad_unidad_insumo (id, valor, activo, orden, created_at, updated_at) VALUES
-    (UUID(), 'KG',    TRUE, 1, NOW(6), NOW(6)),
-    (UUID(), 'L',     TRUE, 2, NOW(6), NOW(6)),
-    (UUID(), 'UN',    TRUE, 3, NOW(6), NOW(6)),
-    (UUID(), 'BOLSA', TRUE, 4, NOW(6), NOW(6)),
-    (UUID(), 'DOSIS', TRUE, 5, NOW(6), NOW(6)),
-    (UUID(), 'TN',    TRUE, 6, NOW(6), NOW(6));
+    ('unid-kg',    'KG',    TRUE, 1, NOW(6), NOW(6)),
+    ('unid-l',     'L',     TRUE, 2, NOW(6), NOW(6)),
+    ('unid-un',    'UN',    TRUE, 3, NOW(6), NOW(6)),
+    ('unid-bolsa', 'BOLSA', TRUE, 4, NOW(6), NOW(6)),
+    ('unid-dosis', 'DOSIS', TRUE, 5, NOW(6), NOW(6)),
+    ('unid-tn',    'TN',    TRUE, 6, NOW(6), NOW(6));
 
 -- La tabla generica ya no se usa: cada catalogo vive en su propia tabla.
 DROP TABLE utilidad_opcion;

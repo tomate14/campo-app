@@ -102,6 +102,7 @@ CREATE TABLE seguimientos_plaga (
 
 INSERT INTO catalogo_plagas (id, nombre_comun, nombre_cientifico, tipo, cultivos_afectados, descripcion, sintomas, umbral_accion, activo)
 VALUES
-(UUID(), 'Oruga cogollera', 'Spodoptera frugiperda', 'PLAGA', 'MAIZ,SORGO', 'Lepidoptero de alto impacto en cultivos estivales.', 'Perforaciones en hojas y dano en cogollo.', 'Monitorear desde V2; intervenir con dano activo en cogollo.', b'1'),
-(UUID(), 'Roya asiatica', 'Phakopsora pachyrhizi', 'ENFERMEDAD', 'SOJA', 'Enfermedad foliar con alto potencial de perdida.', 'Pustulas y amarillamiento foliar.', 'Aplicar ante primeras pustulas y condiciones predisponentes.', b'1'),
-(UUID(), 'Yuyo colorado', 'Amaranthus quitensis', 'MALEZA', 'SOJA,MAIZ,GIRASOL', 'Maleza competitiva con resistencia frecuente.', 'Emergencia escalonada y alta competencia.', 'Control temprano antes de 10 cm.', b'1');
+-- Feature 72: catalogo_plagas.tipo guarda el id fijo del catalogo utilidad_tipo_plaga (no el string).
+(UUID(), 'Oruga cogollera', 'Spodoptera frugiperda', 'tpla-plaga', 'MAIZ,SORGO', 'Lepidoptero de alto impacto en cultivos estivales.', 'Perforaciones en hojas y dano en cogollo.', 'Monitorear desde V2; intervenir con dano activo en cogollo.', b'1'),
+(UUID(), 'Roya asiatica', 'Phakopsora pachyrhizi', 'tpla-enfermedad', 'SOJA', 'Enfermedad foliar con alto potencial de perdida.', 'Pustulas y amarillamiento foliar.', 'Aplicar ante primeras pustulas y condiciones predisponentes.', b'1'),
+(UUID(), 'Yuyo colorado', 'Amaranthus quitensis', 'tpla-maleza', 'SOJA,MAIZ,GIRASOL', 'Maleza competitiva con resistencia frecuente.', 'Emergencia escalonada y alta competencia.', 'Control temprano antes de 10 cm.', b'1');

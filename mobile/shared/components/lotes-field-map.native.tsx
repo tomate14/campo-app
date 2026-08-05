@@ -92,7 +92,7 @@ export default function LotesFieldMap({
             onDetectionPress(item.detecciones)
           }}
         >
-          <MapPin Icon={iconForType(item.deteccion.tipo)} color={item.color} count={item.detecciones.length} />
+          <MapPin Icon={iconForType(item.deteccion.tipoNombre ?? item.deteccion.tipo)} color={item.color} count={item.detecciones.length} />
         </Marker>
       ))}
 

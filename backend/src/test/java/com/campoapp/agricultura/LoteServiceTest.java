@@ -27,6 +27,9 @@ class LoteServiceTest {
     @Mock
     private LoteRepository loteRepository;
 
+    @Mock
+    private com.campoapp.utilidades.service.UtilidadNombreResolver utilidadNombreResolver;
+
     @InjectMocks
     private LoteServiceImpl loteService;
 

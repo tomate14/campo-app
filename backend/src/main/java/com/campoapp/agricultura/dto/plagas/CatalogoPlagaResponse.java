@@ -7,6 +7,8 @@ public record CatalogoPlagaResponse(
         String nombreComun,
         String nombreCientifico,
         String tipo,
+        // Feature 72: valor resuelto del catalogo TIPO_PLAGA (tipo sigue siendo el id).
+        String tipoNombre,
         String cultivosAfectados,
         String descripcion,
         String sintomas,

@@ -99,12 +99,13 @@ export default function NuevoLoteScreen() {
           {cultivoOpciones.length > 0 ? (
             <View style={styles.chipRow}>
               {cultivoOpciones.map(opcion => {
-                const active = cultivo === opcion.valor
+                // El chip guarda el id del catalogo CULTIVO (feature 72); muestra el valor.
+                const active = cultivo === opcion.id
                 return (
                   <TouchableOpacity
                     key={opcion.id}
                     style={[styles.chip, active && styles.chipActive]}
-                    onPress={() => setCultivo(active ? '' : opcion.valor)}
+                    onPress={() => setCultivo(active ? '' : opcion.id)}
                     activeOpacity={0.8}
                   >
                     <Text style={[styles.chipText, active && styles.chipTextActive]}>{opcion.valor}</Text>
