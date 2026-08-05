@@ -87,7 +87,7 @@ export default function LoteDetailScreen() {
         </TouchableOpacity>
         <View>
           <Text style={styles.title}>{lote.nombre}</Text>
-          <Text style={styles.subtitle}>{lote.cultivo} � {lote.temporada}</Text>
+          <Text style={styles.subtitle}>{lote.cultivoNombre ?? lote.cultivo} � {lote.temporada}</Text>
         </View>
       </View>
 

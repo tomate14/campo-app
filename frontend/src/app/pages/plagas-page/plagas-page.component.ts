@@ -8,6 +8,7 @@ import { forkJoin, type Observable } from 'rxjs';
 import { AgricolaService } from '../../core/services/agricola.service';
 import { OperariosService } from '../../core/services/operarios.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
+import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
 import type { Operario } from '../../core/models/operarios.models';
 import type {
   AplicacionFitosanitaria,
@@ -27,7 +28,6 @@ import type {
   SeguimientoPlaga,
   SeguimientoPlagaRequest,
   SeveridadPlaga,
-  TipoPlaga,
 } from '../../core/models/agricola.models';
 
 type ActiveTab = 'DETECCIONES' | 'APLICACIONES' | 'SEGUIMIENTOS' | 'CATALOGO';
@@ -50,7 +50,7 @@ type DeteccionPinGroup = {
 @Component({
   selector: 'app-plagas-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent],
+  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent, ConfigurableSelectComponent],
   templateUrl: './plagas-page.component.html',
   styleUrl: './plagas-page.component.css',
 })
@@ -91,7 +91,6 @@ export class PlagasPageComponent {
 
   protected readonly severidades: SeveridadPlaga[] = ['BAJA', 'MEDIA', 'ALTA', 'CRITICA'];
   protected readonly estados: EstadoDeteccionPlaga[] = ['ABIERTA', 'EN_TRATAMIENTO', 'CONTROLADA', 'CERRADA'];
-  protected readonly tipos: TipoPlaga[] = ['PLAGA', 'ENFERMEDAD', 'MALEZA'];
   protected readonly resultados: ResultadoSeguimientoPlaga[] = ['SIN_CAMBIOS', 'MEJORA', 'EMPEORA', 'CONTROLADA'];
   // Operarios activos para los combos (reemplaza el filtro extraParams estado:ACTIVO)
   protected readonly operariosActivos = computed(() => this.operarios().filter((operario) => operario.estado === 'ACTIVO'));
@@ -131,7 +130,8 @@ export class PlagasPageComponent {
     const filters = this.filters();
     return this.lotes().filter((lote) => {
       const sameLote = !filters.loteId || lote.id === filters.loteId;
-      const sameCultivo = !filters.cultivo || lote.cultivo?.toLowerCase().includes(filters.cultivo.toLowerCase());
+      // Feature 72: cultivo es un id de catalogo, se compara por igualdad exacta (id contra id).
+      const sameCultivo = !filters.cultivo || lote.cultivo === filters.cultivo;
       return sameLote && sameCultivo;
     });
   });
@@ -169,7 +169,8 @@ export class PlagasPageComponent {
     const loteCenters = this.loteCenters();
     this.mapDetecciones().forEach((item) => {
       const sameLote = !filters.loteId || item.loteId === filters.loteId;
-      const sameCultivo = !filters.cultivo || item.cultivo?.toLowerCase().includes(filters.cultivo.toLowerCase()) || false;
+      // Feature 72: cultivo es un id de catalogo, se compara por igualdad exacta (id contra id).
+      const sameCultivo = !filters.cultivo || item.cultivo === filters.cultivo;
       const sameSeveridad = !filters.severidad || item.severidad === filters.severidad;
       const sameEstado = !filters.estado || item.estado === filters.estado;
       if (!sameLote || !sameCultivo || !sameSeveridad || !sameEstado) return;

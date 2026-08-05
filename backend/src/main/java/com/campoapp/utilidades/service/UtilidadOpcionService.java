@@ -8,5 +8,6 @@ import java.util.List;
 public interface UtilidadOpcionService {
     List<UtilidadOpcionResponse> listarPorCategoria(String categoria);
     UtilidadOpcionResponse crear(UtilidadOpcionRequest request);
-    void eliminar(String id);
+    // La baja necesita la categoria para saber en que tabla-catalogo operar.
+    void eliminar(String categoria, String id);
 }

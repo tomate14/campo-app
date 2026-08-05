@@ -10,6 +10,8 @@ import com.campoapp.common.exception.BusinessException;
 import com.campoapp.common.exception.ResourceNotFoundException;
 import com.campoapp.operarios.entity.Operario;
 import com.campoapp.operarios.repository.OperarioRepository;
+import com.campoapp.utilidades.service.CatalogoUtilidadRegistry;
+import com.campoapp.utilidades.service.UtilidadNombreResolver;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,15 +36,20 @@ public class PlagasServiceImpl implements PlagasService {
     private final LoteRepository loteRepository;
     private final OperarioRepository operarioRepository;
     private final ObjectMapper objectMapper;
+    private final UtilidadNombreResolver utilidadNombreResolver;
 
     @Override
-    public List<CatalogoPlagaResponse> listarCatalogo(TipoPlaga tipo) {
-        return catalogoRepository.search(tipo).stream().map(this::toCatalogoResponse).toList();
+    public List<CatalogoPlagaResponse> listarCatalogo(String tipo) {
+        List<CatalogoPlaga> items = catalogoRepository.search(tipo);
+        Map<String, String> tipos = tiposDeCatalogo(items);
+        return items.stream().map(item -> toCatalogoResponse(item, tipos)).toList();
     }
 
     @Override
-    public Page<CatalogoPlagaResponse> listarCatalogoPaginado(TipoPlaga tipo, int page, int size) {
-        return catalogoRepository.searchPage(tipo, pageRequest(page, size)).map(this::toCatalogoResponse);
+    public Page<CatalogoPlagaResponse> listarCatalogoPaginado(String tipo, int page, int size) {
+        Page<CatalogoPlaga> pagina = catalogoRepository.searchPage(tipo, pageRequest(page, size));
+        Map<String, String> tipos = tiposDeCatalogo(pagina.getContent());
+        return pagina.map(item -> toCatalogoResponse(item, tipos));
     }
 
     @Override
@@ -62,12 +70,15 @@ public class PlagasServiceImpl implements PlagasService {
 
     @Override
     public List<DeteccionPlagaResponse> listarDetecciones(String loteId, EstadoDeteccionPlaga estado, SeveridadPlaga severidad, String cultivo) {
-        return deteccionRepository.search(loteId, estado, severidad, cultivo).stream().map(this::toDeteccionResponse).toList();
+        return toDeteccionResponses(deteccionRepository.search(loteId, estado, severidad, cultivo));
     }
 
     @Override
     public Page<DeteccionPlagaResponse> listarDeteccionesPaginadas(String loteId, EstadoDeteccionPlaga estado, SeveridadPlaga severidad, String cultivo, int page, int size) {
-        return deteccionRepository.searchPage(loteId, estado, severidad, cultivo, pageRequest(page, size)).map(this::toDeteccionResponse);
+        Page<DeteccionPlaga> pagina = deteccionRepository.searchPage(loteId, estado, severidad, cultivo, pageRequest(page, size));
+        Map<String, String> tipos = tiposDeDeteccion(pagina.getContent());
+        Map<String, String> cultivos = cultivosDeDeteccion(pagina.getContent());
+        return pagina.map(item -> toDeteccionResponse(item, tipos, cultivos));
     }
 
     @Override
@@ -207,7 +218,7 @@ public class PlagasServiceImpl implements PlagasService {
     @Override
     public List<DeteccionPlagaResponse> mapaLote(String loteId) {
         findLote(loteId);
-        return deteccionRepository.findMapPinsByLote(loteId).stream().map(this::toDeteccionResponse).toList();
+        return toDeteccionResponses(deteccionRepository.findMapPinsByLote(loteId));
     }
 
     @Override
@@ -324,12 +335,56 @@ public class PlagasServiceImpl implements PlagasService {
         return value == null || value.isBlank() ? null : value;
     }
 
+    // Batch id -> valor del catalogo TIPO_PLAGA para una lista de items de catalogo.
+    private Map<String, String> tiposDeCatalogo(List<CatalogoPlaga> items) {
+        return utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.TIPO_PLAGA,
+                items.stream().map(CatalogoPlaga::getTipo).toList());
+    }
+
+    // Batch id -> valor de TIPO_PLAGA para una lista de detecciones (tipo sale del catalogo de la plaga).
+    private Map<String, String> tiposDeDeteccion(List<DeteccionPlaga> items) {
+        return utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.TIPO_PLAGA,
+                items.stream().map(d -> d.getCatalogoPlaga().getTipo()).toList());
+    }
+
+    // Batch id -> valor de CULTIVO para una lista de detecciones.
+    private Map<String, String> cultivosDeDeteccion(List<DeteccionPlaga> items) {
+        return utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.CULTIVO,
+                items.stream().map(DeteccionPlaga::getCultivo).toList());
+    }
+
+    private List<DeteccionPlagaResponse> toDeteccionResponses(List<DeteccionPlaga> items) {
+        Map<String, String> tipos = tiposDeDeteccion(items);
+        Map<String, String> cultivos = cultivosDeDeteccion(items);
+        return items.stream().map(item -> toDeteccionResponse(item, tipos, cultivos)).toList();
+    }
+
+    // Usa el mapa batch si el id esta presente; si no, hace el lookup individual.
+    private String resolverUtilidad(String categoria, String id, Map<String, String> nombres) {
+        if (id != null && nombres.containsKey(id)) {
+            return nombres.get(id);
+        }
+        return utilidadNombreResolver.resolver(categoria, id);
+    }
+
     private CatalogoPlagaResponse toCatalogoResponse(CatalogoPlaga item) {
-        return new CatalogoPlagaResponse(item.getId(), item.getNombreComun(), item.getNombreCientifico(), item.getTipo(), item.getCultivosAfectados(), item.getDescripcion(), item.getSintomas(), item.getUmbralAccion(), item.getActivo(), item.getCreatedAt(), item.getUpdatedAt());
+        return toCatalogoResponse(item, Map.of());
+    }
+
+    private CatalogoPlagaResponse toCatalogoResponse(CatalogoPlaga item, Map<String, String> tipoNombres) {
+        return new CatalogoPlagaResponse(item.getId(), item.getNombreComun(), item.getNombreCientifico(), item.getTipo(), resolverUtilidad(CatalogoUtilidadRegistry.TIPO_PLAGA, item.getTipo(), tipoNombres), item.getCultivosAfectados(), item.getDescripcion(), item.getSintomas(), item.getUmbralAccion(), item.getActivo(), item.getCreatedAt(), item.getUpdatedAt());
     }
 
     private DeteccionPlagaResponse toDeteccionResponse(DeteccionPlaga item) {
-        return new DeteccionPlagaResponse(item.getId(), item.getLote().getId(), item.getLote().getNombre(), item.getCatalogoPlaga().getId(), item.getCatalogoPlaga().getNombreComun(), item.getCatalogoPlaga().getTipo().name(), item.getFechaDeteccion(), item.getCultivo(), item.getSeveridad(), item.getAreaAfectadaHa(), item.getPorcentajeAfectado(), item.getEstado(), item.getLatitud(), item.getLongitud(), item.getPrecisionMetros(), item.getOrigenGeolocalizacion(), item.getFotoUrl(), item.getFotoNombre(), item.getFotoContentType(), item.getFotoTamanioBytes(), item.getDescripcion(), item.getResponsable(), operarioNombre(item.getResponsable()), item.getCreatedAt(), item.getUpdatedAt());
+        return toDeteccionResponse(item, Map.of(), Map.of());
+    }
+
+    private DeteccionPlagaResponse toDeteccionResponse(DeteccionPlaga item, Map<String, String> tipoNombres, Map<String, String> cultivoNombres) {
+        String tipoId = item.getCatalogoPlaga().getTipo();
+        return new DeteccionPlagaResponse(item.getId(), item.getLote().getId(), item.getLote().getNombre(), item.getCatalogoPlaga().getId(), item.getCatalogoPlaga().getNombreComun(), tipoId, resolverUtilidad(CatalogoUtilidadRegistry.TIPO_PLAGA, tipoId, tipoNombres), item.getFechaDeteccion(), item.getCultivo(), resolverUtilidad(CatalogoUtilidadRegistry.CULTIVO, item.getCultivo(), cultivoNombres), item.getSeveridad(), item.getAreaAfectadaHa(), item.getPorcentajeAfectado(), item.getEstado(), item.getLatitud(), item.getLongitud(), item.getPrecisionMetros(), item.getOrigenGeolocalizacion(), item.getFotoUrl(), item.getFotoNombre(), item.getFotoContentType(), item.getFotoTamanioBytes(), item.getDescripcion(), item.getResponsable(), operarioNombre(item.getResponsable()), item.getCreatedAt(), item.getUpdatedAt());
     }
 
     private AplicacionFitosanitariaResponse toAplicacionResponse(AplicacionFitosanitaria item) {

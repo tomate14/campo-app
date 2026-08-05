@@ -38,6 +38,9 @@ const DATASETS: Array<{ queryKey: unknown[]; fetch: () => Promise<unknown> }> = 
   { queryKey: ['utilidad-opciones', 'DESTINO_COSECHA'], fetch: () => getUtilidadOpciones('DESTINO_COSECHA') },
   // Catalogo de tipo de perdida de cosecha (feature 70): misma key que useUtilidadOpciones.
   { queryKey: ['utilidad-opciones', 'TIPO_PERDIDA_COSECHA'], fetch: () => getUtilidadOpciones('TIPO_PERDIDA_COSECHA') },
+  // Catalogos de tipo de plaga y cultivo (feature 71): misma key que useUtilidadOpciones.
+  { queryKey: ['utilidad-opciones', 'TIPO_PLAGA'], fetch: () => getUtilidadOpciones('TIPO_PLAGA') },
+  { queryKey: ['utilidad-opciones', 'CULTIVO'], fetch: () => getUtilidadOpciones('CULTIVO') },
   { queryKey: ['potreros-alertas', { estado: 'ABIERTA' }], fetch: () => getAlertasPotreros({ estado: 'ABIERTA' }) },
   // Historiales del animal replicados para lectura offline (feature 50); candidato a delta sync si el volumen crece.
   { queryKey: ['animal-historial', 'CLINICO'], fetch: () => getHistorialMedico() },

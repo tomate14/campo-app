@@ -31,7 +31,7 @@
         <span>Lote</span>
         <select [(ngModel)]="selectedLoteId" (ngModelChange)="loadSelected()" name="selectedLoteId">
           <option value="">Seleccionar...</option>
-          <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }} · {{ lote.cultivo }}</option>
+          <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }} · {{ lote.cultivoNombre }}</option>
         </select>
       </label>
 

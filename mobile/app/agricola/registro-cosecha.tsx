@@ -186,8 +186,8 @@ export default function RegistroCosechaScreen() {
           {tiposPerdida.length > 0 ? (
             <View style={styles.chips}>
               {tiposPerdida.map((opcion) => (
-                <TouchableOpacity key={opcion.id} style={[styles.chip, tipoPerdida === opcion.valor && styles.chipActive]} onPress={() => setTipoPerdida(tipoPerdida === opcion.valor ? '' : opcion.valor)} activeOpacity={0.8}>
-                  <Text style={[styles.chipText, tipoPerdida === opcion.valor && styles.chipTextActive]}>{opcion.valor}</Text>
+                <TouchableOpacity key={opcion.id} style={[styles.chip, tipoPerdida === opcion.id && styles.chipActive]} onPress={() => setTipoPerdida(tipoPerdida === opcion.id ? '' : opcion.id)} activeOpacity={0.8}>
+                  <Text style={[styles.chipText, tipoPerdida === opcion.id && styles.chipTextActive]}>{opcion.valor}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -206,8 +206,8 @@ export default function RegistroCosechaScreen() {
           {destinos.length > 0 ? (
             <View style={styles.chips}>
               {destinos.map((opcion) => (
-                <TouchableOpacity key={opcion.id} style={[styles.chip, destino === opcion.valor && styles.chipActive]} onPress={() => setDestino(destino === opcion.valor ? '' : opcion.valor)} activeOpacity={0.8}>
-                  <Text style={[styles.chipText, destino === opcion.valor && styles.chipTextActive]}>{opcion.valor}</Text>
+                <TouchableOpacity key={opcion.id} style={[styles.chip, destino === opcion.id && styles.chipActive]} onPress={() => setDestino(destino === opcion.id ? '' : opcion.id)} activeOpacity={0.8}>
+                  <Text style={[styles.chipText, destino === opcion.id && styles.chipTextActive]}>{opcion.valor}</Text>
                 </TouchableOpacity>
               ))}
             </View>

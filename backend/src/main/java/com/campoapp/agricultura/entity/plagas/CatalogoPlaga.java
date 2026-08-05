@@ -3,8 +3,6 @@ package com.campoapp.agricultura.entity.plagas;
 import com.campoapp.common.entity.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "catalogo_plagas")
@@ -16,10 +14,9 @@ public class CatalogoPlaga extends AuditableEntity {
     @Column(name = "nombre_cientifico", length = 180)
     private String nombreCientifico;
 
-    @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    // Tipo: valor libre alimentado por el catalogo Utilidades (feature 71).
     @Column(nullable = false, length = 40)
-    private TipoPlaga tipo;
+    private String tipo;
 
     @Column(name = "cultivos_afectados", length = 260)
     private String cultivosAfectados;

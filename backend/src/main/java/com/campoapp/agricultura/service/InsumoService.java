@@ -1,14 +1,13 @@
 package com.campoapp.agricultura.service;
 
 import com.campoapp.agricultura.dto.insumos.*;
-import com.campoapp.agricultura.entity.insumos.TipoInsumoAgricola;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface InsumoService {
     InsumosDashboardResponse dashboard();
-    Page<InsumoAgricolaResponse> listarInsumos(String search, TipoInsumoAgricola tipo, Boolean activo, int page, int size);
+    Page<InsumoAgricolaResponse> listarInsumos(String search, String tipo, Boolean activo, int page, int size);
     List<InsumoAgricolaResponse> listarInsumosActivos();
     InsumoAgricolaResponse obtenerInsumo(String id);
     InsumoAgricolaResponse crearInsumo(InsumoAgricolaRequest request);

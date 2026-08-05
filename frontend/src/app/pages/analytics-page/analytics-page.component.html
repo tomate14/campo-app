@@ -17,10 +17,13 @@
           <option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option>
         </select>
       </label>
-      <label>
-        <span>Cultivo</span>
-        <input [ngModel]="filters().cultivo" (ngModelChange)="updateFilter('cultivo', $event)" />
-      </label>
+      <app-configurable-select
+        categoria="CULTIVO"
+        label="Cultivo"
+        placeholder="Todos"
+        [value]="filters().cultivo ?? ''"
+        (valueChange)="updateFilter('cultivo', $event)"
+      ></app-configurable-select>
       <label>
         <span>Temporada</span>
         <input [ngModel]="filters().temporada" (ngModelChange)="updateFilter('temporada', $event)" />

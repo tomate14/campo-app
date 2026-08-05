@@ -6,11 +6,12 @@ import type { Lote, LoteFilters, LoteRequest } from '../../core/models/agricola.
 import { AgricolaService } from '../../core/services/agricola.service';
 import { LoteFormComponent } from '../../shared/lote-form/lote-form.component';
 import { LoteMapPreviewComponent } from '../../shared/lote-map-preview/lote-map-preview.component';
+import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
 
 @Component({
   selector: 'app-lotes-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, LoteFormComponent, LoteMapPreviewComponent],
+  imports: [CommonModule, FormsModule, LoteFormComponent, LoteMapPreviewComponent, ConfigurableSelectComponent],
   templateUrl: './lotes-page.component.html',
   styleUrl: './lotes-page.component.css',
 })

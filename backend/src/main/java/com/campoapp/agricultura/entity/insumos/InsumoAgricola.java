@@ -4,8 +4,6 @@ import com.campoapp.common.entity.AuditableEntity;
 import com.campoapp.finanzas.entity.ProveedorFinanciero;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 
@@ -20,10 +18,9 @@ public class InsumoAgricola extends AuditableEntity {
     @Column(nullable = false, length = 160)
     private String nombre;
 
-    @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    // Tipo de insumo: valor libre alimentado por el catalogo Utilidades (feature 71).
     @Column(nullable = false, length = 40)
-    private TipoInsumoAgricola tipo;
+    private String tipo;
 
     @Column(length = 120)
     private String marca;
@@ -31,10 +28,9 @@ public class InsumoAgricola extends AuditableEntity {
     @Column(length = 120)
     private String presentacion;
 
-    @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    // Unidad de medida: valor libre alimentado por el catalogo Utilidades (feature 71).
     @Column(name = "unidad_medida", nullable = false, length = 30)
-    private UnidadMedidaInsumo unidadMedida;
+    private String unidadMedida;
 
     @Column(name = "principio_activo", length = 180)
     private String principioActivo;

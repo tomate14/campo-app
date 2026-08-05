@@ -9,6 +9,8 @@ public record LoteResponse(
         String nombre,
         BigDecimal area,
         String cultivo,
+        // Feature 72: valor resuelto del catalogo CULTIVO (el campo cultivo sigue siendo el id).
+        String cultivoNombre,
         BigDecimal latitud,
         BigDecimal longitud,
         String temporada,

@@ -7,7 +7,10 @@ import type { UtilidadOpcion } from '../../core/models/agricola.models';
 /**
  * Dropdown alimentado por una categoría del módulo Utilidades (feature 60)
  * con un botón "+" para dar de alta una opción nueva inline. El alta refresca
- * la lista y auto-selecciona el valor recién creado.
+ * la lista y auto-selecciona la opción recién creada.
+ *
+ * Feature 72: el control bindea/emite el **id** de la opción (no el string
+ * `valor`); en pantalla se muestra el `valor`. Así, quien lo consume guarda el id.
  */
 @Component({
   selector: 'app-configurable-select',
@@ -77,7 +80,7 @@ export class ConfigurableSelectComponent implements OnInit, OnChanges {
             this.saving.set(false);
             this.adding.set(false);
             this.newValue = '';
-            this.onSelectChange(opcion.valor);
+            this.onSelectChange(opcion.id);
           },
           error: () => this.saving.set(false),
         });

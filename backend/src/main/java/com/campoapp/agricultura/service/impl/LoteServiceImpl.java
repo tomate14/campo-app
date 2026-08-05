@@ -13,6 +13,8 @@ import com.campoapp.agricultura.repository.RegistroCosechaRepository;
 import com.campoapp.agricultura.service.LoteService;
 import com.campoapp.common.exception.BusinessException;
 import com.campoapp.common.exception.ResourceNotFoundException;
+import com.campoapp.utilidades.service.CatalogoUtilidadRegistry;
+import com.campoapp.utilidades.service.UtilidadNombreResolver;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -25,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -38,20 +41,21 @@ public class LoteServiceImpl implements LoteService {
     private final PropiedadSueloRepository propiedadSueloRepository;
     private final HistoricoCultivoRepository historicoCultivoRepository;
     private final ObjectMapper objectMapper;
+    private final UtilidadNombreResolver utilidadNombreResolver;
 
     @Override
     public List<LoteResponse> listarTodos() {
-        return loteRepository.findAllActive().stream().map(this::toResponse).toList();
+        return toResponses(loteRepository.findAllActive());
     }
 
     @Override
     public List<LoteResponse> listarPorTemporada(String temporada) {
-        return loteRepository.findByTemporada(temporada).stream().map(this::toResponse).toList();
+        return toResponses(loteRepository.findByTemporada(temporada));
     }
 
     @Override
     public List<LoteResponse> listarPorCultivo(String cultivo) {
-        return loteRepository.findByCultivo(cultivo).stream().map(this::toResponse).toList();
+        return toResponses(loteRepository.findByCultivo(cultivo));
     }
 
     @Override
@@ -64,10 +68,7 @@ public class LoteServiceImpl implements LoteService {
             BigDecimal phMax,
             Boolean tienePoligono
     ) {
-        return loteRepository.search(temporada, cultivo, areaMin, areaMax, phMin, phMax, tienePoligono)
-                .stream()
-                .map(this::toResponse)
-                .toList();
+        return toResponses(loteRepository.search(temporada, cultivo, areaMin, areaMax, phMin, phMax, tienePoligono));
     }
 
     @Override
@@ -186,11 +187,11 @@ public class LoteServiceImpl implements LoteService {
             throw new BusinessException("El GeoJSON no contiene features para importar");
         }
 
-        return streamFeatures(features).stream()
+        List<Lote> importados = streamFeatures(features).stream()
                 .map(this::importFeature)
                 .map(loteRepository::save)
-                .map(this::toResponse)
                 .toList();
+        return toResponses(importados);
     }
 
     @Override
@@ -198,10 +199,17 @@ public class LoteServiceImpl implements LoteService {
         Lote lote = findActiveOrThrow(id);
         Optional<HistoricoCultivo> ultimoCultivo = historicoCultivoRepository.findUltimoCultivo(id);
 
+        String cultivoActual = lote.getCultivo();
+        String ultimoCultivoId = ultimoCultivo.map(HistoricoCultivo::getCultivo).orElse(null);
+        // Un solo lookup batch resuelve ambos ids de cultivo (actual e historico).
+        Map<String, String> cultivos = utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.CULTIVO, cultivosDe(cultivoActual, ultimoCultivoId));
+
         return new LoteReporteResponse(
                 lote.getId(),
                 lote.getNombre(),
-                lote.getCultivo(),
+                cultivoActual,
+                utilidadNombreResolver.resolver(cultivoActual, cultivos),
                 lote.getTemporada(),
                 lote.getArea(),
                 eventoSiembraRepository.countByLoteId(id),
@@ -210,9 +218,20 @@ public class LoteServiceImpl implements LoteService {
                 historicoCultivoRepository.countByLoteId(id),
                 defaultDouble(registroCosechaRepository.calcularRendimientoPromedio(id)),
                 defaultDouble(historicoCultivoRepository.calcularRendimientoPromedio(id)),
-                ultimoCultivo.map(HistoricoCultivo::getCultivo).orElse(null),
+                ultimoCultivoId,
+                utilidadNombreResolver.resolver(ultimoCultivoId, cultivos),
                 ultimoCultivo.map(HistoricoCultivo::getTemporada).orElse(null)
         );
+    }
+
+    private List<String> cultivosDe(String... ids) {
+        List<String> resultado = new ArrayList<>();
+        for (String id : ids) {
+            if (id != null && !id.isBlank()) {
+                resultado.add(id);
+            }
+        }
+        return resultado;
     }
 
     @Override
@@ -380,12 +399,25 @@ public class LoteServiceImpl implements LoteService {
         return value != null ? value : 0.0;
     }
 
+    // Resuelve en batch los nombres de cultivo de una lista (evita N+1 en los listados).
+    private List<LoteResponse> toResponses(List<Lote> lotes) {
+        Map<String, String> cultivos = utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.CULTIVO,
+                lotes.stream().map(Lote::getCultivo).toList());
+        return lotes.stream().map(lote -> toResponse(lote, cultivos)).toList();
+    }
+
     private LoteResponse toResponse(Lote lote) {
+        return toResponse(lote, Map.of());
+    }
+
+    private LoteResponse toResponse(Lote lote, Map<String, String> cultivoNombres) {
         return new LoteResponse(
                 lote.getId(),
                 lote.getNombre(),
                 lote.getArea(),
                 lote.getCultivo(),
+                resolverCultivo(lote.getCultivo(), cultivoNombres),
                 lote.getLatitud(),
                 lote.getLongitud(),
                 lote.getTemporada(),
@@ -397,6 +429,14 @@ public class LoteServiceImpl implements LoteService {
                 lote.getCreatedAt(),
                 lote.getUpdatedAt()
         );
+    }
+
+    // Usa el mapa batch si el id esta presente; si no, hace el lookup individual (paths de un solo lote).
+    private String resolverCultivo(String cultivoId, Map<String, String> cultivoNombres) {
+        if (cultivoId != null && cultivoNombres.containsKey(cultivoId)) {
+            return cultivoNombres.get(cultivoId);
+        }
+        return utilidadNombreResolver.resolver(CatalogoUtilidadRegistry.CULTIVO, cultivoId);
     }
 
     private record Coordinate(BigDecimal latitud, BigDecimal longitud) {}

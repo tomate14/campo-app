@@ -30,6 +30,7 @@ class CosechaServiceTest {
 
     @Mock private RegistroCosechaRepository cosechaRepository;
     @Mock private LoteRepository loteRepository;
+    @Mock private com.campoapp.utilidades.service.UtilidadNombreResolver utilidadNombreResolver;
 
     @InjectMocks
     private CosechaServiceImpl cosechaService;

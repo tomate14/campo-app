@@ -14,8 +14,12 @@ public record DeteccionPlagaResponse(
         String catalogoPlagaId,
         String plagaNombre,
         String tipo,
+        // Feature 72: valor resuelto del catalogo TIPO_PLAGA (tipo sigue siendo el id).
+        String tipoNombre,
         LocalDateTime fechaDeteccion,
         String cultivo,
+        // Feature 72: valor resuelto del catalogo CULTIVO (cultivo sigue siendo el id).
+        String cultivoNombre,
         SeveridadPlaga severidad,
         BigDecimal areaAfectadaHa,
         BigDecimal porcentajeAfectado,

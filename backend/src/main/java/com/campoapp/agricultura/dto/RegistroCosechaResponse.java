@@ -23,8 +23,12 @@ public record RegistroCosechaResponse(
         BigDecimal perdidaKgHa,
         BigDecimal granosPerdidosKg,
         String tipoPerdida,
+        // Feature 72: valor resuelto del catalogo TIPO_PERDIDA_COSECHA (tipoPerdida sigue siendo el id).
+        String tipoPerdidaNombre,
 
         // --- Feature 60: destino del dia ---
         String destino,
+        // Feature 72: valor resuelto del catalogo DESTINO_COSECHA (destino sigue siendo el id).
+        String destinoNombre,
         BigDecimal destinoCantidadTn
 ) {}

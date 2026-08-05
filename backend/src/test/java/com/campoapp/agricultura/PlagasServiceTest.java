@@ -5,7 +5,6 @@ import com.campoapp.agricultura.dto.plagas.ResolverLoteRequest;
 import com.campoapp.agricultura.entity.Lote;
 import com.campoapp.agricultura.entity.plagas.CatalogoPlaga;
 import com.campoapp.agricultura.entity.plagas.SeveridadPlaga;
-import com.campoapp.agricultura.entity.plagas.TipoPlaga;
 import com.campoapp.agricultura.repository.LoteRepository;
 import com.campoapp.agricultura.repository.plagas.AplicacionFitosanitariaRepository;
 import com.campoapp.agricultura.repository.plagas.CatalogoPlagaRepository;
@@ -14,6 +13,7 @@ import com.campoapp.agricultura.repository.plagas.SeguimientoPlagaRepository;
 import com.campoapp.agricultura.service.impl.PlagasServiceImpl;
 import com.campoapp.common.exception.ResourceNotFoundException;
 import com.campoapp.operarios.repository.OperarioRepository;
+import com.campoapp.utilidades.service.UtilidadNombreResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,13 +37,14 @@ class PlagasServiceTest {
     @Mock private SeguimientoPlagaRepository seguimientoRepository;
     @Mock private LoteRepository loteRepository;
     @Mock private OperarioRepository operarioRepository;
+    @Mock private UtilidadNombreResolver utilidadNombreResolver;
 
     private PlagasServiceImpl service;
     private Lote lote;
 
     @BeforeEach
     void setUp() {
-        service = new PlagasServiceImpl(catalogoRepository, deteccionRepository, aplicacionRepository, seguimientoRepository, loteRepository, operarioRepository, new ObjectMapper());
+        service = new PlagasServiceImpl(catalogoRepository, deteccionRepository, aplicacionRepository, seguimientoRepository, loteRepository, operarioRepository, new ObjectMapper(), utilidadNombreResolver);
         lote = new Lote();
         lote.setNombre("Lote Norte");
         lote.setCultivo("MAIZ");
@@ -72,7 +73,7 @@ class PlagasServiceTest {
 
     @Test
     void shouldCreateDetectionWithDefaultState_whenDataIsValid() {
-        CatalogoPlaga catalogo = CatalogoPlaga.builder().nombreComun("Oruga cogollera").tipo(TipoPlaga.PLAGA).activo(true).build();
+        CatalogoPlaga catalogo = CatalogoPlaga.builder().nombreComun("Oruga cogollera").tipo("PLAGA").activo(true).build();
         var request = new DeteccionPlagaRequest(lote.getId(), "catalogo-1", null, "MAIZ", SeveridadPlaga.ALTA, null, null, null, new BigDecimal("-35.5"), new BigDecimal("-59.5"), null, null, null, null, null, null, "Dano en hojas", null, null);
         when(loteRepository.findActiveById(lote.getId())).thenReturn(Optional.of(lote));
         when(catalogoRepository.findActiveById("catalogo-1")).thenReturn(Optional.of(catalogo));

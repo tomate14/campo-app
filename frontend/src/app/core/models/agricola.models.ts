@@ -14,6 +14,8 @@ export interface Lote {
   nombre: string
   area: number
   cultivo: string
+  // Feature 72: valor resuelto del catálogo CULTIVO (cultivo sigue siendo el id).
+  cultivoNombre?: string
   latitud?: number
   longitud?: number
   temporada: string
@@ -58,6 +60,8 @@ export interface LoteReporte {
   loteId: string
   loteNombre: string
   cultivoActual: string
+  // Feature 72: valor resuelto del catálogo CULTIVO (cultivoActual sigue siendo el id).
+  cultivoActualNombre?: string
   temporadaActual: string
   area: number
   cantidadEventos: number
@@ -67,6 +71,8 @@ export interface LoteReporte {
   rendimientoPromedioKgHa: number
   rendimientoHistoricoPromedioKgHa: number
   ultimoCultivo?: string
+  // Feature 72: valor resuelto del catálogo CULTIVO (ultimoCultivo sigue siendo el id).
+  ultimoCultivoNombre?: string
   ultimaTemporada?: string
 }
 
@@ -111,9 +117,13 @@ export interface RegistroCosecha {
   hectareasCosechadas?: number
   perdidaKgHa?: number
   granosPerdidosKg?: number
-  // Feature 70: tipoPerdida ahora es el valor del catálogo configurable TIPO_PERDIDA_COSECHA.
+  // Feature 70: tipoPerdida ahora es el id del catálogo configurable TIPO_PERDIDA_COSECHA.
   tipoPerdida?: string
+  // Feature 72: valor resuelto del catálogo TIPO_PERDIDA_COSECHA (tipoPerdida sigue siendo el id).
+  tipoPerdidaNombre?: string
   destino?: string
+  // Feature 72: valor resuelto del catálogo DESTINO_COSECHA (destino sigue siendo el id).
+  destinoNombre?: string
   destinoCantidadTn?: number
   createdAt: string
 }
@@ -233,10 +243,16 @@ export interface InsumoAgricola {
   id: string
   codigo: string
   nombre: string
-  tipo: TipoInsumoAgricola
+  // Feature 71: tipo pasa a ser el id del catálogo configurable TIPO_INSUMO.
+  tipo: string
+  // Feature 72: valor resuelto del catálogo TIPO_INSUMO (tipo sigue siendo el id).
+  tipoNombre?: string
   marca?: string
   presentacion?: string
-  unidadMedida: UnidadMedidaInsumo
+  // Feature 71: unidad pasa a ser el id del catálogo configurable UNIDAD_INSUMO.
+  unidadMedida: string
+  // Feature 72: valor resuelto del catálogo UNIDAD_INSUMO (unidadMedida sigue siendo el id).
+  unidadMedidaNombre?: string
   principioActivo?: string
   proveedorId?: string
   proveedor?: string
@@ -258,10 +274,11 @@ export interface InsumoAgricola {
 export interface InsumoAgricolaRequest {
   codigo: string
   nombre: string
-  tipo: TipoInsumoAgricola
+  // Feature 71: catálogos configurables TIPO_INSUMO y UNIDAD_INSUMO.
+  tipo: string
   marca?: string
   presentacion?: string
-  unidadMedida: UnidadMedidaInsumo
+  unidadMedida: string
   principioActivo?: string
   proveedorId?: string
   proveedor?: string
@@ -441,7 +458,10 @@ export interface CatalogoPlaga {
   id: string
   nombreComun: string
   nombreCientifico?: string
-  tipo: TipoPlaga
+  // Feature 71: tipo pasa a ser el id del catálogo configurable TIPO_PLAGA.
+  tipo: string
+  // Feature 72: valor resuelto del catálogo TIPO_PLAGA (tipo sigue siendo el id).
+  tipoNombre?: string
   cultivosAfectados?: string
   descripcion?: string
   sintomas?: string
@@ -454,7 +474,8 @@ export interface CatalogoPlaga {
 export interface CatalogoPlagaRequest {
   nombreComun: string
   nombreCientifico?: string
-  tipo: TipoPlaga
+  // Feature 71: catálogo configurable TIPO_PLAGA.
+  tipo: string
   cultivosAfectados?: string
   descripcion?: string
   sintomas?: string
@@ -468,9 +489,14 @@ export interface DeteccionPlaga {
   loteNombre: string
   catalogoPlagaId: string
   plagaNombre: string
-  tipo: TipoPlaga
+  // Feature 71: viene del catálogo configurable TIPO_PLAGA (id).
+  tipo: string
+  // Feature 72: valor resuelto del catálogo TIPO_PLAGA (tipo sigue siendo el id).
+  tipoNombre?: string
   fechaDeteccion: string
   cultivo?: string
+  // Feature 72: valor resuelto del catálogo CULTIVO (cultivo sigue siendo el id).
+  cultivoNombre?: string
   severidad: SeveridadPlaga
   areaAfectadaHa?: number
   porcentajeAfectado?: number

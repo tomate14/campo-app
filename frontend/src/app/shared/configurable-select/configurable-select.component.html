@@ -10,7 +10,7 @@
         [attr.disabled]="loading() ? '' : null"
       >
         <option value="">{{ loading() ? 'Cargando...' : placeholder }}</option>
-        <option *ngFor="let opcion of options()" [value]="opcion.valor">{{ opcion.valor }}</option>
+        <option *ngFor="let opcion of options()" [value]="opcion.id">{{ opcion.valor }}</option>
       </select>
       <svg class="cfg-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
     </div>

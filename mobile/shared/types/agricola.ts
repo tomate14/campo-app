@@ -1,6 +1,5 @@
 export type TipoEvento = 'SIEMBRA' | 'MONITOREO_FENOLOGICO' | 'ALERTA' | 'TRATAMIENTO'
 export type CalidadGrano = 'PREMIUM' | 'ESTANDAR' | 'DESCUENTO'
-export type TipoPlaga = 'PLAGA' | 'ENFERMEDAD' | 'MALEZA'
 export type SeveridadPlaga = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 export type EstadoDeteccionPlaga = 'ABIERTA' | 'EN_TRATAMIENTO' | 'CONTROLADA' | 'CERRADA'
 export type ResultadoSeguimientoPlaga = 'SIN_CAMBIOS' | 'MEJORA' | 'EMPEORA' | 'CONTROLADA'
@@ -9,7 +8,9 @@ export interface Lote {
   id: string
   nombre: string
   area: number
+  // Referencia por id al catalogo CULTIVO (feature 72); el nombre a mostrar viene en cultivoNombre
   cultivo: string
+  cultivoNombre?: string
   latitud?: number
   longitud?: number
   temporada: string
@@ -54,7 +55,10 @@ export interface LoteReporte {
   cantidadCultivosHistoricos: number
   rendimientoPromedioKgHa: number
   rendimientoHistoricoPromedioKgHa: number
+  // cultivoActual/ultimoCultivo son ids del catalogo CULTIVO (feature 72); nombres a mostrar en *Nombre
+  cultivoActualNombre?: string
   ultimoCultivo?: string
+  ultimoCultivoNombre?: string
   ultimaTemporada?: string
 }
 
@@ -92,9 +96,11 @@ export interface RegistroCosecha {
   hectareasCosechadas?: number
   perdidaKgHa?: number
   granosPerdidosKg?: number
-  // Catalogo configurable TIPO_PERDIDA_COSECHA (feature 70): antes enum, ahora string libre del catalogo
+  // Catalogos configurables (feature 72): tipoPerdida/destino ahora son ids; nombres a mostrar en *Nombre
   tipoPerdida?: string
+  tipoPerdidaNombre?: string
   destino?: string
+  destinoNombre?: string
   destinoCantidadTn?: number
   createdAt: string
 }
@@ -196,7 +202,9 @@ export interface ApiResponse<T> {
 export interface CatalogoPlaga {
   id: string
   nombreComun: string
-  tipo: TipoPlaga
+  // Catalogo configurable TIPO_PLAGA (feature 72): tipo es id; nombre a mostrar en tipoNombre
+  tipo: string
+  tipoNombre?: string
   cultivosAfectados?: string
 }
 
@@ -204,7 +212,8 @@ export interface CatalogoPlaga {
 export interface CatalogoPlagaRequest {
   nombreComun: string
   nombreCientifico?: string
-  tipo: TipoPlaga
+  // Catalogo configurable TIPO_PLAGA (feature 71): antes enum, ahora string libre del catalogo
+  tipo: string
   cultivosAfectados?: string
   descripcion?: string
   sintomas?: string
@@ -218,9 +227,12 @@ export interface DeteccionPlaga {
   loteNombre: string
   catalogoPlagaId: string
   plagaNombre: string
+  // tipo/cultivo son ids de catalogo (feature 72); nombres a mostrar en *Nombre
   tipo?: string
+  tipoNombre?: string
   fechaDeteccion: string
   cultivo?: string
+  cultivoNombre?: string
   severidad: SeveridadPlaga
   areaAfectadaHa?: number
   porcentajeAfectado?: number

@@ -38,8 +38,11 @@ export class UtilidadesService {
       .pipe(map((response) => unwrapApiResponse(response)));
   }
 
-  // Elimina una opción de catálogo por id.
-  deleteUtilidadOpcion(id: string) {
-    return this.http.delete(`${API_BASE_URL}/utilidades/opciones/${id}`);
+  // Elimina una opción de catálogo por id. Feature 71: el backend ahora exige
+  // la categoría como query param para validar el borrado.
+  deleteUtilidadOpcion(categoria: string, id: string) {
+    return this.http.delete(`${API_BASE_URL}/utilidades/opciones/${id}`, {
+      params: { categoria },
+    });
   }
 }

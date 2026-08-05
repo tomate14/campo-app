@@ -3,11 +3,12 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { FormsModule } from '@angular/forms';
 import type { Lote, LoteRequest } from '../../core/models/agricola.models';
 import { LoteMapEditorComponent } from '../lote-map-editor/lote-map-editor.component';
+import { ConfigurableSelectComponent } from '../configurable-select/configurable-select.component';
 
 @Component({
   selector: 'app-lote-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, LoteMapEditorComponent],
+  imports: [CommonModule, FormsModule, LoteMapEditorComponent, ConfigurableSelectComponent],
   templateUrl: './lote-form.component.html',
   styleUrl: './lote-form.component.css',
 })
@@ -16,7 +17,6 @@ export class LoteFormComponent implements OnChanges {
   @Output() save = new EventEmitter<LoteRequest>();
   @Output() cancel = new EventEmitter<void>();
 
-  protected readonly cultivos = ['SOJA', 'MAIZ', 'TRIGO', 'GIRASOL', 'SORGO', 'OTRO'];
   protected model: LoteRequest = this.createEmptyModel();
 
   ngOnChanges(changes: SimpleChanges) {

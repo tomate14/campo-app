@@ -211,7 +211,7 @@ function LotePicker({ lotes, selectedLoteId, onSelect }: { lotes: Lote[]; select
           return (
             <Pressable key={lote.id} style={[styles.loteChip, active && styles.loteChipActive]} onPress={() => onSelect(lote.id)}>
               <Text style={[styles.loteChipText, active && styles.loteChipTextActive]}>{lote.nombre}</Text>
-              {lote.cultivo ? <Text style={styles.loteChipSub}>{lote.cultivo}</Text> : null}
+              {lote.cultivo ? <Text style={styles.loteChipSub}>{lote.cultivoNombre ?? lote.cultivo}</Text> : null}
             </Pressable>
           )
         })}

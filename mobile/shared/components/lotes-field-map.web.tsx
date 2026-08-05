@@ -225,7 +225,7 @@ function syncDetectionMarkers(
 ) {
   markersRef.current.forEach((marker) => marker.remove())
   markersRef.current = detections.map((item) => {
-    const element = createPinElement(item.color, iconSvgForType(item.deteccion.tipo), item.detecciones.length)
+    const element = createPinElement(item.color, iconSvgForType(item.deteccion.tipoNombre ?? item.deteccion.tipo), item.detecciones.length)
     element.addEventListener('click', (event) => {
       event.stopPropagation()
       onDetectionPress(item.detecciones)
