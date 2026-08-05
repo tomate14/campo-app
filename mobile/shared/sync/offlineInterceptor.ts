@@ -21,7 +21,9 @@ export const RULES: OfflineRule[] = [
   { pattern: /^\/agricola\/cosecha(\/[^/]+)?$/, label: 'Registro de cosecha' },
   { pattern: /^\/agricola\/suelo(\/[^/]+)?$/, label: 'Propiedad de suelo' },
   { pattern: /^\/agricola\/historial(\/[^/]+)?$/, label: 'Historial de cultivo' },
-  { pattern: /^\/agricola\/plagas\/catalogo$/, label: 'Catalogo de plaga' },
+  // POST /catalogo (alta) y PUT /catalogo/{id} (edicion) operan offline. Las
+  // sub-rutas /catalogo/{id}/imagenes NO matchean (upload solo online, feature 54).
+  { pattern: /^\/agricola\/plagas\/catalogo(\/[^/]+)?$/, label: 'Catalogo de plaga' },
   { pattern: /^\/agricola\/plagas\/detecciones$/, label: 'Deteccion de plaga' },
   { pattern: /^\/agricola\/plagas\/detecciones\/[^/]+\/aplicaciones$/, label: 'Aplicacion fitosanitaria' },
   { pattern: /^\/agricola\/plagas\/detecciones\/[^/]+\/seguimientos$/, label: 'Seguimiento de plaga' },

@@ -6,6 +6,7 @@ import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
 import { forkJoin, type Observable } from 'rxjs';
 import { AgricolaService } from '../../core/services/agricola.service';
+import { API_ORIGIN } from '../../core/services/api.config';
 import { OperariosService } from '../../core/services/operarios.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
@@ -14,7 +15,9 @@ import type {
   AplicacionFitosanitaria,
   AplicacionFitosanitariaRequest,
   CatalogoPlaga,
+  CatalogoPlagaImagen,
   CatalogoPlagaRequest,
+  PlagaSugerida,
   DeteccionPlaga,
   DeteccionPlagaRequest,
   EstadoDeteccionPlaga,
@@ -31,7 +34,7 @@ import type {
 } from '../../core/models/agricola.models';
 
 type ActiveTab = 'DETECCIONES' | 'APLICACIONES' | 'SEGUIMIENTOS' | 'CATALOGO';
-type ModalType = 'DETECCION' | 'APLICACION' | 'SEGUIMIENTO' | 'HISTORICO' | 'CATALOGO' | null;
+type ModalType = 'DETECCION' | 'APLICACION' | 'SEGUIMIENTO' | 'HISTORICO' | 'CATALOGO' | 'FICHA' | null;
 type HistorialPlagaEvento = {
   tipo: string;
   fecha: string;
@@ -100,6 +103,32 @@ export class PlagasPageComponent {
   protected readonly aplicacionForm = signal<AplicacionFitosanitariaRequest>({ producto: '', dosis: 0, unidadDosis: 'l/ha', operarioResponsableId: '', operarioResponsable: '', fechaAplicacion: this.nowLocalDateTime() });
   protected readonly seguimientoForm = signal<SeguimientoPlagaRequest>({ resultado: 'SIN_CAMBIOS', severidad: 'MEDIA', fecha: this.nowLocalDateTime() });
   protected readonly catalogoForm = signal<CatalogoPlagaRequest>({ nombreComun: '', tipo: 'PLAGA', activo: true });
+
+  // Feature 54: id del catálogo en edición (null = alta). Marca principal al subir imagen.
+  protected readonly catalogoEditId = signal<string | null>(null);
+  protected readonly fichaPlaga = signal<CatalogoPlaga | null>(null);
+  protected readonly fichaImagenes = signal<CatalogoPlagaImagen[]>([]);
+  protected readonly fichaImagenesLoading = signal(false);
+  protected readonly fichaSugeridas = signal<PlagaSugerida[]>([]);
+  protected readonly fichaSugeridasLoading = signal(false);
+  protected readonly fichaImagenActivaId = signal<string | null>(null);
+  protected readonly uploadingImagen = signal(false);
+  protected readonly uploadPrincipal = signal(false);
+  protected readonly uploadError = signal('');
+  // Validación de imágenes en front (el backend también valida).
+  private readonly maxImagenBytes = 5 * 1024 * 1024;
+  private readonly allowedImagenTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+  protected readonly catalogoModalTitle = computed(() => this.catalogoEditId() ? 'Editar catálogo' : 'Nuevo catálogo');
+  // Imagen principal destacada de la ficha (activa manualmente o principal/primera).
+  protected readonly fichaImagenPrincipal = computed<CatalogoPlagaImagen | null>(() => {
+    const imagenes = this.fichaImagenes();
+    if (!imagenes.length) return null;
+    const activeId = this.fichaImagenActivaId();
+    return imagenes.find((img) => img.id === activeId)
+      ?? imagenes.find((img) => img.esPrincipal)
+      ?? imagenes[0];
+  });
 
   protected readonly mapMode = signal<'satelite' | 'mapa'>('satelite');
   protected readonly streetStyle = 'https://tiles.openfreemap.org/styles/bright';
@@ -373,6 +402,15 @@ export class PlagasPageComponent {
     this.historialLote.set(null);
     this.historialScope.set('LOTE');
     this.historialLoading.set(false);
+    // Feature 54: limpieza del estado de ficha y edición de catálogo.
+    this.catalogoEditId.set(null);
+    this.fichaPlaga.set(null);
+    this.fichaImagenes.set([]);
+    this.fichaSugeridas.set([]);
+    this.fichaImagenActivaId.set(null);
+    this.uploadError.set('');
+    this.uploadPrincipal.set(false);
+    this.uploadingImagen.set(false);
   }
 
   protected onMapClick(event: any) {
@@ -414,7 +452,165 @@ export class PlagasPageComponent {
 
   protected submitCatalogo() {
     this.saving.set(true);
-    this.agricolaService.createCatalogoPlaga(this.catalogoForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo guardar el catálogo.') });
+    const editId = this.catalogoEditId();
+    const request$ = editId
+      ? this.agricolaService.updateCatalogoPlaga(editId, this.catalogoForm())
+      : this.agricolaService.createCatalogoPlaga(this.catalogoForm());
+    request$.subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo guardar el catálogo.') });
+  }
+
+  // Feature 54: alta de catálogo (form vacío).
+  protected openNuevoCatalogo() {
+    this.catalogoEditId.set(null);
+    this.catalogoForm.set({ nombreComun: '', tipo: 'PLAGA', activo: true });
+    this.selectedDeteccion.set(null);
+    this.modal.set('CATALOGO');
+  }
+
+  // Feature 54: edición de catálogo (precarga el form y usa PUT).
+  protected openEditarCatalogo(plaga: CatalogoPlaga) {
+    this.catalogoEditId.set(plaga.id);
+    this.catalogoForm.set({
+      nombreComun: plaga.nombreComun,
+      nombreCientifico: plaga.nombreCientifico,
+      tipo: plaga.tipo,
+      cultivosAfectados: plaga.cultivosAfectados,
+      descripcion: plaga.descripcion,
+      sintomas: plaga.sintomas,
+      umbralAccion: plaga.umbralAccion,
+      zonaTipica: plaga.zonaTipica ?? undefined,
+      activo: plaga.activo,
+    });
+    this.selectedDeteccion.set(null);
+    this.modal.set('CATALOGO');
+  }
+
+  // Feature 54: abre la ficha de detalle premium y carga imágenes + sugeridas.
+  protected openFicha(plaga: CatalogoPlaga) {
+    this.fichaPlaga.set(plaga);
+    this.fichaImagenActivaId.set(null);
+    this.uploadError.set('');
+    this.uploadPrincipal.set(false);
+    this.selectedDeteccion.set(null);
+    this.modal.set('FICHA');
+    this.loadFichaImagenes(plaga.id);
+    this.loadFichaSugeridas(plaga.id);
+  }
+
+  private loadFichaImagenes(id: string) {
+    this.fichaImagenesLoading.set(true);
+    this.agricolaService.getCatalogoPlagaImagenes(id).subscribe({
+      next: (imagenes) => {
+        this.fichaImagenes.set(imagenes);
+        this.fichaImagenesLoading.set(false);
+      },
+      error: () => {
+        this.fichaImagenes.set([]);
+        this.fichaImagenesLoading.set(false);
+      },
+    });
+  }
+
+  private loadFichaSugeridas(id: string) {
+    this.fichaSugeridasLoading.set(true);
+    this.agricolaService.getCatalogoPlagaSugeridas(id).subscribe({
+      next: (sugeridas) => {
+        this.fichaSugeridas.set(sugeridas);
+        this.fichaSugeridasLoading.set(false);
+      },
+      error: () => {
+        this.fichaSugeridas.set([]);
+        this.fichaSugeridasLoading.set(false);
+      },
+    });
+  }
+
+  // Abre la ficha de una plaga sugerida (busca el catálogo completo por id).
+  protected openFichaSugerida(sugerida: PlagaSugerida) {
+    const plaga = this.catalogoOpciones().find((item) => item.id === sugerida.id)
+      ?? this.catalogo().find((item) => item.id === sugerida.id);
+    if (plaga) {
+      this.openFicha(plaga);
+      return;
+    }
+    // Fallback: reconstruye una ficha mínima con los datos de la sugerida.
+    this.openFicha({
+      id: sugerida.id,
+      nombreComun: sugerida.nombreComun,
+      nombreCientifico: sugerida.nombreCientifico,
+      tipo: sugerida.tipo,
+      tipoNombre: sugerida.tipoNombre,
+      activo: true,
+      createdAt: '',
+      updatedAt: '',
+    });
+  }
+
+  protected setFichaImagenActiva(imagen: CatalogoPlagaImagen) {
+    this.fichaImagenActivaId.set(imagen.id);
+  }
+
+  // Prepend del origin del backend a la url relativa /uploads/...
+  protected imagenUrl(url?: string | null): string {
+    if (!url) return '';
+    return /^https?:\/\//i.test(url) ? url : `${API_ORIGIN}${url}`;
+  }
+
+  protected onImagenSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.uploadError.set('');
+
+    if (!this.allowedImagenTypes.includes(file.type)) {
+      this.uploadError.set('Formato no permitido. Usá JPG, PNG o WEBP.');
+      input.value = '';
+      return;
+    }
+    if (file.size > this.maxImagenBytes) {
+      this.uploadError.set('La imagen supera el máximo de 5 MB.');
+      input.value = '';
+      return;
+    }
+
+    const plaga = this.fichaPlaga();
+    if (!plaga) return;
+    this.uploadingImagen.set(true);
+    this.agricolaService.uploadCatalogoPlagaImagen(plaga.id, file, this.uploadPrincipal()).subscribe({
+      next: () => {
+        this.uploadingImagen.set(false);
+        this.uploadPrincipal.set(false);
+        input.value = '';
+        this.loadFichaImagenes(plaga.id);
+      },
+      error: () => {
+        this.uploadingImagen.set(false);
+        this.uploadError.set('No se pudo subir la imagen.');
+        input.value = '';
+      },
+    });
+  }
+
+  protected deleteImagen(imagen: CatalogoPlagaImagen) {
+    const plaga = this.fichaPlaga();
+    if (!plaga) return;
+    this.agricolaService.deleteCatalogoPlagaImagen(plaga.id, imagen.id).subscribe({
+      next: () => {
+        if (this.fichaImagenActivaId() === imagen.id) {
+          this.fichaImagenActivaId.set(null);
+        }
+        this.loadFichaImagenes(plaga.id);
+      },
+      error: () => this.uploadError.set('No se pudo borrar la imagen.'),
+    });
+  }
+
+  protected plagaTipoIconKey(tipoNombre?: string): 'PLAGA' | 'MALEZA' | 'ENFERMEDAD' | 'OTRO' {
+    const value = (tipoNombre ?? '').toUpperCase();
+    if (value === 'PLAGA') return 'PLAGA';
+    if (value === 'MALEZA') return 'MALEZA';
+    if (value === 'ENFERMEDAD') return 'ENFERMEDAD';
+    return 'OTRO';
   }
 
   protected openHistorialLoteSeleccionado() {

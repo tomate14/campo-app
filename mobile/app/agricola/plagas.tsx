@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import type React from 'react'
 import * as Location from 'expo-location'
+import * as ImagePicker from 'expo-image-picker'
+import { Image } from 'expo-image'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import {
   ActivityIndicator,
@@ -16,16 +18,30 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {
   ArrowLeft,
+  Bug,
   CalendarDays,
+  Camera,
   Check,
+  ChevronRight,
   ClipboardList,
   Crosshair,
+  Gauge,
   History,
+  Images,
+  Info,
   Leaf,
+  MapPin,
   MapPinned,
+  Microscope,
+  Pencil,
   Plus,
   Search,
+  Sparkles,
   SprayCan,
+  Sprout,
+  Star,
+  Stethoscope,
+  Trash2,
   User,
   X,
 } from 'lucide-react-native'
@@ -35,7 +51,10 @@ import {
   createCatalogoPlaga,
   createDeteccionPlaga,
   createSeguimientoPlaga,
+  deleteCatalogoPlagaImagen,
   getAplicacionesFitosanitarias,
+  getCatalogoPlagaImagenes,
+  getCatalogoPlagaSugeridas,
   getCatalogoPlagas,
   getCosechasByLote,
   getDeteccionesPlaga,
@@ -43,12 +62,18 @@ import {
   getHistorialByLote,
   getLotes,
   getSeguimientosPlaga,
+  updateCatalogoPlaga,
+  uploadCatalogoPlagaImagen,
 } from '../../shared/api/agricola'
+import type { PlagaImageAsset } from '../../shared/api/agricola'
+import { resolveAssetUrl } from '../../shared/api/client'
+import { isOnline, subscribeConnectivity } from '../../shared/sync/connectivity'
 import { getOperarios } from '../../shared/api/operarios'
 import type {
   AplicacionFitosanitaria,
   AplicacionFitosanitariaRequest,
   CatalogoPlaga,
+  CatalogoPlagaImagen,
   CatalogoPlagaRequest,
   DeteccionPlaga,
   DeteccionPlagaRequest,
@@ -56,6 +81,7 @@ import type {
   EventoSiembra,
   HistoricoCultivo,
   Lote,
+  PlagaSugerida,
   RegistroCosecha,
   ResultadoSeguimientoPlaga,
   SeguimientoPlaga,
@@ -96,9 +122,22 @@ function emptyCatalogoForm(): CatalogoPlagaRequest {
     tipo: '',
     cultivosAfectados: '',
     umbralAccion: '',
+    zonaTipica: '',
     sintomas: '',
     activo: true,
   }
+}
+
+// Hook de estado de conectividad (feature 24/54): la subida de imagenes es online.
+function useOnlineStatus() {
+  const [online, setOnline] = useState(isOnline())
+  useEffect(() => subscribeConnectivity(setOnline), [])
+  return online
+}
+
+// Convierte el asset de expo-image-picker al shape que espera el upload multipart.
+function toImageAsset(asset: ImagePicker.ImagePickerAsset): PlagaImageAsset {
+  return { uri: asset.uri, fileName: asset.fileName, mimeType: asset.mimeType }
 }
 
 function nowLocalDateTime() {
@@ -151,6 +190,10 @@ export default function PlagasMobilePage() {
   const [catalogoModalOpen, setCatalogoModalOpen] = useState(false)
   const [savingCatalogo, setSavingCatalogo] = useState(false)
   const [catalogoForm, setCatalogoForm] = useState<CatalogoPlagaRequest>(emptyCatalogoForm)
+  // Edicion de catalogo (feature 54): null = alta, id = edicion via PUT.
+  const [catalogoEditingId, setCatalogoEditingId] = useState<string | null>(null)
+  // Ficha de plaga (feature 54): id del item de catalogo cuya ficha esta abierta.
+  const [fichaPlagaId, setFichaPlagaId] = useState<string | null>(null)
 
   // Catalogos configurables de Utilidades (feature 72): tipo de plaga y cultivo.
   // Los pickers guardan el id de la opcion; el label mostrado es el valor.
@@ -288,29 +331,69 @@ export default function PlagasMobilePage() {
     }
   }
 
+  function openNuevaPlaga() {
+    setCatalogoEditingId(null)
+    setCatalogoForm(emptyCatalogoForm())
+    setCatalogoModalOpen(true)
+  }
+
+  function openEditarPlaga(plaga: CatalogoPlaga) {
+    setCatalogoEditingId(plaga.id)
+    setCatalogoForm({
+      nombreComun: plaga.nombreComun,
+      nombreCientifico: plaga.nombreCientifico ?? '',
+      tipo: plaga.tipo,
+      cultivosAfectados: plaga.cultivosAfectados ?? '',
+      descripcion: plaga.descripcion ?? '',
+      sintomas: plaga.sintomas ?? '',
+      umbralAccion: plaga.umbralAccion ?? '',
+      zonaTipica: plaga.zonaTipica ?? '',
+      activo: plaga.activo ?? true,
+    })
+    setCatalogoModalOpen(true)
+  }
+
+  async function refreshCatalogo() {
+    try {
+      const catalogoData = await getCatalogoPlagas()
+      setCatalogo(catalogoData)
+      return catalogoData
+    } catch {
+      return catalogo
+    }
+  }
+
   async function saveCatalogoPlaga() {
     const nombreComun = catalogoForm.nombreComun.trim()
     if (!nombreComun) {
-      Alert.alert('Nueva plaga', 'Ingresá el nombre común antes de guardar.')
+      Alert.alert(catalogoEditingId ? 'Editar plaga' : 'Nueva plaga', 'Ingresá el nombre común antes de guardar.')
       return
     }
+    const editing = catalogoEditingId
     setSavingCatalogo(true)
     try {
-      const created = await createCatalogoPlaga({ ...catalogoForm, nombreComun, activo: true })
+      const saved = editing
+        ? await updateCatalogoPlaga(editing, { ...catalogoForm, nombreComun })
+        : await createCatalogoPlaga({ ...catalogoForm, nombreComun, activo: true })
       const catalogoData = await getCatalogoPlagas()
-      // Si el alta se resolvio offline el item nuevo puede no venir en el refresco:
-      // lo anteponemos con la respuesta sintetica del outbox para poder seleccionarlo.
-      const nextCatalogo = created?.id && !catalogoData.some(item => item.id === created.id)
-        ? [created, ...catalogoData]
-        : catalogoData
+      // Si el alta/edicion se resolvio offline el item puede no venir actualizado en
+      // el refresco: lo anteponemos/reemplazamos con la respuesta sintetica del outbox.
+      let nextCatalogo = catalogoData
+      if (saved?.id) {
+        const exists = catalogoData.some(item => item.id === saved.id)
+        nextCatalogo = exists
+          ? catalogoData.map(item => (item.id === saved.id ? saved : item))
+          : [saved, ...catalogoData]
+      }
       setCatalogo(nextCatalogo)
-      if (created?.id) {
-        setDeteccionForm(current => ({ ...current, catalogoPlagaId: created.id }))
+      if (!editing && saved?.id) {
+        setDeteccionForm(current => ({ ...current, catalogoPlagaId: saved.id }))
       }
       setCatalogoModalOpen(false)
+      setCatalogoEditingId(null)
       setCatalogoForm(emptyCatalogoForm())
     } catch {
-      Alert.alert('Nueva plaga', 'No se pudo guardar la plaga.')
+      Alert.alert(editing ? 'Editar plaga' : 'Nueva plaga', 'No se pudo guardar la plaga.')
     } finally {
       setSavingCatalogo(false)
     }
@@ -446,7 +529,8 @@ export default function PlagasMobilePage() {
               saving={saving}
               onCaptureLocation={captureLocation}
               onSave={saveDeteccion}
-              onAddPlaga={() => setCatalogoModalOpen(true)}
+              onAddPlaga={openNuevaPlaga}
+              onOpenFicha={setFichaPlagaId}
               setForm={setDeteccionForm}
             />
           )}
@@ -499,12 +583,22 @@ export default function PlagasMobilePage() {
 
       <CatalogoPlagaModal
         visible={catalogoModalOpen}
+        editing={catalogoEditingId !== null}
         form={catalogoForm}
         tipoOptions={tipoPlagaOpciones}
         saving={savingCatalogo}
-        onClose={() => setCatalogoModalOpen(false)}
+        onClose={() => { setCatalogoModalOpen(false); setCatalogoEditingId(null) }}
         onSave={saveCatalogoPlaga}
         setForm={setCatalogoForm}
+      />
+
+      <PlagaFichaModal
+        plagaId={fichaPlagaId}
+        catalogo={catalogo}
+        onClose={() => setFichaPlagaId(null)}
+        onOpenSugerida={setFichaPlagaId}
+        onEdit={(plaga) => { setFichaPlagaId(null); openEditarPlaga(plaga) }}
+        onCatalogoChanged={refreshCatalogo}
       />
     </SafeAreaView>
   )
@@ -520,6 +614,7 @@ function DetectionForm({
   onCaptureLocation,
   onSave,
   onAddPlaga,
+  onOpenFicha,
   setForm,
 }: {
   catalogo: CatalogoPlaga[]
@@ -531,6 +626,7 @@ function DetectionForm({
   onCaptureLocation: () => void
   onSave: () => void
   onAddPlaga: () => void
+  onOpenFicha: (id: string) => void
   setForm: React.Dispatch<React.SetStateAction<DeteccionPlagaRequest>>
 }) {
   // Chips de cultivo por id (feature 72): value = opcion.id, label = opcion.valor.
@@ -551,6 +647,13 @@ function DetectionForm({
         setForm(current => ({ ...current, loteId: id, cultivo: lote?.cultivo }))
       }} />
       <OptionPicker label="Plaga" items={catalogo.map(item => ({ id: item.id, label: item.nombreComun, sublabel: item.tipoNombre ?? item.tipo }))} value={form.catalogoPlagaId} onChange={(id) => setForm(current => ({ ...current, catalogoPlagaId: id }))} onAdd={onAddPlaga} addLabel="Nueva plaga en el catálogo" />
+      {form.catalogoPlagaId ? (
+        <Pressable style={styles.fichaLink} onPress={() => onOpenFicha(form.catalogoPlagaId)} accessibilityRole="button">
+          <Info color="#6EA8FF" size={18} />
+          <Text style={styles.fichaLinkText}>Ver ficha de la plaga</Text>
+          <ChevronRight color="#6EA8FF" size={18} />
+        </Pressable>
+      ) : null}
       <Field label="Fecha" icon={<CalendarDays color="#6EA8FF" size={18} />} value={form.fechaDeteccion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, fechaDeteccion: value }))} />
       {cultivoOptions.length > 0 ? (
         <IdChipGroup label="Cultivo" value={form.cultivo ?? ''} options={cultivoChips} onChange={(id) => setForm(current => ({ ...current, cultivo: id }))} />
@@ -745,6 +848,7 @@ function HistoryView({
 }
 function CatalogoPlagaModal({
   visible,
+  editing,
   form,
   tipoOptions,
   saving,
@@ -753,6 +857,7 @@ function CatalogoPlagaModal({
   setForm,
 }: {
   visible: boolean
+  editing: boolean
   form: CatalogoPlagaRequest
   tipoOptions: UtilidadOpcion[]
   saving: boolean
@@ -766,7 +871,11 @@ function CatalogoPlagaModal({
         <View style={styles.modalCard}>
           <View style={styles.modalHeader}>
             <View style={styles.modalHeaderText}>
-              <SectionTitle icon={<Leaf color="#9FE870" size={18} />} title="Nueva plaga" subtitle="Alta en el catálogo sanitario." />
+              <SectionTitle
+                icon={editing ? <Pencil color="#9FE870" size={18} /> : <Leaf color="#9FE870" size={18} />}
+                title={editing ? 'Editar plaga' : 'Nueva plaga'}
+                subtitle={editing ? 'Actualización del catálogo sanitario.' : 'Alta en el catálogo sanitario.'}
+              />
             </View>
             <Pressable style={styles.modalClose} onPress={onClose} accessibilityRole="button" accessibilityLabel="Cerrar">
               <X color="#A6B0CF" size={20} />
@@ -777,13 +886,265 @@ function CatalogoPlagaModal({
             <Field label="Nombre científico" value={form.nombreCientifico ?? ''} onChangeText={(value) => setForm(current => ({ ...current, nombreCientifico: value }))} />
             <IdChipGroup label="Tipo" value={form.tipo} options={tipoOptions.map(opcion => ({ id: opcion.id, label: opcion.valor }))} onChange={(id) => setForm(current => ({ ...current, tipo: id }))} />
             <Field label="Cultivos afectados" value={form.cultivosAfectados ?? ''} onChangeText={(value) => setForm(current => ({ ...current, cultivosAfectados: value }))} />
-            <Field label="Umbral de acción" value={form.umbralAccion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, umbralAccion: value }))} />
+            <Field label="Zona / área típica" icon={<MapPin color="#FFB84D" size={18} />} value={form.zonaTipica ?? ''} onChangeText={(value) => setForm(current => ({ ...current, zonaTipica: value }))} />
+            <Field label="Umbral de acción" icon={<Gauge color="#FF6B6B" size={18} />} value={form.umbralAccion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, umbralAccion: value }))} />
             <Textarea label="Síntomas" value={form.sintomas ?? ''} onChangeText={(value) => setForm(current => ({ ...current, sintomas: value.slice(0, 500) }))} />
-            <PrimaryButton icon={<Plus color="#081225" size={22} />} label={saving ? 'Guardando...' : 'Guardar plaga'} disabled={saving} onPress={onSave} />
+            <PrimaryButton icon={<Plus color="#081225" size={22} />} label={saving ? 'Guardando...' : editing ? 'Guardar cambios' : 'Guardar plaga'} disabled={saving} onPress={onSave} />
           </ScrollView>
         </View>
       </View>
     </Modal>
+  )
+}
+
+// Ficha de plaga (feature 54): galeria de imagenes propias (subir desde galeria/
+// camara con expo-image-picker, borrar), datos de identificacion (zona/area tipica,
+// umbral, tipo, nombre cientifico, cultivos, sintomas) y plagas sugeridas.
+function PlagaFichaModal({
+  plagaId,
+  catalogo,
+  onClose,
+  onOpenSugerida,
+  onEdit,
+  onCatalogoChanged,
+}: {
+  plagaId: string | null
+  catalogo: CatalogoPlaga[]
+  onClose: () => void
+  onOpenSugerida: (id: string) => void
+  onEdit: (plaga: CatalogoPlaga) => void
+  onCatalogoChanged: () => Promise<CatalogoPlaga[]>
+}) {
+  const online = useOnlineStatus()
+  const plaga = useMemo(() => catalogo.find(item => item.id === plagaId), [catalogo, plagaId])
+  const [imagenes, setImagenes] = useState<CatalogoPlagaImagen[]>([])
+  const [sugeridas, setSugeridas] = useState<PlagaSugerida[]>([])
+  const [loading, setLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [markPrincipal, setMarkPrincipal] = useState(false)
+  const [activeImageUrl, setActiveImageUrl] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    if (!plagaId) return
+    let cancelled = false
+    setLoading(true)
+    // Precarga de la lista (imagenes ya vienen en el catalogo) para no parpadear.
+    setImagenes(plaga?.imagenes ?? [])
+    setSugeridas([])
+    setActiveImageUrl(undefined)
+    setMarkPrincipal(false)
+    Promise.all([
+      getCatalogoPlagaImagenes(plagaId).catch(() => plaga?.imagenes ?? []),
+      getCatalogoPlagaSugeridas(plagaId).catch(() => [] as PlagaSugerida[]),
+    ]).then(([imgs, sugs]) => {
+      if (cancelled) return
+      setImagenes(imgs)
+      setSugeridas(sugs)
+    }).finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
+  }, [plagaId, plaga?.imagenes])
+
+  const orderedImages = useMemo(
+    () => [...imagenes].sort((a, b) => Number(b.esPrincipal) - Number(a.esPrincipal) || a.orden - b.orden),
+    [imagenes],
+  )
+  const heroImage = orderedImages.find(img => resolveAssetUrl(img.url) === activeImageUrl) ?? orderedImages[0]
+  const heroUrl = resolveAssetUrl(heroImage?.url)
+
+  async function refreshImagenes() {
+    if (!plagaId) return
+    const imgs = await getCatalogoPlagaImagenes(plagaId).catch(() => imagenes)
+    setImagenes(imgs)
+    onCatalogoChanged()
+  }
+
+  async function pickAndUpload(source: 'library' | 'camera') {
+    if (!plagaId) return
+    if (!online) {
+      Alert.alert('Subir imagen', 'La subida de imágenes requiere conexión. Reintentá cuando tengas red.')
+      return
+    }
+    try {
+      const permission = source === 'camera'
+        ? await ImagePicker.requestCameraPermissionsAsync()
+        : await ImagePicker.requestMediaLibraryPermissionsAsync()
+      if (permission.status !== ImagePicker.PermissionStatus.GRANTED) {
+        Alert.alert('Permiso requerido', source === 'camera' ? 'No se otorgó permiso para usar la cámara.' : 'No se otorgó permiso para acceder a la galería.')
+        return
+      }
+      const result = source === 'camera'
+        ? await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.7 })
+        : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.7 })
+      if (result.canceled || !result.assets?.[0]) return
+      setUploading(true)
+      // Primera imagen del catalogo: principal por defecto aunque el usuario no lo marque.
+      const esPrincipal = markPrincipal || imagenes.length === 0
+      await uploadCatalogoPlagaImagen(plagaId, toImageAsset(result.assets[0]), esPrincipal)
+      await refreshImagenes()
+      setMarkPrincipal(false)
+    } catch {
+      Alert.alert('Subir imagen', 'No se pudo subir la imagen.')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  function confirmDelete(imagen: CatalogoPlagaImagen) {
+    if (!plagaId) return
+    Alert.alert('Eliminar imagen', '¿Querés eliminar esta imagen del catálogo?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Eliminar',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await deleteCatalogoPlagaImagen(plagaId, imagen.id)
+            setActiveImageUrl(undefined)
+            await refreshImagenes()
+          } catch {
+            Alert.alert('Eliminar imagen', 'No se pudo eliminar la imagen.')
+          }
+        },
+      },
+    ])
+  }
+
+  return (
+    <Modal visible={plagaId !== null} transparent animationType="slide" onRequestClose={onClose}>
+      <View style={styles.modalBackdrop}>
+        <View style={styles.fichaCard}>
+          <View style={styles.modalHeader}>
+            <View style={styles.modalHeaderText}>
+              <SectionTitle icon={<Bug color="#9FE870" size={18} />} title={plaga?.nombreComun ?? 'Ficha de plaga'} subtitle={plaga?.tipoNombre ?? plaga?.tipo ?? 'Identificación y referencia visual.'} />
+            </View>
+            <Pressable style={styles.modalClose} onPress={onClose} accessibilityRole="button" accessibilityLabel="Cerrar">
+              <X color="#A6B0CF" size={20} />
+            </Pressable>
+          </View>
+          <ScrollView contentContainerStyle={styles.modalBody} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            {/* Galeria: imagen principal grande + miniaturas; placeholder si no hay. */}
+            <View style={styles.gallery}>
+              {heroUrl ? (
+                <View style={styles.heroWrap}>
+                  <Image source={{ uri: heroUrl }} style={styles.heroImage} contentFit="cover" transition={200} />
+                  {heroImage?.esPrincipal ? (
+                    <View style={styles.principalBadge}>
+                      <Star color="#081225" size={12} fill="#081225" />
+                      <Text style={styles.principalBadgeText}>Principal</Text>
+                    </View>
+                  ) : null}
+                  <Pressable style={styles.imageDelete} onPress={() => heroImage && confirmDelete(heroImage)} accessibilityRole="button" accessibilityLabel="Eliminar imagen">
+                    <Trash2 color="#FF6B6B" size={18} />
+                  </Pressable>
+                </View>
+              ) : (
+                <View style={styles.heroPlaceholder}>
+                  <Bug color="#3A4A6B" size={40} />
+                  <Text style={styles.heroPlaceholderText}>Sin imágenes cargadas</Text>
+                </View>
+              )}
+              {orderedImages.length > 1 ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.thumbRow}>
+                  {orderedImages.map(img => {
+                    const url = resolveAssetUrl(img.url)
+                    const active = url === heroUrl
+                    return (
+                      <Pressable key={img.id} style={[styles.thumb, active && styles.thumbActive]} onPress={() => setActiveImageUrl(url)}>
+                        <Image source={{ uri: url }} style={styles.thumbImage} contentFit="cover" />
+                      </Pressable>
+                    )
+                  })}
+                </ScrollView>
+              ) : null}
+              {!online ? (
+                <Text style={styles.offlineNote}>Sin conexión: la subida de imágenes está deshabilitada.</Text>
+              ) : null}
+              <Pressable style={[styles.principalToggle, markPrincipal && styles.principalToggleActive]} onPress={() => setMarkPrincipal(value => !value)}>
+                <Star color={markPrincipal ? '#9FE870' : '#A6B0CF'} size={16} fill={markPrincipal ? '#9FE870' : 'transparent'} />
+                <Text style={[styles.principalToggleText, markPrincipal && styles.principalToggleTextActive]}>Marcar la próxima como principal</Text>
+              </Pressable>
+              <View style={styles.uploadRow}>
+                <Pressable style={[styles.uploadButton, (!online || uploading) && styles.disabledButton]} disabled={!online || uploading} onPress={() => pickAndUpload('library')}>
+                  <Images color="#9FE870" size={18} />
+                  <Text style={styles.uploadButtonText}>Galería</Text>
+                </Pressable>
+                <Pressable style={[styles.uploadButton, (!online || uploading) && styles.disabledButton]} disabled={!online || uploading} onPress={() => pickAndUpload('camera')}>
+                  <Camera color="#9FE870" size={18} />
+                  <Text style={styles.uploadButtonText}>Cámara</Text>
+                </Pressable>
+              </View>
+              {uploading ? <ActivityIndicator color="#9FE870" /> : null}
+            </View>
+
+            {/* Datos de identificacion */}
+            <View style={styles.dataGrid}>
+              <FichaRow icon={<Bug color="#9A7DFF" size={16} />} label="Tipo" value={plaga?.tipoNombre ?? plaga?.tipo} />
+              <FichaRow icon={<Microscope color="#6EA8FF" size={16} />} label="Nombre científico" value={plaga?.nombreCientifico} italic />
+              <FichaRow icon={<MapPin color="#FFB84D" size={16} />} label="Zona / área típica" value={plaga?.zonaTipica} />
+              <FichaRow icon={<Gauge color="#FF6B6B" size={16} />} label="Umbral de acción" value={plaga?.umbralAccion} />
+              <FichaRow icon={<Sprout color="#39D0D8" size={16} />} label="Cultivos afectados" value={plaga?.cultivosAfectados} />
+              <FichaRow icon={<Stethoscope color="#9FE870" size={16} />} label="Síntomas" value={plaga?.sintomas} />
+            </View>
+
+            {/* Plagas sugeridas */}
+            <View style={styles.suggestBlock}>
+              <SectionTitle icon={<Sparkles color="#9FE870" size={18} />} title="Plagas sugeridas" subtitle="Similares en el catálogo para descartar confusiones." />
+              {loading ? (
+                <ActivityIndicator color="#9FE870" />
+              ) : sugeridas.length === 0 ? (
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyText}>Sin sugerencias por el momento.</Text>
+                </View>
+              ) : (
+                sugeridas.map(sug => {
+                  const thumb = resolveAssetUrl(sug.imagenPrincipalUrl)
+                  return (
+                    <Pressable key={sug.id} style={styles.suggestItem} onPress={() => onOpenSugerida(sug.id)}>
+                      {thumb ? (
+                        <Image source={{ uri: thumb }} style={styles.suggestThumb} contentFit="cover" />
+                      ) : (
+                        <View style={styles.suggestThumbPlaceholder}><Bug color="#3A4A6B" size={20} /></View>
+                      )}
+                      <View style={styles.suggestText}>
+                        <Text style={styles.suggestName}>{sug.nombreComun}</Text>
+                        <Text style={styles.suggestType}>{sug.tipoNombre ?? sug.tipo}</Text>
+                        {sug.motivos.length > 0 ? (
+                          <View style={styles.motivosRow}>
+                            {sug.motivos.map((motivo, index) => (
+                              <View key={index} style={styles.motivoChip}><Text style={styles.motivoChipText}>{motivo}</Text></View>
+                            ))}
+                          </View>
+                        ) : null}
+                      </View>
+                      <ChevronRight color="#6EA8FF" size={18} />
+                    </Pressable>
+                  )
+                })
+              )}
+            </View>
+
+            {plaga ? (
+              <Pressable style={styles.editButton} onPress={() => onEdit(plaga)}>
+                <Pencil color="#9FE870" size={18} />
+                <Text style={styles.editButtonText}>Editar datos de la plaga</Text>
+              </Pressable>
+            ) : null}
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  )
+}
+
+function FichaRow({ icon, label, value, italic }: { icon: React.ReactNode; label: string; value?: string | null; italic?: boolean }) {
+  return (
+    <View style={styles.fichaRow}>
+      <View style={styles.fichaRowIcon}>{icon}</View>
+      <View style={styles.fichaRowText}>
+        <Text style={styles.fichaRowLabel}>{label}</Text>
+        <Text style={[styles.fichaRowValue, italic && styles.fichaRowValueItalic]}>{value?.trim() ? value : 'Sin datos'}</Text>
+      </View>
+    </View>
   )
 }
 
@@ -1096,4 +1457,48 @@ const styles = StyleSheet.create({
   modalHeaderText: { flex: 1 },
   modalClose: { width: 38, height: 38, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)' },
   modalBody: { gap: 14, paddingBottom: 6, paddingTop: 4 },
+  // Enlace a la ficha de plaga desde el selector (feature 54)
+  fichaLink: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: 16, paddingHorizontal: 14, backgroundColor: 'rgba(110,168,255,.08)', borderWidth: 1, borderColor: 'rgba(110,168,255,.28)' },
+  fichaLinkText: { flex: 1, color: '#6EA8FF', fontSize: 13, fontWeight: '800' },
+  // Ficha de plaga (feature 54)
+  fichaCard: { width: '100%', maxHeight: '92%', borderRadius: 24, backgroundColor: '#0B1730', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)', padding: 16, gap: 8, shadowColor: '#9FE870', shadowOpacity: 0.14, shadowRadius: 30 },
+  gallery: { gap: 10 },
+  heroWrap: { position: 'relative', borderRadius: 20, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)' },
+  heroImage: { width: '100%', height: 200, backgroundColor: '#081225' },
+  principalBadge: { position: 'absolute', top: 10, left: 10, flexDirection: 'row', alignItems: 'center', gap: 5, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#9FE870' },
+  principalBadgeText: { color: '#081225', fontSize: 11, fontWeight: '900' },
+  imageDelete: { position: 'absolute', top: 10, right: 10, width: 38, height: 38, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(8,18,37,.82)', borderWidth: 1, borderColor: 'rgba(255,107,107,.35)' },
+  heroPlaceholder: { height: 200, borderRadius: 20, alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#081225', borderWidth: 1, borderStyle: 'dashed', borderColor: 'rgba(255,255,255,.12)' },
+  heroPlaceholderText: { color: '#64748B', fontSize: 13, fontWeight: '600' },
+  thumbRow: { gap: 8, paddingVertical: 2 },
+  thumb: { width: 64, height: 64, borderRadius: 14, overflow: 'hidden', borderWidth: 1.5, borderColor: 'rgba(255,255,255,.08)' },
+  thumbActive: { borderColor: '#9FE870' },
+  thumbImage: { width: '100%', height: '100%', backgroundColor: '#081225' },
+  offlineNote: { color: '#FFB84D', fontSize: 12, fontWeight: '600' },
+  principalToggle: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 8, borderRadius: 14, paddingHorizontal: 12, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)' },
+  principalToggleActive: { borderColor: 'rgba(159,232,112,.6)', backgroundColor: 'rgba(159,232,112,.1)' },
+  principalToggleText: { color: '#A6B0CF', fontSize: 12, fontWeight: '700' },
+  principalToggleTextActive: { color: '#9FE870' },
+  uploadRow: { flexDirection: 'row', gap: 10 },
+  uploadButton: { flex: 1, height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 18, backgroundColor: 'rgba(159,232,112,.1)', borderWidth: 1, borderColor: 'rgba(159,232,112,.32)' },
+  uploadButtonText: { color: '#9FE870', fontSize: 13, fontWeight: '800' },
+  dataGrid: { gap: 8 },
+  fichaRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, borderRadius: 16, padding: 12, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.06)' },
+  fichaRowIcon: { width: 32, height: 32, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,.04)' },
+  fichaRowText: { flex: 1 },
+  fichaRowLabel: { color: '#A6B0CF', fontSize: 10, fontWeight: '800', letterSpacing: 0.6, textTransform: 'uppercase' },
+  fichaRowValue: { color: '#DCE8F8', fontSize: 14, marginTop: 3, lineHeight: 19 },
+  fichaRowValueItalic: { fontStyle: 'italic', color: '#6EA8FF' },
+  suggestBlock: { gap: 10 },
+  suggestItem: { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 18, padding: 10, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)' },
+  suggestThumb: { width: 52, height: 52, borderRadius: 14, backgroundColor: '#0B1730' },
+  suggestThumbPlaceholder: { width: 52, height: 52, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0B1730', borderWidth: 1, borderColor: 'rgba(255,255,255,.06)' },
+  suggestText: { flex: 1, gap: 4 },
+  suggestName: { color: '#FFFFFF', fontSize: 14, fontWeight: '800' },
+  suggestType: { color: '#A6B0CF', fontSize: 11 },
+  motivosRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 2 },
+  motivoChip: { borderRadius: 999, paddingHorizontal: 9, paddingVertical: 3, backgroundColor: 'rgba(159,232,112,.1)', borderWidth: 1, borderColor: 'rgba(159,232,112,.24)' },
+  motivoChipText: { color: '#9FE870', fontSize: 10, fontWeight: '700' },
+  editButton: { height: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 18, backgroundColor: 'rgba(159,232,112,.08)', borderWidth: 1, borderColor: 'rgba(159,232,112,.24)' },
+  editButtonText: { color: '#9FE870', fontSize: 13, fontWeight: '800' },
 })

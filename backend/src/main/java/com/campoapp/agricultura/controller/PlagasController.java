@@ -52,6 +52,45 @@ public class PlagasController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(plagasService.crearCatalogo(request)));
     }
 
+    @PutMapping("/catalogo/{id}")
+    @PreAuthorize("hasAuthority('update:lotes')")
+    @Operation(summary = "Actualizar item de catalogo de plagas")
+    public ResponseEntity<ApiResponse<CatalogoPlagaResponse>> actualizarCatalogo(@PathVariable String id, @Valid @RequestBody CatalogoPlagaRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(plagasService.actualizarCatalogo(id, request)));
+    }
+
+    @PostMapping(value = "/catalogo/{id}/imagenes", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('create:lotes')")
+    @Operation(summary = "Subir imagen a un item de catalogo de plagas")
+    public ResponseEntity<ApiResponse<CatalogoPlagaImagenResponse>> agregarImagenCatalogo(
+            @PathVariable String id,
+            @RequestPart("foto") MultipartFile foto,
+            @RequestParam(defaultValue = "false") boolean esPrincipal) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(plagasService.agregarImagenCatalogo(id, foto, esPrincipal)));
+    }
+
+    @GetMapping("/catalogo/{id}/imagenes")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    @Operation(summary = "Listar imagenes de un item de catalogo de plagas")
+    public ResponseEntity<ApiResponse<List<CatalogoPlagaImagenResponse>>> imagenesCatalogo(@PathVariable String id) {
+        return ResponseEntity.ok(ApiResponse.ok(plagasService.listarImagenesCatalogo(id)));
+    }
+
+    @DeleteMapping("/catalogo/{id}/imagenes/{imagenId}")
+    @PreAuthorize("hasAuthority('delete:lotes')")
+    @Operation(summary = "Eliminar imagen de un item de catalogo de plagas")
+    public ResponseEntity<Void> eliminarImagenCatalogo(@PathVariable String id, @PathVariable String imagenId) {
+        plagasService.eliminarImagenCatalogo(id, imagenId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/catalogo/{id}/sugeridas")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    @Operation(summary = "Plagas sugeridas por similitud sobre el catalogo propio")
+    public ResponseEntity<ApiResponse<List<PlagaSugeridaResponse>>> sugeridas(@PathVariable String id) {
+        return ResponseEntity.ok(ApiResponse.ok(plagasService.sugeridas(id)));
+    }
+
     @GetMapping("/detecciones")
     @PreAuthorize("hasAuthority('read:lotes')")
     @Operation(summary = "Listar detecciones de plagas")

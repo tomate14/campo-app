@@ -21,6 +21,20 @@ function resolveBaseUrl() {
   )
 }
 
+// Resuelve la URL absoluta de un asset servido por el backend (ej. imagenes del
+// catalogo de plagas, feature 54). El backend las sirve en el ORIGIN, fuera de
+// /api/v1, con paths relativos tipo "/uploads/plagas-catalogo/xxx.jpg". Deriva el
+// origin de la baseURL (quitando el sufijo /api/v1) respetando 10.0.2.2/localhost/
+// EXPO_PUBLIC_API_URL. Si ya viene absoluta (http/https) se devuelve tal cual.
+export function resolveAssetUrl(relativeUrl?: string | null): string | undefined {
+  if (!relativeUrl) return undefined
+  if (/^https?:\/\//i.test(relativeUrl)) return relativeUrl
+  const base = apiClient.defaults.baseURL ?? resolveBaseUrl()
+  const origin = base.replace(/\/api\/v1\/?$/, '')
+  const path = relativeUrl.startsWith('/') ? relativeUrl : `/${relativeUrl}`
+  return `${origin}${path}`
+}
+
 let accessTokenProvider: TokenProvider = () => null
 let sessionRefresher: SessionRefresher | null = null
 // Single-flight: si N requests reciben 401 a la vez, un solo refresh en curso.

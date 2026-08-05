@@ -199,13 +199,47 @@ export interface ApiResponse<T> {
   metadata?: Record<string, unknown>
 }
 
+// Imagen propia del catalogo de plagas (feature 54). url = path relativo servido
+// estaticamente por el backend (resolver con resolveAssetUrl para el <Image>).
+export interface CatalogoPlagaImagen {
+  id: string
+  url: string
+  nombre?: string | null
+  contentType?: string | null
+  tamanioBytes?: number | null
+  esPrincipal: boolean
+  orden: number
+}
+
+// Plaga sugerida por similitud sobre el catalogo propio (feature 54).
+export interface PlagaSugerida {
+  id: string
+  nombreComun: string
+  nombreCientifico?: string | null
+  tipo: string
+  tipoNombre?: string | null
+  imagenPrincipalUrl?: string | null
+  score: number
+  motivos: string[]
+}
+
 export interface CatalogoPlaga {
   id: string
   nombreComun: string
+  nombreCientifico?: string
   // Catalogo configurable TIPO_PLAGA (feature 72): tipo es id; nombre a mostrar en tipoNombre
   tipo: string
   tipoNombre?: string
   cultivosAfectados?: string
+  descripcion?: string
+  sintomas?: string
+  umbralAccion?: string
+  // Zona o area tipica de aparicion (feature 54)
+  zonaTipica?: string | null
+  activo?: boolean
+  // Imagenes propias y url de la principal (feature 54)
+  imagenes?: CatalogoPlagaImagen[]
+  imagenPrincipalUrl?: string | null
 }
 
 // Alta de plaga de catalogo (espejo del CatalogoPlagaRequest de la web)
@@ -218,6 +252,8 @@ export interface CatalogoPlagaRequest {
   descripcion?: string
   sintomas?: string
   umbralAccion?: string
+  // Zona o area tipica de aparicion (feature 54)
+  zonaTipica?: string
   activo?: boolean
 }
 

@@ -466,6 +466,10 @@ export interface CatalogoPlaga {
   descripcion?: string
   sintomas?: string
   umbralAccion?: string
+  // Feature 54: zona/área típica de la plaga e imágenes propias del catálogo.
+  zonaTipica?: string | null
+  imagenes?: CatalogoPlagaImagen[]
+  imagenPrincipalUrl?: string | null
   activo: boolean
   createdAt: string
   updatedAt: string
@@ -480,7 +484,32 @@ export interface CatalogoPlagaRequest {
   descripcion?: string
   sintomas?: string
   umbralAccion?: string
+  // Feature 54: zona/área típica de la plaga.
+  zonaTipica?: string
   activo?: boolean
+}
+
+// Feature 54: imagen asociada a una plaga del catálogo (url relativa /uploads/...).
+export interface CatalogoPlagaImagen {
+  id: string
+  url: string
+  nombre?: string | null
+  contentType?: string | null
+  tamanioBytes?: number | null
+  esPrincipal: boolean
+  orden: number
+}
+
+// Feature 54: plaga sugerida/relacionada calculada sobre el catálogo propio.
+export interface PlagaSugerida {
+  id: string
+  nombreComun: string
+  nombreCientifico?: string
+  tipo: string
+  tipoNombre?: string
+  imagenPrincipalUrl?: string | null
+  score: number
+  motivos: string[]
 }
 
 export interface DeteccionPlaga {

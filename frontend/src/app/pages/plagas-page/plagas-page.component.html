@@ -6,7 +6,7 @@
       <p>Detecciones georreferenciadas, seguimiento y aplicaciones fitosanitarias por lote.</p>
     </div>
     <div class="head-actions">
-      <button class="btn-secondary" type="button" (click)="openModal('CATALOGO')">Nuevo cat&aacute;logo</button>
+      <button class="btn-secondary" type="button" (click)="openNuevoCatalogo()">Nuevo cat&aacute;logo</button>
       <button class="btn-primary" type="button" (click)="nuevaDeteccion()">Registrar evento</button>
     </div>
   </header>
@@ -153,16 +153,38 @@
         </table>
 
         <table class="records-table" *ngSwitchDefault>
-          <thead><tr><th>Nombre com&uacute;n</th><th>Tipo</th><th>Nombre cient&iacute;fico</th><th>Cultivos</th><th>Umbral</th><th>Estado</th><th>Descripci&oacute;n</th></tr></thead>
+          <thead><tr><th>Nombre com&uacute;n</th><th>Tipo</th><th>Nombre cient&iacute;fico</th><th>Cultivos</th><th>Zona t&iacute;pica</th><th>Umbral</th><th>Estado</th><th>Acciones</th></tr></thead>
           <tbody>
             <tr *ngFor="let item of catalogo()">
-              <td><strong>{{ item.nombreComun }}</strong><small>Cat&aacute;logo</small></td>
+              <td>
+                <div class="catalogo-name">
+                  <span class="catalogo-thumb" *ngIf="item.imagenPrincipalUrl; else noThumb"><img [src]="imagenUrl(item.imagenPrincipalUrl)" [alt]="item.nombreComun" /></span>
+                  <ng-template #noThumb>
+                    <span class="catalogo-thumb catalogo-thumb--empty">
+                      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L5 21"/></svg>
+                    </span>
+                  </ng-template>
+                  <span class="catalogo-name__text"><strong>{{ item.nombreComun }}</strong><small>Cat&aacute;logo</small></span>
+                </div>
+              </td>
               <td><span class="badge">{{ item.tipoNombre }}</span></td>
               <td>{{ item.nombreCientifico || '-' }}</td>
               <td>{{ item.cultivosAfectados || '-' }}</td>
+              <td>{{ item.zonaTipica || '-' }}</td>
               <td>{{ item.umbralAccion || '-' }}</td>
               <td>{{ item.activo ? 'Activo' : 'Inactivo' }}</td>
-              <td>{{ item.descripcion || item.sintomas || '-' }}</td>
+              <td>
+                <div class="table-actions">
+                  <button type="button" (click)="openFicha(item)">
+                    <svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Ver ficha
+                  </button>
+                  <button type="button" (click)="openEditarCatalogo(item)">
+                    <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                    Editar
+                  </button>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -256,16 +278,124 @@
       </ng-container>
 
       <ng-container *ngIf="modal() === 'CATALOGO'">
-        <div class="modal-head"><h3>Nuevo cat&aacute;logo</h3></div>
+        <div class="modal-head"><h3>{{ catalogoModalTitle() }}</h3></div>
         <div class="form-grid">
           <label><span>Nombre com&uacute;n</span><input [ngModel]="catalogoForm().nombreComun" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreComun: $event }))" /></label>
           <label><span>Nombre cient&iacute;fico</span><input [ngModel]="catalogoForm().nombreCientifico" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreCientifico: $event }))" /></label>
           <app-configurable-select categoria="TIPO_PLAGA" label="Tipo" placeholder="Seleccionar tipo..." [value]="catalogoForm().tipo" (valueChange)="catalogoForm.update(f => ({ ...f, tipo: $event }))"></app-configurable-select>
           <label><span>Cultivos afectados</span><input [ngModel]="catalogoForm().cultivosAfectados" (ngModelChange)="catalogoForm.update(f => ({ ...f, cultivosAfectados: $event }))" /></label>
+          <label><span>Zona / &aacute;rea t&iacute;pica</span><input [ngModel]="catalogoForm().zonaTipica" (ngModelChange)="catalogoForm.update(f => ({ ...f, zonaTipica: $event }))" placeholder="Ej. hojas, tallo, base de la planta" /></label>
           <label><span>Umbral de acci&oacute;n</span><input [ngModel]="catalogoForm().umbralAccion" (ngModelChange)="catalogoForm.update(f => ({ ...f, umbralAccion: $event }))" /></label>
         </div>
         <label class="textarea-field"><span>S&iacute;ntomas</span><textarea [ngModel]="catalogoForm().sintomas" (ngModelChange)="catalogoForm.update(f => ({ ...f, sintomas: $event }))"></textarea></label>
         <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitCatalogo()">Guardar</button></div>
+      </ng-container>
+
+      <ng-container *ngIf="modal() === 'FICHA' && fichaPlaga() as plaga">
+        <div class="ficha-head">
+          <div class="ficha-identity">
+            <span class="ficha-type-icon" [attr.data-kind]="plagaTipoIconKey(plaga.tipoNombre)">
+              <svg *ngIf="plagaTipoIconKey(plaga.tipoNombre) === 'PLAGA'" viewBox="0 0 24 24"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.8 3.8-4"/><path d="M17.47 9C19.4 8.8 21 7.1 21 5"/><path d="M18 13h4"/><path d="M21 21c0-2.1-1.7-3.8-3.8-4"/></svg>
+              <svg *ngIf="plagaTipoIconKey(plaga.tipoNombre) === 'MALEZA'" viewBox="0 0 24 24"><path d="M17 14v6"/><path d="M7 14v6"/><path d="M12 20V8"/><path d="M12 8C8 8 6 6 6 3c3 0 6 2 6 5Z"/><path d="M12 8c4 0 6-2 6-5-3 0-6 2-6 5Z"/><path d="M7 14c-3 0-5-2-5-5 3 0 5 2 5 5Z"/><path d="M17 14c3 0 5-2 5-5-3 0-5 2-5 5Z"/></svg>
+              <svg *ngIf="plagaTipoIconKey(plaga.tipoNombre) === 'ENFERMEDAD'" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-8 8.7C7.5 20.5 4 18 4 13V5l8-3 8 3v8Z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+              <svg *ngIf="plagaTipoIconKey(plaga.tipoNombre) === 'OTRO'" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/></svg>
+            </span>
+            <div class="ficha-title">
+              <h3>{{ plaga.nombreComun }}</h3>
+              <p *ngIf="plaga.nombreCientifico">{{ plaga.nombreCientifico }}</p>
+            </div>
+          </div>
+          <span class="badge" *ngIf="plaga.tipoNombre">{{ plaga.tipoNombre }}</span>
+        </div>
+
+        <div class="ficha-grid">
+          <div class="ficha-gallery">
+            <div class="ficha-gallery__main">
+              <img *ngIf="fichaImagenPrincipal() as principal; else galleryEmpty" [src]="imagenUrl(principal.url)" [alt]="plaga.nombreComun" />
+              <ng-template #galleryEmpty>
+                <div class="ficha-gallery__empty">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L5 21"/></svg>
+                  <span>Sin im&aacute;genes cargadas</span>
+                </div>
+              </ng-template>
+            </div>
+            <div class="ficha-thumbs" *ngIf="fichaImagenes().length">
+              <div class="ficha-thumb" *ngFor="let imagen of fichaImagenes()" [class.active]="fichaImagenPrincipal()?.id === imagen.id">
+                <button type="button" class="ficha-thumb__btn" (click)="setFichaImagenActiva(imagen)">
+                  <img [src]="imagenUrl(imagen.url)" [alt]="imagen.nombre || plaga.nombreComun" />
+                  <span class="ficha-thumb__flag" *ngIf="imagen.esPrincipal" title="Imagen principal">
+                    <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+                  </span>
+                </button>
+                <button type="button" class="ficha-thumb__del" title="Borrar imagen" (click)="deleteImagen(imagen)">
+                  <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="ficha-empty-hint" *ngIf="fichaImagenesLoading()">Cargando im&aacute;genes...</div>
+
+            <div class="ficha-upload">
+              <label class="ficha-upload__check">
+                <input type="checkbox" [ngModel]="uploadPrincipal()" (ngModelChange)="uploadPrincipal.set($event)" />
+                <span>Marcar como principal</span>
+              </label>
+              <label class="ficha-upload__btn" [class.disabled]="uploadingImagen()">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+                {{ uploadingImagen() ? 'Subiendo...' : 'Subir imagen' }}
+                <input type="file" accept="image/jpeg,image/png,image/webp" [disabled]="uploadingImagen()" (change)="onImagenSelected($event)" hidden />
+              </label>
+              <p class="ficha-upload__hint">JPG, PNG o WEBP &middot; m&aacute;x. 5 MB</p>
+              <p class="ficha-upload__error" *ngIf="uploadError()">{{ uploadError() }}</p>
+            </div>
+          </div>
+
+          <div class="ficha-info">
+            <div class="ficha-facts">
+              <div class="ficha-fact">
+                <span class="ficha-fact__icon"><svg viewBox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+                <div><small>Zona / &aacute;rea t&iacute;pica</small><strong>{{ plaga.zonaTipica || 'Sin dato' }}</strong></div>
+              </div>
+              <div class="ficha-fact">
+                <span class="ficha-fact__icon"><svg viewBox="0 0 24 24"><path d="m10 3-8 18h20L14 3z" opacity=".0"/><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m10.3 3.9-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3.1l-8-14a2 2 0 0 0-3.4 0Z"/></svg></span>
+                <div><small>Umbral de acci&oacute;n</small><strong>{{ plaga.umbralAccion || 'Sin dato' }}</strong></div>
+              </div>
+              <div class="ficha-fact">
+                <span class="ficha-fact__icon"><svg viewBox="0 0 24 24"><path d="M12 8C8 8 6 6 6 3c3 0 6 2 6 5Z"/><path d="M12 8c4 0 6-2 6-5-3 0-6 2-6 5Z"/><path d="M12 20V8"/></svg></span>
+                <div><small>Cultivos afectados</small><strong>{{ plaga.cultivosAfectados || 'Sin dato' }}</strong></div>
+              </div>
+            </div>
+
+            <div class="ficha-block" *ngIf="plaga.sintomas || plaga.descripcion">
+              <h4>S&iacute;ntomas</h4>
+              <p>{{ plaga.sintomas || plaga.descripcion }}</p>
+            </div>
+
+            <div class="ficha-block ficha-suggested">
+              <h4>Plagas sugeridas</h4>
+              <div class="ficha-empty-hint" *ngIf="fichaSugeridasLoading()">Buscando plagas relacionadas...</div>
+              <div class="ficha-empty-hint" *ngIf="!fichaSugeridasLoading() && !fichaSugeridas().length">No hay plagas relacionadas.</div>
+              <div class="suggested-list" *ngIf="!fichaSugeridasLoading() && fichaSugeridas().length">
+                <button type="button" class="suggested-card" *ngFor="let sugerida of fichaSugeridas()" (click)="openFichaSugerida(sugerida)">
+                  <span class="suggested-thumb" *ngIf="sugerida.imagenPrincipalUrl; else sugNoThumb"><img [src]="imagenUrl(sugerida.imagenPrincipalUrl)" [alt]="sugerida.nombreComun" /></span>
+                  <ng-template #sugNoThumb>
+                    <span class="suggested-thumb suggested-thumb--empty">
+                      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L5 21"/></svg>
+                    </span>
+                  </ng-template>
+                  <span class="suggested-body">
+                    <span class="suggested-name">{{ sugerida.nombreComun }}</span>
+                    <span class="suggested-type" *ngIf="sugerida.tipoNombre">{{ sugerida.tipoNombre }}</span>
+                    <span class="suggested-reasons" *ngIf="sugerida.motivos?.length">
+                      <span class="suggested-reason" *ngFor="let motivo of sugerida.motivos">{{ motivo }}</span>
+                    </span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cerrar</button><button class="btn-primary" type="button" (click)="openEditarCatalogo(plaga)">Editar cat&aacute;logo</button></div>
       </ng-container>
     </div>
   </div>

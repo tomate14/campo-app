@@ -9,7 +9,9 @@ import type {
   AplicacionFitosanitariaRequest,
   AnalyticsFiltros,
   CatalogoPlaga,
+  CatalogoPlagaImagen,
   CatalogoPlagaRequest,
+  PlagaSugerida,
   DeteccionPlaga,
   DeteccionPlagaRequest,
   EstadoDeteccionPlaga,
@@ -219,6 +221,31 @@ export class AgricolaService {
 
   createCatalogoPlaga(data: CatalogoPlagaRequest) {
     return this.http.post<ApiResponse<CatalogoPlaga> | CatalogoPlaga>(`${API_BASE_URL}/agricola/plagas/catalogo`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  // Feature 54: edición del catálogo (incluye zonaTipica).
+  updateCatalogoPlaga(id: string, data: CatalogoPlagaRequest) {
+    return this.http.put<ApiResponse<CatalogoPlaga> | CatalogoPlaga>(`${API_BASE_URL}/agricola/plagas/catalogo/${id}`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  // Feature 54: subida de imagen (multipart). No seteamos Content-Type: el browser
+  // pone el boundary automáticamente. esPrincipal va como query param.
+  uploadCatalogoPlagaImagen(id: string, file: File, esPrincipal = false) {
+    const formData = new FormData();
+    formData.append('foto', file);
+    return this.http.post<ApiResponse<CatalogoPlagaImagen> | CatalogoPlagaImagen>(`${API_BASE_URL}/agricola/plagas/catalogo/${id}/imagenes`, formData, { params: { esPrincipal } }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getCatalogoPlagaImagenes(id: string) {
+    return this.http.get<ApiResponse<CatalogoPlagaImagen[]> | CatalogoPlagaImagen[]>(`${API_BASE_URL}/agricola/plagas/catalogo/${id}/imagenes`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  deleteCatalogoPlagaImagen(id: string, imagenId: string) {
+    return this.http.delete(`${API_BASE_URL}/agricola/plagas/catalogo/${id}/imagenes/${imagenId}`);
+  }
+
+  getCatalogoPlagaSugeridas(id: string) {
+    return this.http.get<ApiResponse<PlagaSugerida[]> | PlagaSugerida[]>(`${API_BASE_URL}/agricola/plagas/catalogo/${id}/sugeridas`).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   getDeteccionesPlaga(params?: { loteId?: string; estado?: EstadoDeteccionPlaga; severidad?: SeveridadPlaga; cultivo?: string }) {
