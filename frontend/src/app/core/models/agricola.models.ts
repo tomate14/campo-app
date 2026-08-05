@@ -512,6 +512,31 @@ export interface PlagaSugerida {
   motivos: string[]
 }
 
+// Feature 73: item del catálogo de referencia de plagas (imágenes descargadas de GBIF).
+export interface PlagaReferencia {
+  id: string
+  cultivoId: string
+  cultivoNombre: string
+  nombreComun: string
+  nombreCientifico: string
+  tipo: string
+  tipoNombre: string
+  imagenUrl: string | null
+  fuente: string
+  urlOriginal: string | null
+  licencia: string | null
+  atribucion: string | null
+}
+
+// Feature 73: resumen de la sincronización on-demand del catálogo de referencia.
+export interface SyncResumenReferencia {
+  cultivos: number
+  procesados: number
+  descargados: number
+  omitidos: number
+  fallidos: number
+}
+
 export interface DeteccionPlaga {
   id: string
   loteId: string

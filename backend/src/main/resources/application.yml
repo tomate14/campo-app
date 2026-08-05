@@ -66,6 +66,14 @@ clima:
   retencion-dias: 30
   forecast-days: 7
 
+# GBIF - Catalogo de referencia de plagas (feature 73)
+gbif:
+  base-url: https://api.gbif.org/v1
+  media-limit: 5
+  sync:
+    enabled: ${GBIF_SYNC_ENABLED:true}
+    cron: ${GBIF_SYNC_CRON:0 0 3 * * *}
+
 # Springdoc
 springdoc:
   api-docs:
