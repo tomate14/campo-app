@@ -1,0 +1,26 @@
+<div class="cfg-multi">
+  <div class="cfg-multi-head" *ngIf="label">
+    <span class="cfg-label">{{ label }}</span>
+    <span class="cfg-count" *ngIf="selectedCount()">{{ selectedCount() }} seleccionado{{ selectedCount() === 1 ? '' : 's' }}</span>
+  </div>
+
+  <div class="cfg-hint" *ngIf="loading()">Cargando...</div>
+  <div class="cfg-hint" *ngIf="!loading() && !options().length">No hay opciones disponibles.</div>
+
+  <div class="cfg-chips" *ngIf="!loading() && options().length">
+    <button
+      *ngFor="let opcion of options()"
+      type="button"
+      class="cfg-chip"
+      [class.selected]="isSelected(opcion.id)"
+      [attr.aria-pressed]="isSelected(opcion.id)"
+      (click)="toggle(opcion.id)"
+    >
+      <span class="cfg-chip__mark" aria-hidden="true">
+        <svg *ngIf="isSelected(opcion.id); else emptyMark" viewBox="0 0 24 24"><path d="M5 13l4 4 10-11" /></svg>
+        <ng-template #emptyMark><svg viewBox="0 0 24 24"><path d="M12 5v14" /><path d="M5 12h14" /></svg></ng-template>
+      </span>
+      <span class="cfg-chip__text">{{ opcion.valor }}</span>
+    </button>
+  </div>
+</div>

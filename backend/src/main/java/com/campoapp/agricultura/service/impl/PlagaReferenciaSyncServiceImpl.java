@@ -2,14 +2,14 @@ package com.campoapp.agricultura.service.impl;
 
 import com.campoapp.agricultura.dto.plagas.PlagaReferenciaResponse;
 import com.campoapp.agricultura.dto.plagas.SyncResumen;
+import com.campoapp.agricultura.entity.plagas.CatalogoPlaga;
 import com.campoapp.agricultura.entity.plagas.PlagaReferencia;
 import com.campoapp.agricultura.gbif.GbifProperties;
-import com.campoapp.agricultura.gbif.PlagaReferenciaCatalogo;
-import com.campoapp.agricultura.gbif.PlagaReferenciaCatalogo.TaxonSeed;
 import com.campoapp.agricultura.gbif.dto.GbifMatchResponse;
 import com.campoapp.agricultura.gbif.dto.GbifMedia;
 import com.campoapp.agricultura.gbif.dto.GbifOccurrence;
 import com.campoapp.agricultura.gbif.dto.GbifOccurrenceSearchResponse;
+import com.campoapp.agricultura.repository.plagas.CatalogoPlagaRepository;
 import com.campoapp.agricultura.repository.plagas.PlagaReferenciaRepository;
 import com.campoapp.agricultura.service.PlagaReferenciaSyncService;
 import com.campoapp.common.storage.FileStorageService;
@@ -24,16 +24,21 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Implementacion del sync del catalogo de referencia de plagas desde GBIF (feature 73).
- * Idempotente por (cultivoId, nombreCientifico): si ya hay fila con imagen se omite;
- * si existe sin imagen se reintenta la descarga. Cada taxon va en su propio try/catch
- * para que un fallo puntual nunca rompa el scheduler.
+ * Implementacion del sync del catalogo de referencia de plagas desde GBIF (feature 73, 2da iteracion).
+ *
+ * Ya no hay lista curada: las plagas a resolver se derivan del propio catalogo_plagas. Por cada
+ * cultivo activo de utilidad_cultivo se buscan las plagas cuyo CSV cultivos_afectados contiene ese
+ * id (FIND_IN_SET) y que tengan nombre cientifico. Es idempotente por (cultivoId, catalogoPlagaId):
+ * si ya hay fila con imagen se omite; si no, se resuelve contra GBIF. La descarga de imagen se
+ * deduplica por nombre cientifico (una misma especie afectando varios cultivos reusa la misma imagen).
+ * Cada plaga va en su propio try/catch para que un fallo puntual nunca rompa el scheduler.
  */
 @Service
 @Slf4j
@@ -48,6 +53,7 @@ public class PlagaReferenciaSyncServiceImpl implements PlagaReferenciaSyncServic
     private final GbifProperties gbifProperties;
     private final FileStorageService fileStorageService;
     private final PlagaReferenciaRepository repository;
+    private final CatalogoPlagaRepository catalogoRepository;
     private final UtilidadNombreResolver utilidadNombreResolver;
 
     // Cliente sin baseUrl para descargar la imagen de un host externo (ej: iNaturalist S3).
@@ -58,12 +64,14 @@ public class PlagaReferenciaSyncServiceImpl implements PlagaReferenciaSyncServic
                                           GbifProperties gbifProperties,
                                           FileStorageService fileStorageService,
                                           PlagaReferenciaRepository repository,
+                                          CatalogoPlagaRepository catalogoRepository,
                                           UtilidadNombreResolver utilidadNombreResolver) {
         this.jdbcTemplate = jdbcTemplate;
         this.gbifRestClient = gbifRestClient;
         this.gbifProperties = gbifProperties;
         this.fileStorageService = fileStorageService;
         this.repository = repository;
+        this.catalogoRepository = catalogoRepository;
         this.utilidadNombreResolver = utilidadNombreResolver;
     }
 
@@ -77,15 +85,17 @@ public class PlagaReferenciaSyncServiceImpl implements PlagaReferenciaSyncServic
         int omitidos = 0;
         int fallidos = 0;
 
+        // Cache de imagenes ya resueltas en esta corrida, por nombre cientifico (dedup de descargas).
+        Map<String, ImagenRef> imagenPorNombre = new HashMap<>();
+
         for (Map<String, Object> cultivo : cultivos) {
             String cultivoId = (String) cultivo.get("id");
-            String valor = (String) cultivo.get("valor");
-            List<TaxonSeed> taxones = PlagaReferenciaCatalogo.taxonesDe(valor);
+            List<CatalogoPlaga> plagas = catalogoRepository.findConCultivoAfectado(cultivoId);
 
-            for (TaxonSeed taxon : taxones) {
+            for (CatalogoPlaga plaga : plagas) {
                 procesados++;
                 try {
-                    ResultadoTaxon resultado = procesarTaxon(cultivoId, taxon);
+                    ResultadoTaxon resultado = procesarPlaga(cultivoId, plaga, imagenPorNombre);
                     switch (resultado) {
                         case DESCARGADO -> descargados++;
                         case OMITIDO -> omitidos++;
@@ -93,8 +103,8 @@ public class PlagaReferenciaSyncServiceImpl implements PlagaReferenciaSyncServic
                     }
                 } catch (Exception e) {
                     fallidos++;
-                    log.warn("Fallo sincronizando taxon {} ({}) del cultivo {}: {}",
-                            taxon.nombreCientifico(), taxon.nombreComun(), cultivoId, e.getMessage());
+                    log.warn("Fallo sincronizando plaga {} ({}) del cultivo {}: {}",
+                            plaga.getNombreCientifico(), plaga.getNombreComun(), cultivoId, e.getMessage());
                 }
             }
         }
@@ -106,30 +116,55 @@ public class PlagaReferenciaSyncServiceImpl implements PlagaReferenciaSyncServic
 
     private enum ResultadoTaxon { DESCARGADO, OMITIDO, SIN_IMAGEN }
 
-    private ResultadoTaxon procesarTaxon(String cultivoId, TaxonSeed taxon) {
+    // Datos de una imagen ya resuelta, para reusar entre plagas con el mismo nombre cientifico.
+    private record ImagenRef(String path, Long gbifUsageKey, String urlOriginal, String licencia, String atribucion) {}
+
+    private ResultadoTaxon procesarPlaga(String cultivoId, CatalogoPlaga plaga, Map<String, ImagenRef> cache) {
+        String nombreCientifico = plaga.getNombreCientifico();
+
         Optional<PlagaReferencia> existenteOpt = repository
-                .findByCultivoIdAndNombreCientificoAndDeletedAtIsNull(cultivoId, taxon.nombreCientifico());
+                .findByCultivoIdAndCatalogoPlagaIdAndDeletedAtIsNull(cultivoId, plaga.getId());
 
         // Idempotencia: si ya existe con imagen, no se vuelve a bajar nada.
         if (existenteOpt.isPresent() && StringUtils.hasText(existenteOpt.get().getPath())) {
+            // Alimenta el cache para que otros cultivos reusen esta imagen sin volver a GBIF.
+            cache.putIfAbsent(nombreCientifico, refDe(existenteOpt.get()));
             return ResultadoTaxon.OMITIDO;
         }
 
         PlagaReferencia fila = existenteOpt.orElseGet(() -> PlagaReferencia.builder()
                 .cultivoId(cultivoId)
-                .nombreComun(taxon.nombreComun())
-                .nombreCientifico(taxon.nombreCientifico())
-                .tipo(taxon.tipo())
+                .catalogoPlagaId(plaga.getId())
+                .nombreComun(plaga.getNombreComun())
+                .nombreCientifico(nombreCientifico)
+                .tipo(plaga.getTipo())
                 .fuente(FUENTE)
                 .activo(true)
                 .build());
-        // Mantener datos curados actualizados en reintentos.
-        fila.setNombreComun(taxon.nombreComun());
-        fila.setTipo(taxon.tipo());
+        // Mantener datos del catalogo actualizados en reintentos.
+        fila.setCatalogoPlagaId(plaga.getId());
+        fila.setNombreComun(plaga.getNombreComun());
+        fila.setNombreCientifico(nombreCientifico);
+        fila.setTipo(plaga.getTipo());
         fila.setFuente(FUENTE);
 
+        // Dedup: si en esta corrida (o ya en la tabla) hay imagen para este nombre cientifico, se reusa.
+        ImagenRef ref = cache.get(nombreCientifico);
+        if (ref == null) {
+            ref = repository.findFirstByNombreCientificoAndPathIsNotNullAndDeletedAtIsNull(nombreCientifico)
+                    .map(this::refDe).orElse(null);
+            if (ref != null) {
+                cache.put(nombreCientifico, ref);
+            }
+        }
+        if (ref != null) {
+            aplicarRef(fila, ref);
+            repository.save(fila);
+            return ResultadoTaxon.DESCARGADO; // fila con imagen (reusada, sin descargar de nuevo)
+        }
+
         // 1) species/match -> usageKey
-        GbifMatchResponse match = matchSpecies(taxon.nombreCientifico());
+        GbifMatchResponse match = matchSpecies(nombreCientifico);
         if (match == null || match.usageKey() == null) {
             repository.save(fila); // fila sin imagen (no hubo match)
             return ResultadoTaxon.SIN_IMAGEN;
@@ -161,7 +196,25 @@ public class PlagaReferenciaSyncServiceImpl implements PlagaReferenciaSyncServic
         fila.setLicencia(media.license());
         fila.setAtribucion(media.rightsHolder());
         repository.save(fila);
+
+        // Cachea la imagen para reusarla en otras plagas del mismo nombre cientifico.
+        cache.put(nombreCientifico, refDe(fila));
         return ResultadoTaxon.DESCARGADO;
+    }
+
+    // Copia los datos de imagen de una fila existente a un ImagenRef para reuso.
+    private ImagenRef refDe(PlagaReferencia fila) {
+        return new ImagenRef(fila.getPath(), fila.getGbifUsageKey(), fila.getUrlOriginal(),
+                fila.getLicencia(), fila.getAtribucion());
+    }
+
+    // Aplica una imagen ya resuelta (reusada) sobre la fila destino.
+    private void aplicarRef(PlagaReferencia fila, ImagenRef ref) {
+        fila.setPath(ref.path());
+        fila.setGbifUsageKey(ref.gbifUsageKey());
+        fila.setUrlOriginal(ref.urlOriginal());
+        fila.setLicencia(ref.licencia());
+        fila.setAtribucion(ref.atribucion());
     }
 
     private GbifMatchResponse matchSpecies(String nombreCientifico) {
@@ -220,6 +273,7 @@ public class PlagaReferenciaSyncServiceImpl implements PlagaReferenciaSyncServic
                     fila.getId(),
                     fila.getCultivoId(),
                     utilidadNombreResolver.resolver(fila.getCultivoId(), cultivoNombres),
+                    fila.getCatalogoPlagaId(),
                     fila.getNombreComun(),
                     fila.getNombreCientifico(),
                     fila.getTipo(),

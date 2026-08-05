@@ -14,22 +14,40 @@ acá las entradas son **de referencia**, descargadas automáticamente, separadas
 las que carga el usuario.
 
 ## Decisiones (confirmadas por el usuario)
-- **Fuente: GBIF, "por cultivo", creando entradas nuevas.** No se enriquecen las
-  plagas existentes: se generan filas de referencia nuevas en una tabla propia.
+- **Fuente de taxones: el propio catálogo de plagas** (`catalogo_plagas`), NO una
+  lista fija en el backend. La relación cultivo→plaga sale de
+  `cultivosAfectados`, que pasa a ser una **selección de `utilidad_cultivo`
+  guardando los ids** (no texto libre). Así el usuario mantiene la lista: al dar
+  de alta una plaga con sus cultivos, entra sola al catálogo de referencia. Se
+  **elimina** el mapping curado (`PlagaReferenciaCatalogo`). *(Cambio pedido: se
+  desarrolla en este mismo branch, es parte de la misma feature.)*
+- **GBIF sólo aporta la foto** de cada especie (por su `nombreCientifico`), con su
+  licencia y atribución.
 - **Disparo: scheduler diario a las 03:00** (patrón del scheduler de clima). Se
   agrega además un endpoint manual de "sync ahora" (admin) para operación/pruebas.
 - **Imágenes en el volumen Docker** (`backend_uploads`, reutilizado de la 54),
-  subcarpeta `plagas-referencia/`. La tabla nueva guarda el **path relativo**.
+  subcarpeta `plagas-referencia/`. La tabla `plaga_referencia` guarda el **path
+  relativo** y se enlaza a la plaga origen (`catalogo_plaga_id`).
 - El uso **offline en mobile** se especifica aparte, en la **feature 74**.
+
+## Cambio en `cultivosAfectados` (catálogo de plagas)
+- Deja de ser texto libre: en el alta/edición del catálogo se selecciona de la
+  lista de `utilidad_cultivo` (multi-selección) y se **guardan los ids** (CSV de
+  ids en la columna, ensanchada). Patrón "referencias por id" de la feature 72.
+- Responses: `cultivosAfectados` (ids) + `cultivosAfectadosNombres` (valores
+  resueltos con `UtilidadNombreResolver`) para mostrar. Web: componente nuevo
+  `configurable-multi-select` (CULTIVO). Mobile: multi-chips de CULTIVO.
+- Migración: se editan los seeds de `cultivos_afectados` en `V12`/`V17` a ids y se
+  regenera la base (no está en producción).
 
 ## Flujo (backend)
 1. Scheduler `@Scheduled(cron "0 0 3 * * *")` (y endpoint manual) recorre las filas
    activas de `utilidad_cultivo`.
-2. Para cada cultivo, un **mapping curado** cultivo(valor)→lista de taxones
-   `{nombreComun, nombreCientifico, tipo}` define qué especies bajar. GBIF no lista
-   "plagas de X cultivo", por eso el vínculo cultivo→taxón es conocimiento propio.
-3. Por cada taxón, si aún no está descargado (idempotente por cultivo+nombre
-   científico):
+2. Para cada cultivo, se consulta `catalogo_plagas` con
+   `FIND_IN_SET(cultivoId, cultivos_afectados)` y `nombre_cientifico` no vacío: esas
+   son las plagas de ese cultivo. De cada una se toma
+   `{nombreComun, nombreCientifico, tipo, catalogoPlagaId}`.
+3. Por cada plaga, si aún no está descargada (idempotente por cultivo+plaga):
    - `GET api.gbif.org/v1/species/match?name={nombreCientifico}` → `usageKey`.
    - `GET api.gbif.org/v1/occurrence/search?taxonKey={key}&mediaType=StillImage&limit=n`
      → primera media con **licencia reutilizable** (Creative Commons): `identifier`
@@ -43,45 +61,38 @@ las que carga el usuario.
 5. Degradar con gracia ante fallo de red / rate limit (no romper el arranque; el
    scheduler reintenta al día siguiente).
 
-## Mapping curado inicial (cultivo → taxones)
-Contexto agro argentino. `tipo` usa el id del catálogo `TIPO_PLAGA`
-(`tpla-plaga`/`tpla-enfermedad`/`tpla-maleza`).
-- **SOJA**: Phakopsora pachyrhizi (roya asiática, enfermedad); Nezara viridula
-  (chinche verde, plaga); Rachiplusia nu (oruga medidora, plaga); Amaranthus
-  hybridus (yuyo colorado, maleza); Cercospora sojina (mancha ojo de rana, enf.).
-- **MAIZ**: Spodoptera frugiperda (oruga cogollera, plaga); Dalbulus maidis
-  (chicharrita, plaga); Puccinia sorghi (roya común, enfermedad); Diabrotica
-  speciosa (vaquita, plaga).
-- **TRIGO**: Puccinia striiformis (roya amarilla, enf.); Puccinia triticina (roya
-  de la hoja, enf.); Schizaphis graminum (pulgón verde, plaga); Fusarium
-  graminearum (fusariosis de la espiga, enf.).
-- **GIRASOL**: Plasmopara halstedii (mildiu, enf.); Rachiplusia nu (oruga, plaga);
-  Verticillium dahliae (verticilosis, enf.).
-- **SORGO**: Melanaphis sacchari (pulgón amarillo, plaga); Colletotrichum
-  sublineolum (antracnosis, enf.).
-- **OTRO**: sin taxones.
+## Origen de los taxones (ya no es una lista fija)
+Los taxones de cada cultivo salen del catálogo de plagas cargado por el usuario
+(`catalogo_plagas`, vía `cultivosAfectados` por id). Los 3 seeds existentes
+(Oruga cogollera/MAIZ,SORGO; Roya asiática/SOJA; Yuyo colorado/SOJA,MAIZ,GIRASOL)
+ya alcanzan para probar; sumar plagas al catálogo amplía la cobertura sin tocar
+código. Se **elimina** el componente `PlagaReferenciaCatalogo`.
 
 ## Alcance
 ### Backend
-- Migración: tabla nueva `plaga_referencia` (id, cultivo_id ref a `utilidad_cultivo`,
-  nombre_comun, nombre_cientifico, tipo, path imagen NULL, fuente, gbif_usage_key,
-  url_original, licencia, atribucion, activo, timestamps, deleted_at; UNIQUE por
-  cultivo_id + nombre_cientifico para idempotencia).
-- `RestClient` a GBIF (bean + properties, patrón `ClimaConfig`/`ClimaProperties`).
-- Servicio de sync (mapping curado + match + media + descarga a volumen + upsert).
+- `cultivosAfectados` por id: se ensancha `catalogo_plagas.cultivos_afectados` y se
+  editan los seeds de `V12`/`V17` a ids de `utilidad_cultivo` (regenerar base).
+  DTOs `CatalogoPlagaRequest`/`Response` con ids + `cultivosAfectadosNombres`.
+- `plaga_referencia`: se le agrega `catalogo_plaga_id` (link a la plaga origen) y la
+  unicidad pasa a `(cultivo_id, catalogo_plaga_id)`. Se edita la `V50` y se regenera.
+- `RestClient` a GBIF (ya hecho).
+- Servicio de sync reescrito: por cada cultivo, `FIND_IN_SET` sobre `catalogo_plagas`
+  + match + media CC + descarga a volumen (dedupe de descarga por nombre científico)
+  + upsert. Se elimina `PlagaReferenciaCatalogo`.
 - Scheduler 03:00 + endpoint manual `POST /plagas/catalogo-referencia/sync` (admin).
-- Endpoints de lectura: `GET /plagas/catalogo-referencia?cultivo=` (agrupable por
-  cultivo), devolviendo `imagenUrl` (`/uploads/...`), `cultivoNombre`, atribución.
+- Lectura `GET /plagas/catalogo-referencia?cultivo=` con `cultivoNombre`, atribución.
 - Imágenes servidas por el `/uploads/**` ya existente (feature 54).
 
 ### Frontend web
-- Vista "Catálogo de referencia" en la pantalla de plagas: agrupado por cultivo,
-  con la imagen descargada, nombre común/científico, tipo y **atribución/licencia**
-  visible. Botón (admin) "Actualizar catálogo de referencia" que llama al sync
-  manual. Estilo premium dark SaaS.
+- `configurable-multi-select` nuevo (CULTIVO) para `cultivosAfectados` en el alta/
+  edición del catálogo; la tabla/ficha muestran `cultivosAfectadosNombres`.
+- Vista "Catálogo de referencia" (ya hecha) agrupada por cultivo con atribución +
+  botón admin de sync. Estilo premium dark SaaS.
 
 ### Mobile
-- Fuera de alcance acá: va en la **feature 74** (uso offline).
+- Multi-chips de CULTIVO para `cultivosAfectados` en el alta/edición del catálogo;
+  displays con los nombres resueltos.
+- El uso offline del catálogo de referencia va en la **feature 74**.
 
 ## Requisitos Técnicos
 - Confirmar/guardar licencia CC + atribución de cada imagen; no mostrar imágenes
@@ -95,6 +106,11 @@ Contexto agro argentino. `tipo` usa el id del catálogo `TIPO_PLAGA`
   y referencias por id), 02 (patrón scheduler/cliente HTTP externo de clima).
 
 ## Estado
+En progreso (2ª iteración): se cambia `cultivosAfectados` a ids de `utilidad_cultivo`
+y el sync pasa a derivar los taxones del catálogo de plagas (se elimina la lista
+fija). En el mismo branch, por pedido del usuario.
+
+### 1ª iteración (base, ya verificada contra GBIF real)
 Realizada (backend + web; mobile queda en la feature 74). Verificada end-to-end
 contra Docker con GBIF real:
 - V50 crea `plaga_referencia`. Fix de infra: al sumar el bean `gbifRestClient`

@@ -348,6 +348,9 @@
 .ficha-fact__icon svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .ficha-fact small { display: block; color: #7e8baa; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
 .ficha-fact strong { display: block; margin-top: 3px; color: #f8fbff; font-size: 14px; font-weight: 700; }
+/* Feature 73: chips de cultivos afectados resueltos por nombre. */
+.ficha-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+.ficha-chip { padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(159, 232, 112, .28); background: rgba(159, 232, 112, .1); color: #cdeeb6; font-size: 11px; font-weight: 700; }
 
 .ficha-block h4 { margin: 0 0 8px; color: #cdd9ee; font-size: 13px; text-transform: uppercase; letter-spacing: .1em; }
 .ficha-block p { margin: 0; color: #c2d0e4; font-size: 14px; line-height: 1.5; }

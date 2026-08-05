@@ -11,6 +11,7 @@ import { OperariosService } from '../../core/services/operarios.service';
 import { SessionService } from '../../core/services/session.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
+import { ConfigurableMultiSelectComponent } from '../../shared/configurable-multi-select/configurable-multi-select.component';
 import type { Operario } from '../../core/models/operarios.models';
 import type {
   AplicacionFitosanitaria,
@@ -58,7 +59,7 @@ type DeteccionPinGroup = {
 @Component({
   selector: 'app-plagas-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent, ConfigurableSelectComponent],
+  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent, ConfigurableSelectComponent, ConfigurableMultiSelectComponent],
   templateUrl: './plagas-page.component.html',
   styleUrl: './plagas-page.component.css',
 })
@@ -645,6 +646,15 @@ export class PlagasPageComponent {
   }
 
   // Prepend del origin del backend a la url relativa /uploads/...
+  // Feature 73: parte un CSV de nombres de cultivos en chips (tolera espacios/vacíos).
+  protected splitCsv(csv?: string | null): string[] {
+    if (!csv) return [];
+    return csv
+      .split(',')
+      .map((token) => token.trim())
+      .filter((token) => token.length > 0);
+  }
+
   protected imagenUrl(url?: string | null): string {
     if (!url) return '';
     return /^https?:\/\//i.test(url) ? url : `${API_ORIGIN}${url}`;

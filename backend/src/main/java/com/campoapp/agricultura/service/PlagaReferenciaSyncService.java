@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface PlagaReferenciaSyncService {
 
-    /** Recorre los cultivos activos y sus taxones curados, consultando GBIF de forma idempotente. */
+    /** Recorre los cultivos activos y las plagas de catalogo_plagas que los afectan, consultando GBIF de forma idempotente. */
     SyncResumen sincronizar();
 
     /** Lista el catalogo de referencia, opcionalmente filtrado por cultivoId. */

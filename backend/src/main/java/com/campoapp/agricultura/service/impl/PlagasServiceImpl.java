@@ -54,16 +54,18 @@ public class PlagasServiceImpl implements PlagasService {
     public List<CatalogoPlagaResponse> listarCatalogo(String tipo) {
         List<CatalogoPlaga> items = catalogoRepository.search(tipo);
         Map<String, String> tipos = tiposDeCatalogo(items);
+        Map<String, String> cultivos = cultivosDeCatalogo(items);
         Map<String, List<CatalogoPlagaImagenResponse>> imagenes = imagenesPorPlaga(items);
-        return items.stream().map(item -> toCatalogoResponse(item, tipos, imagenes)).toList();
+        return items.stream().map(item -> toCatalogoResponse(item, tipos, cultivos, imagenes)).toList();
     }
 
     @Override
     public Page<CatalogoPlagaResponse> listarCatalogoPaginado(String tipo, int page, int size) {
         Page<CatalogoPlaga> pagina = catalogoRepository.searchPage(tipo, pageRequest(page, size));
         Map<String, String> tipos = tiposDeCatalogo(pagina.getContent());
+        Map<String, String> cultivos = cultivosDeCatalogo(pagina.getContent());
         Map<String, List<CatalogoPlagaImagenResponse>> imagenes = imagenesPorPlaga(pagina.getContent());
-        return pagina.map(item -> toCatalogoResponse(item, tipos, imagenes));
+        return pagina.map(item -> toCatalogoResponse(item, tipos, cultivos, imagenes));
     }
 
     @Override
@@ -158,6 +160,10 @@ public class PlagasServiceImpl implements PlagasService {
         String baseGenero = genero(base.getNombreCientifico());
         Set<String> baseCultivos = cultivosSet(base.getCultivosAfectados());
         Set<String> baseSintomas = tokensSintomas(base.getSintomas());
+        // Feature 73: cultivos_afectados son ids; resolvemos a valores para el texto del motivo.
+        // La interseccion siempre es subconjunto de baseCultivos, asi que basta resolver esos ids.
+        Map<String, String> cultivoNombres = utilidadNombreResolver.resolverNombres(
+                CatalogoUtilidadRegistry.CULTIVO, baseCultivos);
 
         List<Sugerida> scored = new ArrayList<>();
         for (CatalogoPlaga candidata : catalogoRepository.search(null)) {
@@ -177,7 +183,11 @@ public class PlagasServiceImpl implements PlagasService {
             interCultivos.retainAll(cultivosSet(candidata.getCultivosAfectados()));
             if (!interCultivos.isEmpty()) {
                 score += 2;
-                motivos.add("Comparte cultivos: " + String.join(", ", interCultivos));
+                // Resolvemos cada id de cultivo a su valor para no mostrar el token crudo (ej: "cult-maiz").
+                String nombres = interCultivos.stream()
+                        .map(id -> resolverUtilidad(CatalogoUtilidadRegistry.CULTIVO, id, cultivoNombres))
+                        .collect(Collectors.joining(", "));
+                motivos.add("Comparte cultivos: " + nombres);
             }
 
             if (base.getTipo() != null && base.getTipo().equals(candidata.getTipo())) {
@@ -521,14 +531,52 @@ public class PlagasServiceImpl implements PlagasService {
     }
 
     private CatalogoPlagaResponse toCatalogoResponse(CatalogoPlaga item) {
-        return toCatalogoResponse(item, Map.of(), imagenesPorPlaga(List.of(item)));
+        return toCatalogoResponse(item, Map.of(), cultivosDeCatalogo(List.of(item)), imagenesPorPlaga(List.of(item)));
     }
 
-    private CatalogoPlagaResponse toCatalogoResponse(CatalogoPlaga item, Map<String, String> tipoNombres, Map<String, List<CatalogoPlagaImagenResponse>> imagenesPorPlaga) {
+    private CatalogoPlagaResponse toCatalogoResponse(CatalogoPlaga item, Map<String, String> tipoNombres, Map<String, String> cultivoNombres, Map<String, List<CatalogoPlagaImagenResponse>> imagenesPorPlaga) {
         List<CatalogoPlagaImagenResponse> imagenes = imagenesPorPlaga.getOrDefault(item.getId(), List.of());
         // La lista viene ordenada principal-primero, asi que el primer elemento es la principal (o null).
         String imagenPrincipalUrl = imagenes.isEmpty() ? null : imagenes.get(0).url();
-        return new CatalogoPlagaResponse(item.getId(), item.getNombreComun(), item.getNombreCientifico(), item.getTipo(), resolverUtilidad(CatalogoUtilidadRegistry.TIPO_PLAGA, item.getTipo(), tipoNombres), item.getCultivosAfectados(), item.getDescripcion(), item.getSintomas(), item.getUmbralAccion(), item.getZonaTipica(), item.getActivo(), imagenes, imagenPrincipalUrl, item.getCreatedAt(), item.getUpdatedAt());
+        // Feature 73: cultivosAfectados guarda ids; resolvemos el CSV de ids -> CSV de valores para mostrar.
+        String cultivosAfectadosNombres = resolverCsvCultivos(item.getCultivosAfectados(), cultivoNombres);
+        return new CatalogoPlagaResponse(item.getId(), item.getNombreComun(), item.getNombreCientifico(), item.getTipo(), resolverUtilidad(CatalogoUtilidadRegistry.TIPO_PLAGA, item.getTipo(), tipoNombres), item.getCultivosAfectados(), cultivosAfectadosNombres, item.getDescripcion(), item.getSintomas(), item.getUmbralAccion(), item.getZonaTipica(), item.getActivo(), imagenes, imagenPrincipalUrl, item.getCreatedAt(), item.getUpdatedAt());
+    }
+
+    // Batch id -> valor de CULTIVO para una lista de plagas: junta todos los ids del CSV cultivos_afectados
+    // de cada plaga y los resuelve en un solo query (evita N+1 en los listados).
+    private Map<String, String> cultivosDeCatalogo(List<CatalogoPlaga> items) {
+        List<String> ids = items.stream()
+                .flatMap(item -> cultivosIds(item.getCultivosAfectados()).stream())
+                .toList();
+        return utilidadNombreResolver.resolverNombres(CatalogoUtilidadRegistry.CULTIVO, ids);
+    }
+
+    // Resuelve el CSV de ids de cultivo a un CSV de valores (ej: "cult-maiz,cult-sorgo" -> "MAIZ, SORGO").
+    // Cada id no matcheado cae a su valor crudo (mismo criterio que UtilidadNombreResolver).
+    private String resolverCsvCultivos(String csvIds, Map<String, String> cultivoNombres) {
+        List<String> ids = cultivosIds(csvIds);
+        if (ids.isEmpty()) {
+            return null;
+        }
+        return ids.stream()
+                .map(id -> resolverUtilidad(CatalogoUtilidadRegistry.CULTIVO, id, cultivoNombres))
+                .collect(Collectors.joining(", "));
+    }
+
+    // Split del CSV de cultivos: trim + ignorar vacios, preservando el orden.
+    private List<String> cultivosIds(String csv) {
+        if (blankToNull(csv) == null) {
+            return List.of();
+        }
+        List<String> out = new ArrayList<>();
+        for (String token : csv.split(",")) {
+            String clean = token.trim();
+            if (!clean.isEmpty()) {
+                out.add(clean);
+            }
+        }
+        return out;
     }
 
     private CatalogoPlagaImagenResponse toImagenResponse(CatalogoPlagaImagen img) {
@@ -574,14 +622,15 @@ public class PlagasServiceImpl implements PlagasService {
         return Character.toUpperCase(value.charAt(0)) + value.substring(1).toLowerCase(Locale.ROOT);
     }
 
-    // Cultivos normalizados (trim + uppercase) para comparar interseccion.
+    // Ids de cultivo del CSV (trim, sin uppercase: son ids case-sensitive de utilidad_cultivo)
+    // para comparar interseccion exacta entre plagas.
     private Set<String> cultivosSet(String cultivos) {
         if (blankToNull(cultivos) == null) {
             return Set.of();
         }
         Set<String> out = new LinkedHashSet<>();
         for (String c : cultivos.split(",")) {
-            String t = c.trim().toUpperCase(Locale.ROOT);
+            String t = c.trim();
             if (!t.isEmpty()) {
                 out.add(t);
             }

@@ -462,7 +462,10 @@ export interface CatalogoPlaga {
   tipo: string
   // Feature 72: valor resuelto del catálogo TIPO_PLAGA (tipo sigue siendo el id).
   tipoNombre?: string
+  // Feature 73: CSV de ids de utilidad_cultivo (lo que se guarda/edita).
   cultivosAfectados?: string
+  // Feature 73: CSV de valores resueltos de esos cultivos (solo para mostrar).
+  cultivosAfectadosNombres?: string
   descripcion?: string
   sintomas?: string
   umbralAccion?: string

@@ -8,6 +8,8 @@ public record PlagaReferenciaResponse(
         String id,
         String cultivoId,
         String cultivoNombre,
+        // Feature 73 (2da iteracion): plaga origen en catalogo_plagas.
+        String catalogoPlagaId,
         String nombreComun,
         String nombreCientifico,
         String tipo,

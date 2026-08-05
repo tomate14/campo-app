@@ -16,6 +16,10 @@ public class PlagaReferencia extends AuditableEntity {
     @Column(name = "cultivo_id", nullable = false, length = 36)
     private String cultivoId;
 
+    // Id de catalogo_plagas: plaga origen de esta referencia (feature 73, 2da iteracion).
+    @Column(name = "catalogo_plaga_id", nullable = false, length = 36)
+    private String catalogoPlagaId;
+
     @Column(name = "nombre_comun", nullable = false, length = 160)
     private String nombreComun;
 

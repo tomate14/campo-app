@@ -170,7 +170,7 @@
               </td>
               <td><span class="badge">{{ item.tipoNombre }}</span></td>
               <td>{{ item.nombreCientifico || '-' }}</td>
-              <td>{{ item.cultivosAfectados || '-' }}</td>
+              <td>{{ item.cultivosAfectadosNombres || '-' }}</td>
               <td>{{ item.zonaTipica || '-' }}</td>
               <td>{{ item.umbralAccion || '-' }}</td>
               <td>{{ item.activo ? 'Activo' : 'Inactivo' }}</td>
@@ -348,7 +348,7 @@
           <label><span>Nombre com&uacute;n</span><input [ngModel]="catalogoForm().nombreComun" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreComun: $event }))" /></label>
           <label><span>Nombre cient&iacute;fico</span><input [ngModel]="catalogoForm().nombreCientifico" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreCientifico: $event }))" /></label>
           <app-configurable-select categoria="TIPO_PLAGA" label="Tipo" placeholder="Seleccionar tipo..." [value]="catalogoForm().tipo" (valueChange)="catalogoForm.update(f => ({ ...f, tipo: $event }))"></app-configurable-select>
-          <label><span>Cultivos afectados</span><input [ngModel]="catalogoForm().cultivosAfectados" (ngModelChange)="catalogoForm.update(f => ({ ...f, cultivosAfectados: $event }))" /></label>
+          <app-configurable-multi-select categoria="CULTIVO" label="Cultivos afectados" [value]="catalogoForm().cultivosAfectados" (valueChange)="catalogoForm.update(f => ({ ...f, cultivosAfectados: $event }))"></app-configurable-multi-select>
           <label><span>Zona / &aacute;rea t&iacute;pica</span><input [ngModel]="catalogoForm().zonaTipica" (ngModelChange)="catalogoForm.update(f => ({ ...f, zonaTipica: $event }))" placeholder="Ej. hojas, tallo, base de la planta" /></label>
           <label><span>Umbral de acci&oacute;n</span><input [ngModel]="catalogoForm().umbralAccion" (ngModelChange)="catalogoForm.update(f => ({ ...f, umbralAccion: $event }))" /></label>
         </div>
@@ -426,7 +426,13 @@
               </div>
               <div class="ficha-fact">
                 <span class="ficha-fact__icon"><svg viewBox="0 0 24 24"><path d="M12 8C8 8 6 6 6 3c3 0 6 2 6 5Z"/><path d="M12 8c4 0 6-2 6-5-3 0-6 2-6 5Z"/><path d="M12 20V8"/></svg></span>
-                <div><small>Cultivos afectados</small><strong>{{ plaga.cultivosAfectados || 'Sin dato' }}</strong></div>
+                <div>
+                  <small>Cultivos afectados</small>
+                  <span class="ficha-chips" *ngIf="splitCsv(plaga.cultivosAfectadosNombres).length; else sinCultivos">
+                    <span class="ficha-chip" *ngFor="let cultivo of splitCsv(plaga.cultivosAfectadosNombres)">{{ cultivo }}</span>
+                  </span>
+                  <ng-template #sinCultivos><strong>Sin dato</strong></ng-template>
+                </div>
               </div>
             </div>
 

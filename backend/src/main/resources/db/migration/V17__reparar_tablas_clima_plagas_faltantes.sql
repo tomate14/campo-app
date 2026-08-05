@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS catalogo_plagas (
     nombre_comun      VARCHAR(160) NOT NULL,
     nombre_cientifico VARCHAR(180) NULL,
     tipo               VARCHAR(40) NOT NULL,
-    cultivos_afectados VARCHAR(260) NULL,
+    cultivos_afectados VARCHAR(400) NULL,
     descripcion        TEXT NULL,
     sintomas           TEXT NULL,
     umbral_accion      VARCHAR(260) NULL,
@@ -144,13 +144,13 @@ CREATE TABLE IF NOT EXISTS aplicaciones_fitosanitarias (
 
 -- Feature 72: catalogo_plagas.tipo guarda el id fijo del catalogo utilidad_tipo_plaga (no el string).
 INSERT INTO catalogo_plagas (id, nombre_comun, nombre_cientifico, tipo, cultivos_afectados, descripcion, sintomas, umbral_accion, activo)
-SELECT UUID(), 'Oruga cogollera', 'Spodoptera frugiperda', 'tpla-plaga', 'MAIZ,SORGO', 'Lepidoptero de alto impacto en cultivos estivales.', 'Perforaciones en hojas y dano en cogollo.', 'Monitorear desde V2; intervenir con dano activo en cogollo.', b'1'
+SELECT UUID(), 'Oruga cogollera', 'Spodoptera frugiperda', 'tpla-plaga', 'cult-maiz,cult-sorgo', 'Lepidoptero de alto impacto en cultivos estivales.', 'Perforaciones en hojas y dano en cogollo.', 'Monitorear desde V2; intervenir con dano activo en cogollo.', b'1'
 WHERE NOT EXISTS (SELECT 1 FROM catalogo_plagas WHERE nombre_comun = 'Oruga cogollera');
 
 INSERT INTO catalogo_plagas (id, nombre_comun, nombre_cientifico, tipo, cultivos_afectados, descripcion, sintomas, umbral_accion, activo)
-SELECT UUID(), 'Roya asiatica', 'Phakopsora pachyrhizi', 'tpla-enfermedad', 'SOJA', 'Enfermedad foliar con alto potencial de perdida.', 'Pustulas y amarillamiento foliar.', 'Aplicar ante primeras pustulas y condiciones predisponentes.', b'1'
+SELECT UUID(), 'Roya asiatica', 'Phakopsora pachyrhizi', 'tpla-enfermedad', 'cult-soja', 'Enfermedad foliar con alto potencial de perdida.', 'Pustulas y amarillamiento foliar.', 'Aplicar ante primeras pustulas y condiciones predisponentes.', b'1'
 WHERE NOT EXISTS (SELECT 1 FROM catalogo_plagas WHERE nombre_comun = 'Roya asiatica');
 
 INSERT INTO catalogo_plagas (id, nombre_comun, nombre_cientifico, tipo, cultivos_afectados, descripcion, sintomas, umbral_accion, activo)
-SELECT UUID(), 'Yuyo colorado', 'Amaranthus quitensis', 'tpla-maleza', 'SOJA,MAIZ,GIRASOL', 'Maleza competitiva con resistencia frecuente.', 'Emergencia escalonada y alta competencia.', 'Control temprano antes de 10 cm.', b'1'
+SELECT UUID(), 'Yuyo colorado', 'Amaranthus quitensis', 'tpla-maleza', 'cult-soja,cult-maiz,cult-girasol', 'Maleza competitiva con resistencia frecuente.', 'Emergencia escalonada y alta competencia.', 'Control temprano antes de 10 cm.', b'1'
 WHERE NOT EXISTS (SELECT 1 FROM catalogo_plagas WHERE nombre_comun = 'Yuyo colorado');
