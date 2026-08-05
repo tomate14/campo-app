@@ -1,13 +1,20 @@
 import { apiClient as api } from './client'
 import type {
   ApiResponse, GeoJsonImportRequest, Lote, LoteFilters, LoteReporte, LoteRequest,
-  AplicacionFitosanitaria, AplicacionFitosanitariaRequest, CatalogoPlaga, CatalogoPlagaRequest, DeteccionPlaga, DeteccionPlagaRequest, SeguimientoPlaga, SeguimientoPlagaRequest,
+  AplicacionFitosanitaria, AplicacionFitosanitariaRequest, CatalogoPlaga, CatalogoPlagaImagen, CatalogoPlagaRequest, DeteccionPlaga, DeteccionPlagaRequest, PlagaSugerida, SeguimientoPlaga, SeguimientoPlagaRequest,
   EventoSiembra, EventoSiembraRequest, TipoEvento,
   RegistroCosecha, RegistroCosechaRequest,
   PropiedadSuelo, PropiedadSueloRequest,
   HistoricoCultivo, HistoricoCultivoRequest, RotacionRecomendacion,
   UtilidadOpcion,
 } from '../types/agricola'
+
+// Asset elegido con expo-image-picker que se sube al backend (feature 54).
+export interface PlagaImageAsset {
+  uri: string
+  fileName?: string | null
+  mimeType?: string | null
+}
 
 export const getLotes = (params?: LoteFilters) =>
   api.get<ApiResponse<Lote[]>>('/agricola/lotes', { params }).then(r => r.data.data)
@@ -109,6 +116,32 @@ export const getCatalogoPlagas = () =>
 
 export const createCatalogoPlaga = (data: CatalogoPlagaRequest) =>
   api.post<ApiResponse<CatalogoPlaga>>('/agricola/plagas/catalogo', data).then(r => r.data.data)
+
+export const updateCatalogoPlaga = (id: string, data: CatalogoPlagaRequest) =>
+  api.put<ApiResponse<CatalogoPlaga>>(`/agricola/plagas/catalogo/${id}`, data).then(r => r.data.data)
+
+// Sube una imagen (multipart) al catalogo. Solo online: no pasa por el outbox.
+// No se setea Content-Type manual para que RN/axios pongan el boundary.
+export const uploadCatalogoPlagaImagen = (id: string, asset: PlagaImageAsset, esPrincipal = false) => {
+  const name = asset.fileName ?? `plaga-${Date.now()}.jpg`
+  const type = asset.mimeType ?? 'image/jpeg'
+  const formData = new FormData()
+  formData.append('foto', { uri: asset.uri, name, type } as unknown as Blob)
+  return api.post<ApiResponse<CatalogoPlagaImagen>>(
+    `/agricola/plagas/catalogo/${id}/imagenes`,
+    formData,
+    { params: { esPrincipal }, skipOutbox: true },
+  ).then(r => r.data.data)
+}
+
+export const getCatalogoPlagaImagenes = (id: string) =>
+  api.get<ApiResponse<CatalogoPlagaImagen[]>>(`/agricola/plagas/catalogo/${id}/imagenes`).then(r => r.data.data)
+
+export const deleteCatalogoPlagaImagen = (id: string, imagenId: string) =>
+  api.delete(`/agricola/plagas/catalogo/${id}/imagenes/${imagenId}`)
+
+export const getCatalogoPlagaSugeridas = (id: string) =>
+  api.get<ApiResponse<PlagaSugerida[]>>(`/agricola/plagas/catalogo/${id}/sugeridas`).then(r => r.data.data)
 
 export const getDeteccionesPlaga = () =>
   api.get<ApiResponse<DeteccionPlaga[]> | DeteccionPlaga[]>('/agricola/plagas/detecciones').then(r => unwrapListResponse(r.data))

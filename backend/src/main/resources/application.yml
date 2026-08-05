@@ -24,6 +24,16 @@ spring:
     clean-disabled: false
     clean-on-validation-error: true
 
+  servlet:
+    multipart:
+      max-file-size: 6MB
+      max-request-size: 12MB
+
+# Almacenamiento de archivos en filesystem (feature 54)
+campo:
+  storage:
+    uploads-dir: ${UPLOADS_DIR:/app/uploads}
+
 # JWT
 jwt:
   secret: ${JWT_SECRET:campoapp-super-secret-key-256bits-development-only-change-in-prod}

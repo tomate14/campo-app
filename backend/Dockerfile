@@ -35,7 +35,10 @@ RUN groupadd -r spring && useradd -r -g spring spring
 # Copiar solo el JAR generado
 COPY --from=builder /app/target/*.jar app.jar
 
-RUN chown spring:spring app.jar
+# Directorio de uploads (feature 54): se crea con owner spring para que, al
+# montar el volumen persistente en /app/uploads, el usuario no-root pueda
+# escribir las imagenes del catalogo (Docker hereda el owner del mountpoint).
+RUN mkdir -p /app/uploads && chown -R spring:spring /app/uploads app.jar
 USER spring
 
 EXPOSE 8080

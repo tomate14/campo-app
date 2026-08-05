@@ -7,11 +7,13 @@ import com.campoapp.agricultura.entity.plagas.CatalogoPlaga;
 import com.campoapp.agricultura.entity.plagas.SeveridadPlaga;
 import com.campoapp.agricultura.repository.LoteRepository;
 import com.campoapp.agricultura.repository.plagas.AplicacionFitosanitariaRepository;
+import com.campoapp.agricultura.repository.plagas.CatalogoPlagaImagenRepository;
 import com.campoapp.agricultura.repository.plagas.CatalogoPlagaRepository;
 import com.campoapp.agricultura.repository.plagas.DeteccionPlagaRepository;
 import com.campoapp.agricultura.repository.plagas.SeguimientoPlagaRepository;
 import com.campoapp.agricultura.service.impl.PlagasServiceImpl;
 import com.campoapp.common.exception.ResourceNotFoundException;
+import com.campoapp.common.storage.FileStorageService;
 import com.campoapp.operarios.repository.OperarioRepository;
 import com.campoapp.utilidades.service.UtilidadNombreResolver;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,13 +40,15 @@ class PlagasServiceTest {
     @Mock private LoteRepository loteRepository;
     @Mock private OperarioRepository operarioRepository;
     @Mock private UtilidadNombreResolver utilidadNombreResolver;
+    @Mock private CatalogoPlagaImagenRepository imagenRepository;
+    @Mock private FileStorageService fileStorageService;
 
     private PlagasServiceImpl service;
     private Lote lote;
 
     @BeforeEach
     void setUp() {
-        service = new PlagasServiceImpl(catalogoRepository, deteccionRepository, aplicacionRepository, seguimientoRepository, loteRepository, operarioRepository, new ObjectMapper(), utilidadNombreResolver);
+        service = new PlagasServiceImpl(catalogoRepository, deteccionRepository, aplicacionRepository, seguimientoRepository, loteRepository, operarioRepository, new ObjectMapper(), utilidadNombreResolver, imagenRepository, fileStorageService);
         lote = new Lote();
         lote.setNombre("Lote Norte");
         lote.setCultivo("MAIZ");

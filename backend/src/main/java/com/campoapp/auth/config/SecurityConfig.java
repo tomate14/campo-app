@@ -57,7 +57,10 @@ public class SecurityConfig {
                                 "/api/v1/docs/**",
                                 "/api/v1/swagger-ui/**",
                                 "/actuator/health",
-                                "/actuator/info"
+                                "/actuator/info",
+                                // Imagenes de catalogo servidas estaticamente (feature 54):
+                                // las <img> cargan sin header JWT y no son datos sensibles.
+                                "/uploads/**"
                         ).permitAll()
                         // Admin: solo super_admin y admin
                         .requestMatchers("/api/v1/admin/**")

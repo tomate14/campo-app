@@ -10,5 +10,6 @@ public record CatalogoPlagaRequest(
         String descripcion,
         String sintomas,
         String umbralAccion,
+        String zonaTipica,
         Boolean activo
 ) {}

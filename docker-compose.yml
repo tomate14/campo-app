@@ -55,6 +55,9 @@ services:
       OAUTH2_AZURE_CLIENT_ID: ${OAUTH2_AZURE_CLIENT_ID}
       OAUTH2_AZURE_CLIENT_SECRET: ${OAUTH2_AZURE_CLIENT_SECRET}
       FRONTEND_URL: http://frontend:3000
+      UPLOADS_DIR: /app/uploads
+    volumes:
+      - backend_uploads:/app/uploads
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     healthcheck:
@@ -122,6 +125,7 @@ services:
 volumes:
   frontend_node_modules:
   mobile_node_modules:
+  backend_uploads:
 
 networks:
   campo-net:

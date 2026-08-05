@@ -30,6 +30,10 @@ public class CatalogoPlaga extends AuditableEntity {
     @Column(name = "umbral_accion", length = 260)
     private String umbralAccion;
 
+    // Zona geografica/agroecologica tipica de aparicion (feature 54).
+    @Column(name = "zona_tipica", length = 260)
+    private String zonaTipica;
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean activo = true;

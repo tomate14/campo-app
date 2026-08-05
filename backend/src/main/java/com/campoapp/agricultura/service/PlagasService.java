@@ -4,6 +4,7 @@ import com.campoapp.agricultura.dto.plagas.*;
 import com.campoapp.agricultura.entity.plagas.EstadoDeteccionPlaga;
 import com.campoapp.agricultura.entity.plagas.SeveridadPlaga;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,6 +12,12 @@ public interface PlagasService {
     List<CatalogoPlagaResponse> listarCatalogo(String tipo);
     Page<CatalogoPlagaResponse> listarCatalogoPaginado(String tipo, int page, int size);
     CatalogoPlagaResponse crearCatalogo(CatalogoPlagaRequest request);
+    CatalogoPlagaResponse actualizarCatalogo(String id, CatalogoPlagaRequest request);
+    // Feature 54: imagenes y sugeridas del catalogo.
+    CatalogoPlagaImagenResponse agregarImagenCatalogo(String catalogoPlagaId, MultipartFile foto, boolean esPrincipal);
+    List<CatalogoPlagaImagenResponse> listarImagenesCatalogo(String catalogoPlagaId);
+    void eliminarImagenCatalogo(String catalogoPlagaId, String imagenId);
+    List<PlagaSugeridaResponse> sugeridas(String catalogoPlagaId);
     List<DeteccionPlagaResponse> listarDetecciones(String loteId, EstadoDeteccionPlaga estado, SeveridadPlaga severidad, String cultivo);
     Page<DeteccionPlagaResponse> listarDeteccionesPaginadas(String loteId, EstadoDeteccionPlaga estado, SeveridadPlaga severidad, String cultivo, int page, int size);
     DeteccionPlagaResponse obtenerDeteccion(String id);
