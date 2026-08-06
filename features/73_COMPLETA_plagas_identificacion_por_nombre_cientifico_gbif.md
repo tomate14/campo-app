@@ -106,9 +106,19 @@ código. Se **elimina** el componente `PlagaReferenciaCatalogo`.
   y referencias por id), 02 (patrón scheduler/cliente HTTP externo de clima).
 
 ## Estado
-En progreso (2ª iteración): se cambia `cultivosAfectados` a ids de `utilidad_cultivo`
-y el sync pasa a derivar los taxones del catálogo de plagas (se elimina la lista
-fija). En el mismo branch, por pedido del usuario.
+Realizada (backend + web; mobile del catálogo de referencia queda en la feature 74;
+las "especies similares" de GBIF quedan en la feature 75). Dos iteraciones, ambas
+verificadas end-to-end contra Docker con GBIF real.
+
+### 2ª iteración (cultivosAfectados por id + sync desde el catálogo) — verificada
+- `cultivosAfectados` pasa a multi-selección de `utilidad_cultivo` guardando ids;
+  `CatalogoPlagaResponse` suma `cultivosAfectadosNombres`. El motivo de "plagas
+  sugeridas" resuelve ids→valores (sin `cult-*` crudo).
+- Se elimina la lista fija `PlagaReferenciaCatalogo`; el sync deriva los taxones del
+  catálogo (`FIND_IN_SET(cultivoId, cultivos_afectados)`). `plaga_referencia` suma
+  `catalogo_plaga_id`. Migraciones V12/V17/V50 editadas + base regenerada.
+- Verificado: catálogo con ids+nombres; sync generó 6 filas exactas según los
+  cultivos de las 3 plagas; multi-select web OK sin errores de consola; `tsc` mobile.
 
 ### 1ª iteración (base, ya verificada contra GBIF real)
 Realizada (backend + web; mobile queda en la feature 74). Verificada end-to-end
