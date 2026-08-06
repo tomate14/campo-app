@@ -586,6 +586,7 @@ export default function PlagasMobilePage() {
         editing={catalogoEditingId !== null}
         form={catalogoForm}
         tipoOptions={tipoPlagaOpciones}
+        cultivoOptions={cultivoOpciones}
         saving={savingCatalogo}
         onClose={() => { setCatalogoModalOpen(false); setCatalogoEditingId(null) }}
         onSave={saveCatalogoPlaga}
@@ -851,6 +852,7 @@ function CatalogoPlagaModal({
   editing,
   form,
   tipoOptions,
+  cultivoOptions,
   saving,
   onClose,
   onSave,
@@ -860,6 +862,7 @@ function CatalogoPlagaModal({
   editing: boolean
   form: CatalogoPlagaRequest
   tipoOptions: UtilidadOpcion[]
+  cultivoOptions: UtilidadOpcion[]
   saving: boolean
   onClose: () => void
   onSave: () => void
@@ -885,7 +888,12 @@ function CatalogoPlagaModal({
             <Field label="Nombre común" value={form.nombreComun} onChangeText={(value) => setForm(current => ({ ...current, nombreComun: value }))} />
             <Field label="Nombre científico" value={form.nombreCientifico ?? ''} onChangeText={(value) => setForm(current => ({ ...current, nombreCientifico: value }))} />
             <IdChipGroup label="Tipo" value={form.tipo} options={tipoOptions.map(opcion => ({ id: opcion.id, label: opcion.valor }))} onChange={(id) => setForm(current => ({ ...current, tipo: id }))} />
-            <Field label="Cultivos afectados" value={form.cultivosAfectados ?? ''} onChangeText={(value) => setForm(current => ({ ...current, cultivosAfectados: value }))} />
+            <IdMultiChipGroup
+              label="Cultivos afectados"
+              value={form.cultivosAfectados ?? ''}
+              options={cultivoOptions.map(opcion => ({ id: opcion.id, label: opcion.valor }))}
+              onChange={(csv) => setForm(current => ({ ...current, cultivosAfectados: csv }))}
+            />
             <Field label="Zona / área típica" icon={<MapPin color="#FFB84D" size={18} />} value={form.zonaTipica ?? ''} onChangeText={(value) => setForm(current => ({ ...current, zonaTipica: value }))} />
             <Field label="Umbral de acción" icon={<Gauge color="#FF6B6B" size={18} />} value={form.umbralAccion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, umbralAccion: value }))} />
             <Textarea label="Síntomas" value={form.sintomas ?? ''} onChangeText={(value) => setForm(current => ({ ...current, sintomas: value.slice(0, 500) }))} />
@@ -1082,7 +1090,7 @@ function PlagaFichaModal({
               <FichaRow icon={<Microscope color="#6EA8FF" size={16} />} label="Nombre científico" value={plaga?.nombreCientifico} italic />
               <FichaRow icon={<MapPin color="#FFB84D" size={16} />} label="Zona / área típica" value={plaga?.zonaTipica} />
               <FichaRow icon={<Gauge color="#FF6B6B" size={16} />} label="Umbral de acción" value={plaga?.umbralAccion} />
-              <FichaRow icon={<Sprout color="#39D0D8" size={16} />} label="Cultivos afectados" value={plaga?.cultivosAfectados} />
+              <FichaRow icon={<Sprout color="#39D0D8" size={16} />} label="Cultivos afectados" value={parseCsvIds(plaga?.cultivosAfectadosNombres).join(', ')} />
               <FichaRow icon={<Stethoscope color="#9FE870" size={16} />} label="Síntomas" value={plaga?.sintomas} />
             </View>
 
@@ -1218,6 +1226,41 @@ function IdChipGroup({ label, value, options, onChange }: { label: string; value
           )
         })}
       </View>
+    </View>
+  )
+}
+
+// Parsea un CSV de ids en lista limpia (sin vacios ni espacios).
+function parseCsvIds(value?: string): string[] {
+  if (!value) return []
+  return value.split(',').map(id => id.trim()).filter(Boolean)
+}
+
+// Multi-seleccion de chips por id (feature 73): cada chip togglea un id y el valor
+// se serializa a CSV de ids. Igual estilo que IdChipGroup pero admite varios activos.
+function IdMultiChipGroup({ label, value, options, onChange }: { label: string; value: string; options: Array<{ id: string; label: string }>; onChange: (csv: string) => void }) {
+  const selected = parseCsvIds(value)
+  function toggle(id: string) {
+    const next = selected.includes(id) ? selected.filter(item => item !== id) : [...selected, id]
+    onChange(next.join(','))
+  }
+  return (
+    <View style={styles.fieldGroup}>
+      <Text style={styles.label}>{label}</Text>
+      {options.length === 0 ? (
+        <Text style={styles.emptyText}>No hay cultivos en el catálogo.</Text>
+      ) : (
+        <View style={styles.chipRow}>
+          {options.map(option => {
+            const active = selected.includes(option.id)
+            return (
+              <Pressable key={option.id} style={[styles.statusChip, active && styles.statusChipActive]} onPress={() => toggle(option.id)}>
+                <Text style={[styles.statusChipText, active && styles.statusChipTextActive]}>{option.label}</Text>
+              </Pressable>
+            )
+          })}
+        </View>
+      )}
     </View>
   )
 }

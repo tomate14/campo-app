@@ -230,7 +230,9 @@ export interface CatalogoPlaga {
   // Catalogo configurable TIPO_PLAGA (feature 72): tipo es id; nombre a mostrar en tipoNombre
   tipo: string
   tipoNombre?: string
+  // cultivosAfectados es CSV de ids del catalogo CULTIVO (feature 73); nombres a mostrar en cultivosAfectadosNombres
   cultivosAfectados?: string
+  cultivosAfectadosNombres?: string
   descripcion?: string
   sintomas?: string
   umbralAccion?: string

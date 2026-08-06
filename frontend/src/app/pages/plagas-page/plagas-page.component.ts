@@ -8,8 +8,10 @@ import { forkJoin, type Observable } from 'rxjs';
 import { AgricolaService } from '../../core/services/agricola.service';
 import { API_ORIGIN } from '../../core/services/api.config';
 import { OperariosService } from '../../core/services/operarios.service';
+import { SessionService } from '../../core/services/session.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
+import { ConfigurableMultiSelectComponent } from '../../shared/configurable-multi-select/configurable-multi-select.component';
 import type { Operario } from '../../core/models/operarios.models';
 import type {
   AplicacionFitosanitaria,
@@ -18,6 +20,8 @@ import type {
   CatalogoPlagaImagen,
   CatalogoPlagaRequest,
   PlagaSugerida,
+  PlagaReferencia,
+  SyncResumenReferencia,
   DeteccionPlaga,
   DeteccionPlagaRequest,
   EstadoDeteccionPlaga,
@@ -33,7 +37,9 @@ import type {
   SeveridadPlaga,
 } from '../../core/models/agricola.models';
 
-type ActiveTab = 'DETECCIONES' | 'APLICACIONES' | 'SEGUIMIENTOS' | 'CATALOGO';
+type ActiveTab = 'DETECCIONES' | 'APLICACIONES' | 'SEGUIMIENTOS' | 'CATALOGO' | 'REFERENCIA';
+// Feature 73: grupo de plagas de referencia agrupadas por cultivo.
+type ReferenciaGrupo = { cultivoNombre: string; items: PlagaReferencia[] };
 type ModalType = 'DETECCION' | 'APLICACION' | 'SEGUIMIENTO' | 'HISTORICO' | 'CATALOGO' | 'FICHA' | null;
 type HistorialPlagaEvento = {
   tipo: string;
@@ -53,13 +59,14 @@ type DeteccionPinGroup = {
 @Component({
   selector: 'app-plagas-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent, ConfigurableSelectComponent],
+  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent, ConfigurableSelectComponent, ConfigurableMultiSelectComponent],
   templateUrl: './plagas-page.component.html',
   styleUrl: './plagas-page.component.css',
 })
 export class PlagasPageComponent {
   private readonly agricolaService = inject(AgricolaService);
   private readonly operariosService = inject(OperariosService);
+  private readonly sessionService = inject(SessionService);
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
@@ -82,6 +89,7 @@ export class PlagasPageComponent {
     APLICACIONES: 0,
     SEGUIMIENTOS: 0,
     CATALOGO: 0,
+    REFERENCIA: 0,
   });
   protected readonly modal = signal<ModalType>(null);
   protected readonly selectedDeteccion = signal<DeteccionPlaga | null>(null);
@@ -118,6 +126,47 @@ export class PlagasPageComponent {
   // Validación de imágenes en front (el backend también valida).
   private readonly maxImagenBytes = 5 * 1024 * 1024;
   private readonly allowedImagenTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+  // Feature 73: estado del catálogo de referencia (imágenes GBIF) y de la sincronización on-demand.
+  protected readonly referencia = signal<PlagaReferencia[]>([]);
+  protected readonly referenciaLoading = signal(false);
+  protected readonly referenciaLoaded = signal(false);
+  protected readonly referenciaError = signal('');
+  protected readonly syncing = signal(false);
+  protected readonly syncResumen = signal<SyncResumenReferencia | null>(null);
+  // Solo admins (o quien tenga create:lotes) pueden disparar la descarga desde GBIF.
+  protected readonly canSync = computed(() => {
+    const user = this.sessionService.getCurrentUser();
+    if (!user) return false;
+    const permisos = user.permissions ?? [];
+    const roles = user.roles ?? [];
+    return permisos.includes('create:lotes') || roles.some((rol) => rol.toUpperCase().includes('ADMIN'));
+  });
+  // Agrupa las plagas de referencia por cultivo para el listado premium.
+  protected readonly referenciaGrupos = computed<ReferenciaGrupo[]>(() => {
+    const grupos = new Map<string, ReferenciaGrupo>();
+    this.referencia().forEach((item) => {
+      const cultivoNombre = item.cultivoNombre || 'Sin cultivo';
+      const grupo = grupos.get(cultivoNombre);
+      if (grupo) {
+        grupo.items.push(item);
+        return;
+      }
+      grupos.set(cultivoNombre, { cultivoNombre, items: [item] });
+    });
+    return Array.from(grupos.values());
+  });
+  // Texto resumen legible tras una sincronización (ej. "16 descargadas, 16 omitidas, 1 falló").
+  protected readonly syncResumenTexto = computed(() => {
+    const resumen = this.syncResumen();
+    if (!resumen) return '';
+    const partes = [
+      `${resumen.descargados} descargada(s)`,
+      `${resumen.omitidos} omitida(s)`,
+      `${resumen.fallidos} fallida(s)`,
+    ];
+    return `${resumen.cultivos} cultivo(s) · ${resumen.procesados} procesada(s): ${partes.join(', ')}`;
+  });
 
   protected readonly catalogoModalTitle = computed(() => this.catalogoEditId() ? 'Editar catálogo' : 'Nuevo catálogo');
   // Imagen principal destacada de la ficha (activa manualmente o principal/primera).
@@ -272,12 +321,13 @@ export class PlagasPageComponent {
         this.mapDetecciones.set(data.mapaDetecciones);
         this.aplicaciones.set(data.aplicaciones.content);
         this.seguimientos.set(data.seguimientos.content);
-        this.pageTotals.set({
+        this.pageTotals.update((totals) => ({
+          ...totals,
           DETECCIONES: data.detecciones.totalElements,
           APLICACIONES: data.aplicaciones.totalElements,
           SEGUIMIENTOS: data.seguimientos.totalElements,
           CATALOGO: data.catalogo.totalElements,
-        });
+        }));
         this.loading.set(false);
       },
       error: () => {
@@ -310,7 +360,52 @@ export class PlagasPageComponent {
   protected setTab(tab: ActiveTab) {
     this.activeTab.set(tab);
     this.currentPage.set(1);
+    if (tab === 'REFERENCIA') {
+      // Feature 73: la referencia no es paginada; carga su listado agrupado la primera vez.
+      if (!this.referenciaLoaded()) {
+        this.loadReferencia();
+      }
+      return;
+    }
     this.loadTablePage(tab, 1);
+  }
+
+  // Feature 73: carga el catálogo de referencia (imágenes GBIF) agrupado por cultivo.
+  protected loadReferencia() {
+    this.referenciaLoading.set(true);
+    this.referenciaError.set('');
+    this.agricolaService.getCatalogoReferencia().subscribe({
+      next: (items) => {
+        this.referencia.set(items);
+        this.referenciaLoaded.set(true);
+        this.referenciaLoading.set(false);
+        this.pageTotals.update((totals) => ({ ...totals, REFERENCIA: items.length }));
+      },
+      error: () => {
+        this.referenciaLoading.set(false);
+        this.referenciaError.set('No se pudo cargar el catálogo de referencia.');
+      },
+    });
+  }
+
+  // Feature 73: dispara la sincronización on-demand (descarga desde GBIF) y refresca el listado.
+  protected syncReferencia() {
+    if (this.syncing()) return;
+    this.syncing.set(true);
+    this.syncResumen.set(null);
+    this.referenciaError.set('');
+    this.agricolaService.syncCatalogoReferencia().subscribe({
+      next: (resumen) => {
+        this.syncResumen.set(resumen);
+        this.syncing.set(false);
+        // Tras sincronizar, releemos el listado para mostrar las imágenes nuevas.
+        this.loadReferencia();
+      },
+      error: () => {
+        this.syncing.set(false);
+        this.referenciaError.set('No se pudo actualizar el catálogo de referencia.');
+      },
+    });
   }
 
   protected setPage(page: number) {
@@ -551,6 +646,15 @@ export class PlagasPageComponent {
   }
 
   // Prepend del origin del backend a la url relativa /uploads/...
+  // Feature 73: parte un CSV de nombres de cultivos en chips (tolera espacios/vacíos).
+  protected splitCsv(csv?: string | null): string[] {
+    if (!csv) return [];
+    return csv
+      .split(',')
+      .map((token) => token.trim())
+      .filter((token) => token.length > 0);
+  }
+
   protected imagenUrl(url?: string | null): string {
     if (!url) return '';
     return /^https?:\/\//i.test(url) ? url : `${API_ORIGIN}${url}`;

@@ -462,7 +462,10 @@ export interface CatalogoPlaga {
   tipo: string
   // Feature 72: valor resuelto del catálogo TIPO_PLAGA (tipo sigue siendo el id).
   tipoNombre?: string
+  // Feature 73: CSV de ids de utilidad_cultivo (lo que se guarda/edita).
   cultivosAfectados?: string
+  // Feature 73: CSV de valores resueltos de esos cultivos (solo para mostrar).
+  cultivosAfectadosNombres?: string
   descripcion?: string
   sintomas?: string
   umbralAccion?: string
@@ -510,6 +513,31 @@ export interface PlagaSugerida {
   imagenPrincipalUrl?: string | null
   score: number
   motivos: string[]
+}
+
+// Feature 73: item del catálogo de referencia de plagas (imágenes descargadas de GBIF).
+export interface PlagaReferencia {
+  id: string
+  cultivoId: string
+  cultivoNombre: string
+  nombreComun: string
+  nombreCientifico: string
+  tipo: string
+  tipoNombre: string
+  imagenUrl: string | null
+  fuente: string
+  urlOriginal: string | null
+  licencia: string | null
+  atribucion: string | null
+}
+
+// Feature 73: resumen de la sincronización on-demand del catálogo de referencia.
+export interface SyncResumenReferencia {
+  cultivos: number
+  procesados: number
+  descargados: number
+  omitidos: number
+  fallidos: number
 }
 
 export interface DeteccionPlaga {

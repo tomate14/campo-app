@@ -18,7 +18,8 @@ public class CatalogoPlaga extends AuditableEntity {
     @Column(nullable = false, length = 40)
     private String tipo;
 
-    @Column(name = "cultivos_afectados", length = 260)
+    // Feature 73: CSV de ids de utilidad_cultivo (patron feature 72), no strings. Ej: "cult-maiz,cult-sorgo".
+    @Column(name = "cultivos_afectados", length = 400)
     private String cultivosAfectados;
 
     @Column(columnDefinition = "TEXT")

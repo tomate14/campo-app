@@ -19,4 +19,11 @@ public interface CatalogoPlagaRepository extends JpaRepository<CatalogoPlaga, St
 
     @Query("SELECT c FROM CatalogoPlaga c WHERE c.id = :id AND c.deletedAt IS NULL")
     Optional<CatalogoPlaga> findActiveById(@Param("id") String id);
+
+    // Feature 73: plagas cuyo CSV de cultivos_afectados contiene el id de cultivo dado
+    // (FIND_IN_SET matchea el id exacto dentro del CSV). Solo con nombre cientifico util para GBIF.
+    @Query(value = "SELECT * FROM catalogo_plagas WHERE deleted_at IS NULL "
+            + "AND nombre_cientifico IS NOT NULL AND nombre_cientifico <> '' "
+            + "AND FIND_IN_SET(:cultivoId, cultivos_afectados) > 0", nativeQuery = true)
+    List<CatalogoPlaga> findConCultivoAfectado(@Param("cultivoId") String cultivoId);
 }

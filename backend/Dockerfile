@@ -13,6 +13,10 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B -q
 
+# Config de Lombok (feature 73): necesaria en el build para que @Qualifier se
+# propague a los constructores generados; sin esto el compile de Docker no la ve.
+COPY lombok.config .
+
 # Compilar el proyecto
 COPY src ./src
 RUN mvn clean package -DskipTests -B -q

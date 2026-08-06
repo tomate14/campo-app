@@ -10,7 +10,10 @@ public record CatalogoPlagaResponse(
         String tipo,
         // Feature 72: valor resuelto del catalogo TIPO_PLAGA (tipo sigue siendo el id).
         String tipoNombre,
+        // Feature 73: CSV de ids de utilidad_cultivo (lo que se guarda/edita).
         String cultivosAfectados,
+        // Feature 73: CSV de los valores resueltos de esos ids, para mostrar (ej: "MAIZ, SORGO").
+        String cultivosAfectadosNombres,
         String descripcion,
         String sintomas,
         String umbralAccion,

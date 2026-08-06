@@ -12,6 +12,8 @@ import type {
   CatalogoPlagaImagen,
   CatalogoPlagaRequest,
   PlagaSugerida,
+  PlagaReferencia,
+  SyncResumenReferencia,
   DeteccionPlaga,
   DeteccionPlagaRequest,
   EstadoDeteccionPlaga,
@@ -246,6 +248,16 @@ export class AgricolaService {
 
   getCatalogoPlagaSugeridas(id: string) {
     return this.http.get<ApiResponse<PlagaSugerida[]> | PlagaSugerida[]>(`${API_BASE_URL}/agricola/plagas/catalogo/${id}/sugeridas`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  // Feature 73: catálogo de referencia de plagas por cultivo (imágenes GBIF). cultivo es opcional.
+  getCatalogoReferencia(cultivoId?: string) {
+    return this.http.get<ApiResponse<PlagaReferencia[]> | PlagaReferencia[]>(`${API_BASE_URL}/agricola/plagas/catalogo-referencia`, { params: cleanParams({ cultivo: cultivoId }) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  // Feature 73: dispara la descarga on-demand desde GBIF (puede tardar 1-3 min la primera vez; idempotente).
+  syncCatalogoReferencia() {
+    return this.http.post<ApiResponse<SyncResumenReferencia> | SyncResumenReferencia>(`${API_BASE_URL}/agricola/plagas/catalogo-referencia/sync`, null).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   getDeteccionesPlaga(params?: { loteId?: string; estado?: EstadoDeteccionPlaga; severidad?: SeveridadPlaga; cultivo?: string }) {

@@ -49,6 +49,44 @@ public class FileStorageService {
     }
 
     /**
+     * Guarda bytes crudos (no MultipartFile) bajo {subfolder}/{uuid}.{ext} y devuelve el path
+     * relativo. La extension se deriva del content-type (image/jpeg->jpg, png->png, webp->webp,
+     * default jpg). Valida tamano <= 5MB. Usado por el sync de referencia GBIF (feature 73).
+     */
+    public String storeBytes(byte[] data, String contentType, String subfolder) {
+        if (data == null || data.length == 0) {
+            throw new BusinessException("No hay bytes para guardar");
+        }
+        if (data.length > MAX_SIZE_BYTES) {
+            throw new BusinessException("La imagen supera el tamano maximo permitido");
+        }
+        String relativePath = subfolder + "/" + UUID.randomUUID() + extensionFromContentType(contentType);
+        Path target = resolveAbsolute(relativePath);
+        try {
+            Files.createDirectories(target.getParent());
+            Files.write(target, data);
+        } catch (IOException e) {
+            throw new BusinessException("No se pudo guardar la imagen");
+        }
+        return relativePath;
+    }
+
+    // Extension segun content-type; default .jpg cuando el tipo no es reconocido.
+    private String extensionFromContentType(String contentType) {
+        if (contentType == null) {
+            return ".jpg";
+        }
+        String normalized = contentType.toLowerCase(Locale.ROOT);
+        if (normalized.contains("png")) {
+            return ".png";
+        }
+        if (normalized.contains("webp")) {
+            return ".webp";
+        }
+        return ".jpg";
+    }
+
+    /**
      * Borra el archivo fisico por path relativo. Best-effort: no falla si el archivo no existe.
      */
     public void deleteQuietly(String relativePath) {
