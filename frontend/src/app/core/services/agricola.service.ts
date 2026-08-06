@@ -12,6 +12,7 @@ import type {
   CatalogoPlagaImagen,
   CatalogoPlagaRequest,
   PlagaSugerida,
+  EspecieSimilar,
   PlagaReferencia,
   SyncResumenReferencia,
   DeteccionPlaga,
@@ -248,6 +249,16 @@ export class AgricolaService {
 
   getCatalogoPlagaSugeridas(id: string) {
     return this.http.get<ApiResponse<PlagaSugerida[]> | PlagaSugerida[]>(`${API_BASE_URL}/agricola/plagas/catalogo/${id}/sugeridas`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  // Feature 75: especies similares (GBIF) desde el cache local. Para la ficha de la plaga.
+  getCatalogoPlagaSimilares(id: string) {
+    return this.http.get<ApiResponse<EspecieSimilar[]> | EspecieSimilar[]>(`${API_BASE_URL}/agricola/plagas/catalogo/${id}/similares`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  // Feature 75: especies similares en vivo desde GBIF por nombre científico. Para el botón "Buscar similares".
+  buscarSimilaresGbif(nombreCientifico: string) {
+    return this.http.get<ApiResponse<EspecieSimilar[]> | EspecieSimilar[]>(`${API_BASE_URL}/agricola/plagas/gbif/similares`, { params: { nombreCientifico } }).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   // Feature 73: catálogo de referencia de plagas por cultivo (imágenes GBIF). cultivo es opcional.

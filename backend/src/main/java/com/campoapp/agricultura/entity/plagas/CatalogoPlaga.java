@@ -38,4 +38,23 @@ public class CatalogoPlaga extends AuditableEntity {
     @Column(nullable = false)
     @Builder.Default
     private Boolean activo = true;
+
+    // Feature 75: clasificacion taxonomica resuelta desde GBIF (species/match).
+    @Column(name = "gbif_usage_key")
+    private Long gbifUsageKey;
+
+    @Column(name = "gbif_genus_key")
+    private Long gbifGenusKey;
+
+    @Column(name = "gbif_family_key")
+    private Long gbifFamilyKey;
+
+    @Column(name = "gbif_genero", length = 120)
+    private String gbifGenero;
+
+    @Column(name = "gbif_familia", length = 120)
+    private String gbifFamilia;
+
+    @Column(name = "nombre_cientifico_aceptado", length = 200)
+    private String nombreCientificoAceptado;
 }

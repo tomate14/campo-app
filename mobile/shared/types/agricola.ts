@@ -223,6 +223,19 @@ export interface PlagaSugerida {
   motivos: string[]
 }
 
+// Especie similar a una plaga descubierta via GBIF por parentesco taxonomico (feature 75).
+// nivel = proximidad taxonomica. imagenUrl puede venir absoluta (miniatura remota GBIF/iNat)
+// o relativa (/uploads/... del cache local); resolver siempre con resolveAssetUrl.
+export interface EspecieSimilar {
+  usageKey: number
+  nombreCientifico: string
+  nombreVulgar: string | null
+  nivel: 'GENERO' | 'FAMILIA'
+  imagenUrl: string | null
+  licencia: string | null
+  atribucion: string | null
+}
+
 export interface CatalogoPlaga {
   id: string
   nombreComun: string
