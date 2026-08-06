@@ -73,6 +73,10 @@ gbif:
   sync:
     enabled: ${GBIF_SYNC_ENABLED:true}
     cron: ${GBIF_SYNC_CRON:0 0 3 * * *}
+  # Feature 75: topes del descubrimiento de especies similares.
+  similar:
+    max-por-nivel: ${GBIF_SIMILAR_MAX_POR_NIVEL:12}
+    max-niveles: ${GBIF_SIMILAR_MAX_NIVELES:2}
 
 # Springdoc
 springdoc:

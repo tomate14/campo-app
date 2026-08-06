@@ -23,6 +23,9 @@ public record CatalogoPlagaResponse(
         // Feature 54: imagenes propias y url de la principal.
         List<CatalogoPlagaImagenResponse> imagenes,
         String imagenPrincipalUrl,
+        // Feature 75: clasificacion taxonomica resuelta desde GBIF, para mostrar en la ficha.
+        String gbifGenero,
+        String gbifFamilia,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {}

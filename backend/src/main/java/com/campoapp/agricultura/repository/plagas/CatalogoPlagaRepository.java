@@ -26,4 +26,9 @@ public interface CatalogoPlagaRepository extends JpaRepository<CatalogoPlaga, St
             + "AND nombre_cientifico IS NOT NULL AND nombre_cientifico <> '' "
             + "AND FIND_IN_SET(:cultivoId, cultivos_afectados) > 0", nativeQuery = true)
     List<CatalogoPlaga> findConCultivoAfectado(@Param("cultivoId") String cultivoId);
+
+    // Feature 75: todas las plagas activas con nombre cientifico, para resolver taxonomia GBIF (similares).
+    @Query("SELECT c FROM CatalogoPlaga c WHERE c.deletedAt IS NULL "
+            + "AND c.nombreCientifico IS NOT NULL AND c.nombreCientifico <> '' ORDER BY c.nombreComun ASC")
+    List<CatalogoPlaga> findConNombreCientifico();
 }

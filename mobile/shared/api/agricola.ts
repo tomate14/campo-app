@@ -1,7 +1,7 @@
 import { apiClient as api } from './client'
 import type {
   ApiResponse, GeoJsonImportRequest, Lote, LoteFilters, LoteReporte, LoteRequest,
-  AplicacionFitosanitaria, AplicacionFitosanitariaRequest, CatalogoPlaga, CatalogoPlagaImagen, CatalogoPlagaRequest, DeteccionPlaga, DeteccionPlagaRequest, PlagaSugerida, SeguimientoPlaga, SeguimientoPlagaRequest,
+  AplicacionFitosanitaria, AplicacionFitosanitariaRequest, CatalogoPlaga, CatalogoPlagaImagen, CatalogoPlagaRequest, DeteccionPlaga, DeteccionPlagaRequest, EspecieSimilar, PlagaSugerida, SeguimientoPlaga, SeguimientoPlagaRequest,
   EventoSiembra, EventoSiembraRequest, TipoEvento,
   RegistroCosecha, RegistroCosechaRequest,
   PropiedadSuelo, PropiedadSueloRequest,
@@ -142,6 +142,18 @@ export const deleteCatalogoPlagaImagen = (id: string, imagenId: string) =>
 
 export const getCatalogoPlagaSugeridas = (id: string) =>
   api.get<ApiResponse<PlagaSugerida[]>>(`/agricola/plagas/catalogo/${id}/sugeridas`).then(r => r.data.data)
+
+// Especies similares desde el cache (feature 75): imagenUrl relativa /uploads/...
+export const getCatalogoPlagaSimilares = (id: string) =>
+  api.get<ApiResponse<EspecieSimilar[]>>(`/agricola/plagas/catalogo/${id}/similares`).then(r => r.data.data)
+
+// Descubrimiento en vivo de especies similares por nombre cientifico (feature 75).
+// Solo online (no pasa por el outbox): la respuesta trae miniaturas remotas de GBIF/iNat.
+export const buscarSimilaresGbif = (nombreCientifico: string) =>
+  api.get<ApiResponse<EspecieSimilar[]>>('/agricola/plagas/gbif/similares', {
+    params: { nombreCientifico },
+    skipOutbox: true,
+  }).then(r => r.data.data)
 
 export const getDeteccionesPlaga = () =>
   api.get<ApiResponse<DeteccionPlaga[]> | DeteccionPlaga[]>('/agricola/plagas/detecciones').then(r => unwrapListResponse(r.data))

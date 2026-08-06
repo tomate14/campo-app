@@ -26,6 +26,7 @@ import {
   ClipboardList,
   Crosshair,
   Gauge,
+  GitBranch,
   History,
   Images,
   Info,
@@ -49,11 +50,13 @@ import type { LucideIcon } from 'lucide-react-native'
 import {
   createAplicacionFitosanitaria,
   createCatalogoPlaga,
+  buscarSimilaresGbif,
   createDeteccionPlaga,
   createSeguimientoPlaga,
   deleteCatalogoPlagaImagen,
   getAplicacionesFitosanitarias,
   getCatalogoPlagaImagenes,
+  getCatalogoPlagaSimilares,
   getCatalogoPlagaSugeridas,
   getCatalogoPlagas,
   getCosechasByLote,
@@ -77,6 +80,7 @@ import type {
   CatalogoPlagaRequest,
   DeteccionPlaga,
   DeteccionPlagaRequest,
+  EspecieSimilar,
   EstadoDeteccionPlaga,
   EventoSiembra,
   HistoricoCultivo,
@@ -868,6 +872,43 @@ function CatalogoPlagaModal({
   onSave: () => void
   setForm: React.Dispatch<React.SetStateAction<CatalogoPlagaRequest>>
 }) {
+  // Busqueda en vivo de especies similares GBIF (feature 75), on-demand y solo online.
+  const online = useOnlineStatus()
+  const [similares, setSimilares] = useState<EspecieSimilar[]>([])
+  const [buscando, setBuscando] = useState(false)
+  const [searched, setSearched] = useState(false)
+  const sci = (form.nombreCientifico ?? '').trim()
+
+  // Al cerrar el modal, limpiar los resultados de la busqueda anterior.
+  useEffect(() => {
+    if (!visible) {
+      setSimilares([])
+      setSearched(false)
+      setBuscando(false)
+    }
+  }, [visible])
+
+  async function buscarSimilares() {
+    if (!sci) return
+    if (!online) {
+      Alert.alert('Buscar similares', 'La búsqueda de especies similares requiere conexión.')
+      return
+    }
+    setBuscando(true)
+    setSearched(false)
+    try {
+      const result = await buscarSimilaresGbif(sci)
+      setSimilares(result)
+      setSearched(true)
+    } catch {
+      setSimilares([])
+      setSearched(true)
+      Alert.alert('Buscar similares', 'No se pudieron obtener especies similares. Reintentá más tarde.')
+    } finally {
+      setBuscando(false)
+    }
+  }
+
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.modalBackdrop}>
@@ -886,7 +927,51 @@ function CatalogoPlagaModal({
           </View>
           <ScrollView contentContainerStyle={styles.modalBody} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
             <Field label="Nombre común" value={form.nombreComun} onChangeText={(value) => setForm(current => ({ ...current, nombreComun: value }))} />
-            <Field label="Nombre científico" value={form.nombreCientifico ?? ''} onChangeText={(value) => setForm(current => ({ ...current, nombreCientifico: value }))} />
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>Nombre científico</Text>
+              <View style={styles.sciRow}>
+                <View style={[styles.inputShell, styles.sciInput]}>
+                  <Microscope color="#6EA8FF" size={18} />
+                  <TextInput
+                    style={styles.input}
+                    value={form.nombreCientifico ?? ''}
+                    onChangeText={(value) => setForm(current => ({ ...current, nombreCientifico: value }))}
+                    placeholder="Ej. Spodoptera frugiperda"
+                    placeholderTextColor="#64748B"
+                    autoCapitalize="none"
+                  />
+                </View>
+                <Pressable
+                  style={[styles.sciSearchButton, (!sci || buscando) && styles.disabledButton]}
+                  disabled={!sci || buscando}
+                  onPress={buscarSimilares}
+                  accessibilityRole="button"
+                  accessibilityLabel="Buscar especies similares en GBIF"
+                >
+                  {buscando ? <ActivityIndicator color="#9FE870" size="small" /> : <Sparkles color="#9FE870" size={18} />}
+                  <Text style={styles.sciSearchText}>Similares</Text>
+                </Pressable>
+              </View>
+              {!online ? <Text style={styles.offlineNote}>Sin conexión: la búsqueda de similares está deshabilitada.</Text> : null}
+              {buscando ? (
+                <ActivityIndicator color="#6EA8FF" />
+              ) : searched && similares.length === 0 ? (
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyText}>No se encontraron especies similares para ese nombre científico.</Text>
+                </View>
+              ) : similares.length > 0 ? (
+                <View style={styles.similarResults}>
+                  <Text style={styles.similarResultsHint}>Especies similares (GBIF)</Text>
+                  {similares.map(similar => (
+                    <EspecieSimilarItem
+                      key={similar.usageKey}
+                      similar={similar}
+                      onUse={(item) => setForm(current => ({ ...current, nombreCientifico: item.nombreCientifico }))}
+                    />
+                  ))}
+                </View>
+              ) : null}
+            </View>
             <IdChipGroup label="Tipo" value={form.tipo} options={tipoOptions.map(opcion => ({ id: opcion.id, label: opcion.valor }))} onChange={(id) => setForm(current => ({ ...current, tipo: id }))} />
             <IdMultiChipGroup
               label="Cultivos afectados"
@@ -927,6 +1012,8 @@ function PlagaFichaModal({
   const plaga = useMemo(() => catalogo.find(item => item.id === plagaId), [catalogo, plagaId])
   const [imagenes, setImagenes] = useState<CatalogoPlagaImagen[]>([])
   const [sugeridas, setSugeridas] = useState<PlagaSugerida[]>([])
+  // Especies similares desde GBIF (feature 75): fuente externa, distinta del catalogo propio.
+  const [similares, setSimilares] = useState<EspecieSimilar[]>([])
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [markPrincipal, setMarkPrincipal] = useState(false)
@@ -939,15 +1026,18 @@ function PlagaFichaModal({
     // Precarga de la lista (imagenes ya vienen en el catalogo) para no parpadear.
     setImagenes(plaga?.imagenes ?? [])
     setSugeridas([])
+    setSimilares([])
     setActiveImageUrl(undefined)
     setMarkPrincipal(false)
     Promise.all([
       getCatalogoPlagaImagenes(plagaId).catch(() => plaga?.imagenes ?? []),
       getCatalogoPlagaSugeridas(plagaId).catch(() => [] as PlagaSugerida[]),
-    ]).then(([imgs, sugs]) => {
+      getCatalogoPlagaSimilares(plagaId).catch(() => [] as EspecieSimilar[]),
+    ]).then(([imgs, sugs, sims]) => {
       if (cancelled) return
       setImagenes(imgs)
       setSugeridas(sugs)
+      setSimilares(sims)
     }).finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
   }, [plagaId, plaga?.imagenes])
@@ -1131,6 +1221,22 @@ function PlagaFichaModal({
               )}
             </View>
 
+            {/* Especies similares (GBIF): fuente externa por parentesco taxonomico (feature 75) */}
+            <View style={styles.suggestBlock}>
+              <SectionTitle icon={<GitBranch color="#6EA8FF" size={18} />} title="Especies similares (GBIF)" subtitle="Parientes taxonómicos externos para comparar." />
+              {loading ? (
+                <ActivityIndicator color="#6EA8FF" />
+              ) : similares.length === 0 ? (
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyText}>Sin especies similares (se completan en la sincronización).</Text>
+                </View>
+              ) : (
+                similares.map(similar => (
+                  <EspecieSimilarItem key={similar.usageKey} similar={similar} />
+                ))
+              )}
+            </View>
+
             {plaga ? (
               <Pressable style={styles.editButton} onPress={() => onEdit(plaga)}>
                 <Pencil color="#9FE870" size={18} />
@@ -1152,6 +1258,47 @@ function FichaRow({ icon, label, value, italic }: { icon: React.ReactNode; label
         <Text style={styles.fichaRowLabel}>{label}</Text>
         <Text style={[styles.fichaRowValue, italic && styles.fichaRowValueItalic]}>{value?.trim() ? value : 'Sin datos'}</Text>
       </View>
+    </View>
+  )
+}
+
+// Etiqueta legible del nivel de proximidad taxonomica (feature 75).
+function nivelLabel(nivel: EspecieSimilar['nivel']) {
+  return nivel === 'GENERO' ? 'Género' : 'Familia'
+}
+
+// Item de especie similar GBIF (feature 75): miniatura remota/local, nombre vulgar,
+// cientifico en italica, badge de nivel y atribucion/licencia. onUse (opcional) agrega
+// la accion "Usar" para autocompletar el nombre cientifico en el alta.
+function EspecieSimilarItem({ similar, onUse }: { similar: EspecieSimilar; onUse?: (similar: EspecieSimilar) => void }) {
+  const thumb = resolveAssetUrl(similar.imagenUrl)
+  const credito = [similar.atribucion, similar.licencia].filter(Boolean).join(' · ')
+  return (
+    <View style={styles.similarItem}>
+      <View style={styles.similarRow}>
+        {thumb ? (
+          <Image source={{ uri: thumb }} style={styles.suggestThumb} contentFit="cover" transition={200} />
+        ) : (
+          <View style={styles.suggestThumbPlaceholder}><Bug color="#3A4A6B" size={20} /></View>
+        )}
+        <View style={styles.suggestText}>
+          <Text style={styles.suggestName}>{similar.nombreVulgar?.trim() || similar.nombreCientifico}</Text>
+          <Text style={styles.similarSci}>{similar.nombreCientifico}</Text>
+          <View style={styles.similarBadgeRow}>
+            <View style={styles.similarBadge}>
+              <GitBranch color="#6EA8FF" size={11} />
+              <Text style={styles.similarBadgeText}>{nivelLabel(similar.nivel)}</Text>
+            </View>
+          </View>
+        </View>
+        {onUse ? (
+          <Pressable style={styles.similarUseButton} onPress={() => onUse(similar)} accessibilityRole="button" accessibilityLabel="Usar nombre científico">
+            <Check color="#9FE870" size={16} />
+            <Text style={styles.similarUseText}>Usar</Text>
+          </Pressable>
+        ) : null}
+      </View>
+      {credito ? <Text style={styles.similarCredit}>{credito}</Text> : null}
     </View>
   )
 }
@@ -1544,4 +1691,20 @@ const styles = StyleSheet.create({
   motivoChipText: { color: '#9FE870', fontSize: 10, fontWeight: '700' },
   editButton: { height: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 18, backgroundColor: 'rgba(159,232,112,.08)', borderWidth: 1, borderColor: 'rgba(159,232,112,.24)' },
   editButtonText: { color: '#9FE870', fontSize: 13, fontWeight: '800' },
+  // Especies similares GBIF (feature 75): boton al lado del nombre cientifico + items.
+  sciRow: { flexDirection: 'row', alignItems: 'stretch', gap: 8 },
+  sciInput: { flex: 1, minWidth: 0 },
+  sciSearchButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, borderRadius: 18, paddingHorizontal: 14, backgroundColor: 'rgba(159,232,112,.12)', borderWidth: 1, borderColor: 'rgba(159,232,112,.35)' },
+  sciSearchText: { color: '#9FE870', fontSize: 12, fontWeight: '800' },
+  similarResults: { gap: 10, marginTop: 4 },
+  similarResultsHint: { color: '#6EA8FF', fontSize: 11, fontWeight: '800', letterSpacing: 0.6, textTransform: 'uppercase' },
+  similarItem: { gap: 8, borderRadius: 18, padding: 10, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(110,168,255,.18)' },
+  similarRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  similarSci: { color: '#6EA8FF', fontSize: 12, fontStyle: 'italic', marginTop: 2 },
+  similarBadgeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
+  similarBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, borderRadius: 999, paddingHorizontal: 9, paddingVertical: 3, backgroundColor: 'rgba(110,168,255,.12)', borderWidth: 1, borderColor: 'rgba(110,168,255,.28)' },
+  similarBadgeText: { color: '#6EA8FF', fontSize: 10, fontWeight: '800' },
+  similarUseButton: { flexDirection: 'row', alignItems: 'center', gap: 5, borderRadius: 14, paddingHorizontal: 12, paddingVertical: 9, backgroundColor: 'rgba(159,232,112,.1)', borderWidth: 1, borderColor: 'rgba(159,232,112,.32)' },
+  similarUseText: { color: '#9FE870', fontSize: 12, fontWeight: '800' },
+  similarCredit: { color: '#64748B', fontSize: 10, lineHeight: 14 },
 })

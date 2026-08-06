@@ -531,6 +531,18 @@ export interface PlagaReferencia {
   atribucion: string | null
 }
 
+// Feature 75: especie taxonómicamente similar (GBIF). nivel = proximidad (GENERO/FAMILIA).
+// imagenUrl puede ser absoluta (http...) o relativa (/uploads/...); resolver siempre con imagenUrl().
+export interface EspecieSimilar {
+  usageKey: number
+  nombreCientifico: string
+  nombreVulgar: string | null
+  nivel: 'GENERO' | 'FAMILIA'
+  imagenUrl: string | null
+  licencia: string | null
+  atribucion: string | null
+}
+
 // Feature 73: resumen de la sincronización on-demand del catálogo de referencia.
 export interface SyncResumenReferencia {
   cultivos: number

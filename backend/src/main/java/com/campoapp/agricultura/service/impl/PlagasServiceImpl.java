@@ -540,7 +540,7 @@ public class PlagasServiceImpl implements PlagasService {
         String imagenPrincipalUrl = imagenes.isEmpty() ? null : imagenes.get(0).url();
         // Feature 73: cultivosAfectados guarda ids; resolvemos el CSV de ids -> CSV de valores para mostrar.
         String cultivosAfectadosNombres = resolverCsvCultivos(item.getCultivosAfectados(), cultivoNombres);
-        return new CatalogoPlagaResponse(item.getId(), item.getNombreComun(), item.getNombreCientifico(), item.getTipo(), resolverUtilidad(CatalogoUtilidadRegistry.TIPO_PLAGA, item.getTipo(), tipoNombres), item.getCultivosAfectados(), cultivosAfectadosNombres, item.getDescripcion(), item.getSintomas(), item.getUmbralAccion(), item.getZonaTipica(), item.getActivo(), imagenes, imagenPrincipalUrl, item.getCreatedAt(), item.getUpdatedAt());
+        return new CatalogoPlagaResponse(item.getId(), item.getNombreComun(), item.getNombreCientifico(), item.getTipo(), resolverUtilidad(CatalogoUtilidadRegistry.TIPO_PLAGA, item.getTipo(), tipoNombres), item.getCultivosAfectados(), cultivosAfectadosNombres, item.getDescripcion(), item.getSintomas(), item.getUmbralAccion(), item.getZonaTipica(), item.getActivo(), imagenes, imagenPrincipalUrl, item.getGbifGenero(), item.getGbifFamilia(), item.getCreatedAt(), item.getUpdatedAt());
     }
 
     // Batch id -> valor de CULTIVO para una lista de plagas: junta todos los ids del CSV cultivos_afectados

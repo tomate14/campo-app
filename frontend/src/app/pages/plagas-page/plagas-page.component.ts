@@ -20,6 +20,7 @@ import type {
   CatalogoPlagaImagen,
   CatalogoPlagaRequest,
   PlagaSugerida,
+  EspecieSimilar,
   PlagaReferencia,
   SyncResumenReferencia,
   DeteccionPlaga,
@@ -119,6 +120,16 @@ export class PlagasPageComponent {
   protected readonly fichaImagenesLoading = signal(false);
   protected readonly fichaSugeridas = signal<PlagaSugerida[]>([]);
   protected readonly fichaSugeridasLoading = signal(false);
+  // Feature 75: especies similares (GBIF) de la ficha (desde el cache local).
+  protected readonly fichaSimilares = signal<EspecieSimilar[]>([]);
+  protected readonly fichaSimilaresLoading = signal(false);
+  // Feature 75: panel de búsqueda en vivo de similares en el form de catálogo.
+  protected readonly similaresGbif = signal<EspecieSimilar[]>([]);
+  protected readonly similaresGbifLoading = signal(false);
+  protected readonly similaresGbifError = signal('');
+  protected readonly similaresGbifBuscado = signal(false);
+  // El botón "Buscar similares" se habilita solo con un nombre científico cargado.
+  protected readonly puedeBuscarSimilares = computed(() => (this.catalogoForm().nombreCientifico ?? '').trim().length > 0);
   protected readonly fichaImagenActivaId = signal<string | null>(null);
   protected readonly uploadingImagen = signal(false);
   protected readonly uploadPrincipal = signal(false);
@@ -506,6 +517,18 @@ export class PlagasPageComponent {
     this.uploadError.set('');
     this.uploadPrincipal.set(false);
     this.uploadingImagen.set(false);
+    // Feature 75: limpieza del estado de especies similares (ficha + panel del form).
+    this.fichaSimilares.set([]);
+    this.fichaSimilaresLoading.set(false);
+    this.resetSimilaresGbif();
+  }
+
+  // Feature 75: resetea el panel de búsqueda en vivo de similares.
+  private resetSimilaresGbif() {
+    this.similaresGbif.set([]);
+    this.similaresGbifLoading.set(false);
+    this.similaresGbifError.set('');
+    this.similaresGbifBuscado.set(false);
   }
 
   protected onMapClick(event: any) {
@@ -558,6 +581,7 @@ export class PlagasPageComponent {
   protected openNuevoCatalogo() {
     this.catalogoEditId.set(null);
     this.catalogoForm.set({ nombreComun: '', tipo: 'PLAGA', activo: true });
+    this.resetSimilaresGbif();
     this.selectedDeteccion.set(null);
     this.modal.set('CATALOGO');
   }
@@ -576,6 +600,7 @@ export class PlagasPageComponent {
       zonaTipica: plaga.zonaTipica ?? undefined,
       activo: plaga.activo,
     });
+    this.resetSimilaresGbif();
     this.selectedDeteccion.set(null);
     this.modal.set('CATALOGO');
   }
@@ -590,6 +615,53 @@ export class PlagasPageComponent {
     this.modal.set('FICHA');
     this.loadFichaImagenes(plaga.id);
     this.loadFichaSugeridas(plaga.id);
+    this.loadFichaSimilares(plaga.id);
+  }
+
+  // Feature 75: carga las especies similares (GBIF) desde el cache local para la ficha.
+  private loadFichaSimilares(id: string) {
+    this.fichaSimilares.set([]);
+    this.fichaSimilaresLoading.set(true);
+    this.agricolaService.getCatalogoPlagaSimilares(id).subscribe({
+      next: (similares) => {
+        this.fichaSimilares.set(similares);
+        this.fichaSimilaresLoading.set(false);
+      },
+      error: () => {
+        this.fichaSimilares.set([]);
+        this.fichaSimilaresLoading.set(false);
+      },
+    });
+  }
+
+  // Feature 75: búsqueda en vivo de especies similares desde GBIF por el nombre científico del form.
+  protected buscarSimilares() {
+    const nombreCientifico = (this.catalogoForm().nombreCientifico ?? '').trim();
+    if (!nombreCientifico || this.similaresGbifLoading()) return;
+    this.similaresGbifLoading.set(true);
+    this.similaresGbifError.set('');
+    this.similaresGbifBuscado.set(true);
+    this.agricolaService.buscarSimilaresGbif(nombreCientifico).subscribe({
+      next: (similares) => {
+        this.similaresGbif.set(similares);
+        this.similaresGbifLoading.set(false);
+      },
+      error: () => {
+        this.similaresGbif.set([]);
+        this.similaresGbifLoading.set(false);
+        this.similaresGbifError.set('No se pudieron buscar especies similares.');
+      },
+    });
+  }
+
+  // Feature 75: usa el nombre científico de una candidata en el form de catálogo.
+  protected usarSimilar(similar: EspecieSimilar) {
+    this.catalogoForm.update((form) => ({ ...form, nombreCientifico: similar.nombreCientifico }));
+  }
+
+  // Feature 75: etiqueta legible del nivel de proximidad taxonómica.
+  protected nivelSimilarLabel(nivel: string): string {
+    return nivel === 'GENERO' ? 'Género' : nivel === 'FAMILIA' ? 'Familia' : nivel;
   }
 
   private loadFichaImagenes(id: string) {
