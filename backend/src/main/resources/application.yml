@@ -33,6 +33,9 @@ spring:
 campo:
   storage:
     uploads-dir: ${UPLOADS_DIR:/app/uploads}
+  # Feature 76: dataset de demo (se carga al arrancar solo si esta en true).
+  demo:
+    seed-enabled: ${SEED_DEMO_DATA:false}
 
 # JWT
 jwt:
