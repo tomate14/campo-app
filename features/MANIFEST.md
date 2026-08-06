@@ -17,7 +17,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 74
+- Total de historias registradas: 75
 - Realizadas: 48
 - Parciales: 0
 - Pendientes: 23
@@ -103,6 +103,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 71 | `71_COMPLETA_utilidades_catalogos_por_tabla.md` | Agricultura | Realizada | Extiende Utilidades a mas dropdowns y pasa a UNA TABLA POR CATALOGO (todas `utilidad_*`). V48 crea 6 tablas (destino, tipo perdida, cultivo, tipo plaga, tipo insumo, unidad insumo), migra destino/tipo perdida desde `utilidad_opcion` y la dropea. El modulo pasa a una fachada JdbcTemplate con whitelist categoria->tabla (anti SQL-injection); el DELETE ahora requiere `categoria`. Campos tipo/unidad de insumo y tipo de plaga pasan de enum a String (columnas ya VARCHAR). Web: cultivo de lote, tipo de catalogo y cultivo de deteccion, tipo y unidad de insumo usan `configurable-select`; Utilidades suma los 4 catalogos. Mobile: tipo de plaga y cultivo desde catalogo. Verificado end-to-end contra Docker. |
 | 72 | `72_COMPLETA_utilidades_referencias_por_id.md` | Agricultura | Realizada | Todo campo que referencia un catalogo `utilidad_*` guarda el ID de la fila (no el string `valor`). Se editan las migraciones y se regenera la base (sin script nuevo): V48 seedea los 6 catalogos con ids fijos legibles (slugs), V12/V17 seedean `catalogo_plagas.tipo` con el id `tpla-*`. Backend: `UtilidadNombreResolver` (batch id->valor) + campos `*Nombre` en las responses (Lote, LoteReporte, Deteccion, CatalogoPlaga, Insumo, Cosecha); dashboard y analytics resuelven las labels de las agregaciones. Web: `configurable-select` emite/bindea el id; displays usan `*Nombre`; los 3 filtros de cultivo de texto libre pasan a `configurable-select CULTIVO`; iconos de pin usan `tipoNombre`. Mobile: pickers emiten id, displays usan `*Nombre`, pin usa `tipoNombre`. Verificado end-to-end contra Docker. |
 | 73 | `73_plagas_identificacion_por_nombre_cientifico_gbif.md` | Agricultura | En progreso | Catalogo de referencia de plagas POR CULTIVO descargado desde GBIF. A partir de los cultivos de `utilidad_cultivo` + un mapping curado cultivo->taxones, un scheduler a las 03:00 (y endpoint manual de sync) consulta GBIF por nombre cientifico, baja la imagen al volumen Docker (`plagas-referencia/`) y crea entradas en una tabla nueva `plaga_referencia` con el path + fuente/licencia/atribucion (solo CC). Web: vista de catalogo de referencia por cultivo con atribucion + boton de sync (admin). El uso offline en mobile se separa en la feature 74. |
+| 75 | `75_plagas_especies_similares_gbif_taxonomia.md` | Agricultura | Pendiente | Amplia GBIF (feature 73) para descubrir especies SIMILARES por taxonomia (mismo genero/familia) aunque no esten en el catalogo. Scheduler: guarda la taxonomia (genusKey/familyKey) en catalogo_plagas y descubre las hermanas (`species/{genusKey}/children`, familia via `species/search?highertaxonKey`) con foto + nombre vulgar (`vernacularNames`) en tabla nueva `plaga_similar_gbif` referenciable desde la ficha. On-demand: endpoint + boton "Buscar similares" al lado del nombre cientifico en Nueva Plaga (consulta GBIF en vivo por nombre cientifico). GBIF hace similitud taxonomica, NO visual. Depende de la 73. |
 | 74 | `74_mobile_catalogo_referencia_offline_agroboost.md` | Mobile | Pendiente | Uso offline en mobile del catalogo de referencia de la 73: descargar las imagenes al dispositivo (carpeta `AgroBoost/catalogo` para render offline y `AgroBoost/local` para pendientes de sync) usando `expo-file-system` dentro del document dir de la app (el root del dispositivo no es portable en RN/Expo). Render offline desde archivo local con fallback a URL remota; cola local que sube al reconectar e integra con el outbox. |
 
 ## Registro por Dominio
@@ -110,7 +111,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 ### Agricultura
 - Realizadas: 00, 00_01, 01, 03, 10-reportes, 37, 53, 54, 60, 66, 68, 69, 70, 71, 72.
 - Parciales: ninguna.
-- Pendientes: 25, 27, 29, 55, 56, 57, 58, 59, 73 (en progreso, 2da iteracion), 74.
+- Pendientes: 25, 27, 29, 55, 56, 57, 58, 59, 73 (en progreso, 2da iteracion), 74, 75.
 
 ### Clima
 - Realizadas: 02.
