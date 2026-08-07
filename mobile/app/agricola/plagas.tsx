@@ -7,6 +7,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import {
   ActivityIndicator,
   Alert,
+  Dimensions,
+  Linking,
   Modal,
   Pressable,
   ScrollView,
@@ -25,6 +27,7 @@ import {
   ChevronRight,
   ClipboardList,
   Crosshair,
+  ExternalLink,
   Gauge,
   GitBranch,
   History,
@@ -962,13 +965,10 @@ function CatalogoPlagaModal({
               ) : similares.length > 0 ? (
                 <View style={styles.similarResults}>
                   <Text style={styles.similarResultsHint}>Especies similares (GBIF)</Text>
-                  {similares.map(similar => (
-                    <EspecieSimilarItem
-                      key={similar.usageKey}
-                      similar={similar}
-                      onUse={(item) => setForm(current => ({ ...current, nombreCientifico: item.nombreCientifico }))}
-                    />
-                  ))}
+                  <SimilaresList
+                    items={similares}
+                    onUse={(item) => setForm(current => ({ ...current, nombreCientifico: item.nombreCientifico }))}
+                  />
                 </View>
               ) : null}
             </View>
@@ -1231,9 +1231,7 @@ function PlagaFichaModal({
                   <Text style={styles.emptyText}>Sin especies similares (se completan en la sincronización).</Text>
                 </View>
               ) : (
-                similares.map(similar => (
-                  <EspecieSimilarItem key={similar.usageKey} similar={similar} />
-                ))
+                <SimilaresList items={similares} />
               )}
             </View>
 
@@ -1267,39 +1265,78 @@ function nivelLabel(nivel: EspecieSimilar['nivel']) {
   return nivel === 'GENERO' ? 'Género' : 'Familia'
 }
 
-// Item de especie similar GBIF (feature 75): miniatura remota/local, nombre vulgar,
-// cientifico en italica, badge de nivel y atribucion/licencia. onUse (opcional) agrega
-// la accion "Usar" para autocompletar el nombre cientifico en el alta.
+// Badge de confianza derivado del nivel taxonomico (no hay score real) (feature 77 mobile).
+function confianzaLabel(nivel: EspecieSimilar['nivel']) {
+  return nivel === 'GENERO' ? 'Coincidencia alta' : 'Posible'
+}
+
+// Card de especie similar GBIF (feature 77 mobile): imagen protagonista con badges
+// superpuestos, footer con nivel taxonomico, nombre vulgar, cientifico en italica y
+// atribucion/licencia. Mismo lenguaje visual que la card premium de la web. onUse
+// (opcional) agrega la accion "Usar" para autocompletar el nombre cientifico en el alta.
 function EspecieSimilarItem({ similar, onUse }: { similar: EspecieSimilar; onUse?: (similar: EspecieSimilar) => void }) {
   const thumb = resolveAssetUrl(similar.imagenUrl)
+  const esGenero = similar.nivel === 'GENERO'
+  const acento = esGenero ? '#9FE870' : '#6EA8FF'
   const credito = [similar.atribucion, similar.licencia].filter(Boolean).join(' · ')
   return (
-    <View style={styles.similarItem}>
-      <View style={styles.similarRow}>
+    <View style={styles.similarCard}>
+      <View style={styles.similarMedia}>
         {thumb ? (
-          <Image source={{ uri: thumb }} style={styles.suggestThumb} contentFit="cover" transition={200} />
+          <Image source={{ uri: thumb }} style={styles.similarImage} contentFit="cover" transition={200} />
         ) : (
-          <View style={styles.suggestThumbPlaceholder}><Bug color="#3A4A6B" size={20} /></View>
-        )}
-        <View style={styles.suggestText}>
-          <Text style={styles.suggestName}>{similar.nombreVulgar?.trim() || similar.nombreCientifico}</Text>
-          <Text style={styles.similarSci}>{similar.nombreCientifico}</Text>
-          <View style={styles.similarBadgeRow}>
-            <View style={styles.similarBadge}>
-              <GitBranch color="#6EA8FF" size={11} />
-              <Text style={styles.similarBadgeText}>{nivelLabel(similar.nivel)}</Text>
-            </View>
+          <View style={styles.similarPlaceholder}>
+            <Bug color="#566484" size={40} />
+            <Text style={styles.similarPlaceholderText}>Sin imagen disponible</Text>
           </View>
+        )}
+        <View style={[styles.similarConfianza, { borderColor: esGenero ? 'rgba(159,232,112,.5)' : 'rgba(110,168,255,.5)' }]}>
+          <Star color={acento} size={11} fill={acento} />
+          <Text style={[styles.similarConfianzaText, { color: acento }]}>{confianzaLabel(similar.nivel)}</Text>
         </View>
+        <Pressable
+          style={styles.similarSource}
+          onPress={() => Linking.openURL(`https://www.gbif.org/species/${similar.usageKey}`)}
+          accessibilityRole="link"
+          accessibilityLabel="Ver fuente en GBIF"
+        >
+          <ExternalLink color="#C7D4E8" size={15} />
+        </Pressable>
+      </View>
+      <View style={styles.similarFooter}>
+        <View style={[styles.similarTax, { borderColor: esGenero ? 'rgba(159,232,112,.3)' : 'rgba(110,168,255,.3)', backgroundColor: esGenero ? 'rgba(159,232,112,.1)' : 'rgba(110,168,255,.1)' }]}>
+          <Text style={[styles.similarTaxText, { color: esGenero ? '#9FE870' : '#9DC8FF' }]}>{nivelLabel(similar.nivel)}</Text>
+        </View>
+        <Text style={styles.similarName}>{similar.nombreVulgar?.trim() || similar.nombreCientifico}</Text>
+        <Text style={styles.similarSci}>{similar.nombreCientifico}</Text>
+        {credito ? <Text style={styles.similarCredit}>{credito}</Text> : null}
         {onUse ? (
           <Pressable style={styles.similarUseButton} onPress={() => onUse(similar)} accessibilityRole="button" accessibilityLabel="Usar nombre científico">
-            <Check color="#9FE870" size={16} />
+            <Check color="#9FE870" size={15} />
             <Text style={styles.similarUseText}>Usar</Text>
           </Pressable>
         ) : null}
       </View>
-      {credito ? <Text style={styles.similarCredit}>{credito}</Text> : null}
     </View>
+  )
+}
+
+// Lista de especies similares (feature 77 mobile): muestra hasta ~3 cards y, si hay mas,
+// habilita scroll vertical interno para no estirar la pantalla. Mismo formato de card en
+// la busqueda en vivo y en la ficha.
+function SimilaresList({ items, onUse }: { items: EspecieSimilar[]; onUse?: (similar: EspecieSimilar) => void }) {
+  const cards = items.map(similar => (
+    <EspecieSimilarItem key={similar.usageKey} similar={similar} onUse={onUse} />
+  ))
+  if (items.length <= 3) {
+    return <View style={styles.similarResults}>{cards}</View>
+  }
+  const cardWidth = Dimensions.get('window').width - 56
+  const maxHeight = Math.round(3 * (cardWidth * 0.75 + 156) + 2 * 14)
+  return (
+    <ScrollView style={{ maxHeight }} contentContainerStyle={styles.similarResults} nestedScrollEnabled showsVerticalScrollIndicator>
+      {cards}
+    </ScrollView>
   )
 }
 
@@ -1696,15 +1733,23 @@ const styles = StyleSheet.create({
   sciInput: { flex: 1, minWidth: 0 },
   sciSearchButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, borderRadius: 18, paddingHorizontal: 14, backgroundColor: 'rgba(159,232,112,.12)', borderWidth: 1, borderColor: 'rgba(159,232,112,.35)' },
   sciSearchText: { color: '#9FE870', fontSize: 12, fontWeight: '800' },
-  similarResults: { gap: 10, marginTop: 4 },
+  similarResults: { gap: 14, marginTop: 4 },
   similarResultsHint: { color: '#6EA8FF', fontSize: 11, fontWeight: '800', letterSpacing: 0.6, textTransform: 'uppercase' },
-  similarItem: { gap: 8, borderRadius: 18, padding: 10, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(110,168,255,.18)' },
-  similarRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  similarSci: { color: '#6EA8FF', fontSize: 12, fontStyle: 'italic', marginTop: 2 },
-  similarBadgeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
-  similarBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, borderRadius: 999, paddingHorizontal: 9, paddingVertical: 3, backgroundColor: 'rgba(110,168,255,.12)', borderWidth: 1, borderColor: 'rgba(110,168,255,.28)' },
-  similarBadgeText: { color: '#6EA8FF', fontSize: 10, fontWeight: '800' },
-  similarUseButton: { flexDirection: 'row', alignItems: 'center', gap: 5, borderRadius: 14, paddingHorizontal: 12, paddingVertical: 9, backgroundColor: 'rgba(159,232,112,.1)', borderWidth: 1, borderColor: 'rgba(159,232,112,.32)' },
-  similarUseText: { color: '#9FE870', fontSize: 12, fontWeight: '800' },
+  // Card premium de especie similar (feature 77 mobile): imagen protagonista + footer.
+  similarCard: { borderRadius: 20, overflow: 'hidden', backgroundColor: '#0B1730', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)' },
+  similarMedia: { position: 'relative', width: '100%', aspectRatio: 4 / 3, backgroundColor: '#081225', overflow: 'hidden' },
+  similarImage: { width: '100%', height: '100%' },
+  similarPlaceholder: { width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: '#081225' },
+  similarPlaceholderText: { color: '#6B7699', fontSize: 12 },
+  similarConfianza: { position: 'absolute', top: 10, right: 10, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: 'rgba(8,18,37,.82)', borderWidth: 1 },
+  similarConfianzaText: { fontSize: 11, fontWeight: '800' },
+  similarSource: { position: 'absolute', bottom: 10, left: 10, width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 10, backgroundColor: 'rgba(8,18,37,.82)', borderWidth: 1, borderColor: 'rgba(255,255,255,.12)' },
+  similarFooter: { gap: 6, paddingHorizontal: 18, paddingTop: 16, paddingBottom: 18 },
+  similarTax: { alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, borderWidth: 1 },
+  similarTaxText: { fontSize: 10, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 0.8 },
+  similarName: { color: '#F8FBFF', fontSize: 16, fontWeight: '800', lineHeight: 20 },
+  similarSci: { color: '#A6B0CF', fontSize: 13, fontStyle: 'italic' },
   similarCredit: { color: '#64748B', fontSize: 10, lineHeight: 14 },
+  similarUseButton: { alignSelf: 'flex-end', marginTop: 6, flexDirection: 'row', alignItems: 'center', gap: 6, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 8, backgroundColor: 'rgba(159,232,112,.08)', borderWidth: 1, borderColor: '#9FE870' },
+  similarUseText: { color: '#9FE870', fontSize: 12, fontWeight: '800' },
 })
