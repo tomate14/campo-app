@@ -1,0 +1,56 @@
+<div class="sms" [class.sms--open]="open()">
+  <span class="sms__label" *ngIf="label">{{ label }}</span>
+
+  <!-- Control único: icono Search, chips seleccionados adentro y ChevronDown -->
+  <div class="sms__control" (click)="toggleDropdown()">
+    <span class="sms__search-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+    </span>
+    <div class="sms__chips">
+      <span class="sms__chip" *ngFor="let opt of visibleChips()">
+        <span class="sms__chip-text">{{ opt.valor }}</span>
+        <button type="button" class="sms__chip-x" [attr.aria-label]="'Quitar ' + opt.valor" (click)="$event.stopPropagation(); remove(opt.id)">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
+      </span>
+      <span class="sms__more" *ngIf="hiddenCount()">+{{ hiddenCount() }}</span>
+      <span class="sms__placeholder" *ngIf="!selectedCount()">{{ placeholder }}</span>
+    </div>
+    <span class="sms__chevron" [class.rotated]="open()" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></svg>
+    </span>
+  </div>
+
+  <!-- Dropdown flotante (fixed) para no ser recortado por el overflow del modal -->
+  <div
+    class="sms__dropdown"
+    *ngIf="open()"
+    [style.top.px]="ddTop()"
+    [style.left.px]="ddLeft()"
+    [style.width.px]="ddWidth()"
+    [style.max-height.px]="ddMaxHeight()"
+  >
+    <div class="sms__dd-search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+      <input type="text" [ngModel]="query()" (ngModelChange)="onQuery($event)" [placeholder]="placeholder" (click)="$event.stopPropagation()" />
+    </div>
+    <div class="sms__dd-list">
+      <div class="sms__hint" *ngIf="loading()">Cargando...</div>
+      <div class="sms__hint" *ngIf="!loading() && !options().length">No hay opciones disponibles.</div>
+      <div class="sms__hint" *ngIf="!loading() && options().length && !filteredOptions().length">Sin coincidencias.</div>
+      <button
+        type="button"
+        class="sms__option"
+        *ngFor="let opt of filteredOptions()"
+        [class.selected]="isSelected(opt.id)"
+        [attr.aria-pressed]="isSelected(opt.id)"
+        (click)="$event.stopPropagation(); toggle(opt.id)"
+      >
+        <span class="sms__checkbox" aria-hidden="true">
+          <svg *ngIf="isSelected(opt.id)" viewBox="0 0 24 24"><path d="M5 13l4 4 10-11" /></svg>
+        </span>
+        <span class="sms__option-text"><span *ngFor="let part of highlight(opt.valor)" [class.hit]="part.hit">{{ part.text }}</span></span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -343,62 +343,78 @@
       </ng-container>
 
       <ng-container *ngIf="modal() === 'CATALOGO'">
-        <div class="modal-head"><h3>{{ catalogoModalTitle() }}</h3></div>
-        <div class="form-grid">
-          <label><span>Nombre com&uacute;n</span><input [ngModel]="catalogoForm().nombreComun" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreComun: $event }))" /></label>
-          <div class="form-field sci-name-field">
-            <span>Nombre cient&iacute;fico</span>
-            <div class="sci-name-row">
-              <input [ngModel]="catalogoForm().nombreCientifico" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreCientifico: $event }))" placeholder="Ej. Spodoptera frugiperda" />
-              <button type="button" class="btn-similares" [disabled]="!puedeBuscarSimilares() || similaresGbifLoading()" (click)="buscarSimilares()" title="Buscar especies similares en GBIF">
-                <svg *ngIf="!similaresGbifLoading()" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-                <span *ngIf="similaresGbifLoading()" class="btn-similares__spinner"></span>
-                <span>{{ similaresGbifLoading() ? 'Buscando...' : 'Buscar similares' }}</span>
-              </button>
-            </div>
-          </div>
-          <app-configurable-select categoria="TIPO_PLAGA" label="Tipo" placeholder="Seleccionar tipo..." [value]="catalogoForm().tipo" (valueChange)="catalogoForm.update(f => ({ ...f, tipo: $event }))"></app-configurable-select>
-          <app-configurable-multi-select categoria="CULTIVO" label="Cultivos afectados" [value]="catalogoForm().cultivosAfectados" (valueChange)="catalogoForm.update(f => ({ ...f, cultivosAfectados: $event }))"></app-configurable-multi-select>
-          <label><span>Zona / &aacute;rea t&iacute;pica</span><input [ngModel]="catalogoForm().zonaTipica" (ngModelChange)="catalogoForm.update(f => ({ ...f, zonaTipica: $event }))" placeholder="Ej. hojas, tallo, base de la planta" /></label>
-          <label><span>Umbral de acci&oacute;n</span><input [ngModel]="catalogoForm().umbralAccion" (ngModelChange)="catalogoForm.update(f => ({ ...f, umbralAccion: $event }))" /></label>
-        </div>
-        <label class="textarea-field"><span>S&iacute;ntomas</span><textarea [ngModel]="catalogoForm().sintomas" (ngModelChange)="catalogoForm.update(f => ({ ...f, sintomas: $event }))"></textarea></label>
+        <div class="modal-head"><h3>{{ catalogoModalTitle() }}</h3><p>Datos de identificaci&oacute;n, cultivos afectados y candidatas taxon&oacute;micas.</p></div>
+        <div class="plaga-form">
+          <div class="plaga-form__grid">
+            <label class="pf-field">
+              <span class="pf-label">Nombre com&uacute;n</span>
+              <input class="pf-input" [ngModel]="catalogoForm().nombreComun" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreComun: $event }))" placeholder="Ej. Oruga militar" />
+            </label>
 
-        <div class="similares-panel" *ngIf="similaresGbifBuscado()">
-          <div class="similares-panel__head">
-            <span class="similares-panel__icon">
-              <svg viewBox="0 0 24 24"><path d="M12 2v4"/><path d="M12 18v4"/><path d="m4.9 4.9 2.9 2.9"/><path d="m16.2 16.2 2.9 2.9"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="m4.9 19.1 2.9-2.9"/><path d="m16.2 7.8 2.9-2.9"/></svg>
-            </span>
-            <div>
-              <h4>Especies similares (GBIF)</h4>
-              <small>Candidatas taxon&oacute;micas seg&uacute;n el nombre cient&iacute;fico</small>
-            </div>
-          </div>
-          <div class="ficha-empty-hint" *ngIf="similaresGbifLoading()">Buscando especies similares en GBIF...</div>
-          <p class="similares-panel__error" *ngIf="similaresGbifError()">{{ similaresGbifError() }}</p>
-          <div class="ficha-empty-hint" *ngIf="!similaresGbifLoading() && !similaresGbifError() && !similaresGbif().length">No se encontraron especies similares para ese nombre cient&iacute;fico.</div>
-          <div class="similares-list" *ngIf="!similaresGbifLoading() && similaresGbif().length">
-            <div class="similar-card" *ngFor="let similar of similaresGbif()">
-              <span class="similar-thumb" *ngIf="similar.imagenUrl; else similarFormNoThumb"><img [src]="imagenUrl(similar.imagenUrl)" [alt]="similar.nombreCientifico" loading="lazy" /></span>
-              <ng-template #similarFormNoThumb>
-                <span class="similar-thumb similar-thumb--empty">
-                  <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L5 21"/></svg>
-                </span>
-              </ng-template>
-              <div class="similar-body">
-                <div class="similar-body__top">
-                  <span class="similar-name">{{ similar.nombreVulgar || 'Sin nombre vulgar' }}</span>
-                  <span class="badge similar-nivel" [attr.data-nivel]="similar.nivel">{{ nivelSimilarLabel(similar.nivel) }}</span>
-                </div>
-                <em class="similar-sci">{{ similar.nombreCientifico }}</em>
-                <p class="similar-attr" *ngIf="similar.atribucion || similar.licencia">{{ similar.atribucion || '' }}{{ similar.atribucion && similar.licencia ? ' &middot; ' : '' }}{{ similar.licencia || '' }}</p>
+            <div class="pf-field pf-field--full">
+              <span class="pf-label">Nombre cient&iacute;fico</span>
+              <div class="pf-sci-row">
+                <input class="pf-input" [ngModel]="catalogoForm().nombreCientifico" (ngModelChange)="catalogoForm.update(f => ({ ...f, nombreCientifico: $event }))" placeholder="Ej. Spodoptera frugiperda" />
+                <button type="button" class="pf-similar-btn" [disabled]="!puedeBuscarSimilares() || similaresGbifLoading()" (click)="buscarSimilares()" title="Buscar especies similares en GBIF">
+                  <svg *ngIf="!similaresGbifLoading()" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <span *ngIf="similaresGbifLoading()" class="pf-spinner" aria-hidden="true"></span>
+                  <span>{{ similaresGbifLoading() ? 'Buscando...' : 'Buscar similares' }}</span>
+                </button>
               </div>
-              <button type="button" class="btn-usar" (click)="usarSimilar(similar)" title="Usar este nombre cient&iacute;fico">
-                <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
-                Usar
-              </button>
             </div>
+
+            <app-configurable-select categoria="TIPO_PLAGA" label="Tipo" placeholder="Seleccionar tipo..." [value]="catalogoForm().tipo" (valueChange)="catalogoForm.update(f => ({ ...f, tipo: $event }))"></app-configurable-select>
+            <app-searchable-multi-select class="pf-field--full" categoria="CULTIVO" label="Cultivos afectados" placeholder="Buscar cultivos..." [value]="catalogoForm().cultivosAfectados" (valueChange)="catalogoForm.update(f => ({ ...f, cultivosAfectados: $event }))"></app-searchable-multi-select>
+
+            <label class="pf-field">
+              <span class="pf-label">Zona / &aacute;rea t&iacute;pica</span>
+              <input class="pf-input" [ngModel]="catalogoForm().zonaTipica" (ngModelChange)="catalogoForm.update(f => ({ ...f, zonaTipica: $event }))" placeholder="Ej. hojas, tallo, base de la planta" />
+            </label>
+            <label class="pf-field">
+              <span class="pf-label">Umbral de acci&oacute;n</span>
+              <input class="pf-input" [ngModel]="catalogoForm().umbralAccion" (ngModelChange)="catalogoForm.update(f => ({ ...f, umbralAccion: $event }))" placeholder="Ej. 3 larvas por metro" />
+            </label>
           </div>
+
+          <div class="pf-field pf-field--full pf-textarea-field">
+            <span class="pf-label">S&iacute;ntomas</span>
+            <textarea class="pf-textarea" maxlength="500" [ngModel]="catalogoForm().sintomas" (ngModelChange)="catalogoForm.update(f => ({ ...f, sintomas: $event }))" placeholder="Describ&iacute; los s&iacute;ntomas observados..."></textarea>
+            <span class="pf-counter">{{ (catalogoForm().sintomas || '').length }} / 500</span>
+          </div>
+
+          <!-- Feature 77: panel premium de especies similares (GBIF) del alta/edición -->
+          <section class="gbif-similares" *ngIf="similaresGbifBuscado()">
+            <header class="gbif-similares__head">
+              <div class="gbif-similares__title">
+                <span class="gbif-similares__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                </span>
+                <div>
+                  <h4>Especies similares (GBIF)</h4>
+                  <small>Candidatas taxon&oacute;micas seg&uacute;n el nombre cient&iacute;fico</small>
+                </div>
+              </div>
+              <a class="gbif-similares__source" [href]="gbifHomeUrl" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+                Ver fuentes en GBIF
+              </a>
+            </header>
+
+            <div class="gbif-hint" *ngIf="similaresGbifLoading()"><span class="pf-spinner" aria-hidden="true"></span> Buscando especies similares en GBIF...</div>
+            <p class="gbif-error" *ngIf="similaresGbifError()">{{ similaresGbifError() }}</p>
+            <div class="gbif-hint" *ngIf="!similaresGbifLoading() && !similaresGbifError() && !similaresGbif().length">No se encontraron especies similares para ese nombre cient&iacute;fico.</div>
+
+            <div class="gbif-grid" *ngIf="!similaresGbifLoading() && similaresGbif().length">
+              <ng-container *ngFor="let similar of similaresGbifVisibles()">
+                <ng-container *ngTemplateOutlet="gbifCard; context: { similar: similar, showUsar: true }"></ng-container>
+              </ng-container>
+            </div>
+
+            <button type="button" class="gbif-more" *ngIf="!similaresGbifExpanded() && similaresGbif().length > similaresVisibleLimit" (click)="similaresGbifExpanded.set(true)">
+              <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+              Ver m&aacute;s resultados ({{ similaresGbif().length - similaresVisibleLimit }})
+            </button>
+          </section>
         </div>
 
         <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitCatalogo()">Guardar</button></div>
@@ -513,35 +529,34 @@
             </div>
 
             <div class="ficha-block ficha-similares">
-              <div class="ficha-similares__head">
-                <span class="ficha-similares__icon">
-                  <svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8.6 8.6 15.4 15.4"/><circle cx="18" cy="6" r="3"/><path d="M8.6 8.6 15.4 6.4" opacity=".0"/></svg>
-                </span>
-                <div>
-                  <h4>Especies similares (GBIF)</h4>
-                  <small>Proximidad taxon&oacute;mica seg&uacute;n GBIF</small>
-                </div>
-              </div>
-              <div class="ficha-empty-hint" *ngIf="fichaSimilaresLoading()">Buscando especies similares...</div>
-              <div class="ficha-empty-hint" *ngIf="!fichaSimilaresLoading() && !fichaSimilares().length">Sin especies similares (se completan en la sincronizaci&oacute;n).</div>
-              <div class="similares-list" *ngIf="!fichaSimilaresLoading() && fichaSimilares().length">
-                <div class="similar-card" *ngFor="let similar of fichaSimilares()">
-                  <span class="similar-thumb" *ngIf="similar.imagenUrl; else fichaSimilarNoThumb"><img [src]="imagenUrl(similar.imagenUrl)" [alt]="similar.nombreCientifico" loading="lazy" /></span>
-                  <ng-template #fichaSimilarNoThumb>
-                    <span class="similar-thumb similar-thumb--empty">
-                      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L5 21"/></svg>
-                    </span>
-                  </ng-template>
-                  <div class="similar-body">
-                    <div class="similar-body__top">
-                      <span class="similar-name">{{ similar.nombreVulgar || 'Sin nombre vulgar' }}</span>
-                      <span class="badge similar-nivel" [attr.data-nivel]="similar.nivel">{{ nivelSimilarLabel(similar.nivel) }}</span>
-                    </div>
-                    <em class="similar-sci">{{ similar.nombreCientifico }}</em>
-                    <p class="similar-attr" *ngIf="similar.atribucion || similar.licencia">{{ similar.atribucion || '' }}{{ similar.atribucion && similar.licencia ? ' &middot; ' : '' }}{{ similar.licencia || '' }}</p>
+              <div class="gbif-similares__head">
+                <div class="gbif-similares__title">
+                  <span class="gbif-similares__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                  </span>
+                  <div>
+                    <h4>Especies similares (GBIF)</h4>
+                    <small>Candidatas taxon&oacute;micas seg&uacute;n el nombre cient&iacute;fico</small>
                   </div>
                 </div>
+                <a class="gbif-similares__source" [href]="gbifHomeUrl" target="_blank" rel="noopener">
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+                  Ver fuentes en GBIF
+                </a>
               </div>
+              <div class="gbif-hint" *ngIf="fichaSimilaresLoading()"><span class="pf-spinner" aria-hidden="true"></span> Buscando especies similares...</div>
+              <div class="gbif-hint" *ngIf="!fichaSimilaresLoading() && !fichaSimilares().length">Sin especies similares (se completan en la sincronizaci&oacute;n).</div>
+
+              <div class="gbif-grid" *ngIf="!fichaSimilaresLoading() && fichaSimilares().length">
+                <ng-container *ngFor="let similar of fichaSimilaresVisibles()">
+                  <ng-container *ngTemplateOutlet="gbifCard; context: { similar: similar, showUsar: false }"></ng-container>
+                </ng-container>
+              </div>
+
+              <button type="button" class="gbif-more" *ngIf="!fichaSimilaresExpanded() && fichaSimilares().length > similaresVisibleLimit" (click)="fichaSimilaresExpanded.set(true)">
+                <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+                Ver m&aacute;s resultados ({{ fichaSimilares().length - similaresVisibleLimit }})
+              </button>
             </div>
           </div>
         </div>
@@ -550,4 +565,35 @@
       </ng-container>
     </div>
   </div>
+
+  <!-- Feature 77: card premium reutilizable de especie similar (GBIF), usada en el alta y en la ficha -->
+  <ng-template #gbifCard let-similar="similar" let-showUsar="showUsar">
+    <article class="gbif-card">
+      <div class="gbif-card__media">
+        <img *ngIf="similar.imagenUrl; else gbifNoImg" [src]="imagenUrl(similar.imagenUrl)" [alt]="similar.nombreCientifico" loading="lazy" />
+        <ng-template #gbifNoImg>
+          <div class="gbif-card__placeholder">
+            <svg viewBox="0 0 24 24"><path d="M10.4 3H19a2 2 0 0 1 2 2v8.6"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6.5"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/><path d="M2 2l20 20"/></svg>
+            <span>Sin imagen disponible</span>
+          </div>
+        </ng-template>
+        <span class="gbif-card__confianza" [attr.data-nivel]="similar.nivel">
+          <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          {{ confianzaSimilarLabel(similar.nivel) }}
+        </span>
+        <a class="gbif-card__source" [href]="gbifSpeciesUrl(similar.usageKey)" target="_blank" rel="noopener" [title]="similarFuenteTitle(similar)" (click)="$event.stopPropagation()" aria-label="Ver fuente en GBIF">
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+        </a>
+      </div>
+      <div class="gbif-card__footer">
+        <span class="gbif-card__tax" [attr.data-nivel]="similar.nivel">{{ nivelSimilarLabel(similar.nivel) }}</span>
+        <strong class="gbif-card__name">{{ similar.nombreVulgar || similar.nombreCientifico }}</strong>
+        <em class="gbif-card__sci">{{ similar.nombreCientifico }}</em>
+        <button *ngIf="showUsar" type="button" class="gbif-card__use" (click)="usarSimilar(similar)" title="Usar este nombre cient&iacute;fico">
+          <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+          Usar
+        </button>
+      </div>
+    </article>
+  </ng-template>
 </div>

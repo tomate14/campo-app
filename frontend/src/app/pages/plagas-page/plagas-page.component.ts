@@ -11,7 +11,7 @@ import { OperariosService } from '../../core/services/operarios.service';
 import { SessionService } from '../../core/services/session.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
-import { ConfigurableMultiSelectComponent } from '../../shared/configurable-multi-select/configurable-multi-select.component';
+import { SearchableMultiSelectComponent } from '../../shared/searchable-multi-select/searchable-multi-select.component';
 import type { Operario } from '../../core/models/operarios.models';
 import type {
   AplicacionFitosanitaria,
@@ -60,7 +60,7 @@ type DeteccionPinGroup = {
 @Component({
   selector: 'app-plagas-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent, ConfigurableSelectComponent, ConfigurableMultiSelectComponent],
+  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent, ConfigurableSelectComponent, SearchableMultiSelectComponent],
   templateUrl: './plagas-page.component.html',
   styleUrl: './plagas-page.component.css',
 })
@@ -130,6 +130,18 @@ export class PlagasPageComponent {
   protected readonly similaresGbifBuscado = signal(false);
   // El botón "Buscar similares" se habilita solo con un nombre científico cargado.
   protected readonly puedeBuscarSimilares = computed(() => (this.catalogoForm().nombreCientifico ?? '').trim().length > 0);
+  // Feature 77: "Ver más resultados" muestra las primeras N y revela el resto client-side.
+  protected readonly similaresVisibleLimit = 6;
+  protected readonly similaresGbifExpanded = signal(false);
+  protected readonly fichaSimilaresExpanded = signal(false);
+  protected readonly similaresGbifVisibles = computed(() =>
+    this.similaresGbifExpanded() ? this.similaresGbif() : this.similaresGbif().slice(0, this.similaresVisibleLimit),
+  );
+  protected readonly fichaSimilaresVisibles = computed(() =>
+    this.fichaSimilaresExpanded() ? this.fichaSimilares() : this.fichaSimilares().slice(0, this.similaresVisibleLimit),
+  );
+  // Enlace canónico a la ficha de la especie en GBIF.
+  protected readonly gbifHomeUrl = 'https://www.gbif.org';
   protected readonly fichaImagenActivaId = signal<string | null>(null);
   protected readonly uploadingImagen = signal(false);
   protected readonly uploadPrincipal = signal(false);
@@ -520,6 +532,7 @@ export class PlagasPageComponent {
     // Feature 75: limpieza del estado de especies similares (ficha + panel del form).
     this.fichaSimilares.set([]);
     this.fichaSimilaresLoading.set(false);
+    this.fichaSimilaresExpanded.set(false);
     this.resetSimilaresGbif();
   }
 
@@ -529,6 +542,7 @@ export class PlagasPageComponent {
     this.similaresGbifLoading.set(false);
     this.similaresGbifError.set('');
     this.similaresGbifBuscado.set(false);
+    this.similaresGbifExpanded.set(false);
   }
 
   protected onMapClick(event: any) {
@@ -621,6 +635,7 @@ export class PlagasPageComponent {
   // Feature 75: carga las especies similares (GBIF) desde el cache local para la ficha.
   private loadFichaSimilares(id: string) {
     this.fichaSimilares.set([]);
+    this.fichaSimilaresExpanded.set(false);
     this.fichaSimilaresLoading.set(true);
     this.agricolaService.getCatalogoPlagaSimilares(id).subscribe({
       next: (similares) => {
@@ -662,6 +677,24 @@ export class PlagasPageComponent {
   // Feature 75: etiqueta legible del nivel de proximidad taxonómica.
   protected nivelSimilarLabel(nivel: string): string {
     return nivel === 'GENERO' ? 'Género' : nivel === 'FAMILIA' ? 'Familia' : nivel;
+  }
+
+  // Feature 77: badge de confianza derivado del nivel taxonómico (no hay score real).
+  // GENERO -> "Coincidencia alta"; FAMILIA -> "Posible".
+  protected confianzaSimilarLabel(nivel: string): string {
+    return nivel === 'GENERO' ? 'Coincidencia alta' : 'Posible';
+  }
+
+  // Feature 77: enlace a la ficha de la especie en GBIF.
+  protected gbifSpeciesUrl(usageKey: number): string {
+    return `https://www.gbif.org/species/${usageKey}`;
+  }
+
+  // Feature 77: licencia + atribución para el tooltip del enlace "Ver fuente".
+  protected similarFuenteTitle(similar: EspecieSimilar): string {
+    const partes = [similar.atribucion, similar.licencia].filter((parte) => !!parte);
+    const detalle = partes.length ? partes.join(' · ') : 'Fuente: GBIF';
+    return `${detalle} — Ver en GBIF`;
   }
 
   private loadFichaImagenes(id: string) {

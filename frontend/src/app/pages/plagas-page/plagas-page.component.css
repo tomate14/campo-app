@@ -371,51 +371,231 @@
 
 .ficha-empty-hint { color: #8093b3; font-size: 13px; padding: 6px 0; }
 
-/* Feature 75: campo Nombre científico con botón "Buscar similares" en el form de catálogo */
-.form-field { display: flex; flex-direction: column; gap: 7px; color: #9bb0cc; font-size: 12px; font-weight: 400; }
-.sci-name-field { grid-column: 1 / -1; }
-.sci-name-row { display: flex; gap: 10px; align-items: stretch; }
-.sci-name-row input { flex: 1 1 auto; min-width: 0; min-height: 42px; border: 1px solid rgba(148, 163, 184, .14); border-radius: 12px; background: rgba(7, 15, 31, .48); color: #f8fbff; padding: 0 12px; outline: none; }
-.btn-similares { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; padding: 0 16px; min-height: 42px; border-radius: 12px; border: 1px solid rgba(159, 232, 112, .3); background: rgba(159, 232, 112, .1); color: #cdeeb6; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: border-color .18s ease, background .18s ease, box-shadow .18s ease; white-space: nowrap; }
-.btn-similares:hover:not(:disabled) { border-color: rgba(159, 232, 112, .5); background: rgba(159, 232, 112, .16); box-shadow: 0 0 18px rgba(159, 232, 112, .12); }
-.btn-similares:disabled { opacity: .5; cursor: not-allowed; }
-.btn-similares svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.btn-similares__spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(159, 232, 112, .3); border-top-color: #9fe870; animation: referencia-spin .7s linear infinite; }
+/* Feature 77: formulario premium de catálogo de plagas (scoped a .plaga-form) */
+.plaga-form { display: flex; flex-direction: column; gap: 18px; }
+.plaga-form__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; align-items: start; }
+.pf-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.pf-field--full { grid-column: 1 / -1; }
+.pf-label { color: #a6b0cf; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.pf-input, .pf-textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 16px;
+  background: #081225;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.pf-input { min-height: 54px; padding: 0 16px; }
+.pf-textarea { min-height: 112px; padding: 14px 16px; line-height: 1.5; resize: vertical; font-family: inherit; }
+.pf-input::placeholder, .pf-textarea::placeholder { color: #5f6d8f; }
+.pf-input:focus, .pf-textarea:focus { border-color: #9fe870; box-shadow: 0 0 0 3px rgba(159, 232, 112, .1); }
 
-/* Feature 75: panel de candidatas GBIF en el form + bloque de la ficha */
-.similares-panel { margin-top: 14px; padding: 16px; border-radius: 18px; border: 1px solid rgba(159, 232, 112, .2); background: rgba(11, 23, 48, .92); box-shadow: 0 0 24px -14px rgba(159, 232, 112, .4); }
-.similares-panel__head, .ficha-similares__head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.similares-panel__icon, .ficha-similares__icon { flex: 0 0 38px; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; border: 1px solid rgba(159, 232, 112, .28); background: rgba(159, 232, 112, .1); color: #9fe870; }
-.similares-panel__icon svg, .ficha-similares__icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.similares-panel__head h4, .ficha-similares__head h4 { margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: #cdd9ee; }
-.similares-panel__head small, .ficha-similares__head small { color: #8093b3; font-size: 12px; }
-.similares-panel__error { margin: 4px 0 0; color: #ff9b9b; font-size: 13px; }
+.pf-textarea-field { position: relative; }
+.pf-counter { align-self: flex-end; margin-top: -2px; color: #6b7699; font-size: 11px; font-weight: 600; letter-spacing: .02em; }
 
-.ficha-similares { border-top: 1px solid rgba(148, 163, 184, .1); padding-top: 16px; }
+.pf-sci-row { display: flex; gap: 12px; align-items: stretch; }
+.pf-sci-row .pf-input { flex: 1 1 auto; }
+.pf-similar-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 54px;
+  padding: 0 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(159, 232, 112, .32);
+  background: rgba(159, 232, 112, .08);
+  color: #9fe870;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.pf-similar-btn:hover:not(:disabled) { border-color: rgba(159, 232, 112, .55); background: rgba(159, 232, 112, .14); box-shadow: 0 0 20px rgba(159, 232, 112, .14); }
+.pf-similar-btn:disabled { opacity: .45; cursor: not-allowed; }
+.pf-similar-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pf-spinner { width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(159, 232, 112, .28); border-top-color: #9fe870; animation: referencia-spin .7s linear infinite; }
 
-.similares-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
-.similar-card { display: flex; align-items: flex-start; gap: 12px; padding: 12px; border: 1px solid rgba(154, 125, 255, .18); border-radius: 16px; background: rgba(7, 15, 31, .44); transition: border-color .18s ease, box-shadow .18s ease, background .18s ease; }
-.similar-card:hover { border-color: rgba(154, 125, 255, .4); background: rgba(154, 125, 255, .05); box-shadow: 0 0 20px rgba(154, 125, 255, .1); }
-.similar-thumb { flex: 0 0 52px; width: 52px; height: 52px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(154, 125, 255, .28); background: rgba(7, 15, 31, .5); display: grid; place-items: center; }
-.similar-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.similar-thumb--empty { color: #6f80a0; }
-.similar-thumb--empty svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.similar-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1 1 auto; }
-.similar-body__top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.similar-name { color: #f8fbff; font-size: 14px; font-weight: 800; }
-.similar-sci { font-style: italic; font-size: 12.5px; color: #a6b0cf; }
-.similar-attr { margin: 2px 0 0; font-size: 10.5px; color: #7f8fb0; line-height: 1.4; }
-.similar-nivel { flex-shrink: 0; border-color: rgba(154, 125, 255, .32); background: rgba(154, 125, 255, .12); color: #c4b5fd; }
-.similar-nivel[data-nivel="FAMILIA"] { border-color: rgba(110, 168, 255, .32); background: rgba(110, 168, 255, .12); color: #9dc8ff; }
-.btn-usar { flex: 0 0 auto; align-self: center; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 10px; border: 1px solid rgba(159, 232, 112, .3); background: rgba(159, 232, 112, .1); color: #cdeeb6; font-size: 12px; font-weight: 700; cursor: pointer; transition: border-color .18s ease, background .18s ease; }
-.btn-usar:hover { border-color: rgba(159, 232, 112, .5); background: rgba(159, 232, 112, .18); }
-.btn-usar svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+/* Feature 77: sección "Especies similares (GBIF)" — alta + ficha */
+.gbif-similares {
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  background: rgba(11, 23, 48, .55);
+}
+.ficha-block.ficha-similares { border-top: 1px solid rgba(148, 163, 184, .1); padding-top: 18px; }
+.gbif-similares__head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+.gbif-similares__title { display: flex; align-items: center; gap: 13px; min-width: 0; }
+.gbif-similares__icon {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(159, 232, 112, .22);
+  background: rgba(159, 232, 112, .08);
+  color: #9fe870;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 0 22px -8px rgba(159, 232, 112, .5);
+}
+.gbif-similares__icon svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.gbif-similares__title h4 { margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: #eaf1ff; }
+.gbif-similares__title small { display: block; margin-top: 3px; color: #8093b3; font-size: 12px; }
+.gbif-similares__source { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #6ea8ff; text-decoration: none; white-space: nowrap; transition: color .18s ease; }
+.gbif-similares__source:hover { color: #9fe870; }
+.gbif-similares__source svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 
+.gbif-hint { display: flex; align-items: center; gap: 10px; color: #8093b3; font-size: 13px; padding: 8px 0; }
+.gbif-error { margin: 4px 0 0; color: #ff9b9b; font-size: 13px; }
+
+/* Grid responsive: 3 desktop / 2 tablet / 1 mobile */
+.gbif-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+
+.gbif-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .08);
+  background: #0b1730;
+  box-shadow: 0 18px 40px -28px rgba(2, 8, 23, .8);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.gbif-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(159, 232, 112, .3);
+  box-shadow: 0 24px 50px -26px rgba(159, 232, 112, .35);
+}
+.gbif-card__media { position: relative; aspect-ratio: 4 / 3; background: #081225; overflow: hidden; }
+.gbif-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gbif-card__placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #566484; background: #081225; }
+.gbif-card__placeholder svg { width: 44px; height: 44px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.gbif-card__placeholder span { font-size: 12px; color: #6b7699; }
+
+.gbif-card__confianza {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(8, 18, 37, .82);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(159, 232, 112, .5);
+  color: #9fe870;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+.gbif-card__confianza[data-nivel="FAMILIA"] { border-color: rgba(110, 168, 255, .5); color: #6ea8ff; }
+.gbif-card__confianza svg { width: 12px; height: 12px; fill: currentColor; stroke: none; }
+
+.gbif-card__source {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(8, 18, 37, .82);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, .12);
+  color: #c7d4e8;
+  transition: color .18s ease, border-color .18s ease;
+}
+.gbif-card__source:hover { color: #9fe870; border-color: rgba(159, 232, 112, .5); }
+.gbif-card__source svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+.gbif-card__footer { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px 18px; }
+.gbif-card__tax {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(159, 232, 112, .3);
+  background: rgba(159, 232, 112, .1);
+  color: #9fe870;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.gbif-card__tax[data-nivel="FAMILIA"] { border-color: rgba(110, 168, 255, .3); background: rgba(110, 168, 255, .1); color: #9dc8ff; }
+.gbif-card__name { color: #f8fbff; font-size: 16px; font-weight: 800; line-height: 1.25; letter-spacing: -.01em; }
+.gbif-card__sci { font-style: italic; font-size: 13px; color: #a6b0cf; word-break: break-word; }
+.gbif-card__use {
+  align-self: flex-end;
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 1px solid #9fe870;
+  background: rgba(159, 232, 112, .08);
+  color: #9fe870;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .18s ease, box-shadow .18s ease;
+}
+.gbif-card__use:hover { background: rgba(159, 232, 112, .18); box-shadow: 0 0 18px -4px rgba(159, 232, 112, .5); }
+.gbif-card__use svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.gbif-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: center;
+  margin-top: 18px;
+  padding: 11px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  background: rgba(8, 18, 37, .6);
+  color: #a6b0cf;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .18s ease, color .18s ease, background .18s ease;
+}
+.gbif-more:hover { border-color: rgba(159, 232, 112, .3); color: #eaf1ff; background: rgba(159, 232, 112, .05); }
+.gbif-more svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (max-width: 1000px) {
+  .gbif-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 820px) {
   .ficha-grid { grid-template-columns: 1fr; }
   .ficha-head { flex-direction: column; }
-  .sci-name-row { flex-direction: column; }
-  .btn-similares { justify-content: center; }
+  .pf-sci-row { flex-direction: column; }
+  .pf-similar-btn { justify-content: center; }
+}
+@media (max-width: 640px) {
+  /* Mobile: 1 card por fila, mismo formato image-dominant que web (aspect 4:3).
+     Se muestran ~3 cards y el resto queda en scroll vertical con scrollbar premium.
+     (72vw ~ alto de imagen 4:3 al ancho de card; +130px ~ footer.) */
+  .gbif-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    max-height: calc((72vw + 130px) * 3 + 32px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(159, 232, 112, .55) transparent;
+  }
+  .gbif-grid::-webkit-scrollbar { width: 8px; }
+  .gbif-grid::-webkit-scrollbar-track { background: transparent; }
+  .gbif-grid::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #9fe870, #6ea8ff);
+    border-radius: 999px;
+  }
 }
 
 /* Feature 73: catálogo de referencia de plagas por cultivo (imágenes GBIF) */

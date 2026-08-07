@@ -17,12 +17,12 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 76
-- Realizadas: 51
+- Total de historias registradas: 78
+- Realizadas: 52
 - Parciales: 0
 - Pendientes: 23
 - Saltadas: 2
-- Ultima actualizacion: 2026-08-04
+- Ultima actualizacion: 2026-08-07
 
 ## Registro por Feature
 
@@ -105,6 +105,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 | 73 | `73_COMPLETA_plagas_identificacion_por_nombre_cientifico_gbif.md` | Agricultura | Realizada | Catalogo de referencia de plagas POR CULTIVO descargado desde GBIF. A partir de los cultivos de `utilidad_cultivo` + un mapping curado cultivo->taxones, un scheduler a las 03:00 (y endpoint manual de sync) consulta GBIF por nombre cientifico, baja la imagen al volumen Docker (`plagas-referencia/`) y crea entradas en una tabla nueva `plaga_referencia` con el path + fuente/licencia/atribucion (solo CC). Web: vista de catalogo de referencia por cultivo con atribucion + boton de sync (admin). El uso offline en mobile se separa en la feature 74. |
 | 75 | `75_COMPLETA_plagas_especies_similares_gbif_taxonomia.md` | Agricultura | Realizada | Amplia GBIF (feature 73) para descubrir especies SIMILARES por taxonomia (mismo genero/familia) aunque no esten en el catalogo. Scheduler: guarda la taxonomia (genusKey/familyKey) en catalogo_plagas y descubre las hermanas (`species/{genusKey}/children`, familia via `species/search?highertaxonKey`) con foto + nombre vulgar (`vernacularNames`) en cache global `gbif_especie`. On-demand: endpoint + boton "Buscar similares" al lado del nombre cientifico en Nueva Plaga (consulta GBIF en vivo por nombre cientifico). GBIF hace similitud taxonomica, NO visual. Depende de la 73. |
 | 76 | `76_COMPLETA_datos_prueba_demo_seeder.md` | Infraestructura | Realizada | Dataset de demo coherente y enlazado para toda la app, via un seeder en el backend gateado por `SEED_DEMO_DATA` (default false), que corre al arrancar despues del DataInitializer y crea datos con ids fijos `demo-*` via repositorios (idempotente, nunca borra datos reales). Volumen chico. Todos los modulos: agricultura (lotes/siembras/cosechas/historico/suelo), plagas (detecciones/aplicaciones/seguimientos), insumos (stock/movimientos), clima, ganaderia (animales/sanidad/reproduccion/alimentacion), maquinaria, operarios/ordenes, finanzas (proveedores/facturas/compras). Sin migraciones nuevas. |
+| 77 | `77_COMPLETA_plagas_ui_premium_form_especies_similares.md` | Frontend | Realizada | Refactor SOLO visual del form de catalogo/especie de plagas y de la seccion "Especies similares (GBIF)": estetica dark premium (paleta Campo App, glassmorphism, radios 16-24px, Inter), inputs modernos, textarea de sintomas con contador, boton "Buscar similares" secundario. Nuevo componente reutilizable `searchable-multi-select` (input con buscador + chips removibles + dropdown flotante) para Cultivos afectados (mantiene el contrato: CSV de ids). Cards de especies similares image-dominant, grid 3/2/1 (desktop/tablet/mobile), badge de confianza derivado del nivel (genero/familia), placeholder sin imagen, "Ver mas resultados". Mobile (RN): card de similares replicada con imagen protagonista (aspect 4:3, badge de confianza, fuente GBIF, footer con nivel/nombre/cientifico/Usar), lista con maximo ~3 cards + scroll Y; "Plagas sugeridas" limitada a ~1 card con scroll Y. Funcionalidad y contratos intactos. |
+| 78 | `78_mobile_especies_similares_offline.md` | Mobile | Pendiente | Hacer que "Especies similares (GBIF)" (feature 75) funcione offline en mobile: sync down de las similares por plaga (`GET /catalogo/{id}/similares`) + descarga de sus imagenes al dispositivo (AgroBoost/similares dentro del document dir, patron de la feature 74), render offline desde archivo local con fallback a URL remota. El descubrimiento en vivo (`/gbif/similares?nombreCientifico=`) queda solo-online. Depende de 75 y 74. |
 | 74 | `74_mobile_catalogo_referencia_offline_agroboost.md` | Mobile | Pendiente | Uso offline en mobile del catalogo de referencia de la 73: descargar las imagenes al dispositivo (carpeta `AgroBoost/catalogo` para render offline y `AgroBoost/local` para pendientes de sync) usando `expo-file-system` dentro del document dir de la app (el root del dispositivo no es portable en RN/Expo). Render offline desde archivo local con fallback a URL remota; cola local que sube al reconectar e integra con el outbox. |
 
 ## Registro por Dominio
@@ -164,10 +166,13 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Realizadas: 43.
 
 ### Frontend
-- Realizadas: 44, 62, 67.
+- Realizadas: 44, 62, 67, 77.
 - Pendientes: 48.
 
 ## Ultimas Actualizaciones
+
+- 2026-08-07: Feature 77 mergeada a master (branch `77_plagas_ui_premium_form_especies_similares`) y marcada `_COMPLETA_` (`77_COMPLETA_plagas_ui_premium_form_especies_similares.md`). Refactor visual premium del form de plagas + `searchable-multi-select` + cards de especies similares image-dominant (web y mobile RN), con scroll Y en similares (~3 cards) y en "Plagas sugeridas" (~1 card) del mobile. Arrastra el commit de spec de la feature 78 (Pendiente). Contadores sin cambios (77 ya estaba Realizada): Total 78, Realizadas 52.
+- 2026-08-07: Feature 77 realizada (solo frontend web): refactor visual premium del form de catalogo/especie de plagas y de la seccion "Especies similares (GBIF)". Nuevo componente reutilizable `searchable-multi-select` (buscador + chips removibles + dropdown flotante con resaltado, overflow +N) que reemplaza a `configurable-multi-select` en Cultivos afectados manteniendo el contrato de ids (editar Oruga cogollera preselecciona MAIZ+SORGO). Inputs premium, textarea de sintomas con contador N/500, "Buscar similares" secundario. Cards GBIF image-dominant en grid 3/2/1, badge de confianza derivado del nivel (genero/familia), placeholder sin imagen, "Ver mas resultados", licencia/atribucion fuera de la card (link a gbif.org). Sin cambios de contrato/funcionalidad ni backend/mobile. type-check + ng build verdes. Desarrollada en branch propia; pendiente de merge.
 - 2026-08-06: Features 75 y 76 mergeadas a master y marcadas `_COMPLETA_`. 75: especies similares desde GBIF (cache global `gbif_especie` + boton "Buscar similares"). 76: demo seeder gateado por `SEED_DEMO_DATA`. Contadores: Total 76, Realizadas 51.
 - 2026-08-06: Feature 75 mergeada a master (branch `75_plagas_especies_similares_gbif_taxonomia`) y marcada `_COMPLETA_`. Especies similares desde GBIF por taxonomia (cache global gbif_especie + boton "Buscar similares"). Contadores: Total 75, Realizadas 50.
 - 2026-08-06: Feature 75 realizada (backend + web + mobile): especies similares desde GBIF por taxonomia. V51 agrega taxonomia a catalogo_plagas (gbif_genus_key/family_key/genero/familia) y crea el cache global `gbif_especie` (columna taxon_rank; `rank` es reservada en MySQL 8). El scheduler 03:00 (y `POST /gbif/similares/sync`) por cada plaga hace species/match, descubre hermanas de genero (`species/{genusKey}/children`) y de familia (`species/search?highertaxonKey`) segun topes .env (GBIF_SIMILAR_MAX_POR_NIVEL=12, GBIF_SIMILAR_MAX_NIVELES=2), baja nombre vulgar (vernacularNames, prefiere espanol) e imagen CC al volumen. `GET /catalogo/{id}/similares` calcula las similares de la ficha desde el cache (imagen local); `GET /gbif/similares?nombreCientifico=` descubre en vivo para el boton de Nueva Plaga (miniatura remota sin descargar, o local si ya esta cacheada). Web: bloque "Especies similares (GBIF)" en la ficha + boton "Buscar similares" con "Usar". Mobile: paridad ficha + boton. Verificado contra GBIF real (65 especies descubiertas, 24 similares 12+12 por nivel, remota vs local OK, sin errores de consola). Gates verdes. Depende de la 73. Desarrollada en branch propia; pendiente de merge.
