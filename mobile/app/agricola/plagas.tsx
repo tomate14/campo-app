@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type React from 'react'
 import * as Location from 'expo-location'
 import * as ImagePicker from 'expo-image-picker'
@@ -55,6 +55,7 @@ import {
   createCatalogoPlaga,
   buscarSimilaresGbif,
   createDeteccionPlaga,
+  createDeteccionPlagaConFoto,
   createSeguimientoPlaga,
   deleteCatalogoPlagaImagen,
   getAplicacionesFitosanitarias,
@@ -147,6 +148,23 @@ function toImageAsset(asset: ImagePicker.ImagePickerAsset): PlagaImageAsset {
   return { uri: asset.uri, fileName: asset.fileName, mimeType: asset.mimeType }
 }
 
+// Captura una foto (camara o galeria) pidiendo permiso y devuelve el asset o null si
+// se canceló o no hubo permiso (feature 79: la foto siempre es opcional).
+async function pickImageAsset(source: 'camera' | 'library'): Promise<PlagaImageAsset | null> {
+  const permission = source === 'camera'
+    ? await ImagePicker.requestCameraPermissionsAsync()
+    : await ImagePicker.requestMediaLibraryPermissionsAsync()
+  if (permission.status !== ImagePicker.PermissionStatus.GRANTED) {
+    Alert.alert('Permiso requerido', source === 'camera' ? 'No se otorgó permiso para usar la cámara.' : 'No se otorgó permiso para acceder a la galería.')
+    return null
+  }
+  const result = source === 'camera'
+    ? await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.7 })
+    : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.7 })
+  if (result.canceled || !result.assets?.[0]) return null
+  return toImageAsset(result.assets[0])
+}
+
 function nowLocalDateTime() {
   const now = new Date()
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
@@ -215,6 +233,10 @@ export default function PlagasMobilePage() {
     origenGeolocalizacion: 'MOBILE_GPS',
     fechaDeteccion: nowLocalDateTime(),
   })
+  // Foto de la deteccion (feature 79): captura previa cámara-primero, opcional.
+  const [deteccionFoto, setDeteccionFoto] = useState<PlagaImageAsset | null>(null)
+  // Flag para abrir la cámara una sola vez al iniciar una detección nueva.
+  const cameraAutoTriedRef = useRef(false)
   const [aplicacionForm, setAplicacionForm] = useState<AplicacionFitosanitariaRequest>({
     fechaAplicacion: nowLocalDateTime(),
     producto: '',
@@ -320,6 +342,20 @@ export default function PlagasMobilePage() {
     }
   }
 
+  // Camara-primero (feature 79): al entrar al modo deteccion con form nuevo y sin foto,
+  // abrir la camara una sola vez. Si el usuario cancela, sigue el flujo sin foto.
+  useEffect(() => {
+    if (loading || mode !== 'deteccion') return
+    if (cameraAutoTriedRef.current || deteccionFoto) return
+    cameraAutoTriedRef.current = true
+    pickDeteccionFoto('camera')
+  }, [loading, mode, deteccionFoto])
+
+  async function pickDeteccionFoto(source: 'camera' | 'library') {
+    const asset = await pickImageAsset(source)
+    if (asset) setDeteccionFoto(asset)
+  }
+
   async function saveDeteccion() {
     if (!deteccionForm.loteId || !deteccionForm.catalogoPlagaId || !deteccionForm.responsableId) {
       Alert.alert('Nueva detección', 'Seleccioná lote, plaga y responsable antes de guardar.')
@@ -327,9 +363,14 @@ export default function PlagasMobilePage() {
     }
     setSaving(true)
     try {
-      const saved = await createDeteccionPlaga(deteccionForm)
+      const saved = deteccionFoto
+        ? await createDeteccionPlagaConFoto(deteccionForm, deteccionFoto)
+        : await createDeteccionPlaga(deteccionForm)
       await refreshOperationalData()
       setSelectedDetectionId(saved.id)
+      // Reset de la foto y del flag de camara para la proxima deteccion.
+      setDeteccionFoto(null)
+      cameraAutoTriedRef.current = false
       Alert.alert('Nueva detección', 'Detección registrada correctamente.', [{ text: 'OK', onPress: () => router.replace('/(tabs)/lotes') }])
     } catch {
       Alert.alert('Nueva detección', 'No se pudo guardar la detección.')
@@ -531,10 +572,13 @@ export default function PlagasMobilePage() {
               catalogo={catalogo}
               cultivoOptions={cultivoOpciones}
               form={deteccionForm}
+              foto={deteccionFoto}
               lotes={lotes}
               operarios={operarios}
               saving={saving}
               onCaptureLocation={captureLocation}
+              onPickFoto={pickDeteccionFoto}
+              onRemoveFoto={() => setDeteccionFoto(null)}
               onSave={saveDeteccion}
               onAddPlaga={openNuevaPlaga}
               onOpenFicha={setFichaPlagaId}
@@ -616,10 +660,13 @@ function DetectionForm({
   catalogo,
   cultivoOptions,
   form,
+  foto,
   lotes,
   operarios,
   saving,
   onCaptureLocation,
+  onPickFoto,
+  onRemoveFoto,
   onSave,
   onAddPlaga,
   onOpenFicha,
@@ -628,10 +675,13 @@ function DetectionForm({
   catalogo: CatalogoPlaga[]
   cultivoOptions: UtilidadOpcion[]
   form: DeteccionPlagaRequest
+  foto: PlagaImageAsset | null
   lotes: Lote[]
   operarios: Operario[]
   saving: boolean
   onCaptureLocation: () => void
+  onPickFoto: (source: 'camera' | 'library') => void
+  onRemoveFoto: () => void
   onSave: () => void
   onAddPlaga: () => void
   onOpenFicha: (id: string) => void
@@ -650,6 +700,7 @@ function DetectionForm({
   return (
     <>
       <SectionTitle icon={<Crosshair color="#9FE870" size={18} />} title="Nueva detección" subtitle="Registro geolocalizado de plaga o enfermedad." />
+      <FotoCaptureCard foto={foto} onPick={onPickFoto} onRemove={onRemoveFoto} />
       <OptionPicker label="Lote" items={lotes.map(lote => ({ id: lote.id, label: lote.nombre, sublabel: lote.cultivoNombre ?? lote.cultivo }))} value={form.loteId} onChange={(id) => {
         const lote = lotes.find(item => item.id === id)
         setForm(current => ({ ...current, loteId: id, cultivo: lote?.cultivo }))
@@ -688,6 +739,39 @@ function DetectionForm({
       <Textarea label="Descripción" value={form.descripcion ?? ''} onChangeText={(value) => setForm(current => ({ ...current, descripcion: value.slice(0, 500) }))} />
       <PrimaryButton icon={<Plus color="#081225" size={22} />} label={saving ? 'Guardando...' : 'Registrar detección'} disabled={saving} onPress={onSave} />
     </>
+  )
+}
+
+// Card de foto de la deteccion/alerta (feature 79): preview de la imagen capturada con
+// acciones de reintentar/galeria/quitar, o placeholder cuando no hay foto. La foto es
+// opcional; se reutiliza el lenguaje visual del hero de la ficha del catalogo.
+function FotoCaptureCard({ foto, onPick, onRemove }: { foto: PlagaImageAsset | null; onPick: (source: 'camera' | 'library') => void; onRemove: () => void }) {
+  return (
+    <View style={styles.gallery}>
+      {foto ? (
+        <View style={styles.heroWrap}>
+          <Image source={{ uri: foto.uri }} style={styles.heroImage} contentFit="cover" transition={200} />
+          <Pressable style={styles.imageDelete} onPress={onRemove} accessibilityRole="button" accessibilityLabel="Quitar foto">
+            <Trash2 color="#FF6B6B" size={18} />
+          </Pressable>
+        </View>
+      ) : (
+        <View style={styles.heroPlaceholder}>
+          <Camera color="#3A4A6B" size={40} />
+          <Text style={styles.heroPlaceholderText}>Sin foto (opcional)</Text>
+        </View>
+      )}
+      <View style={styles.uploadRow}>
+        <Pressable style={styles.uploadButton} onPress={() => onPick('camera')} accessibilityRole="button">
+          <Camera color="#9FE870" size={18} />
+          <Text style={styles.uploadButtonText}>{foto ? 'Reintentar' : 'Tomar foto'}</Text>
+        </Pressable>
+        <Pressable style={styles.uploadButton} onPress={() => onPick('library')} accessibilityRole="button">
+          <Images color="#9FE870" size={18} />
+          <Text style={styles.uploadButtonText}>Galería</Text>
+        </Pressable>
+      </View>
+    </View>
   )
 }
 

@@ -161,6 +161,24 @@ export const getDeteccionesPlaga = () =>
 export const createDeteccionPlaga = (data: DeteccionPlagaRequest) =>
   api.post<ApiResponse<DeteccionPlaga>>('/agricola/plagas/detecciones', data).then(r => r.data.data)
 
+// Alta de deteccion con foto (feature 79): multipart con el payload JSON y la foto
+// opcional. Solo online (no pasa por el outbox); el backend persiste el archivo y
+// completa fotoUrl. No se setea Content-Type manual para que RN/axios pongan el boundary.
+export const createDeteccionPlagaConFoto = (data: DeteccionPlagaRequest, asset: PlagaImageAsset) => {
+  const formData = new FormData()
+  formData.append('payload', JSON.stringify(data))
+  formData.append('foto', {
+    uri: asset.uri,
+    name: asset.fileName ?? 'foto.jpg',
+    type: asset.mimeType ?? 'image/jpeg',
+  } as unknown as Blob)
+  return api.post<ApiResponse<DeteccionPlaga>>(
+    '/agricola/plagas/detecciones/con-foto',
+    formData,
+    { skipOutbox: true },
+  ).then(r => r.data.data)
+}
+
 export const createAplicacionFitosanitaria = (deteccionId: string, data: AplicacionFitosanitariaRequest) =>
   api.post<ApiResponse<AplicacionFitosanitaria>>(`/agricola/plagas/detecciones/${deteccionId}/aplicaciones`, data).then(r => r.data.data)
 

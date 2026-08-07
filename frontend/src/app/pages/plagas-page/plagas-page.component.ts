@@ -109,6 +109,11 @@ export class PlagasPageComponent {
 
   protected readonly filters = signal<{ loteId?: string; cultivo?: string; severidad?: SeveridadPlaga; estado?: EstadoDeteccionPlaga }>({});
   protected readonly deteccionForm = signal<DeteccionPlagaRequest>({ loteId: '', catalogoPlagaId: '', severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
+  // Feature 79: flujo foto-primero. Paso 1 (FOTO) selecciona la imagen opcional, paso 2 (FORM) el formulario.
+  protected readonly deteccionPaso = signal<'FOTO' | 'FORM'>('FOTO');
+  protected readonly deteccionFoto = signal<File | null>(null);
+  protected readonly deteccionFotoPreview = signal<string>('');
+  protected readonly deteccionFotoError = signal<string>('');
   protected readonly aplicacionForm = signal<AplicacionFitosanitariaRequest>({ producto: '', dosis: 0, unidadDosis: 'l/ha', operarioResponsableId: '', operarioResponsable: '', fechaAplicacion: this.nowLocalDateTime() });
   protected readonly seguimientoForm = signal<SeguimientoPlagaRequest>({ resultado: 'SIN_CAMBIOS', severidad: 'MEDIA', fecha: this.nowLocalDateTime() });
   protected readonly catalogoForm = signal<CatalogoPlagaRequest>({ nombreComun: '', tipo: 'PLAGA', activo: true });
@@ -500,6 +505,9 @@ export class PlagasPageComponent {
     if (type === 'DETECCION') {
       const lote = this.selectedLoteForForm();
       this.deteccionForm.set({ loteId: lote?.id ?? '', catalogoPlagaId: this.catalogoOpciones()[0]?.id ?? '', cultivo: lote?.cultivo, severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
+      // Feature 79: siempre arranca en el paso de foto (opcional) al abrir el modal.
+      this.resetDeteccionFoto();
+      this.deteccionPaso.set('FOTO');
     }
     if (type === 'APLICACION') {
       this.aplicacionForm.set({ producto: '', dosis: 0, unidadDosis: 'l/ha', operarioResponsableId: '', operarioResponsable: '', fechaAplicacion: this.nowLocalDateTime() });
@@ -534,6 +542,64 @@ export class PlagasPageComponent {
     this.fichaSimilaresLoading.set(false);
     this.fichaSimilaresExpanded.set(false);
     this.resetSimilaresGbif();
+    // Feature 79: limpieza del estado de foto de detección.
+    this.resetDeteccionFoto();
+    this.deteccionPaso.set('FOTO');
+  }
+
+  // Feature 79: resetea el estado de la foto de detección (libera el object URL del preview).
+  private resetDeteccionFoto() {
+    const preview = this.deteccionFotoPreview();
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+    this.deteccionFoto.set(null);
+    this.deteccionFotoPreview.set('');
+    this.deteccionFotoError.set('');
+  }
+
+  // Feature 79: valida y guarda la foto elegida en el paso 1 (JPG/PNG/WEBP hasta 5 MB).
+  protected onDeteccionFotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.deteccionFotoError.set('');
+    if (!this.allowedImagenTypes.includes(file.type)) {
+      this.deteccionFotoError.set('Formato no permitido. Usá JPG, PNG o WEBP.');
+      input.value = '';
+      return;
+    }
+    if (file.size > this.maxImagenBytes) {
+      this.deteccionFotoError.set('La imagen supera el máximo de 5 MB.');
+      input.value = '';
+      return;
+    }
+    const preview = this.deteccionFotoPreview();
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+    this.deteccionFoto.set(file);
+    this.deteccionFotoPreview.set(URL.createObjectURL(file));
+    input.value = '';
+  }
+
+  // Feature 79: quita la foto elegida sin cerrar el paso.
+  protected quitarDeteccionFoto() {
+    this.resetDeteccionFoto();
+  }
+
+  // Feature 79: navegación entre los 2 pasos del modal de detección.
+  protected continuarDeteccionConFoto() {
+    this.deteccionPaso.set('FORM');
+  }
+
+  protected continuarDeteccionSinFoto() {
+    this.resetDeteccionFoto();
+    this.deteccionPaso.set('FORM');
+  }
+
+  protected volverAFotoDeteccion() {
+    this.deteccionPaso.set('FOTO');
   }
 
   // Feature 75: resetea el panel de búsqueda en vivo de similares.
@@ -565,7 +631,12 @@ export class PlagasPageComponent {
 
   protected submitDeteccion() {
     this.saving.set(true);
-    this.agricolaService.createDeteccionPlaga(this.deteccionForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo guardar la detección.') });
+    // Feature 79: si hay foto elegida, se envía multipart; si no, el create JSON de siempre.
+    const foto = this.deteccionFoto();
+    const request$ = foto
+      ? this.agricolaService.createDeteccionPlagaConFoto(this.deteccionForm(), foto)
+      : this.agricolaService.createDeteccionPlaga(this.deteccionForm());
+    request$.subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo guardar la detección.') });
   }
 
   protected submitAplicacion() {

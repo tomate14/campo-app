@@ -6,6 +6,7 @@ import type { Feature, FeatureCollection, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
 import type { AlertaPotrero, AlertaPotreroGravedad, AlertaPotreroRequest, Potrero, PotreroRequest } from '../../core/models/ganaderia.models';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
+import { API_ORIGIN } from '../../core/services/api.config';
 import { buildPolygon, computeAreaHectares, computeCentroid, parsePolygon, sanitizePoints, type Point } from '../../shared/lote-geometry';
 
 const DEFAULT_CENTER: [number, number] = [-60.6735049, -36.1966878];
@@ -54,6 +55,13 @@ export class GanaderiaPotrerosPageComponent {
   protected readonly selectedAlerta = signal<AlertaPotrero | null>(null);
   protected readonly alertaSaving = signal(false);
   protected readonly alertaError = signal<string | null>(null);
+
+  // Feature 79: foto opcional de la alerta (foto-primero). Validación en front (el backend también valida).
+  protected readonly alertaFoto = signal<File | null>(null);
+  protected readonly alertaFotoPreview = signal<string>('');
+  protected readonly alertaFotoError = signal<string>('');
+  private readonly maxImagenBytes = 5 * 1024 * 1024;
+  private readonly allowedImagenTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
   protected readonly tipoUsos = ['PASTOREO', 'RESERVA', 'RECRIA', 'MATERNIDAD', 'ENCIERRE', 'OTRO'];
   protected readonly estados = ['ACTIVO', 'DESCANSO', 'MANTENIMIENTO', 'INACTIVO'];
@@ -349,6 +357,7 @@ export class GanaderiaPotrerosPageComponent {
       latitud: lat,
       longitud: lng,
     });
+    this.resetAlertaFoto();
     this.alertaModalOpen.set(true);
   }
 
@@ -356,6 +365,54 @@ export class GanaderiaPotrerosPageComponent {
     this.alertaModalOpen.set(false);
     this.alertaPotrero.set(null);
     this.alertaError.set(null);
+    this.resetAlertaFoto();
+  }
+
+  // Feature 79: prepend del origin del backend a la url relativa /uploads/...
+  protected imagenUrl(url?: string | null): string {
+    if (!url) return '';
+    return /^https?:\/\//i.test(url) ? url : `${API_ORIGIN}${url}`;
+  }
+
+  // Feature 79: resetea la foto de alerta (libera el object URL del preview).
+  private resetAlertaFoto(): void {
+    const preview = this.alertaFotoPreview();
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+    this.alertaFoto.set(null);
+    this.alertaFotoPreview.set('');
+    this.alertaFotoError.set('');
+  }
+
+  // Feature 79: valida y guarda la foto elegida (JPG/PNG/WEBP hasta 5 MB).
+  protected onAlertaFotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.alertaFotoError.set('');
+    if (!this.allowedImagenTypes.includes(file.type)) {
+      this.alertaFotoError.set('Formato no permitido. Usá JPG, PNG o WEBP.');
+      input.value = '';
+      return;
+    }
+    if (file.size > this.maxImagenBytes) {
+      this.alertaFotoError.set('La imagen supera el máximo de 5 MB.');
+      input.value = '';
+      return;
+    }
+    const preview = this.alertaFotoPreview();
+    if (preview) {
+      URL.revokeObjectURL(preview);
+    }
+    this.alertaFoto.set(file);
+    this.alertaFotoPreview.set(URL.createObjectURL(file));
+    input.value = '';
+  }
+
+  // Feature 79: quita la foto elegida.
+  protected quitarAlertaFoto(): void {
+    this.resetAlertaFoto();
   }
 
   protected updateAlertaForm<K extends keyof AlertaPotreroRequest>(key: K, value: AlertaPotreroRequest[K]): void {
@@ -370,7 +427,13 @@ export class GanaderiaPotrerosPageComponent {
     }
     this.alertaSaving.set(true);
     this.alertaError.set(null);
-    this.ganaderiaService.createAlertaPotrero({ ...data, observacion: data.observacion.trim() }).subscribe({
+    const payload = { ...data, observacion: data.observacion.trim() };
+    // Feature 79: si hay foto elegida, se envía multipart; si no, el create JSON de siempre.
+    const foto = this.alertaFoto();
+    const request$ = foto
+      ? this.ganaderiaService.createAlertaPotreroConFoto(payload, foto)
+      : this.ganaderiaService.createAlertaPotrero(payload);
+    request$.subscribe({
       next: () => {
         this.alertaSaving.set(false);
         this.closeAlertaModal();

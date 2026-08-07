@@ -283,6 +283,15 @@ export class AgricolaService {
     return this.http.post<ApiResponse<DeteccionPlaga> | DeteccionPlaga>(`${API_BASE_URL}/agricola/plagas/detecciones`, data).pipe(map((response) => unwrapApiResponse(response)));
   }
 
+  // Feature 79: detección con foto (multipart). payload = JSON del request, foto = File.
+  // No seteamos Content-Type: el browser pone el boundary automáticamente.
+  createDeteccionPlagaConFoto(data: DeteccionPlagaRequest, file: File) {
+    const formData = new FormData();
+    formData.append('payload', JSON.stringify(data));
+    formData.append('foto', file);
+    return this.http.post<ApiResponse<DeteccionPlaga> | DeteccionPlaga>(`${API_BASE_URL}/agricola/plagas/detecciones/con-foto`, formData).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
   changeDeteccionPlagaEstado(id: string, estado: EstadoDeteccionPlaga) {
     return this.http.patch<ApiResponse<DeteccionPlaga> | DeteccionPlaga>(`${API_BASE_URL}/agricola/plagas/detecciones/${id}/estado`, null, { params: { estado } }).pipe(map((response) => unwrapApiResponse(response)));
   }

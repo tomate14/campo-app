@@ -6,6 +6,7 @@ import com.campoapp.auth.repository.UserRepository;
 import com.campoapp.common.exception.BusinessException;
 import com.campoapp.common.exception.ResourceNotFoundException;
 import com.campoapp.common.exception.UnauthorizedException;
+import com.campoapp.common.storage.FileStorageService;
 import com.campoapp.ganaderia.dto.AlertaPotreroRequest;
 import com.campoapp.ganaderia.dto.AlertaPotreroResponse;
 import com.campoapp.ganaderia.entity.AlertaPotrero;
@@ -18,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Locale;
@@ -33,10 +35,17 @@ public class AlertaPotreroServiceImpl implements AlertaPotreroService {
     private final AlertaPotreroRepository alertaPotreroRepository;
     private final PotreroRepository potreroRepository;
     private final UserRepository userRepository;
+    private final FileStorageService fileStorageService;
 
     @Override
     @Transactional
     public AlertaPotreroResponse crear(AlertaPotreroRequest request) {
+        return crearConFoto(request, null);
+    }
+
+    @Override
+    @Transactional
+    public AlertaPotreroResponse crearConFoto(AlertaPotreroRequest request, MultipartFile foto) {
         // El usuario sale siempre del token: el cliente no puede elegir otro usuario.
         String usuarioId = currentUserId();
         if (usuarioId == null) {
@@ -56,6 +65,15 @@ public class AlertaPotreroServiceImpl implements AlertaPotreroService {
                 .longitud(request.longitud())
                 .estado(AlertaPotrero.ESTADO_ABIERTA)
                 .build();
+
+        // Feature 79: si llega foto, se persiste y la URL expuesta es /uploads/{path}.
+        if (foto != null && !foto.isEmpty()) {
+            String rel = fileStorageService.storeImage(foto, "ganaderia-alertas");
+            alerta.setFotoUrl("/uploads/" + rel);
+            alerta.setFotoNombre(foto.getOriginalFilename());
+            alerta.setFotoContentType(foto.getContentType());
+            alerta.setFotoTamanioBytes(foto.getSize());
+        }
 
         AlertaPotrero saved = alertaPotreroRepository.save(alerta);
         return toResponse(saved, Map.of(usuarioId, resolverNombreUsuario(usuarioId)));
@@ -134,6 +152,7 @@ public class AlertaPotreroServiceImpl implements AlertaPotreroService {
                 alerta.getLatitud(),
                 alerta.getLongitud(),
                 alerta.getEstado(),
+                alerta.getFotoUrl(),
                 alerta.getCreatedAt()
         );
     }
