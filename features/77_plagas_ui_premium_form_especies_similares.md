@@ -88,3 +88,7 @@ browser pane de este entorno no compone frames, no hubo screenshot):
   del alta y en el bloque de la ficha.
 - Sin cambios de contrato/funcionalidad ni backend/mobile. `npm run type-check` y
   `ng build` verdes.
+- Ajuste mobile (≤640px): el grid de cards GBIF muestra ~3 cards y el resto queda en
+  **scroll vertical** (`max-height: calc((72vw+130px)*3+32px)` + `overflow-y:auto` +
+  scrollbar premium verde→azul), manteniendo el mismo formato image-dominant (aspect
+  4:3) que en desktop. Verificado en el CSS compilado (regla activa a 640px).

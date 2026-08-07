@@ -577,7 +577,25 @@
   .pf-similar-btn { justify-content: center; }
 }
 @media (max-width: 640px) {
-  .gbif-grid { grid-template-columns: 1fr; gap: 16px; }
+  /* Mobile: 1 card por fila, mismo formato image-dominant que web (aspect 4:3).
+     Se muestran ~3 cards y el resto queda en scroll vertical con scrollbar premium.
+     (72vw ~ alto de imagen 4:3 al ancho de card; +130px ~ footer.) */
+  .gbif-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    max-height: calc((72vw + 130px) * 3 + 32px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(159, 232, 112, .55) transparent;
+  }
+  .gbif-grid::-webkit-scrollbar { width: 8px; }
+  .gbif-grid::-webkit-scrollbar-track { background: transparent; }
+  .gbif-grid::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #9fe870, #6ea8ff);
+    border-radius: 999px;
+  }
 }
 
 /* Feature 73: catálogo de referencia de plagas por cultivo (imágenes GBIF) */
