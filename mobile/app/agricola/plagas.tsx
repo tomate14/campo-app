@@ -1194,7 +1194,8 @@ function PlagaFichaModal({
                   <Text style={styles.emptyText}>Sin sugerencias por el momento.</Text>
                 </View>
               ) : (
-                sugeridas.map(sug => {
+                <ScrollView style={styles.suggestScroll} contentContainerStyle={styles.suggestScrollContent} nestedScrollEnabled showsVerticalScrollIndicator>
+                  {sugeridas.map(sug => {
                   const thumb = resolveAssetUrl(sug.imagenPrincipalUrl)
                   return (
                     <Pressable key={sug.id} style={styles.suggestItem} onPress={() => onOpenSugerida(sug.id)}>
@@ -1217,7 +1218,8 @@ function PlagaFichaModal({
                       <ChevronRight color="#6EA8FF" size={18} />
                     </Pressable>
                   )
-                })
+                })}
+                </ScrollView>
               )}
             </View>
 
@@ -1717,6 +1719,9 @@ const styles = StyleSheet.create({
   fichaRowValue: { color: '#DCE8F8', fontSize: 14, marginTop: 3, lineHeight: 19 },
   fichaRowValueItalic: { fontStyle: 'italic', color: '#6EA8FF' },
   suggestBlock: { gap: 10 },
+  // Plagas sugeridas (mobile): mostrar ~1 card y desplazar el resto con scroll vertical interno.
+  suggestScroll: { maxHeight: 96 },
+  suggestScrollContent: { gap: 10 },
   suggestItem: { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 18, padding: 10, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)' },
   suggestThumb: { width: 52, height: 52, borderRadius: 14, backgroundColor: '#0B1730' },
   suggestThumbPlaceholder: { width: 52, height: 52, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0B1730', borderWidth: 1, borderColor: 'rgba(255,255,255,.06)' },
