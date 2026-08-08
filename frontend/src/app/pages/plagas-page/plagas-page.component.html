@@ -632,7 +632,7 @@
                   <span class="suggested-body">
                     <span class="suggested-name">{{ sugerida.nombreComun }}</span>
                     <span class="suggested-type" *ngIf="sugerida.tipoNombre">{{ sugerida.tipoNombre }}</span>
-                    <span class="suggested-reasons" *ngIf="sugerida.motivos?.length">
+                    <span class="suggested-reasons" *ngIf="sugerida.motivos.length">
                       <span class="suggested-reason" *ngFor="let motivo of sugerida.motivos">{{ motivo }}</span>
                     </span>
                   </span>
