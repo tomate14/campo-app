@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { DrawerActions, useNavigation } from '@react-navigation/native'
 import { useRouter } from 'expo-router'
 import * as Location from 'expo-location'
+import { Image } from 'expo-image'
 import {
   Bell,
   CheckCircle2,
@@ -30,6 +31,7 @@ import {
   type LucideIcon,
 } from 'lucide-react-native'
 import { Colors } from '../../constants/colors'
+import { resolveAssetUrl } from '../../shared/api/client'
 import LotesFieldMap from '../../shared/components/lotes-field-map'
 import { formatDateDisplay } from '../../shared/components/ganaderia-form-kit'
 import { useDeletePotrero, usePotrerosMapa } from '../../shared/hooks/usePotreros'
@@ -496,9 +498,18 @@ function AlertaPreview({
   onResolve: () => void
 }) {
   const color = gravedadColor(alerta.gravedad)
+  const fotoUrl = resolveAssetUrl(alerta.fotoUrl)
 
   return (
     <View style={styles.potreroPreview}>
+      {/* Foto protagonista de la alerta (feature 79) o placeholder si no hay. */}
+      {fotoUrl ? (
+        <Image source={{ uri: fotoUrl }} style={styles.previewHero} contentFit="cover" transition={200} />
+      ) : (
+        <View style={styles.previewHeroPlaceholder}>
+          <Bell size={30} color="#3A4A6B" strokeWidth={2} />
+        </View>
+      )}
       <View style={styles.previewHead}>
         <View style={[styles.estadoBadge, { borderColor: `${color}80`, backgroundColor: `${color}18` }]}>
           <Text style={[styles.estadoBadgeText, { color }]}>{alerta.gravedad}</Text>
@@ -1030,6 +1041,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 24,
     shadowOffset: { width: 0, height: 14 },
+  },
+  previewHero: {
+    width: '100%',
+    height: 150,
+    borderRadius: 16,
+    marginBottom: 12,
+    backgroundColor: '#081225',
+  },
+  previewHeroPlaceholder: {
+    width: '100%',
+    height: 96,
+    borderRadius: 16,
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#081225',
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: 'rgba(255,255,255,0.12)',
   },
   previewScroll: {
     flexShrink: 1,

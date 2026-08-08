@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createAlertaPotrero, getAlertasPotreros, resolverAlertaPotrero } from '../api/ganaderia'
+import { createAlertaPotrero, createAlertaPotreroConFoto, getAlertasPotreros, resolverAlertaPotrero } from '../api/ganaderia'
+import type { PlagaImageAsset } from '../api/agricola'
 import type { AlertaPotreroRequest } from '../types/ganaderia'
 
 const ALERTAS_KEY = 'potreros-alertas'
@@ -17,6 +18,17 @@ export function useCreateAlertaPotrero() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (data: AlertaPotreroRequest) => createAlertaPotrero(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [ALERTAS_KEY] }),
+  })
+}
+
+// Alta de alerta con foto (feature 79): multipart online. Invalida la misma key
+// que el alta JSON para refrescar los pins del mapa.
+export function useCreateAlertaPotreroConFoto() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ data, asset }: { data: AlertaPotreroRequest; asset: PlagaImageAsset }) =>
+      createAlertaPotreroConFoto(data, asset),
     onSuccess: () => qc.invalidateQueries({ queryKey: [ALERTAS_KEY] }),
   })
 }

@@ -31,13 +31,14 @@ public class FileStorageService {
     private final StorageProperties storageProperties;
 
     /**
-     * Guarda la imagen bajo plagas-catalogo/{uuid}.{ext} y devuelve el path relativo
-     * (ej: plagas-catalogo/uuid.jpg). Nunca usa el nombre original del archivo.
+     * Guarda la imagen bajo {subfolder}/{uuid}.{ext} y devuelve el path relativo
+     * (ej: plagas-detecciones/uuid.jpg). Valida tipo/tamano como storePlagaImage
+     * y nunca usa el nombre original del archivo.
      */
-    public String storePlagaImage(MultipartFile file) {
+    public String storeImage(MultipartFile file, String subfolder) {
         validateImage(file);
         String extension = resolveExtension(file);
-        String relativePath = PLAGAS_SUBDIR + "/" + UUID.randomUUID() + extension;
+        String relativePath = subfolder + "/" + UUID.randomUUID() + extension;
         Path target = resolveAbsolute(relativePath);
         try {
             Files.createDirectories(target.getParent());
@@ -46,6 +47,14 @@ public class FileStorageService {
             throw new BusinessException("No se pudo guardar la imagen");
         }
         return relativePath;
+    }
+
+    /**
+     * Guarda la imagen bajo plagas-catalogo/{uuid}.{ext} y devuelve el path relativo
+     * (ej: plagas-catalogo/uuid.jpg). Nunca usa el nombre original del archivo.
+     */
+    public String storePlagaImage(MultipartFile file) {
+        return storeImage(file, PLAGAS_SUBDIR);
     }
 
     /**

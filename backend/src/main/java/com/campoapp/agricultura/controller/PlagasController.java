@@ -128,13 +128,8 @@ public class PlagasController {
     public ResponseEntity<ApiResponse<DeteccionPlagaResponse>> crearDeteccionConFoto(
             @RequestPart("payload") String payload,
             @RequestPart(value = "foto", required = false) MultipartFile foto) throws Exception {
-        DeteccionPlagaRequest base = objectMapper.readValue(payload, DeteccionPlagaRequest.class);
-        DeteccionPlagaRequest request = foto == null ? base : new DeteccionPlagaRequest(
-                base.loteId(), base.catalogoPlagaId(), base.fechaDeteccion(), base.cultivo(), base.severidad(),
-                base.areaAfectadaHa(), base.porcentajeAfectado(), base.estado(), base.latitud(), base.longitud(),
-                base.precisionMetros(), base.origenGeolocalizacion(), "/uploads/plagas/" + foto.getOriginalFilename(),
-                foto.getOriginalFilename(), foto.getContentType(), foto.getSize(), base.descripcion(), base.responsableId(), base.responsable());
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(plagasService.crearDeteccion(request)));
+        DeteccionPlagaRequest request = objectMapper.readValue(payload, DeteccionPlagaRequest.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(plagasService.crearDeteccionConFoto(request, foto)));
     }
 
     @GetMapping("/detecciones/{id}")

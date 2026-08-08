@@ -17,5 +17,6 @@ public record AlertaPotreroResponse(
         BigDecimal latitud,
         BigDecimal longitud,
         String estado,
+        String fotoUrl,
         LocalDateTime createdAt
 ) {}

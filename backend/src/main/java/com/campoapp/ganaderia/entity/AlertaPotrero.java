@@ -59,4 +59,17 @@ public class AlertaPotrero extends AuditableEntity {
     @Column(nullable = false, length = 20)
     @Builder.Default
     private String estado = ESTADO_ABIERTA;
+
+    /** Foto opcional de lo encontrado en el campo (feature 79); URL expuesta como /uploads/{path}. */
+    @Column(name = "foto_url", length = 500)
+    private String fotoUrl;
+
+    @Column(name = "foto_nombre", length = 255)
+    private String fotoNombre;
+
+    @Column(name = "foto_content_type", length = 100)
+    private String fotoContentType;
+
+    @Column(name = "foto_tamanio_bytes")
+    private Long fotoTamanioBytes;
 }

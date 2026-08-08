@@ -76,6 +76,8 @@ export interface AlertaPotrero {
   latitud?: number | null
   longitud?: number | null
   estado: 'ABIERTA' | 'RESUELTA'
+  // Foto capturada al registrar la alerta (feature 79); path relativo /uploads/...
+  fotoUrl?: string
   createdAt?: string
 }
 

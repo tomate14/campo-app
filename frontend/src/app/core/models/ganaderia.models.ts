@@ -136,6 +136,8 @@ export interface AlertaPotrero {
   latitud?: number | null
   longitud?: number | null
   estado: AlertaPotreroEstado | string
+  // Feature 79: foto opcional de la alerta (path relativo /uploads/...).
+  fotoUrl?: string
   createdAt?: string
 }
 

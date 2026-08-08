@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router'
 import { DrawerActions, useNavigation } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query'
 import * as Location from 'expo-location'
+import { Image } from 'expo-image'
 import {
   ChevronDown,
   ChevronLeft,
@@ -32,6 +33,7 @@ import {
 import { Colors } from '../../constants/colors'
 import LotesFieldMap from '../../shared/components/lotes-field-map'
 import { getCosechasByLote, getEventosByLote, getHistorialByLote } from '../../shared/api/agricola'
+import { resolveAssetUrl } from '../../shared/api/client'
 import { useLotes } from '../../shared/hooks/useLotes'
 import { useAplicacionesFitosanitarias, useDeteccionesPlaga, useSeguimientosPlaga } from '../../shared/hooks/usePlagas'
 import type {
@@ -437,9 +439,18 @@ function DetectionPreview({
   const area = detection.areaAfectadaHa !== undefined && detection.areaAfectadaHa !== null
     ? `${Number(detection.areaAfectadaHa).toLocaleString('es-AR')} ha`
     : 'Sin dato'
+  const fotoUrl = resolveAssetUrl(detection.fotoUrl)
 
   return (
     <View style={styles.detectionPreview}>
+      {/* Foto protagonista de la deteccion (feature 79) o placeholder si no hay. */}
+      {fotoUrl ? (
+        <Image source={{ uri: fotoUrl }} style={styles.previewHero} contentFit="cover" transition={200} />
+      ) : (
+        <View style={styles.previewHeroPlaceholder}>
+          <Crosshair size={30} color="#3A4A6B" strokeWidth={2} />
+        </View>
+      )}
       <View style={styles.detectionPreviewHead}>
         <View style={[styles.severityBadge, { borderColor: `${severityColor}80`, backgroundColor: `${severityColor}18` }]}>
           <Text style={[styles.severityBadgeText, { color: severityColor }]}>{detection.severidad}</Text>
@@ -1099,6 +1110,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 24,
     shadowOffset: { width: 0, height: 14 },
+  },
+  previewHero: {
+    width: '100%',
+    height: 150,
+    borderRadius: 16,
+    marginBottom: 12,
+    backgroundColor: '#081225',
+  },
+  previewHeroPlaceholder: {
+    width: '100%',
+    height: 96,
+    borderRadius: 16,
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#081225',
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: 'rgba(255,255,255,0.12)',
   },
   detectionPreviewHead: {
     flexDirection: 'row',

@@ -288,6 +288,38 @@
 .gps-field .gps-locate svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
 .gps-field .gps-locate:disabled { opacity: .6; cursor: progress; }
 
+/* Feature 79: paso de foto (foto-primero) del modal de detección */
+.modal-step-badge { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(159, 232, 112, .22); background: rgba(159, 232, 112, .08); color: #9fe870; font-size: 11px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+.modal-step-dot { width: 7px; height: 7px; border-radius: 999px; background: rgba(166, 176, 207, .35); }
+.modal-step-dot.is-active { background: #9fe870; box-shadow: 0 0 10px rgba(159, 232, 112, .5); }
+.modal-step-dot.is-done { background: rgba(159, 232, 112, .6); }
+.foto-step { display: flex; flex-direction: column; gap: 16px; }
+.foto-dropzone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 260px; width: 100%; border-radius: 22px; border: 1.5px dashed rgba(159, 232, 112, .3); background: rgba(8, 18, 37, .6); color: #dce8f8; cursor: pointer; transition: border-color .18s ease, background .18s ease; }
+.foto-dropzone:hover { border-color: rgba(159, 232, 112, .55); background: rgba(159, 232, 112, .06); }
+.foto-dropzone__icon { width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center; color: #9fe870; background: radial-gradient(circle, rgba(159, 232, 112, .2), rgba(159, 232, 112, .06)); border: 1px solid rgba(159, 232, 112, .22); box-shadow: 0 0 26px rgba(159, 232, 112, .1); }
+.foto-dropzone__icon svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.foto-dropzone strong { font-size: 16px; color: #fff; }
+.foto-dropzone small { color: #a6b0cf; font-size: 12px; }
+.foto-preview { position: relative; width: 100%; aspect-ratio: 4 / 3; max-height: 340px; border-radius: 22px; overflow: hidden; border: 1px solid rgba(159, 232, 112, .2); background: #081225; box-shadow: 0 22px 50px rgba(0, 0, 0, .38), 0 0 34px rgba(159, 232, 112, .08); }
+.foto-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto-preview__remove { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 999px; background: rgba(8, 18, 37, .82); color: #fff; backdrop-filter: blur(8px); cursor: pointer; }
+.foto-preview__remove svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.foto-error { margin: 0; color: #ff6b6b; font-size: 13px; font-weight: 700; }
+.foto-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.foto-actions .btn-secondary { display: inline-flex; align-items: center; gap: 6px; }
+.foto-actions .btn-secondary svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.foto-chip { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 14px; padding: 6px 8px 6px 6px; border-radius: 999px; border: 1px solid rgba(159, 232, 112, .2); background: rgba(159, 232, 112, .06); }
+.foto-chip img { width: 34px; height: 34px; border-radius: 999px; object-fit: cover; }
+.foto-chip span { color: #dce8f8; font-size: 13px; font-weight: 800; }
+.foto-chip button { border: 0; background: transparent; color: #9fe870; font-size: 12px; font-weight: 900; cursor: pointer; }
+
+/* Feature 79: foto protagonista en el header de la card del pin */
+.pin-card__media { position: relative; width: 100%; aspect-ratio: 16 / 9; margin-bottom: 12px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(159, 232, 112, .18); background: #081225; }
+.pin-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pin-card__media-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: #6f80a0; }
+.pin-card__media-empty svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.pin-card__media-empty small { font-size: 12px; font-weight: 700; }
+
 /* Feature 54: iconos dentro de los botones de acciones de la tabla */
 .table-actions button { display: inline-flex; align-items: center; gap: 6px; }
 .table-actions button svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }

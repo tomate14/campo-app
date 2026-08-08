@@ -346,6 +346,29 @@
         </div>
       </div>
 
+      <!-- Feature 79: foto opcional de la alerta (input file + preview + quitar). -->
+      <div class="alerta-field">
+        <span>Foto (opcional)</span>
+        <input #alertaFotoInput type="file" accept="image/*" capture="environment" hidden (change)="onAlertaFotoSelected($event)" />
+        <div class="foto-preview" *ngIf="alertaFotoPreview(); else alertaFotoEmpty">
+          <img [src]="alertaFotoPreview()" alt="Foto de la alerta" />
+          <button type="button" class="foto-preview__remove" (click)="quitarAlertaFoto()" aria-label="Quitar foto">
+            <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+          </button>
+        </div>
+        <ng-template #alertaFotoEmpty>
+          <button type="button" class="foto-dropzone" (click)="alertaFotoInput.click()">
+            <span class="foto-dropzone__icon">
+              <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z" /><circle cx="12" cy="13" r="4" /></svg>
+            </span>
+            <strong>Seleccionar foto</strong>
+            <small>JPG, PNG o WEBP · hasta 5 MB</small>
+          </button>
+        </ng-template>
+        <p class="foto-error" *ngIf="alertaFotoError()">{{ alertaFotoError() }}</p>
+        <button type="button" class="foto-change-link" *ngIf="alertaFotoPreview()" (click)="alertaFotoInput.click()">Cambiar foto</button>
+      </div>
+
       <div class="alerta-field">
         <span>Gravedad</span>
         <div class="gravedad-chips">
@@ -396,6 +419,16 @@
       <button class="modal-close" type="button" aria-label="Cerrar" (click)="closeAlertaDetail()">
         <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
       </button>
+      <!-- Feature 79: foto protagonista en el header de la card (placeholder cuando no hay). -->
+      <div class="alerta-detail-media">
+        <img *ngIf="alerta.fotoUrl; else alertaDetailNoFoto" [src]="imagenUrl(alerta.fotoUrl)" [alt]="alerta.potreroNombre || 'Alerta de potrero'" />
+        <ng-template #alertaDetailNoFoto>
+          <span class="alerta-detail-media__empty">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" /><circle cx="9" cy="9" r="2" /><path d="m21 15-4.5-4.5L5 21" /></svg>
+            <small>Sin foto</small>
+          </span>
+        </ng-template>
+      </div>
       <div class="modal-head">
         <span class="modal-icon alerta-icon">
           <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>

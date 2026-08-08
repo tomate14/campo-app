@@ -1,4 +1,5 @@
 import { apiClient as api } from './client'
+import type { PlagaImageAsset } from './agricola'
 import type {
   AlertaPotrero, AlertaPotreroRequest,
   Animal, AnimalDetalleResponse, AnimalRequest, ApiResponse,
@@ -44,6 +45,24 @@ export const getAlertasPotreros = (params?: { potreroId?: string; estado?: strin
 
 export const createAlertaPotrero = (data: AlertaPotreroRequest) =>
   api.post<ApiResponse<AlertaPotrero>>('/ganaderia/potreros/alertas', data).then(r => r.data.data)
+
+// Alta de alerta con foto (feature 79): multipart con el payload JSON y la foto
+// opcional. Solo online (no pasa por el outbox); el backend persiste el archivo y
+// completa fotoUrl. No se setea Content-Type manual para que RN/axios pongan el boundary.
+export const createAlertaPotreroConFoto = (data: AlertaPotreroRequest, asset: PlagaImageAsset) => {
+  const formData = new FormData()
+  formData.append('payload', JSON.stringify(data))
+  formData.append('foto', {
+    uri: asset.uri,
+    name: asset.fileName ?? 'foto.jpg',
+    type: asset.mimeType ?? 'image/jpeg',
+  } as unknown as Blob)
+  return api.post<ApiResponse<AlertaPotrero>>(
+    '/ganaderia/potreros/alertas/con-foto',
+    formData,
+    { skipOutbox: true },
+  ).then(r => r.data.data)
+}
 
 export const resolverAlertaPotrero = (id: string) =>
   api.put<ApiResponse<AlertaPotrero>>(`/ganaderia/potreros/alertas/${id}/resolver`).then(r => r.data.data)

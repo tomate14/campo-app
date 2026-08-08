@@ -249,13 +249,40 @@ public class PlagasServiceImpl implements PlagasService {
     @Override
     @Transactional
     public DeteccionPlagaResponse crearDeteccion(DeteccionPlagaRequest request) {
+        // Path JSON: los datos de foto salen del request (validamos tipo/tamano).
+        validatePhoto(request.fotoContentType(), request.fotoTamanioBytes());
+        DeteccionPlaga deteccion = buildDeteccion(request);
+        deteccion.setFotoUrl(request.fotoUrl());
+        deteccion.setFotoNombre(request.fotoNombre());
+        deteccion.setFotoContentType(request.fotoContentType());
+        deteccion.setFotoTamanioBytes(request.fotoTamanioBytes());
+        return toDeteccionResponse(deteccionRepository.save(deteccion));
+    }
+
+    @Override
+    @Transactional
+    public DeteccionPlagaResponse crearDeteccionConFoto(DeteccionPlagaRequest request, MultipartFile foto) {
+        DeteccionPlaga deteccion = buildDeteccion(request);
+        // Path con-foto: los datos reales de la foto salen del archivo (ignoramos los del request);
+        // storeImage ya valida tipo/tamano.
+        if (foto != null && !foto.isEmpty()) {
+            String rel = fileStorageService.storeImage(foto, "plagas-detecciones");
+            deteccion.setFotoUrl("/uploads/" + rel);
+            deteccion.setFotoNombre(foto.getOriginalFilename());
+            deteccion.setFotoContentType(foto.getContentType());
+            deteccion.setFotoTamanioBytes(foto.getSize());
+        }
+        return toDeteccionResponse(deteccionRepository.save(deteccion));
+    }
+
+    // Arma la entidad de deteccion con todos los campos salvo la foto (la setea cada caller).
+    private DeteccionPlaga buildDeteccion(DeteccionPlagaRequest request) {
         Lote lote = findLote(request.loteId());
         CatalogoPlaga catalogo = findCatalogo(request.catalogoPlagaId());
         validateCoordinates(request.latitud(), request.longitud());
-        validatePhoto(request.fotoContentType(), request.fotoTamanioBytes());
         String responsableId = resolveOperarioId(request.responsableId(), request.responsable(), false);
 
-        DeteccionPlaga deteccion = DeteccionPlaga.builder()
+        return DeteccionPlaga.builder()
                 .lote(lote)
                 .catalogoPlaga(catalogo)
                 .fechaDeteccion(request.fechaDeteccion() != null ? request.fechaDeteccion() : LocalDateTime.now())
@@ -268,14 +295,9 @@ public class PlagasServiceImpl implements PlagasService {
                 .longitud(request.longitud())
                 .precisionMetros(request.precisionMetros())
                 .origenGeolocalizacion(request.origenGeolocalizacion() != null ? request.origenGeolocalizacion() : OrigenGeolocalizacion.MANUAL)
-                .fotoUrl(request.fotoUrl())
-                .fotoNombre(request.fotoNombre())
-                .fotoContentType(request.fotoContentType())
-                .fotoTamanioBytes(request.fotoTamanioBytes())
                 .descripcion(request.descripcion())
                 .responsable(responsableId)
                 .build();
-        return toDeteccionResponse(deteccionRepository.save(deteccion));
     }
 
     @Override

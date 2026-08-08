@@ -22,6 +22,8 @@ public interface PlagasService {
     Page<DeteccionPlagaResponse> listarDeteccionesPaginadas(String loteId, EstadoDeteccionPlaga estado, SeveridadPlaga severidad, String cultivo, int page, int size);
     DeteccionPlagaResponse obtenerDeteccion(String id);
     DeteccionPlagaResponse crearDeteccion(DeteccionPlagaRequest request);
+    // Feature 79: alta con foto opcional; la foto se persiste con FileStorageService.
+    DeteccionPlagaResponse crearDeteccionConFoto(DeteccionPlagaRequest request, MultipartFile foto);
     DeteccionPlagaResponse cambiarEstado(String id, EstadoDeteccionPlaga estado);
     SeguimientoPlagaResponse crearSeguimiento(String deteccionId, SeguimientoPlagaRequest request);
     AplicacionFitosanitariaResponse crearAplicacion(String deteccionId, AplicacionFitosanitariaRequest request);

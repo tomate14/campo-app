@@ -147,6 +147,16 @@ export class GanaderiaService {
       .pipe(map((response) => unwrapApiResponse(response)));
   }
 
+  // Feature 79: alerta con foto (multipart). payload = JSON del request, foto = File.
+  // No seteamos Content-Type: el browser pone el boundary automáticamente.
+  createAlertaPotreroConFoto(data: AlertaPotreroRequest, file: File) {
+    const formData = new FormData();
+    formData.append('payload', JSON.stringify(data));
+    formData.append('foto', file);
+    return this.http.post<ApiResponse<AlertaPotrero> | AlertaPotrero>(`${API_BASE_URL}/ganaderia/potreros/alertas/con-foto`, formData)
+      .pipe(map((response) => unwrapApiResponse(response)));
+  }
+
   resolverAlertaPotrero(id: string) {
     return this.http.put<ApiResponse<AlertaPotrero> | AlertaPotrero>(`${API_BASE_URL}/ganaderia/potreros/alertas/${id}/resolver`, {})
       .pipe(map((response) => unwrapApiResponse(response)));
