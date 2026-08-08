@@ -298,50 +298,34 @@ svg {
   font-weight: 900;
 }
 
-.lote-pin {
-  position: relative;
-  display: flex;
+/* Etiqueta discreta del lote (feature 81): solo texto, no es un pin ni un boton. */
+.lote-label {
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  cursor: pointer;
+  gap: 1px;
+  pointer-events: none;
   transform: translateY(-50%);
+  border: 1px solid rgba(159, 232, 112, .18);
+  border-radius: 10px;
+  padding: 4px 9px;
+  background: rgba(8, 18, 37, .78);
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+  text-align: center;
 }
 
-.lote-pin-head {
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
-  border: 2px solid rgba(255, 255, 255, .9);
-  border-radius: 999px;
-  background: var(--pin-color, #9FE870);
-  color: #081225;
-  box-shadow: 0 0 0 5px rgba(8, 18, 37, .28), 0 0 22px var(--pin-color, #9FE870);
-  transition: transform .16s ease, box-shadow .16s ease;
+.lote-label-name {
+  color: #f8fbff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -.01em;
 }
 
-.lote-pin:hover .lote-pin-head {
-  transform: translateY(-2px) scale(1.06);
-  box-shadow: 0 0 0 5px rgba(8, 18, 37, .34), 0 0 30px var(--pin-color, #9FE870);
-}
-
-.lote-pin-head svg {
-  width: 17px;
-  height: 17px;
-  stroke-width: 2.2;
-}
-
-.lote-pin-tip {
-  width: 0;
-  height: 0;
-  margin-top: -2px;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 9px solid var(--pin-color, #9FE870);
-  filter: drop-shadow(0 3px 6px rgba(2, 8, 23, .5));
+.lote-label-area {
+  color: #9fe870;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .map-tooltip {
@@ -565,81 +549,70 @@ svg {
 
 .lote-main-metrics {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 2px;
   color: #f8fbff;
 }
 
 .lote-main-metrics strong {
-  font-size: 15px;
-  letter-spacing: -.02em;
+  color: #fff;
+  font-size: 22px;
+  letter-spacing: -.03em;
 }
 
-.lote-main-metrics span {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-width: 0;
-  color: #d8e4f6;
-  font-size: 13px;
-  font-weight: 800;
+.lote-main-metrics small {
+  color: #8ea0bb;
+  font-size: 12px;
+  font-weight: 700;
 }
 
-.lote-main-metrics span svg {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 auto;
-  color: #9fe870;
-}
-
-.lote-metric-grid {
+.lote-info-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: 7px;
+  margin-top: 2px;
+  border-top: 1px solid rgba(255, 255, 255, .06);
+  padding-top: 10px;
 }
 
-.mini-metric {
+.lote-info-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   min-width: 0;
-  border: 1px solid rgba(255, 255, 255, .06);
-  border-radius: 14px;
-  padding: 8px;
-  background: rgba(7, 15, 31, .42);
 }
 
-.mini-icon {
-  width: 28px;
-  height: 28px;
+.info-icon {
+  width: 24px;
+  height: 24px;
   flex: 0 0 auto;
   display: grid;
   place-items: center;
-  border-radius: 10px;
+  border-radius: 9px;
   background: rgba(159, 232, 112, .1);
   color: #9fe870;
 }
 
-.mini-icon svg {
-  width: 15px;
-  height: 15px;
+.info-icon svg {
+  width: 14px;
+  height: 14px;
 }
 
-.mini-metric small {
-  display: block;
-  color: #8ea0bb;
-  font-size: 10px;
-}
-
-.mini-metric strong {
-  display: block;
-  margin-top: 2px;
+.info-label {
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
-  color: #fff;
+  color: #a6b0cf;
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.info-value {
+  flex: 0 0 auto;
+  color: #f8fbff;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .history-row {

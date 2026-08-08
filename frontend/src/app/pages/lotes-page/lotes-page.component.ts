@@ -26,16 +26,28 @@ import {
 
 const DEFAULT_CENTER: [number, number] = [-60.6735049, -36.1966878];
 
-// Paleta de acentos premium para colorear lotes por cultivo (feature 81).
-const CULTIVO_PALETTE = ['#9FE870', '#6EA8FF', '#FFB84D', '#9A7DFF', '#39D0D8', '#FF8A4C'];
+// Color de lote sano (sin detecciones abiertas), identico a mobile.
+const HEALTHY_COLOR = '#9FE870';
 
-// Colores por severidad de deteccion (mismo mapeo usado en el modulo de plagas).
+// Estados de deteccion que se consideran "abiertas" para colorear por salud (igual que mobile).
+const OPEN_DETECTION_STATES = ['ABIERTA', 'EN_TRATAMIENTO'];
+
+// Colores por severidad de deteccion (mismo mapeo usado en el modulo de plagas y en mobile).
 const SEVERITY_COLORS: Record<string, string> = {
-  BAJA: '#9FE870',
+  BAJA: '#A3E635',
   MEDIA: '#FFB84D',
   ALTA: '#FF8A4C',
   CRITICA: '#FF6B6B',
 };
+
+// Leyenda fija por salud del lote (feature 81): mismo criterio que mobile.
+const HEALTH_LEGEND: Array<{ label: string; color: string }> = [
+  { label: 'Sano', color: HEALTHY_COLOR },
+  { label: 'Baja', color: '#A3E635' },
+  { label: 'Media', color: '#FFB84D' },
+  { label: 'Alta', color: '#FF8A4C' },
+  { label: 'Crítica', color: '#FF6B6B' },
+];
 
 @Component({
   selector: 'app-lotes-page',
@@ -74,11 +86,20 @@ export class LotesPageComponent {
   protected readonly reporte = signal<LoteReporte | null>(null);
   protected readonly eventos = signal<EventoSiembra[]>([]);
   protected readonly cosechas = signal<RegistroCosecha[]>([]);
+  // Todas las detecciones del establecimiento (feature 81): alimentan el color por salud del mapa.
   protected readonly detecciones = signal<DeteccionPlaga[]>([]);
   protected readonly loadingReporte = signal(false);
   protected readonly loadingEventos = signal(false);
   protected readonly loadingCosechas = signal(false);
-  protected readonly loadingDetecciones = signal(false);
+
+  // Detecciones del lote abierto en el modal de historico (derivadas del signal global).
+  protected readonly deteccionesDelLote = computed<DeteccionPlaga[]>(() => {
+    const loteId = this.detailLote()?.id;
+    if (!loteId) {
+      return [];
+    }
+    return this.detecciones().filter((deteccion) => deteccion.loteId === loteId);
+  });
 
   protected readonly satelliteStyle: StyleSpecification = {
     version: 8,
@@ -105,24 +126,8 @@ export class LotesPageComponent {
   protected readonly mapCenter = computed<[number, number]>(() => this.computeMapCenter());
   protected readonly draftAreaHa = computed(() => computeAreaHectares(this.drawingPoints()) ?? 0);
 
-  // Mapa cultivo -> color, deterministico por orden de aparicion (leyenda dinamica).
-  protected readonly cultivoColorMap = computed<Record<string, string>>(() => {
-    const map: Record<string, string> = {};
-    let index = 0;
-    for (const lote of this.lotes()) {
-      const key = this.cultivoKey(lote);
-      if (!(key in map)) {
-        map[key] = CULTIVO_PALETTE[index % CULTIVO_PALETTE.length];
-        index += 1;
-      }
-    }
-    return map;
-  });
-
-  protected readonly legendItems = computed<Array<{ label: string; color: string }>>(() => {
-    const map = this.cultivoColorMap();
-    return Object.entries(map).map(([label, color]) => ({ label, color }));
-  });
+  // Leyenda por salud fija (feature 81): mismo criterio de color que mobile.
+  protected readonly legendItems = HEALTH_LEGEND;
 
   protected readonly lotesData = computed<FeatureCollection<Polygon>>(() => ({
     type: 'FeatureCollection',
@@ -151,17 +156,18 @@ export class LotesPageComponent {
     };
   });
 
-  // Pin/centroide por lote con poligono valido.
-  protected readonly lotePins = computed<Array<{ lote: Lote; lngLat: [number, number]; color: string }>>(() => {
+  // Etiqueta discreta por lote (feature 81): nombre + ha en el centroide, como mobile/potreros.
+  // Es solo texto (pointer-events: none), el lote se representa por su poligono.
+  protected readonly loteLabels = computed<Array<{ lote: Lote; lngLat: [number, number] }>>(() => {
     return this.lotes()
       .map((lote) => {
         const lngLat = this.resolveLoteLngLat(lote);
         if (!lngLat) {
           return null;
         }
-        return { lote, lngLat, color: this.colorFor(lote) };
+        return { lote, lngLat };
       })
-      .filter((pin): pin is { lote: Lote; lngLat: [number, number]; color: string } => pin !== null);
+      .filter((label): label is { lote: Lote; lngLat: [number, number] } => label !== null);
   });
 
   protected readonly kpis = computed(() => {
@@ -215,6 +221,12 @@ export class LotesPageComponent {
         this.loading.set(false);
         this.error.set('No se pudieron cargar los lotes.');
       },
+    });
+
+    // Feature 81: cargar todas las detecciones para colorear los lotes por salud (igual que mobile).
+    this.agricolaService.getDeteccionesPlaga().subscribe({
+      next: (detecciones) => this.detecciones.set(Array.isArray(detecciones) ? detecciones : []),
+      error: () => this.detecciones.set([]),
     });
   }
 
@@ -320,7 +332,6 @@ export class LotesPageComponent {
     this.reporte.set(null);
     this.eventos.set([]);
     this.cosechas.set([]);
-    this.detecciones.set([]);
 
     this.loadingReporte.set(true);
     this.agricolaService.getReporteLote(lote.id).subscribe({
@@ -347,15 +358,6 @@ export class LotesPageComponent {
         this.loadingCosechas.set(false);
       },
       error: () => this.loadingCosechas.set(false),
-    });
-
-    this.loadingDetecciones.set(true);
-    this.agricolaService.getDeteccionesPlaga({ loteId: lote.id }).subscribe({
-      next: (detecciones) => {
-        this.detecciones.set(Array.isArray(detecciones) ? detecciones : []);
-        this.loadingDetecciones.set(false);
-      },
-      error: () => this.loadingDetecciones.set(false),
     });
   }
 
@@ -456,7 +458,32 @@ export class LotesPageComponent {
   // ---- Helpers de presentacion ----
 
   protected colorFor(lote: Lote): string {
-    return this.cultivoColorMap()[this.cultivoKey(lote)] ?? CULTIVO_PALETTE[0];
+    return this.loteHealthColor(lote.id);
+  }
+
+  // Color por salud del lote (feature 81): EXACTO criterio de mobile (loteHealthColor).
+  // Toma las severidades de las detecciones abiertas del lote y devuelve el peor color.
+  protected loteHealthColor(loteId: string): string {
+    const severities = this.detecciones()
+      .filter(
+        (deteccion) =>
+          deteccion.loteId === loteId && OPEN_DETECTION_STATES.includes(String(deteccion.estado)),
+      )
+      .map((deteccion) => String(deteccion.severidad));
+
+    if (severities.includes('CRITICA')) {
+      return '#FF6B6B';
+    }
+    if (severities.includes('ALTA')) {
+      return '#FF8A4C';
+    }
+    if (severities.includes('MEDIA')) {
+      return '#FFB84D';
+    }
+    if (severities.includes('BAJA')) {
+      return '#A3E635';
+    }
+    return HEALTHY_COLOR;
   }
 
   protected cultivoLabel(lote: Lote): string {

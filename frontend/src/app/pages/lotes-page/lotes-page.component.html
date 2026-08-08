@@ -80,7 +80,7 @@
             id="lotes-fill"
             type="fill"
             source="lotes-source"
-            [paint]="{ 'fill-color': ['get', 'color'], 'fill-opacity': 0.34 }"
+            [paint]="{ 'fill-color': ['get', 'color'], 'fill-opacity': 0.24 }"
             (layerMouseMove)="onLoteMouseMove($event)"
             (layerMouseLeave)="onLoteMouseLeave()"
             (layerClick)="onLoteClick($event)"
@@ -95,19 +95,11 @@
             <div class="vertex"><span>{{ index + 1 }}</span></div>
           </mgl-marker>
 
-          <mgl-marker *ngFor="let pin of lotePins()" [lngLat]="pin.lngLat">
-            <button
-              class="lote-pin"
-              type="button"
-              [style.--pin-color]="pin.color"
-              [attr.aria-label]="'Ver histórico de ' + pin.lote.nombre"
-              (click)="openHistorico(pin.lote); $event.stopPropagation()"
-            >
-              <span class="lote-pin-head">
-                <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" /></svg>
-              </span>
-              <span class="lote-pin-tip"></span>
-            </button>
+          <mgl-marker *ngFor="let label of loteLabels()" [lngLat]="label.lngLat">
+            <span class="lote-label">
+              <span class="lote-label-name">{{ label.lote.nombre }}</span>
+              <span class="lote-label-area">{{ formatArea(label.lote.area) }}</span>
+            </span>
           </mgl-marker>
         </mgl-map>
 
@@ -125,8 +117,8 @@
         </div>
       </div>
 
-      <div class="legend" *ngIf="legendItems().length">
-        <span *ngFor="let item of legendItems()"><i [style.background]="item.color"></i>{{ item.label }}</span>
+      <div class="legend">
+        <span *ngFor="let item of legendItems"><i [style.background]="item.color"></i>{{ item.label }}</span>
       </div>
     </article>
 
@@ -178,33 +170,24 @@
 
           <div class="lote-main-metrics">
             <strong>{{ formatArea(lote.area) }}</strong>
-            <span>
-              <svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg>
-              {{ cultivoLabel(lote) }}
-            </span>
+            <small>Superficie</small>
           </div>
 
-          <div class="lote-metric-grid">
-            <div class="mini-metric">
-              <span class="mini-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z" /></svg></span>
-              <div>
-                <small>pH mín / máx</small>
-                <strong>{{ metricValue(lote, 'phMin') }} / {{ metricValue(lote, 'phMax') }}</strong>
-              </div>
+          <div class="lote-info-list">
+            <div class="lote-info-row">
+              <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z" /></svg></span>
+              <span class="info-label">pH mín / máx</span>
+              <span class="info-value">{{ metricValue(lote, 'phMin') }} / {{ metricValue(lote, 'phMax') }}</span>
             </div>
-            <div class="mini-metric">
-              <span class="mini-icon"><svg viewBox="0 0 24 24"><path d="M4 16h5l2-5h5l2 5h2" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /><path d="M11 11V6h4" /></svg></span>
-              <div>
-                <small>Siembra</small>
-                <strong>{{ metricValue(lote, 'siembra') }}</strong>
-              </div>
+            <div class="lote-info-row">
+              <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M4 16h5l2-5h5l2 5h2" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /><path d="M11 11V6h4" /></svg></span>
+              <span class="info-label">Siembra</span>
+              <span class="info-value">{{ metricValue(lote, 'siembra') }}</span>
             </div>
-            <div class="mini-metric">
-              <span class="mini-icon"><svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg></span>
-              <div>
-                <small>Cosecha est.</small>
-                <strong>{{ metricValue(lote, 'cosecha') }}</strong>
-              </div>
+            <div class="lote-info-row">
+              <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg></span>
+              <span class="info-label">Cosecha est.</span>
+              <span class="info-value">{{ metricValue(lote, 'cosecha') }}</span>
             </div>
           </div>
 
@@ -294,10 +277,9 @@
           <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
           Detecciones de plagas
         </h3>
-        <p class="section-loading" *ngIf="loadingDetecciones()">Cargando detecciones...</p>
-        <p class="section-empty" *ngIf="!loadingDetecciones() && !detecciones().length">Sin detecciones registradas.</p>
-        <ul class="timeline" *ngIf="!loadingDetecciones() && detecciones().length">
-          <li *ngFor="let deteccion of detecciones()">
+        <p class="section-empty" *ngIf="!deteccionesDelLote().length">Sin detecciones registradas.</p>
+        <ul class="timeline" *ngIf="deteccionesDelLote().length">
+          <li *ngFor="let deteccion of deteccionesDelLote()">
             <span class="timeline-dot" [style.background]="severityColor(deteccion.severidad)" [style.boxShadow]="'0 0 10px ' + severityColor(deteccion.severidad)"></span>
             <div class="timeline-body">
               <div class="timeline-top">
