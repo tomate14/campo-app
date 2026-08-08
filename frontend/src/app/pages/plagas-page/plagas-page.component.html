@@ -97,6 +97,34 @@
           </dl>
           <div class="pin-actions"><button type="button" (click)="openModal('APLICACION', pin)">Aplicaci&oacute;n</button><button type="button" (click)="openModal('SEGUIMIENTO', pin)">Seguimiento</button><button type="button" (click)="openModal('HISTORICO', pin)">Hist&oacute;rico</button></div>
         </article>
+
+        <!-- Feature 82: rail de burbujas de accion sobre el mapa (abren formularios inline). -->
+        <div class="map-action-rail">
+          <button class="map-bubble" type="button" style="--bubble-color:#9FE870" (click)="abrirEventoDesdeRail()">
+            <span class="map-bubble__icon">
+              <svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14h6"/><path d="M12 11v6"/></svg>
+            </span>
+            <span class="map-bubble__label">Registrar evento</span>
+          </button>
+          <button class="map-bubble" type="button" style="--bubble-color:#6EA8FF" (click)="abrirAplicacionDesdeRail()">
+            <span class="map-bubble__icon">
+              <svg viewBox="0 0 24 24"><path d="m14 7 3 3"/><path d="M5 19 16 8l-3-3L2 16v3h3Z"/></svg>
+            </span>
+            <span class="map-bubble__label">Registrar aplicaci&oacute;n</span>
+          </button>
+          <button class="map-bubble" type="button" style="--bubble-color:#39D0D8" (click)="abrirSeguimientoDesdeRail()">
+            <span class="map-bubble__icon">
+              <svg viewBox="0 0 24 24"><path d="M12 21V8"/><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z"/><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z"/></svg>
+            </span>
+            <span class="map-bubble__label">Registrar seguimiento</span>
+          </button>
+          <button class="map-bubble map-bubble--primary" type="button" style="--bubble-color:#9A7DFF" (click)="nuevaDeteccion()">
+            <span class="map-bubble__icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M2 12h4"/><path d="M18 12h4"/></svg>
+            </span>
+            <span class="map-bubble__label">Nueva detecci&oacute;n</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -352,8 +380,10 @@
       </ng-container>
 
       <ng-container *ngIf="modal() === 'APLICACION'">
-        <div class="modal-head"><h3>Registrar aplicaci&oacute;n</h3><p>{{ selectedDeteccion()?.plagaNombre }}</p></div>
+        <div class="modal-head"><h3>Registrar aplicaci&oacute;n</h3><p>{{ selectedDeteccion() ? selectedDeteccion()?.plagaNombre : 'Eleg&iacute; la detecci&oacute;n a la que corresponde.' }}</p></div>
+        <p class="picker-note" *ngIf="!selectedDeteccion() && !deteccionesParaSelector().length">Primero registr&aacute; una detecci&oacute;n para poder cargar una aplicaci&oacute;n.</p>
         <div class="form-grid">
+          <label class="deteccion-picker" *ngIf="!selectedDeteccion() && deteccionesParaSelector().length"><span>Detecci&oacute;n</span><select [ngModel]="deteccionSeleccionadaId()" (ngModelChange)="deteccionSeleccionadaId.set($event)"><option value="">Seleccionar detecci&oacute;n...</option><option *ngFor="let d of deteccionesParaSelector()" [value]="d.id">{{ d.plagaNombre }} &middot; {{ d.loteNombre }} &middot; {{ d.fechaDeteccion | date:'dd/MM/yyyy' }}</option></select></label>
           <label><span>Fecha</span><input type="datetime-local" [ngModel]="aplicacionForm().fechaAplicacion" (ngModelChange)="aplicacionForm.update(f => ({ ...f, fechaAplicacion: $event }))" /></label>
           <label><span>Producto</span><input [ngModel]="aplicacionForm().producto" (ngModelChange)="aplicacionForm.update(f => ({ ...f, producto: $event }))" /></label>
           <label><span>Principio activo</span><input [ngModel]="aplicacionForm().principioActivo" (ngModelChange)="aplicacionForm.update(f => ({ ...f, principioActivo: $event }))" /></label>
@@ -364,19 +394,34 @@
           <label><span>Reingreso horas</span><input type="number" [ngModel]="aplicacionForm().periodoReingresoHoras" (ngModelChange)="aplicacionForm.update(f => ({ ...f, periodoReingresoHoras: $event }))" /></label>
           <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="aplicacionForm().operarioResponsableId" (valueChange)="aplicacionForm.update(f => ({ ...f, operarioResponsableId: $event }))"></app-remote-search-select>
         </div>
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAplicacion()">Guardar</button></div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving() || (!selectedDeteccion() && !deteccionSeleccionadaId())" (click)="submitAplicacion()">Guardar</button></div>
       </ng-container>
 
       <ng-container *ngIf="modal() === 'SEGUIMIENTO'">
-        <div class="modal-head"><h3>Registrar seguimiento</h3><p>{{ selectedDeteccion()?.plagaNombre }}</p></div>
+        <div class="modal-head"><h3>Registrar seguimiento</h3><p>{{ selectedDeteccion() ? selectedDeteccion()?.plagaNombre : 'Eleg&iacute; la detecci&oacute;n a la que corresponde.' }}</p></div>
+        <p class="picker-note" *ngIf="!selectedDeteccion() && !deteccionesParaSelector().length">Primero registr&aacute; una detecci&oacute;n para poder cargar un seguimiento.</p>
         <div class="form-grid">
+          <label class="deteccion-picker" *ngIf="!selectedDeteccion() && deteccionesParaSelector().length"><span>Detecci&oacute;n</span><select [ngModel]="deteccionSeleccionadaId()" (ngModelChange)="deteccionSeleccionadaId.set($event)"><option value="">Seleccionar detecci&oacute;n...</option><option *ngFor="let d of deteccionesParaSelector()" [value]="d.id">{{ d.plagaNombre }} &middot; {{ d.loteNombre }} &middot; {{ d.fechaDeteccion | date:'dd/MM/yyyy' }}</option></select></label>
           <label><span>Fecha</span><input type="datetime-local" [ngModel]="seguimientoForm().fecha" (ngModelChange)="seguimientoForm.update(f => ({ ...f, fecha: $event }))" /></label>
           <label><span>Resultado</span><select [ngModel]="seguimientoForm().resultado" (ngModelChange)="seguimientoForm.update(f => ({ ...f, resultado: $event }))"><option *ngFor="let item of resultados" [value]="item">{{ item }}</option></select></label>
           <label><span>Severidad</span><select [ngModel]="seguimientoForm().severidad" (ngModelChange)="seguimientoForm.update(f => ({ ...f, severidad: $event }))"><option *ngFor="let item of severidades" [value]="item">{{ item }}</option></select></label>
           <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="seguimientoForm().responsableId" (valueChange)="seguimientoForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>
         </div>
         <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="seguimientoForm().observaciones" (ngModelChange)="seguimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitSeguimiento()">Guardar</button></div>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving() || (!selectedDeteccion() && !deteccionSeleccionadaId())" (click)="submitSeguimiento()">Guardar</button></div>
+      </ng-container>
+
+      <!-- Feature 82: modal de alta de evento de siembra (replica el form de siembra-page). -->
+      <ng-container *ngIf="modal() === 'EVENTO'">
+        <div class="modal-head"><h3>Registrar evento</h3><p>Evento del ciclo agr&iacute;cola del lote.</p></div>
+        <div class="form-grid">
+          <label><span>Lote</span><select [ngModel]="eventoForm().loteId" (ngModelChange)="eventoForm.update(f => ({ ...f, loteId: $event }))"><option value="">Seleccionar...</option><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
+          <label><span>Tipo de evento</span><select [ngModel]="eventoForm().tipoEvento" (ngModelChange)="eventoForm.update(f => ({ ...f, tipoEvento: $event }))"><option *ngFor="let tipo of tiposEvento" [value]="tipo">{{ tipo }}</option></select></label>
+          <label><span>Estado fenol&oacute;gico</span><input [ngModel]="eventoForm().estadoFenologico" (ngModelChange)="eventoForm.update(f => ({ ...f, estadoFenologico: $event }))" /></label>
+          <label><span>Fecha</span><input type="date" [ngModel]="eventoForm().fecha" (ngModelChange)="eventoForm.update(f => ({ ...f, fecha: $event }))" /></label>
+        </div>
+        <label class="textarea-field"><span>Descripci&oacute;n</span><textarea [ngModel]="eventoForm().descripcion" (ngModelChange)="eventoForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving() || !eventoForm().loteId" (click)="submitEvento()">Guardar</button></div>
       </ng-container>
 
       <ng-container *ngIf="modal() === 'HISTORICO'">
@@ -587,7 +632,7 @@
                   <span class="suggested-body">
                     <span class="suggested-name">{{ sugerida.nombreComun }}</span>
                     <span class="suggested-type" *ngIf="sugerida.tipoNombre">{{ sugerida.tipoNombre }}</span>
-                    <span class="suggested-reasons" *ngIf="sugerida.motivos?.length">
+                    <span class="suggested-reasons" *ngIf="sugerida.motivos.length">
                       <span class="suggested-reason" *ngFor="let motivo of sugerida.motivos">{{ motivo }}</span>
                     </span>
                   </span>
