@@ -27,6 +27,8 @@ import type {
   DeteccionPlagaRequest,
   EstadoDeteccionPlaga,
   EventoSiembra,
+  EventoSiembraRequest,
+  TipoEvento,
   HistoricoCultivo,
   Lote,
   PageResponse,
@@ -41,7 +43,7 @@ import type {
 type ActiveTab = 'DETECCIONES' | 'APLICACIONES' | 'SEGUIMIENTOS' | 'CATALOGO' | 'REFERENCIA';
 // Feature 73: grupo de plagas de referencia agrupadas por cultivo.
 type ReferenciaGrupo = { cultivoNombre: string; items: PlagaReferencia[] };
-type ModalType = 'DETECCION' | 'APLICACION' | 'SEGUIMIENTO' | 'HISTORICO' | 'CATALOGO' | 'FICHA' | null;
+type ModalType = 'DETECCION' | 'APLICACION' | 'SEGUIMIENTO' | 'EVENTO' | 'HISTORICO' | 'CATALOGO' | 'FICHA' | null;
 type HistorialPlagaEvento = {
   tipo: string;
   fecha: string;
@@ -117,6 +119,13 @@ export class PlagasPageComponent {
   protected readonly aplicacionForm = signal<AplicacionFitosanitariaRequest>({ producto: '', dosis: 0, unidadDosis: 'l/ha', operarioResponsableId: '', operarioResponsable: '', fechaAplicacion: this.nowLocalDateTime() });
   protected readonly seguimientoForm = signal<SeguimientoPlagaRequest>({ resultado: 'SIN_CAMBIOS', severidad: 'MEDIA', fecha: this.nowLocalDateTime() });
   protected readonly catalogoForm = signal<CatalogoPlagaRequest>({ nombreComun: '', tipo: 'PLAGA', activo: true });
+  // Feature 82: form del nuevo modal EVENTO (evento de siembra) y selector de deteccion
+  // para aplicacion/seguimiento cuando se abren desde el rail (sin deteccion pre-seleccionada).
+  protected readonly tiposEvento: TipoEvento[] = ['SIEMBRA', 'MONITOREO_FENOLOGICO', 'ALERTA', 'TRATAMIENTO'];
+  protected readonly eventoForm = signal<EventoSiembraRequest>({ loteId: '', tipoEvento: 'SIEMBRA', fecha: this.todayDate() });
+  protected readonly deteccionSeleccionadaId = signal<string>('');
+  // Detecciones disponibles para el selector de aplicacion/seguimiento (todas las cargadas en el mapa).
+  protected readonly deteccionesParaSelector = computed<DeteccionPlaga[]>(() => this.mapDetecciones());
 
   // Feature 54: id del catálogo en edición (null = alta). Marca principal al subir imagen.
   protected readonly catalogoEditId = signal<string | null>(null);
@@ -497,6 +506,12 @@ export class PlagasPageComponent {
 
   protected openModal(type: ModalType, deteccion?: DeteccionPlaga) {
     this.selectedDeteccion.set(deteccion ?? null);
+    // Feature 82: sin deteccion pre-seleccionada, el modal muestra su propio selector.
+    this.deteccionSeleccionadaId.set('');
+    if (type === 'EVENTO') {
+      const lote = this.selectedLoteForForm();
+      this.eventoForm.set({ loteId: lote?.id ?? '', tipoEvento: 'SIEMBRA', fecha: this.todayDate() });
+    }
     if (type !== 'HISTORICO') {
       this.historialEventos.set([]);
       this.historialLote.set(null);
@@ -524,6 +539,9 @@ export class PlagasPageComponent {
   protected closeModal() {
     this.modal.set(null);
     this.selectedDeteccion.set(null);
+    // Feature 82: limpieza del selector de deteccion y del form de evento.
+    this.deteccionSeleccionadaId.set('');
+    this.eventoForm.set({ loteId: '', tipoEvento: 'SIEMBRA', fecha: this.todayDate() });
     this.historialEventos.set([]);
     this.historialLote.set(null);
     this.historialScope.set('LOTE');
@@ -640,17 +658,40 @@ export class PlagasPageComponent {
   }
 
   protected submitAplicacion() {
-    const deteccion = this.selectedDeteccion();
-    if (!deteccion) return;
+    // Feature 82: la deteccion puede venir fija (pin/fila) o elegida en el selector del rail.
+    const deteccionId = this.selectedDeteccion()?.id ?? this.deteccionSeleccionadaId();
+    if (!deteccionId) return;
     this.saving.set(true);
-    this.agricolaService.createAplicacionFitosanitaria(deteccion.id, this.aplicacionForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo registrar la aplicación.') });
+    this.agricolaService.createAplicacionFitosanitaria(deteccionId, this.aplicacionForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo registrar la aplicación.') });
   }
 
   protected submitSeguimiento() {
-    const deteccion = this.selectedDeteccion();
-    if (!deteccion) return;
+    // Feature 82: la deteccion puede venir fija (pin/fila) o elegida en el selector del rail.
+    const deteccionId = this.selectedDeteccion()?.id ?? this.deteccionSeleccionadaId();
+    if (!deteccionId) return;
     this.saving.set(true);
-    this.agricolaService.createSeguimientoPlaga(deteccion.id, this.seguimientoForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo registrar el seguimiento.') });
+    this.agricolaService.createSeguimientoPlaga(deteccionId, this.seguimientoForm()).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo registrar el seguimiento.') });
+  }
+
+  // Feature 82: alta de evento de siembra desde el modal EVENTO (misma firma que siembra-page).
+  protected submitEvento() {
+    const form = this.eventoForm();
+    if (!form.loteId) return;
+    this.saving.set(true);
+    this.agricolaService.createEvento(form).subscribe({ next: () => this.afterSave(), error: () => this.failSave('No se pudo registrar el evento.') });
+  }
+
+  // Feature 82: acciones del rail de burbujas sobre el mapa (abren formularios inline).
+  protected abrirEventoDesdeRail() {
+    this.openModal('EVENTO');
+  }
+
+  protected abrirAplicacionDesdeRail() {
+    this.openModal('APLICACION');
+  }
+
+  protected abrirSeguimientoDesdeRail() {
+    this.openModal('SEGUIMIENTO');
   }
 
   protected submitCatalogo() {
@@ -1170,6 +1211,13 @@ export class PlagasPageComponent {
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     return now.toISOString().slice(0, 16);
+  }
+
+  // Feature 82: fecha local (yyyy-MM-dd) para el input date del evento de siembra.
+  private todayDate() {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 10);
   }
 
   private toLoteFeature(lote: Lote): FeatureCollection<Polygon | MultiPolygon>['features'][number] | null {
