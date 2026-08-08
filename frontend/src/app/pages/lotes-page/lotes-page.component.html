@@ -1,204 +1,351 @@
-﻿<div class="page">
-  <header class="agri-head">
+<div class="lotes-page">
+  <header class="page-header">
     <div>
       <p class="eyebrow">Campo App · Agricultura</p>
-      <h2>Lotes</h2>
-      <p>Gestión premium de lotes agroindustriales con filtros, cartografía y exportación GeoJSON.</p>
+      <h1>Lotes</h1>
+      <p>Mapeo y gestión operativa de lotes agrícolas.</p>
     </div>
-    <div class="toolbar-actions">
-      <button class="btn-secondary agri-action" type="button" (click)="openImportModal()"><svg viewBox="0 0 24 24"><path d="M12 21V9" /><path d="m8 13 4-4 4 4" /><path d="M5 3h14" /></svg>Importar GeoJSON</button>
-      <button class="btn-secondary agri-action" type="button" (click)="exportGeoJson()"><svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>Exportar GeoJSON</button>
-      <button class="btn-primary agri-action" type="button" (click)="startCreate()"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>Nuevo lote</button>
+    <div class="header-actions">
+      <button class="btn-secondary" type="button" (click)="startDrawing()">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+        Nuevo lote
+      </button>
+      <button class="btn-secondary" type="button" [disabled]="drawingPoints().length === 0" (click)="undoPoint()">
+        <svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5" /><path d="M4 9h10a6 6 0 0 1 0 12h-2" /></svg>
+        Deshacer punto
+      </button>
+      <button class="btn-primary" type="button" [disabled]="drawingPoints().length < 3" (click)="openFormFromPoints(drawingPoints())">
+        <svg viewBox="0 0 24 24"><path d="m5 12 5 5L20 7" /></svg>
+        Guardar
+      </button>
+      <button class="btn-secondary danger" type="button" [disabled]="drawingPoints().length === 0" (click)="cancelDrawing()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+        Cancelar dibujo
+      </button>
+      <button class="btn-secondary" type="button" (click)="openImportModal()">
+        <svg viewBox="0 0 24 24"><path d="M12 21V9" /><path d="m8 13 4-4 4 4" /><path d="M5 3h14" /></svg>
+        Importar GeoJSON
+      </button>
+      <button class="btn-secondary" type="button" (click)="exportGeoJson()">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>
+        Exportar GeoJSON
+      </button>
     </div>
   </header>
 
-  <div class="card filters-card">
-    <div class="filters-grid">
-      <label>
-        <span>Temporada</span>
-        <input [ngModel]="filters().temporada" (ngModelChange)="updateFilter('temporada', $event)" placeholder="2026" />
-      </label>
-      <app-configurable-select
-        categoria="CULTIVO"
-        label="Cultivo"
-        placeholder="Todos"
-        [value]="filters().cultivo ?? ''"
-        (valueChange)="updateFilter('cultivo', $event || undefined)"
-      ></app-configurable-select>
-      <label>
-        <span>Area minima</span>
-        <input [ngModel]="filters().areaMin" (ngModelChange)="updateFilter('areaMin', $event ? +$event : undefined)" type="number" step="0.01" />
-      </label>
-      <label>
-        <span>Area maxima</span>
-        <input [ngModel]="filters().areaMax" (ngModelChange)="updateFilter('areaMax', $event ? +$event : undefined)" type="number" step="0.01" />
-      </label>
-      <label>
-        <span>pH minimo</span>
-        <input [ngModel]="filters().phMin" (ngModelChange)="updateFilter('phMin', $event ? +$event : undefined)" type="number" step="0.01" />
-      </label>
-      <label>
-        <span>pH maximo</span>
-        <input [ngModel]="filters().phMax" (ngModelChange)="updateFilter('phMax', $event ? +$event : undefined)" type="number" step="0.01" />
-      </label>
-      <label class="checkbox-field">
-        <input [ngModel]="filters().tienePoligono" (ngModelChange)="updateFilter('tienePoligono', $event)" type="checkbox" />
-        <span>Solo con poligono</span>
-      </label>
-    </div>
-    <div class="card-actions">
-      <button class="btn-primary" type="button" (click)="load()">Aplicar filtros</button>
-      <button class="btn-secondary" type="button" (click)="resetFilters()">Limpiar</button>
-    </div>
-  </div>
-
-  <div class="card empty-box" *ngIf="loading()">
-    <p>Cargando lotes...</p>
-  </div>
-
-  <div class="card empty-box error-box" *ngIf="!loading() && errorMessage()">
-    <p>{{ errorMessage() }}</p>
-  </div>
-
-  <div class="premium-list" *ngIf="!loading() && !errorMessage() && lotes().length > 0; else emptyState">
-    <article class="premium-card" *ngFor="let lote of lotes()">
-      <div class="premium-card__content">
-        <section class="premium-card__left">
-          <div class="top-row">
-            <div class="title-stack">
-              <h3>{{ lote.nombre }}</h3>
-              <div class="meta-inline">
-                <span class="icon-chip"><svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg></span>
-                <span>{{ lote.cultivoNombre }}</span>
-                <span class="divider">•</span>
-                <span class="icon-chip"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></span>
-                <span>{{ latestSeason(lote) }}</span>
-              </div>
-            </div>
-            <div class="top-actions">
-              <span class="surface-badge">{{ formatArea(lote.area) }}</span>
-              <button class="dots-button" type="button" aria-label="Mas opciones">⋮</button>
-            </div>
-          </div>
-
-          <div class="metrics-panel">
-            <div class="metric-row metric-row--three">
-              <div class="info-item">
-                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg></span>
-                <div>
-                  <span class="info-label">Cultivo</span>
-                  <strong>{{ lote.cultivoNombre }}</strong>
-                </div>
-              </div>
-              <div class="info-item">
-                <span class="info-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></span>
-                <div>
-                  <span class="info-label">Temporada</span>
-                  <strong>{{ latestSeason(lote) }}</strong>
-                </div>
-              </div>
-              <div class="info-item">
-                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z" /><path d="M12 4v16" /></svg></span>
-                <div>
-                  <span class="info-label">Area</span>
-                  <strong>{{ formatArea(lote.area) }}</strong>
-                </div>
-              </div>
-            </div>
-
-            <div class="metric-row metric-row--three">
-              <div class="info-item">
-                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z" /></svg></span>
-                <div>
-                  <span class="info-label">pH minimo</span>
-                  <strong>{{ metricValue(lote, 'phMin') }}</strong>
-                </div>
-              </div>
-              <div class="info-item">
-                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z" /></svg></span>
-                <div>
-                  <span class="info-label">pH maximo</span>
-                  <strong>{{ metricValue(lote, 'phMax') }}</strong>
-                </div>
-              </div>
-              <div class="info-item">
-                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M4 16h5l2-5h5l2 5h2" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /><path d="M11 11V6h4" /></svg></span>
-                <div>
-                  <span class="info-label">Fecha de siembra</span>
-                  <strong>{{ metricValue(lote, 'siembra') }}</strong>
-                </div>
-              </div>
-            </div>
-
-            <div class="metric-row metric-row--three">
-              <div class="info-item">
-                <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg></span>
-                <div>
-                  <span class="info-label">Cosecha estimada</span>
-                  <strong>{{ metricValue(lote, 'cosecha') }}</strong>
-                </div>
-              </div>
-              <div class="info-item info-item--wide info-item--update">
-                <span class="info-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 8v5l3 2" /></svg></span>
-                <div>
-                  <span class="info-label">Ultima actualizacion</span>
-                  <strong>{{ metricValue(lote, 'updated') }}</strong>
-                </div>
-              </div>
-              <div class="status-wrap">
-                <span class="status-badge">Activo</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="action-row">
-            <button class="action-button action-button--primary" type="button" (click)="openDetail(lote.id)">
-              <span><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg></span>
-              <span>Detalle</span>
-            </button>
-            <button class="action-button" type="button" (click)="startEdit(lote)">
-              <span><svg viewBox="0 0 24 24"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3Z" /><path d="m13.5 7.5 3 3" /></svg></span>
-              <span>Editar</span>
-            </button>
-            <button class="action-button action-button--danger" type="button" (click)="remove(lote.id)">
-              <span><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M10 11v6M14 11v6" /><path d="M6 7l1 14h10l1-14" /><path d="M9 7V4h6v3" /></svg></span>
-              <span>Eliminar</span>
-            </button>
-          </div>
-        </section>
-
-        <section class="premium-card__right">
-          <app-lote-map-preview
-            [polygon]="lote.poligono"
-            [lat]="lote.latitud"
-            [lng]="lote.longitud"
-            [compact]="true">
-          </app-lote-map-preview>
-        </section>
+  <section class="metric-grid">
+    <article class="metric-card" *ngFor="let kpi of kpis()">
+      <span class="metric-icon">
+        <svg viewBox="0 0 24 24"><path [attr.d]="iconPath(kpi.icon)" /></svg>
+      </span>
+      <div>
+        <p>{{ kpi.label }}</p>
+        <small>{{ kpi.helper }}</small>
       </div>
+      <strong>{{ kpi.value }}</strong>
+    </article>
+  </section>
+
+  <section class="map-layout">
+    <article class="map-panel">
+      <div class="map-head">
+        <div>
+          <h2>Mapa operativo de lotes</h2>
+          <p>Click para agregar vértices. Doble click para finalizar y cargar la información.</p>
+        </div>
+        <div class="map-toggle">
+          <button type="button" [class.active]="mapMode() === 'satelite'" (click)="mapMode.set('satelite')">Satélite</button>
+          <button type="button" [class.active]="mapMode() === 'mapa'" (click)="mapMode.set('mapa')">Mapa</button>
+        </div>
+      </div>
+
+      <div class="drawing-status" *ngIf="drawingPoints().length">
+        <span>{{ drawingPoints().length }} puntos</span>
+        <strong>{{ draftAreaHa().toFixed(2) }} ha estimadas</strong>
+        <em>Doble click para finalizar el lote actual.</em>
+      </div>
+
+      <div class="map-frame">
+        <mgl-map
+          [mapStyle]="mapStyle()"
+          [zoom]="mapZoom()"
+          [center]="mapCenter()"
+          [doubleClickZoom]="false"
+          [trackResize]="true"
+          (mapClick)="onMapClick($event)"
+          (mapDblClick)="onMapDoubleClick($event)"
+        >
+          <mgl-geojson-source id="lotes-source" [data]="lotesData()"></mgl-geojson-source>
+          <mgl-layer
+            id="lotes-fill"
+            type="fill"
+            source="lotes-source"
+            [paint]="{ 'fill-color': ['get', 'color'], 'fill-opacity': 0.34 }"
+            (layerMouseMove)="onLoteMouseMove($event)"
+            (layerMouseLeave)="onLoteMouseLeave()"
+            (layerClick)="onLoteClick($event)"
+          ></mgl-layer>
+          <mgl-layer id="lotes-line" type="line" source="lotes-source" [paint]="{ 'line-color': ['get', 'color'], 'line-width': 2.2, 'line-opacity': 0.95 }"></mgl-layer>
+
+          <mgl-geojson-source id="lote-draft-source" [data]="draftData()"></mgl-geojson-source>
+          <mgl-layer id="lote-draft-fill" type="fill" source="lote-draft-source" [paint]="{ 'fill-color': '#9FE870', 'fill-opacity': 0.18 }"></mgl-layer>
+          <mgl-layer id="lote-draft-line" type="line" source="lote-draft-source" [paint]="{ 'line-color': '#9FE870', 'line-width': 2.8, 'line-dasharray': [1.2, 1], 'line-opacity': 1 }"></mgl-layer>
+
+          <mgl-marker *ngFor="let point of drawingPoints(); let index = index" [lngLat]="[point.lng, point.lat]">
+            <div class="vertex"><span>{{ index + 1 }}</span></div>
+          </mgl-marker>
+
+          <mgl-marker *ngFor="let pin of lotePins()" [lngLat]="pin.lngLat">
+            <button
+              class="lote-pin"
+              type="button"
+              [style.--pin-color]="pin.color"
+              [attr.aria-label]="'Ver histórico de ' + pin.lote.nombre"
+              (click)="openHistorico(pin.lote); $event.stopPropagation()"
+            >
+              <span class="lote-pin-head">
+                <svg viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" /></svg>
+              </span>
+              <span class="lote-pin-tip"></span>
+            </button>
+          </mgl-marker>
+        </mgl-map>
+
+        <div
+          class="map-tooltip"
+          *ngIf="mapTooltip() as tooltip"
+          [style.left.px]="tooltip.x + 16"
+          [style.top.px]="tooltip.y + 16"
+        >
+          <strong>{{ tooltip.lote.nombre }}</strong>
+          <span>{{ cultivoLabel(tooltip.lote) }} · {{ latestSeason(tooltip.lote) }}</span>
+          <div>
+            <small>{{ formatArea(tooltip.lote.area) }}</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend" *ngIf="legendItems().length">
+        <span *ngFor="let item of legendItems()"><i [style.background]="item.color"></i>{{ item.label }}</span>
+      </div>
+    </article>
+
+    <aside class="side-panel">
+      <div class="side-head">
+        <div>
+          <h2>Lotes registrados</h2>
+          <p>{{ lotes().length }} parcelas mapeadas</p>
+        </div>
+        <button type="button" (click)="load()" title="Actualizar">
+          <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7" /><path d="M20 4v6h-6" /></svg>
+        </button>
+      </div>
+
+      <div class="error-box" *ngIf="error()">{{ error() }}</div>
+      <div class="empty-box" *ngIf="!loading() && !lotes().length">Todavía no hay lotes cargados.</div>
+
+      <div class="lote-list">
+        <article class="lote-card" *ngFor="let lote of lotes()" [class.selected]="selectedLote()?.id === lote.id" (click)="focusLote(lote)">
+          <div class="lote-card-head">
+            <div class="lote-identity">
+              <span class="status-dot" [style.background]="colorFor(lote)" [style.color]="colorFor(lote)"></span>
+              <div>
+                <h3>{{ lote.nombre }}</h3>
+                <p>{{ cultivoLabel(lote) }} · {{ latestSeason(lote) }}</p>
+              </div>
+            </div>
+
+            <div class="lote-menu">
+              <button class="kebab-button" type="button" aria-label="Abrir acciones" (click)="toggleMenu(lote, $event)">
+                <svg viewBox="0 0 24 24"><path d="M12 6h.01" /><path d="M12 12h.01" /><path d="M12 18h.01" /></svg>
+              </button>
+              <div class="context-menu" *ngIf="openMenuId() === lote.id" (click)="$event.stopPropagation()">
+                <button type="button" (click)="openHistorico(lote, $event)">
+                  <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v6h6" /><path d="M12 7v5l3 2" /></svg>
+                  Ver histórico
+                </button>
+                <button type="button" (click)="startEdit(lote, $event)">
+                  <svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" /></svg>
+                  Editar
+                </button>
+                <button class="danger-action" type="button" (click)="remove(lote, $event)">
+                  <svg viewBox="0 0 24 24"><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6l-1 14H6L5 6" /></svg>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="lote-main-metrics">
+            <strong>{{ formatArea(lote.area) }}</strong>
+            <span>
+              <svg viewBox="0 0 24 24"><path d="M12 21V8" /><path d="M6 12c4 0 6-2 6-6-4 0-6 2-6 6Z" /><path d="M18 15c-4 0-6-2-6-6 4 0 6 2 6 6Z" /></svg>
+              {{ cultivoLabel(lote) }}
+            </span>
+          </div>
+
+          <div class="lote-metric-grid">
+            <div class="mini-metric">
+              <span class="mini-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z" /></svg></span>
+              <div>
+                <small>pH mín / máx</small>
+                <strong>{{ metricValue(lote, 'phMin') }} / {{ metricValue(lote, 'phMax') }}</strong>
+              </div>
+            </div>
+            <div class="mini-metric">
+              <span class="mini-icon"><svg viewBox="0 0 24 24"><path d="M4 16h5l2-5h5l2 5h2" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /><path d="M11 11V6h4" /></svg></span>
+              <div>
+                <small>Siembra</small>
+                <strong>{{ metricValue(lote, 'siembra') }}</strong>
+              </div>
+            </div>
+            <div class="mini-metric">
+              <span class="mini-icon"><svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg></span>
+              <div>
+                <small>Cosecha est.</small>
+                <strong>{{ metricValue(lote, 'cosecha') }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <button class="history-row" type="button" (click)="openHistorico(lote, $event)">
+            <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v6h6" /><path d="M12 7v5l3 2" /></svg>
+            Ver histórico del lote
+          </button>
+        </article>
+      </div>
+    </aside>
+  </section>
+
+  <!-- Modal de histórico del lote (feature 81) -->
+  <div class="modal-backdrop" *ngIf="detailLote() as lote">
+    <article class="lote-detail-modal" [style.--lote-color]="colorFor(lote)">
+      <span class="lote-band"></span>
+      <button class="modal-close" type="button" aria-label="Cerrar" (click)="closeDetail()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+      <div class="modal-head">
+        <span class="modal-icon lote-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z" /><path d="M12 4v16" /><path d="M4 7l8 3 8-3" /></svg>
+        </span>
+        <div>
+          <h2>{{ lote.nombre }}</h2>
+          <p>{{ cultivoLabel(lote) }} · {{ latestSeason(lote) }}</p>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <span><small>Superficie</small><strong>{{ formatArea(reporte()?.area ?? lote.area) }}</strong></span>
+        <span><small>Cultivo actual</small><strong>{{ reporte()?.cultivoActualNombre || cultivoLabel(lote) }}</strong></span>
+        <span><small>Temporada</small><strong>{{ reporte()?.temporadaActual || latestSeason(lote) }}</strong></span>
+        <span><small>Último cultivo</small><strong>{{ reporte()?.ultimoCultivoNombre || 'Sin dato' }}</strong></span>
+        <span><small>Rendimiento prom.</small><strong>{{ reporte() ? (reporte()!.rendimientoPromedioKgHa | number:'1.0-0') + ' kg/ha' : 'Sin dato' }}</strong></span>
+        <span><small>Rend. histórico</small><strong>{{ reporte() ? (reporte()!.rendimientoHistoricoPromedioKgHa | number:'1.0-0') + ' kg/ha' : 'Sin dato' }}</strong></span>
+        <span><small>Siembras</small><strong>{{ reporte()?.cantidadEventos ?? '-' }}</strong></span>
+        <span><small>Cosechas</small><strong>{{ reporte()?.cantidadCosechas ?? '-' }}</strong></span>
+      </div>
+
+      <section class="detail-section">
+        <h3>
+          <svg viewBox="0 0 24 24"><path d="M4 16h5l2-5h5l2 5h2" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /><path d="M11 11V6h4" /></svg>
+          Siembras y eventos
+        </h3>
+        <p class="section-loading" *ngIf="loadingEventos()">Cargando eventos...</p>
+        <p class="section-empty" *ngIf="!loadingEventos() && !eventos().length">Sin siembras ni eventos registrados.</p>
+        <ul class="timeline" *ngIf="!loadingEventos() && eventos().length">
+          <li *ngFor="let evento of eventos()">
+            <span class="timeline-dot"></span>
+            <div class="timeline-body">
+              <div class="timeline-top">
+                <strong>{{ formatEnum(evento.tipoEvento) }}</strong>
+                <small>{{ formatDate(evento.fecha) }}</small>
+              </div>
+              <p *ngIf="evento.estadoFenologico">Estado: {{ evento.estadoFenologico }}</p>
+              <p *ngIf="evento.descripcion">{{ evento.descripcion }}</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="detail-section">
+        <h3>
+          <svg viewBox="0 0 24 24"><path d="M6 20V8" /><path d="M10 20V5" /><path d="M14 20V7" /><path d="M18 20V9" /><path d="M4 20h16" /></svg>
+          Cosechas
+        </h3>
+        <p class="section-loading" *ngIf="loadingCosechas()">Cargando cosechas...</p>
+        <p class="section-empty" *ngIf="!loadingCosechas() && !cosechas().length">Sin cosechas registradas.</p>
+        <ul class="timeline" *ngIf="!loadingCosechas() && cosechas().length">
+          <li *ngFor="let cosecha of cosechas()">
+            <span class="timeline-dot"></span>
+            <div class="timeline-body">
+              <div class="timeline-top">
+                <strong>{{ cosecha.rendimientoKgHa | number:'1.0-0' }} kg/ha</strong>
+                <small>{{ formatDate(cosecha.fecha) }}</small>
+              </div>
+              <p>{{ cosecha.toneladasTotal | number:'1.0-2' }} t totales<span *ngIf="cosecha.calidadGrano"> · Calidad {{ formatEnum(cosecha.calidadGrano) }}</span></p>
+              <p *ngIf="cosecha.observaciones">{{ cosecha.observaciones }}</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="detail-section">
+        <h3>
+          <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
+          Detecciones de plagas
+        </h3>
+        <p class="section-loading" *ngIf="loadingDetecciones()">Cargando detecciones...</p>
+        <p class="section-empty" *ngIf="!loadingDetecciones() && !detecciones().length">Sin detecciones registradas.</p>
+        <ul class="timeline" *ngIf="!loadingDetecciones() && detecciones().length">
+          <li *ngFor="let deteccion of detecciones()">
+            <span class="timeline-dot" [style.background]="severityColor(deteccion.severidad)" [style.boxShadow]="'0 0 10px ' + severityColor(deteccion.severidad)"></span>
+            <div class="timeline-body">
+              <div class="timeline-top">
+                <strong>{{ deteccion.plagaNombre }}</strong>
+                <small>{{ formatDate(deteccion.fechaDeteccion) }}</small>
+              </div>
+              <p>
+                <span class="severity-badge" [style.--sev-color]="severityColor(deteccion.severidad)">{{ formatEnum(deteccion.severidad) }}</span>
+                <span *ngIf="deteccion.estado"> · {{ formatEnum(deteccion.estado) }}</span>
+              </p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <footer class="modal-actions">
+        <button class="btn-secondary" type="button" (click)="closeDetail()">Cerrar</button>
+        <button class="btn-primary" type="button" (click)="openDetail(lote.id)">
+          <svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>
+          Ver detalle completo
+        </button>
+      </footer>
     </article>
   </div>
 
-  <ng-template #emptyState>
-    <div class="card empty-box" *ngIf="!loading() && !errorMessage()">
-      <p>No hay lotes registrados.</p>
-    </div>
-  </ng-template>
-
-  <div class="app-modal-backdrop" *ngIf="showForm()" (document:keydown.escape)="closeForm()">
-    <div class="app-modal-panel">
-      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeForm()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
-      <app-lote-form [lote]="editingLote()" (cancel)="closeForm()" (save)="persist($event)" />
+  <!-- Modal de alta / edición (reutiliza shared/lote-form con el polígono precargado) -->
+  <div class="modal-backdrop" *ngIf="showForm()">
+    <div class="lote-form-panel">
+      <button class="modal-close" type="button" aria-label="Cerrar" (click)="closeForm()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+      <app-lote-form [lote]="formLote()" (cancel)="closeForm()" (save)="persist($event)" />
     </div>
   </div>
 
-  <div class="app-modal-backdrop" *ngIf="importModalOpen()" (document:keydown.escape)="closeImportModal()">
-    <div class="app-modal-panel import-panel">
-      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeImportModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
-      <div class="import-header">
+  <!-- Modal de import GeoJSON -->
+  <div class="modal-backdrop" *ngIf="importModalOpen()">
+    <div class="import-panel">
+      <button class="modal-close" type="button" aria-label="Cerrar" (click)="closeImportModal()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+      <div class="modal-head">
+        <span class="modal-icon lote-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 21V9" /><path d="m8 13 4-4 4 4" /><path d="M5 3h14" /></svg>
+        </span>
         <div>
-          <h3>Importar GeoJSON</h3>
-          <p>Pega un FeatureCollection valido para crear lotes en lote.</p>
+          <h2>Importar GeoJSON</h2>
+          <p>Pegá un FeatureCollection válido para crear lotes.</p>
         </div>
       </div>
       <textarea
@@ -208,10 +355,10 @@
         rows="14"
         placeholder='{"type":"FeatureCollection","features":[]}'>
       </textarea>
-      <div class="card-actions">
+      <footer class="modal-actions">
         <button class="btn-secondary" type="button" (click)="closeImportModal()">Cancelar</button>
         <button class="btn-primary" type="button" (click)="importGeoJson()">Importar</button>
-      </div>
+      </footer>
     </div>
   </div>
 </div>
