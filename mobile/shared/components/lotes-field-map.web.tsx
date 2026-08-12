@@ -39,6 +39,7 @@ export default function LotesFieldMap({
   userCoords,
   command,
   mapMode,
+  showAffectedArea = true,
   onLotePress,
   onDetectionPress,
   onAlertaPress,
@@ -50,6 +51,11 @@ export default function LotesFieldMap({
   const alertMarkersRef = useRef<Marker[]>([])
   const alertasRef = useRef(alertas)
   const sourceData = useMemo(() => toFeatureCollection(mapItems), [mapItems])
+  // Feature 57: circulos de area afectada como poligonos GeoJSON (radio en metros).
+  const affectedData = useMemo(
+    () => toAffectedAreas(showAffectedArea ? detections : []),
+    [detections, showAffectedArea]
+  )
 
   useEffect(() => {
     detectionsRef.current = detections
@@ -75,6 +81,7 @@ export default function LotesFieldMap({
 
     map.on('load', () => {
       map.addSource('lotes', { type: 'geojson', data: sourceData } satisfies GeoJSONSourceSpecification)
+      map.addSource('affected-areas', { type: 'geojson', data: affectedData } satisfies GeoJSONSourceSpecification)
       map.addLayer({
         id: 'lotes-fill',
         type: 'fill',
@@ -92,6 +99,25 @@ export default function LotesFieldMap({
           'line-color': ['get', 'color'],
           'line-width': 2.4,
           'line-opacity': 0.92,
+        },
+      })
+      map.addLayer({
+        id: 'affected-fill',
+        type: 'fill',
+        source: 'affected-areas',
+        paint: {
+          'fill-color': ['get', 'color'],
+          'fill-opacity': 0.14,
+        },
+      })
+      map.addLayer({
+        id: 'affected-line',
+        type: 'line',
+        source: 'affected-areas',
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 1.6,
+          'line-opacity': 0.85,
         },
       })
       map.addLayer({
@@ -137,10 +163,12 @@ export default function LotesFieldMap({
     if (!map || !map.isStyleLoaded()) return
     const source = map.getSource('lotes') as maplibregl.GeoJSONSource | undefined
     source?.setData(sourceData)
+    const affectedSource = map.getSource('affected-areas') as maplibregl.GeoJSONSource | undefined
+    affectedSource?.setData(affectedData)
     syncDetectionMarkers(map, detections, onDetectionPress, detectionMarkersRef)
     syncAlertMarkers(map, alertas, onAlertaPress, alertMarkersRef)
     fitToRegion(map, initialRegion)
-  }, [sourceData, detections, alertas, initialRegion])
+  }, [sourceData, affectedData, detections, alertas, initialRegion])
 
   useEffect(() => {
     const map = mapRef.current
@@ -207,6 +235,45 @@ function toFeatureCollection(mapItems: LotesFieldMapProps['mapItems']): FeatureC
       },
     })),
   }
+}
+
+// Feature 57: convierte cada deteccion con area afectada en un poligono circular
+// (aprox. de 48 lados) cuyo radio en metros representa la superficie afectada.
+function toAffectedAreas(detections: LotesFieldMapProps['detections']): FeatureCollection<Polygon> {
+  return {
+    type: 'FeatureCollection',
+    features: detections
+      .map((item) => {
+        const areaHa = Number(item.deteccion.areaAfectadaHa)
+        if (!Number.isFinite(areaHa) || areaHa <= 0) return null
+        const radius = Math.sqrt((areaHa * 10000) / Math.PI)
+        return {
+          type: 'Feature' as const,
+          properties: { color: item.color },
+          geometry: {
+            type: 'Polygon' as const,
+            coordinates: [circleRing(item.coordinate, radius)],
+          },
+        }
+      })
+      .filter((feature): feature is NonNullable<typeof feature> => Boolean(feature)),
+  }
+}
+
+// Anillo de coordenadas [lng, lat] que aproxima un circulo geografico de radio en metros.
+function circleRing(center: MapPoint, radiusMeters: number, steps = 48): number[][] {
+  const earth = 6378137
+  const latRad = (center.latitude * Math.PI) / 180
+  const ring: number[][] = []
+  for (let i = 0; i <= steps; i += 1) {
+    const angle = (i / steps) * 2 * Math.PI
+    const dx = radiusMeters * Math.cos(angle)
+    const dy = radiusMeters * Math.sin(angle)
+    const dLng = (dx / (earth * Math.cos(latRad))) * (180 / Math.PI)
+    const dLat = (dy / earth) * (180 / Math.PI)
+    ring.push([center.longitude + dLng, center.latitude + dLat])
+  }
+  return ring
 }
 
 function closeRing(points: MapPoint[]): MapPoint[] {

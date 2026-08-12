@@ -2,7 +2,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxMapLibreGLModule } from '@maplibre/ngx-maplibre-gl';
-import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
 import { forkJoin, type Observable } from 'rxjs';
 import { AgricolaService } from '../../core/services/agricola.service';
@@ -105,9 +105,22 @@ export class PlagasPageComponent {
 
   protected readonly severidades: SeveridadPlaga[] = ['BAJA', 'MEDIA', 'ALTA', 'CRITICA'];
   protected readonly estados: EstadoDeteccionPlaga[] = ['ABIERTA', 'EN_TRATAMIENTO', 'CONTROLADA', 'CERRADA'];
+  // Feature 57: estados que se consideran "resueltos" (salen del mapa por defecto).
+  private readonly estadosResueltos: EstadoDeteccionPlaga[] = ['CONTROLADA', 'CERRADA'];
+  // Feature 57: toggle "Mostrar resueltos" del mapa (pines + circulos de area).
+  protected readonly mostrarResueltos = signal(false);
   protected readonly resultados: ResultadoSeguimientoPlaga[] = ['SIN_CAMBIOS', 'MEJORA', 'EMPEORA', 'CONTROLADA'];
   // Operarios activos para los combos (reemplaza el filtro extraParams estado:ACTIVO)
   protected readonly operariosActivos = computed(() => this.operarios().filter((operario) => operario.estado === 'ACTIVO'));
+  // Feature 57: % afectado derivado (solo lectura) = areaAfectadaHa / area del lote * 100.
+  // null cuando no hay lote, area de lote o area afectada valida.
+  protected readonly porcentajeAfectadoCalc = computed<number | null>(() => {
+    const form = this.deteccionForm();
+    const lote = this.lotes().find((item) => item.id === form.loteId);
+    const area = Number(form.areaAfectadaHa);
+    if (!lote?.area || !Number.isFinite(area) || area <= 0) return null;
+    return Math.round((area / lote.area) * 100 * 10) / 10;
+  });
 
   protected readonly filters = signal<{ loteId?: string; cultivo?: string; severidad?: SeveridadPlaga; estado?: EstadoDeteccionPlaga }>({});
   protected readonly deteccionForm = signal<DeteccionPlagaRequest>({ loteId: '', catalogoPlagaId: '', severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
@@ -279,6 +292,7 @@ export class PlagasPageComponent {
   });
   protected readonly pins = computed<DeteccionPinGroup[]>(() => {
     const filters = this.filters();
+    const mostrarResueltos = this.mostrarResueltos();
     const groups = new Map<string, DeteccionPinGroup>();
 
     const loteCenters = this.loteCenters();
@@ -289,6 +303,8 @@ export class PlagasPageComponent {
       const sameSeveridad = !filters.severidad || item.severidad === filters.severidad;
       const sameEstado = !filters.estado || item.estado === filters.estado;
       if (!sameLote || !sameCultivo || !sameSeveridad || !sameEstado) return;
+      // Feature 57: las detecciones resueltas salen del mapa salvo que el toggle este activo.
+      if (this.isResuelta(item.estado) && !mostrarResueltos) return;
 
       // Coordenada propia de la deteccion; si no trae, fallback al centro del lote
       // (mismo criterio que mobile, para que web y mobile muestren los mismos pines)
@@ -312,6 +328,41 @@ export class PlagasPageComponent {
     });
 
     return Array.from(groups.values());
+  });
+  // Feature 57: circulos de area afectada (proporcionales) por deteccion visible.
+  // Radio en metros = sqrt(areaAfectadaHa * 10000 / PI); se dibujan debajo de los pines.
+  protected readonly areaCirclesData = computed<FeatureCollection<Polygon>>(() => {
+    const filters = this.filters();
+    const mostrarResueltos = this.mostrarResueltos();
+    const loteCenters = this.loteCenters();
+    const features: Feature<Polygon>[] = [];
+
+    this.mapDetecciones().forEach((item) => {
+      const sameLote = !filters.loteId || item.loteId === filters.loteId;
+      const sameCultivo = !filters.cultivo || item.cultivo === filters.cultivo;
+      const sameSeveridad = !filters.severidad || item.severidad === filters.severidad;
+      const sameEstado = !filters.estado || item.estado === filters.estado;
+      if (!sameLote || !sameCultivo || !sameSeveridad || !sameEstado) return;
+      if (this.isResuelta(item.estado) && !mostrarResueltos) return;
+
+      const area = Number(item.areaAfectadaHa);
+      if (!Number.isFinite(area) || area <= 0) return;
+
+      // Misma resolucion de coordenada que los pines (propia o centroide del lote).
+      let latitud = Number(item.latitud);
+      let longitud = Number(item.longitud);
+      if (!Number.isFinite(latitud) || !Number.isFinite(longitud)) {
+        const center = loteCenters.get(item.loteId);
+        if (!center) return;
+        latitud = center.lat;
+        longitud = center.lng;
+      }
+
+      const radiusMeters = Math.sqrt((area * 10000) / Math.PI);
+      features.push(this.buildCirclePolygon(latitud, longitud, radiusMeters, this.pinColor(item.severidad)));
+    });
+
+    return { type: 'FeatureCollection', features };
   });
   protected readonly selectedPin = computed(() => {
     const group = this.selectedPinGroup();
@@ -519,7 +570,7 @@ export class PlagasPageComponent {
     }
     if (type === 'DETECCION') {
       const lote = this.selectedLoteForForm();
-      this.deteccionForm.set({ loteId: lote?.id ?? '', catalogoPlagaId: this.catalogoOpciones()[0]?.id ?? '', cultivo: lote?.cultivo, severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime() });
+      this.deteccionForm.set({ loteId: lote?.id ?? '', catalogoPlagaId: this.catalogoOpciones()[0]?.id ?? '', cultivo: lote?.cultivo, severidad: 'MEDIA', estado: 'ABIERTA', origenGeolocalizacion: 'WEB_MAPA', fechaDeteccion: this.nowLocalDateTime(), responsableId: this.defaultResponsableId() });
       // Feature 79: siempre arranca en el paso de foto (opcional) al abrir el modal.
       this.resetDeteccionFoto();
       this.deteccionPaso.set('FOTO');
@@ -528,7 +579,7 @@ export class PlagasPageComponent {
       this.aplicacionForm.set({ producto: '', dosis: 0, unidadDosis: 'l/ha', operarioResponsableId: '', operarioResponsable: '', fechaAplicacion: this.nowLocalDateTime() });
     }
     if (type === 'SEGUIMIENTO') {
-      this.seguimientoForm.set({ resultado: 'SIN_CAMBIOS', severidad: deteccion?.severidad ?? 'MEDIA', fecha: this.nowLocalDateTime() });
+      this.seguimientoForm.set({ resultado: 'SIN_CAMBIOS', severidad: deteccion?.severidad ?? 'MEDIA', fecha: this.nowLocalDateTime(), responsableId: this.defaultResponsableId() });
     }
     if (type === 'HISTORICO' && deteccion) {
       this.loadHistorialDeteccion(deteccion);
@@ -962,6 +1013,66 @@ export class PlagasPageComponent {
     return value === 'CRITICA' ? '#ff6b6b' : value === 'ALTA' ? '#ff8a4c' : value === 'MEDIA' ? '#ffb84d' : '#9fe870';
   }
 
+  // Feature 57: una deteccion esta "resuelta" cuando esta CONTROLADA o CERRADA.
+  protected isResuelta(estado?: EstadoDeteccionPlaga): boolean {
+    return !!estado && this.estadosResueltos.includes(estado);
+  }
+
+  // Feature 57: alterna la visibilidad de detecciones resueltas en el mapa.
+  protected toggleMostrarResueltos() {
+    this.mostrarResueltos.update((value) => !value);
+  }
+
+  // Feature 57: id del operario asociado al usuario logueado (userId === AuthUser.id).
+  // undefined cuando no hay usuario o no existe un operario vinculado.
+  private defaultResponsableId(): string | undefined {
+    const userId = this.sessionService.getCurrentUser()?.id;
+    if (!userId) return undefined;
+    return this.operarios().find((operario) => operario.userId === userId)?.id;
+  }
+
+  // Feature 57: recalcula y persiste el % afectado en el form de deteccion.
+  private recalcPorcentajeAfectado() {
+    this.deteccionForm.update((form) => {
+      const lote = this.lotes().find((item) => item.id === form.loteId);
+      const area = Number(form.areaAfectadaHa);
+      const porcentaje = lote?.area && Number.isFinite(area) && area > 0
+        ? Math.round((area / lote.area) * 100 * 10) / 10
+        : 0;
+      return { ...form, porcentajeAfectado: porcentaje };
+    });
+  }
+
+  // Feature 57: handlers del form de deteccion que disparan el recalculo del % afectado.
+  protected onDeteccionAreaChange(value: number | undefined) {
+    this.deteccionForm.update((form) => ({ ...form, areaAfectadaHa: value }));
+    this.recalcPorcentajeAfectado();
+  }
+
+  protected onDeteccionLoteChange(loteId: string) {
+    this.deteccionForm.update((form) => ({ ...form, loteId }));
+    this.recalcPorcentajeAfectado();
+  }
+
+  // Feature 57: construye un poligono-circulo (~48 vertices) de radio en metros
+  // centrado en (lat, lng), convirtiendo metros a grados para lat/lng.
+  private buildCirclePolygon(lat: number, lng: number, radiusMeters: number, color: string): Feature<Polygon> {
+    const points = 48;
+    const latRad = (lat * Math.PI) / 180;
+    const dLat = radiusMeters / 111320;
+    const dLng = radiusMeters / (111320 * Math.cos(latRad));
+    const ring: [number, number][] = [];
+    for (let i = 0; i <= points; i += 1) {
+      const angle = (i / points) * 2 * Math.PI;
+      ring.push([lng + dLng * Math.cos(angle), lat + dLat * Math.sin(angle)]);
+    }
+    return {
+      type: 'Feature',
+      properties: { color },
+      geometry: { type: 'Polygon', coordinates: [ring] },
+    };
+  }
+
   protected openPinCard(group: DeteccionPinGroup) {
     this.selectedPinGroup.set(group);
     this.selectedPinIndex.set(0);
@@ -1029,6 +1140,8 @@ export class PlagasPageComponent {
       longitud: lng,
       origenGeolocalizacion: 'WEB_MAPA',
     }));
+    // Feature 57: al fijar el lote desde el mapa, recalcula el % afectado.
+    this.recalcPorcentajeAfectado();
   }
 
   private loadHistorialLote(deteccion: DeteccionPlaga) {

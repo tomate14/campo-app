@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  CircleDot,
   ClipboardList,
   ClipboardPlus,
   CloudSun,
@@ -113,6 +114,9 @@ export default function LotesScreen() {
     Seguimientos: true,
     Detecciones: true,
   })
+  // Feature 57: circulo de area afectada visible por defecto; resueltos ocultos por defecto.
+  const [showAffectedArea, setShowAffectedArea] = useState(true)
+  const [showResolved, setShowResolved] = useState(false)
 
   useEffect(() => {
     let mounted = true
@@ -147,8 +151,15 @@ export default function LotesScreen() {
     [allMapItems, operational]
   )
   const detectionItems = useMemo(
-    () => (operational.Detecciones ? buildDetectionItems(detecciones, allMapItems) : []),
-    [detecciones, allMapItems, operational.Detecciones]
+    () => {
+      if (!operational.Detecciones) return []
+      // Feature 57: los pines resueltos (CONTROLADA/CERRADA) quedan fuera del mapa salvo toggle.
+      const visibles = showResolved
+        ? detecciones
+        : detecciones.filter((deteccion) => !['CONTROLADA', 'CERRADA'].includes(deteccion.estado))
+      return buildDetectionItems(visibles, allMapItems)
+    },
+    [detecciones, allMapItems, operational.Detecciones, showResolved]
   )
   const visibleActions = useMemo(
     () => actions.filter((action) => operational[action.layer] !== false),
@@ -238,6 +249,7 @@ export default function LotesScreen() {
           locationGranted={locationStatus === 'granted'}
           command={mapCommand}
           mapMode={mapMode}
+          showAffectedArea={showAffectedArea}
           onLotePress={(id) => {
             const lote = lotes.find((item) => item.id === id)
             if (lote) {
@@ -410,6 +422,33 @@ export default function LotesScreen() {
                   />
                 </View>
               ))}
+
+              {/* Feature 57: filtros de detecciones de plagas. */}
+              <Text style={styles.sheetSectionTitle}>Detecciones de plagas</Text>
+              <View style={styles.layerRow}>
+                <View style={styles.layerCopy}>
+                  <CircleDot size={18} color="#9FE870" strokeWidth={2} />
+                  <Text style={styles.layerLabel}>Área afectada</Text>
+                </View>
+                <Switch
+                  value={showAffectedArea}
+                  onValueChange={setShowAffectedArea}
+                  trackColor={{ false: 'rgba(255,255,255,0.15)', true: 'rgba(159,232,112,0.34)' }}
+                  thumbColor={showAffectedArea ? '#9FE870' : '#A6B0CF'}
+                />
+              </View>
+              <View style={styles.layerRow}>
+                <View style={styles.layerCopy}>
+                  <History size={18} color="#9FE870" strokeWidth={2} />
+                  <Text style={styles.layerLabel}>Mostrar resueltos</Text>
+                </View>
+                <Switch
+                  value={showResolved}
+                  onValueChange={setShowResolved}
+                  trackColor={{ false: 'rgba(255,255,255,0.15)', true: 'rgba(159,232,112,0.34)' }}
+                  thumbColor={showResolved ? '#9FE870' : '#A6B0CF'}
+                />
+              </View>
             </ScrollView>
           </View>
         </Modal>

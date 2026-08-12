@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import MapView, { Marker, Polygon } from 'react-native-maps'
+import MapView, { Circle, Marker, Polygon } from 'react-native-maps'
 import type { LatLng, Region } from 'react-native-maps'
 import { Bell, Bug, Crosshair, ShieldAlert, Trees } from 'lucide-react-native'
 import type { LucideIcon } from 'lucide-react-native'
@@ -15,6 +15,7 @@ export default function LotesFieldMap({
   locationGranted,
   command,
   mapMode,
+  showAffectedArea = true,
   onLotePress,
   onDetectionPress,
   onAlertaPress,
@@ -78,6 +79,24 @@ export default function LotesFieldMap({
           </Marker>
         </View>
       ))}
+
+      {/* Feature 57: circulo proporcional al area afectada (radio en metros). */}
+      {showAffectedArea &&
+        detections.map((item) => {
+          const areaHa = Number(item.deteccion.areaAfectadaHa)
+          if (!Number.isFinite(areaHa) || areaHa <= 0) return null
+          return (
+            <Circle
+              key={`area-${item.deteccion.id}`}
+              center={toNativePoint(item.coordinate)}
+              radius={Math.sqrt((areaHa * 10000) / Math.PI)}
+              strokeColor={item.color}
+              fillColor={`${item.color}22`}
+              strokeWidth={1.6}
+              zIndex={10}
+            />
+          )
+        })}
 
       {detections.map((item) => (
         <Marker

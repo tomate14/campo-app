@@ -49,6 +49,8 @@ export type LotesFieldMapProps = {
   locationGranted: boolean
   command: MapCommand | null
   mapMode: MapMode
+  // Feature 57: dibuja un circulo proporcional al area afectada de cada deteccion.
+  showAffectedArea?: boolean
   onLotePress: (id: string) => void
   onDetectionPress: (detecciones: DeteccionPlaga[]) => void
   onAlertaPress?: (alertas: AlertaPotrero[]) => void
