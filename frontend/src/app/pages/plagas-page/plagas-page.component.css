@@ -119,6 +119,9 @@
   right: 16px;
   top: 16px;
   width: 320px;
+  max-height: calc(100% - 32px);
+  overflow-y: auto;
+  overflow-x: hidden;
   z-index: 20;
   border: 1px solid rgba(159,232,112,.14);
   border-radius: 22px;
@@ -126,7 +129,12 @@
   background: rgba(8, 18, 37, .96);
   backdrop-filter: blur(16px);
   box-shadow: 0 22px 50px rgba(0, 0, 0, .38), 0 0 34px rgba(159,232,112,.08);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(159,232,112,.5) transparent;
 }
+.pin-card::-webkit-scrollbar { width: 8px; }
+.pin-card::-webkit-scrollbar-track { background: transparent; }
+.pin-card::-webkit-scrollbar-thumb { background: rgba(159,232,112,.45); border-radius: 999px; }
 .pin-card__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
 .pin-card__nav {
   height: 32px;

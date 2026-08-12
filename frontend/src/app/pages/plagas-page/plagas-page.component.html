@@ -57,7 +57,7 @@
           <mgl-geojson-source id="plagas-area-source" [data]="areaCirclesData()"></mgl-geojson-source>
           <mgl-layer id="plagas-area-fill" type="fill" source="plagas-area-source" [paint]="{ 'fill-color': ['get', 'color'], 'fill-opacity': 0.12 }"></mgl-layer>
           <mgl-layer id="plagas-area-line" type="line" source="plagas-area-source" [paint]="{ 'line-color': ['get', 'color'], 'line-width': 1.4, 'line-opacity': 0.55, 'line-dasharray': [2, 2] }"></mgl-layer>
-          <mgl-marker *ngFor="let pin of pins()" [lngLat]="[pin.longitud, pin.latitud]">
+          <mgl-marker *ngFor="let pin of pins()" [lngLat]="[pin.longitud, pin.latitud]" [anchor]="'bottom'">
             <button class="map-pin" type="button" [style.--pin-color]="pinColor(pin.detecciones[0].severidad)" (click)="$event.stopPropagation(); openPinCard(pin)">
               <span class="map-pin__glow"></span>
               <span class="map-pin__head">
