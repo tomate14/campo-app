@@ -165,7 +165,9 @@ export default function LotesScreen() {
     () => actions.filter((action) => operational[action.layer] !== false),
     [operational]
   )
-  const userPoint = coords ? { latitude: coords.latitude, longitude: coords.longitude } : null
+  // Estable por referencia (feature 57): asi initialRegion no cambia en cada render y no se
+  // dispara el re-encuadre continuo del mapa (que arrastraba los pines al hacer zoom).
+  const userPoint = useMemo(() => (coords ? { latitude: coords.latitude, longitude: coords.longitude } : null), [coords])
   const initialRegion = useMemo(() => calculateRegion(allMapItems, userPoint), [allMapItems, userPoint])
   const selectedLoteId = selectedLote?.id ?? ''
   const { data: siembraEventos = [], isFetching: loadingSiembra } = useQuery({

@@ -50,6 +50,10 @@ export default function LotesFieldMap({
   const detectionsRef = useRef(detections)
   const alertMarkersRef = useRef<Marker[]>([])
   const alertasRef = useRef(alertas)
+  // Fix (feature 57): encuadrar el mapa UNA sola vez al cargar. Antes se llamaba fitToRegion en
+  // cada cambio de initialRegion (referencia inestable), re-centrando el mapa continuamente y
+  // "arrastrando" los pines al hacer zoom.
+  const hasFittedRef = useRef(false)
   const sourceData = useMemo(() => toFeatureCollection(mapItems), [mapItems])
   // Feature 57: circulos de area afectada como poligonos GeoJSON (radio en metros).
   const affectedData = useMemo(
@@ -167,8 +171,13 @@ export default function LotesFieldMap({
     affectedSource?.setData(affectedData)
     syncDetectionMarkers(map, detections, onDetectionPress, detectionMarkersRef)
     syncAlertMarkers(map, alertas, onAlertaPress, alertMarkersRef)
-    fitToRegion(map, initialRegion)
-  }, [sourceData, affectedData, detections, alertas, initialRegion])
+    // Encuadre automatico SOLO la primera vez que hay datos; despues no re-centrar (respeta el
+    // zoom/pan del usuario). El encuadre manual sigue disponible via command.type === 'fit'.
+    if (!hasFittedRef.current && mapItems.length) {
+      fitToRegion(map, initialRegion)
+      hasFittedRef.current = true
+    }
+  }, [sourceData, affectedData, detections, alertas, mapItems.length])
 
   useEffect(() => {
     const map = mapRef.current

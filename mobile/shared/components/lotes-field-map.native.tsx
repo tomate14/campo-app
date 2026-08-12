@@ -20,9 +20,14 @@ export default function LotesFieldMap({
 }: LotesFieldMapProps) {
   const mapRef = useRef<MapView | null>(null)
 
+  // Fix (feature 57): encuadrar el mapa UNA sola vez al cargar. Antes se llamaba animateToRegion
+  // en cada cambio de initialRegion (referencia inestable), re-centrando el mapa y "arrastrando"
+  // los pines al hacer zoom. El encuadre manual sigue via command.type === 'fit'.
+  const hasFittedRef = useRef(false)
   useEffect(() => {
-    if (!mapItems.length || !mapRef.current) return
+    if (hasFittedRef.current || !mapItems.length || !mapRef.current) return
     mapRef.current.animateToRegion(toNativeRegion(initialRegion), 450)
+    hasFittedRef.current = true
   }, [initialRegion, mapItems.length])
 
   useEffect(() => {
