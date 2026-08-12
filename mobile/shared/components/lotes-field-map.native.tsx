@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import MapView, { Circle, Marker, Polygon } from 'react-native-maps'
 import type { LatLng, Region } from 'react-native-maps'
@@ -21,6 +21,17 @@ export default function LotesFieldMap({
   onAlertaPress,
 }: LotesFieldMapProps) {
   const mapRef = useRef<MapView | null>(null)
+
+  // Fix (feature 57): con tracksViewChanges=true los markers custom se re-renderizan cada frame
+  // y su bitmap queda rezagado respecto de la proyeccion del mapa al hacer zoom (el pin "flota" y
+  // no queda fijo en su coordenada). Lo dejamos en true solo hasta capturar el bitmap y luego en
+  // false; re-capturamos cuando cambia el contenido de los markers.
+  const [tracksChanges, setTracksChanges] = useState(true)
+  useEffect(() => {
+    setTracksChanges(true)
+    const timer = setTimeout(() => setTracksChanges(false), 600)
+    return () => clearTimeout(timer)
+  }, [mapItems, detections, alertas])
 
   useEffect(() => {
     if (!mapItems.length || !mapRef.current) return
@@ -71,7 +82,7 @@ export default function LotesFieldMap({
             tappable
             onPress={() => onLotePress(item.lote.id)}
           />
-          <Marker coordinate={toNativePoint(item.center)} title={item.lote.nombre} description={`${item.lote.area} ha`}>
+          <Marker coordinate={toNativePoint(item.center)} title={item.lote.nombre} description={`${item.lote.area} ha`} tracksViewChanges={tracksChanges}>
             <View style={styles.marker}>
               <Text style={styles.markerTitle}>{item.lote.nombre}</Text>
               <Text style={styles.markerArea}>{item.lote.area} ha</Text>
@@ -105,7 +116,7 @@ export default function LotesFieldMap({
           coordinate={toNativePoint(item.coordinate)}
           anchor={{ x: 0.5, y: 1 }}
           zIndex={20}
-          tracksViewChanges
+          tracksViewChanges={tracksChanges}
           onPress={(event) => {
             event.stopPropagation()
             onDetectionPress(item.detecciones)
@@ -122,7 +133,7 @@ export default function LotesFieldMap({
           coordinate={toNativePoint(item.coordinate)}
           anchor={{ x: 0.5, y: 1 }}
           zIndex={22}
-          tracksViewChanges
+          tracksViewChanges={tracksChanges}
           onPress={(event) => {
             event.stopPropagation()
             onAlertaPress?.(item.alertas)
