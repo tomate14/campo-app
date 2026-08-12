@@ -72,7 +72,7 @@ export default function LotesFieldMap({
             onPress={() => onLotePress(item.lote.id)}
           />
           <TrackedMarker
-            coordinate={toNativePoint(item.center)}
+            coordinate={item.center}
             title={item.lote.nombre}
             description={`${item.lote.area} ha`}
             contentKey={`${item.lote.id}|${item.lote.nombre}|${item.lote.area}`}
@@ -93,7 +93,7 @@ export default function LotesFieldMap({
           return (
             <Circle
               key={`area-${item.deteccion.id}`}
-              center={toNativePoint(item.coordinate)}
+              center={item.coordinate}
               radius={Math.sqrt((areaHa * 10000) / Math.PI)}
               strokeColor={item.color}
               fillColor={`${item.color}22`}
@@ -107,7 +107,7 @@ export default function LotesFieldMap({
         <TrackedMarker
           key={item.deteccion.id}
           identifier={item.deteccion.id}
-          coordinate={toNativePoint(item.coordinate)}
+          coordinate={item.coordinate}
           anchor={{ x: 0.5, y: 1 }}
           zIndex={20}
           contentKey={`${item.deteccion.id}|${item.color}|${item.detecciones.length}|${item.deteccion.tipoNombre ?? item.deteccion.tipo}`}
@@ -124,7 +124,7 @@ export default function LotesFieldMap({
         <TrackedMarker
           key={item.alerta.id}
           identifier={item.alerta.id}
-          coordinate={toNativePoint(item.coordinate)}
+          coordinate={item.coordinate}
           anchor={{ x: 0.5, y: 1 }}
           zIndex={22}
           contentKey={`${item.alerta.id}|${item.color}|${item.alertas.length}`}
