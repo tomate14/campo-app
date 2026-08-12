@@ -2,8 +2,6 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import MapView, { Circle, Marker, Polygon } from 'react-native-maps'
 import type { LatLng, MapMarkerProps, Region } from 'react-native-maps'
-import { Bell, Bug, Crosshair, ShieldAlert, Trees } from 'lucide-react-native'
-import type { LucideIcon } from 'lucide-react-native'
 import type { LotesFieldMapProps, MapMode, MapPoint, MapRegion } from './lotes-field-map.types'
 
 export default function LotesFieldMap({
@@ -103,38 +101,35 @@ export default function LotesFieldMap({
           )
         })}
 
+      {/* Pines nativos (pinColor): react-native-maps los ancla a la coordenada de forma nativa,
+          sin rasterizar una vista React con react-native-svg (que en Android/Google Maps "flota"
+          al hacer zoom). El color codifica la severidad; el tap abre el preview con el grupo. */}
       {detections.map((item) => (
-        <TrackedMarker
+        <Marker
           key={item.deteccion.id}
           identifier={item.deteccion.id}
           coordinate={item.coordinate}
-          anchor={{ x: 0.5, y: 1 }}
+          pinColor={item.color}
           zIndex={20}
-          contentKey={`${item.deteccion.id}|${item.color}|${item.detecciones.length}|${item.deteccion.tipoNombre ?? item.deteccion.tipo}`}
           onPress={(event) => {
             event.stopPropagation()
             onDetectionPress(item.detecciones)
           }}
-        >
-          <MapPin Icon={iconForType(item.deteccion.tipoNombre ?? item.deteccion.tipo)} color={item.color} count={item.detecciones.length} />
-        </TrackedMarker>
+        />
       ))}
 
       {alertas.map((item) => (
-        <TrackedMarker
+        <Marker
           key={item.alerta.id}
           identifier={item.alerta.id}
           coordinate={item.coordinate}
-          anchor={{ x: 0.5, y: 1 }}
+          pinColor={item.color}
           zIndex={22}
-          contentKey={`${item.alerta.id}|${item.color}|${item.alertas.length}`}
           onPress={(event) => {
             event.stopPropagation()
             onAlertaPress?.(item.alertas)
           }}
-        >
-          <MapPin Icon={Bell} color={item.color} count={item.alertas.length} />
-        </TrackedMarker>
+        />
       ))}
     </MapView>
   )
@@ -163,42 +158,6 @@ function TrackedMarker({
       <View collapsable={false}>{children}</View>
     </Marker>
   )
-}
-
-// Pin generico del mapa (detecciones de plagas y alertas de potrero):
-// cabeza circular coloreada con glow, punta y badge de cantidad.
-function MapPin({
-  Icon,
-  color,
-  count,
-}: {
-  Icon: LucideIcon
-  color: string
-  count: number
-}) {
-  return (
-    <View style={styles.pinWrap}>
-      <View style={[styles.pinGlow, { backgroundColor: color }]} />
-      <View style={[styles.pinHead, { borderColor: color, shadowColor: color }]}>
-        <Icon size={25} color="#FFFFFF" strokeWidth={2.25} />
-        {count > 1 && (
-          <View style={[styles.pinCount, { borderColor: color }]}>
-            <Text style={styles.pinCountText}>{count}</Text>
-          </View>
-        )}
-      </View>
-      <View style={[styles.pinTip, { borderTopColor: color }]} />
-      <View style={[styles.pinTipInner, { borderTopColor: 'rgba(11,23,48,0.96)' }]} />
-    </View>
-  )
-}
-
-function iconForType(tipo?: string): LucideIcon {
-  const normalized = tipo?.toUpperCase()
-  if (normalized === 'PLAGA') return Bug
-  if (normalized === 'MALEZA') return Trees
-  if (normalized === 'ENFERMEDAD') return ShieldAlert
-  return Crosshair
 }
 
 function toNativeMapType(mode: MapMode) {
