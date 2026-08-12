@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import MapView, { Circle, Marker, Polygon } from 'react-native-maps'
-import type { LatLng, Region } from 'react-native-maps'
+import type { LatLng, MapMarkerProps, Region } from 'react-native-maps'
 import { Bell, Bug, Crosshair, ShieldAlert, Trees } from 'lucide-react-native'
 import type { LucideIcon } from 'lucide-react-native'
 import type { LotesFieldMapProps, MapMode, MapPoint, MapRegion } from './lotes-field-map.types'
@@ -21,17 +21,6 @@ export default function LotesFieldMap({
   onAlertaPress,
 }: LotesFieldMapProps) {
   const mapRef = useRef<MapView | null>(null)
-
-  // Fix (feature 57): con tracksViewChanges=true los markers custom se re-renderizan cada frame
-  // y su bitmap queda rezagado respecto de la proyeccion del mapa al hacer zoom (el pin "flota" y
-  // no queda fijo en su coordenada). Lo dejamos en true solo hasta capturar el bitmap y luego en
-  // false; re-capturamos cuando cambia el contenido de los markers.
-  const [tracksChanges, setTracksChanges] = useState(true)
-  useEffect(() => {
-    setTracksChanges(true)
-    const timer = setTimeout(() => setTracksChanges(false), 600)
-    return () => clearTimeout(timer)
-  }, [mapItems, detections, alertas])
 
   useEffect(() => {
     if (!mapItems.length || !mapRef.current) return
@@ -82,12 +71,17 @@ export default function LotesFieldMap({
             tappable
             onPress={() => onLotePress(item.lote.id)}
           />
-          <Marker coordinate={toNativePoint(item.center)} title={item.lote.nombre} description={`${item.lote.area} ha`} tracksViewChanges={tracksChanges}>
+          <TrackedMarker
+            coordinate={toNativePoint(item.center)}
+            title={item.lote.nombre}
+            description={`${item.lote.area} ha`}
+            contentKey={`${item.lote.id}|${item.lote.nombre}|${item.lote.area}`}
+          >
             <View style={styles.marker}>
               <Text style={styles.markerTitle}>{item.lote.nombre}</Text>
               <Text style={styles.markerArea}>{item.lote.area} ha</Text>
             </View>
-          </Marker>
+          </TrackedMarker>
         </View>
       ))}
 
@@ -110,39 +104,64 @@ export default function LotesFieldMap({
         })}
 
       {detections.map((item) => (
-        <Marker
+        <TrackedMarker
           key={item.deteccion.id}
           identifier={item.deteccion.id}
           coordinate={toNativePoint(item.coordinate)}
           anchor={{ x: 0.5, y: 1 }}
           zIndex={20}
-          tracksViewChanges={tracksChanges}
+          contentKey={`${item.deteccion.id}|${item.color}|${item.detecciones.length}|${item.deteccion.tipoNombre ?? item.deteccion.tipo}`}
           onPress={(event) => {
             event.stopPropagation()
             onDetectionPress(item.detecciones)
           }}
         >
           <MapPin Icon={iconForType(item.deteccion.tipoNombre ?? item.deteccion.tipo)} color={item.color} count={item.detecciones.length} />
-        </Marker>
+        </TrackedMarker>
       ))}
 
       {alertas.map((item) => (
-        <Marker
+        <TrackedMarker
           key={item.alerta.id}
           identifier={item.alerta.id}
           coordinate={toNativePoint(item.coordinate)}
           anchor={{ x: 0.5, y: 1 }}
           zIndex={22}
-          tracksViewChanges={tracksChanges}
+          contentKey={`${item.alerta.id}|${item.color}|${item.alertas.length}`}
           onPress={(event) => {
             event.stopPropagation()
             onAlertaPress?.(item.alertas)
           }}
         >
           <MapPin Icon={Bell} color={item.color} count={item.alertas.length} />
-        </Marker>
+        </TrackedMarker>
       ))}
     </MapView>
+  )
+}
+
+// Marker que queda FIJO en su coordenada al hacer zoom. En react-native-maps, un marker con vista
+// custom y tracksViewChanges=true se re-renderiza cada frame y su bitmap se desplaza respecto de la
+// proyeccion ("flota"); ademas, en Android, sin `collapsable={false}` la vista del marker se colapsa
+// y se posiciona mal. Aca: (a) envolvemos el contenido en un View `collapsable={false}`, y (b)
+// congelamos `tracksViewChanges` por-marker (true al montar/cambiar contenido, false tras 400ms).
+function TrackedMarker({
+  children,
+  contentKey,
+  ...markerProps
+}: MapMarkerProps & { children: ReactNode; contentKey?: string | number }) {
+  const [tracks, setTracks] = useState(true)
+
+  useEffect(() => {
+    setTracks(true)
+    const timer = setTimeout(() => setTracks(false), 400)
+    return () => clearTimeout(timer)
+  }, [contentKey])
+
+  return (
+    <Marker {...markerProps} tracksViewChanges={tracks}>
+      <View collapsable={false}>{children}</View>
+    </Marker>
   )
 }
 
