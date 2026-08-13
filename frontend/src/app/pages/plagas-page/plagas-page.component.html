@@ -168,7 +168,7 @@
                   <span class="catalogo-name__text"><strong>{{ item.plagaNombre }}</strong><small>{{ item.tipoNombre }}</small></span>
                 </div>
               </td>
-              <td>{{ item.loteNombre }}</td>
+              <td><button type="button" class="lote-link" (click)="openHistorialLote(item.loteId)" title="Ver historial del lote">{{ item.loteNombre }}</button></td>
               <td>{{ item.cultivoNombre || '-' }}</td>
               <td>{{ item.fechaDeteccion | date:'dd/MM/yyyy HH:mm' }}</td>
               <td><span class="badge" [class]="severityClass(item.severidad)">{{ item.severidad }}</span></td>
@@ -185,7 +185,7 @@
           <tbody>
             <tr *ngFor="let item of aplicaciones()">
               <td><strong>{{ item.producto }}</strong><small>{{ item.observaciones || 'Aplicaci&oacute;n registrada' }}</small></td>
-              <td>{{ item.loteNombre }}</td>
+              <td><button type="button" class="lote-link" (click)="openHistorialLote(item.loteId)" title="Ver historial del lote">{{ item.loteNombre }}</button></td>
               <td>{{ item.fechaAplicacion | date:'dd/MM/yyyy HH:mm' }}</td>
               <td>{{ item.principioActivo || '-' }}</td>
               <td>{{ item.dosis }} {{ item.unidadDosis }}</td>
@@ -447,44 +447,50 @@
           <h3>{{ historialModalTitle() }}</h3>
           <p>{{ historialModalSubtitle() }}</p>
         </div>
-        <div class="history-summary">
-          <span class="badge" *ngIf="historialLote() as lote">{{ lote.cultivoNombre }}</span>
-          <strong>{{ historialEventos().length }} evento(s)</strong>
-          <small *ngIf="selectedDeteccion() as deteccion">Origen: {{ deteccion.plagaNombre }}</small>
-        </div>
-        <div class="history-timeline-wrap">
-          <div class="empty-box" *ngIf="historialLoading()">Cargando historial del lote...</div>
-          <div class="history-timeline" *ngIf="!historialLoading() && historialEventos().length; else emptyHistory">
-            <button
-              type="button"
-              class="history-card"
-              *ngFor="let evento of historialEventos(); let i = index"
-              [class.history-card--open]="historialExpandido() === i"
-              [style.--kind-color]="evento.color"
-              (click)="toggleHistorialEvento(i)"
-            >
-              <span class="history-card__band"></span>
-              <div class="history-card__body">
-                <div class="history-card__top">
-                  <span class="history-card__kind">{{ evento.tipo }}</span>
-                  <span class="history-card__date">{{ evento.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
-                </div>
-                <div class="history-card__title">{{ evento.titulo }}</div>
-                <div class="history-card__detail" *ngIf="historialExpandido() === i">
-                  <div class="history-card__row" *ngFor="let campo of evento.campos">
-                    <span class="history-card__label">{{ campo.label }}</span>
-                    <span class="history-card__value">{{ campo.value }}</span>
-                  </div>
-                  <div class="history-card__empty" *ngIf="!evento.campos.length">Sin datos adicionales.</div>
-                </div>
-              </div>
-              <svg class="history-card__chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </button>
+        <!-- Historico del lote: usa el componente compartido (misma vista que Lotes y replica del mobile). -->
+        <app-lote-historial *ngIf="historialScope() === 'LOTE' && historialLote() as lote" [loteId]="lote.id"></app-lote-historial>
+
+        <!-- Historico de una deteccion puntual (aplicaciones y seguimientos de esa deteccion). -->
+        <ng-container *ngIf="historialScope() === 'DETECCION'">
+          <div class="history-summary">
+            <span class="badge" *ngIf="historialLote() as lote">{{ lote.cultivoNombre }}</span>
+            <strong>{{ historialEventos().length }} evento(s)</strong>
+            <small *ngIf="selectedDeteccion() as deteccion">Origen: {{ deteccion.plagaNombre }}</small>
           </div>
-          <ng-template #emptyHistory><div class="empty-box" *ngIf="!historialLoading()">Todav&iacute;a no hay eventos asociados a este lote.</div></ng-template>
-        </div>
+          <div class="history-timeline-wrap">
+            <div class="empty-box" *ngIf="historialLoading()">Cargando historial de la detecci&oacute;n...</div>
+            <div class="history-timeline" *ngIf="!historialLoading() && historialEventos().length; else emptyHistory">
+              <button
+                type="button"
+                class="history-card"
+                *ngFor="let evento of historialEventos(); let i = index"
+                [class.history-card--open]="historialExpandido() === i"
+                [style.--kind-color]="evento.color"
+                (click)="toggleHistorialEvento(i)"
+              >
+                <span class="history-card__band"></span>
+                <div class="history-card__body">
+                  <div class="history-card__top">
+                    <span class="history-card__kind">{{ evento.tipo }}</span>
+                    <span class="history-card__date">{{ evento.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                  <div class="history-card__title">{{ evento.titulo }}</div>
+                  <div class="history-card__detail" *ngIf="historialExpandido() === i">
+                    <div class="history-card__row" *ngFor="let campo of evento.campos">
+                      <span class="history-card__label">{{ campo.label }}</span>
+                      <span class="history-card__value">{{ campo.value }}</span>
+                    </div>
+                    <div class="history-card__empty" *ngIf="!evento.campos.length">Sin datos adicionales.</div>
+                  </div>
+                </div>
+                <svg class="history-card__chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+            </div>
+            <ng-template #emptyHistory><div class="empty-box" *ngIf="!historialLoading()">Todav&iacute;a no hay eventos asociados a esta detecci&oacute;n.</div></ng-template>
+          </div>
+        </ng-container>
         <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cerrar</button></div>
       </ng-container>
 

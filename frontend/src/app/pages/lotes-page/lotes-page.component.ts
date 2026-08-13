@@ -7,14 +7,13 @@ import type { Feature, FeatureCollection, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
 import type {
   DeteccionPlaga,
-  EventoSiembra,
   Lote,
   LoteReporte,
   LoteRequest,
-  RegistroCosecha,
 } from '../../core/models/agricola.models';
 import { AgricolaService } from '../../core/services/agricola.service';
 import { LoteFormComponent } from '../../shared/lote-form/lote-form.component';
+import { LoteHistorialComponent } from '../../shared/lote-historial/lote-historial.component';
 import {
   buildPolygon,
   computeAreaHectares,
@@ -32,14 +31,6 @@ const HEALTHY_COLOR = '#9FE870';
 // Estados de deteccion que se consideran "abiertas" para colorear por salud (igual que mobile).
 const OPEN_DETECTION_STATES = ['ABIERTA', 'EN_TRATAMIENTO'];
 
-// Colores por severidad de deteccion (mismo mapeo usado en el modulo de plagas y en mobile).
-const SEVERITY_COLORS: Record<string, string> = {
-  BAJA: '#A3E635',
-  MEDIA: '#FFB84D',
-  ALTA: '#FF8A4C',
-  CRITICA: '#FF6B6B',
-};
-
 // Leyenda fija por salud del lote (feature 81): mismo criterio que mobile.
 const HEALTH_LEGEND: Array<{ label: string; color: string }> = [
   { label: 'Sano', color: HEALTHY_COLOR },
@@ -52,7 +43,7 @@ const HEALTH_LEGEND: Array<{ label: string; color: string }> = [
 @Component({
   selector: 'app-lotes-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, LoteFormComponent],
+  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, LoteFormComponent, LoteHistorialComponent],
   templateUrl: './lotes-page.component.html',
   styleUrl: './lotes-page.component.css',
 })
@@ -81,25 +72,13 @@ export class LotesPageComponent {
   protected readonly importModalOpen = signal(false);
   protected readonly importPayload = signal('');
 
-  // Historico (modal de detalle, feature 81).
+  // Historico (modal de detalle, feature 81). El timeline de eventos lo renderiza
+  // el componente compartido app-lote-historial; aca solo queda el resumen (reporte).
   protected readonly detailLote = signal<Lote | null>(null);
   protected readonly reporte = signal<LoteReporte | null>(null);
-  protected readonly eventos = signal<EventoSiembra[]>([]);
-  protected readonly cosechas = signal<RegistroCosecha[]>([]);
   // Todas las detecciones del establecimiento (feature 81): alimentan el color por salud del mapa.
   protected readonly detecciones = signal<DeteccionPlaga[]>([]);
   protected readonly loadingReporte = signal(false);
-  protected readonly loadingEventos = signal(false);
-  protected readonly loadingCosechas = signal(false);
-
-  // Detecciones del lote abierto en el modal de historico (derivadas del signal global).
-  protected readonly deteccionesDelLote = computed<DeteccionPlaga[]>(() => {
-    const loteId = this.detailLote()?.id;
-    if (!loteId) {
-      return [];
-    }
-    return this.detecciones().filter((deteccion) => deteccion.loteId === loteId);
-  });
 
   protected readonly satelliteStyle: StyleSpecification = {
     version: 8,
@@ -330,8 +309,6 @@ export class LotesPageComponent {
     this.selectedLote.set(lote);
     this.detailLote.set(lote);
     this.reporte.set(null);
-    this.eventos.set([]);
-    this.cosechas.set([]);
 
     this.loadingReporte.set(true);
     this.agricolaService.getReporteLote(lote.id).subscribe({
@@ -340,24 +317,6 @@ export class LotesPageComponent {
         this.loadingReporte.set(false);
       },
       error: () => this.loadingReporte.set(false),
-    });
-
-    this.loadingEventos.set(true);
-    this.agricolaService.getEventosByLote(lote.id).subscribe({
-      next: (eventos) => {
-        this.eventos.set(Array.isArray(eventos) ? eventos : []);
-        this.loadingEventos.set(false);
-      },
-      error: () => this.loadingEventos.set(false),
-    });
-
-    this.loadingCosechas.set(true);
-    this.agricolaService.getCosechasByLote(lote.id).subscribe({
-      next: (cosechas) => {
-        this.cosechas.set(Array.isArray(cosechas) ? cosechas : []);
-        this.loadingCosechas.set(false);
-      },
-      error: () => this.loadingCosechas.set(false),
     });
   }
 
@@ -519,19 +478,6 @@ export class LotesPageComponent {
       default:
         return 'Sin dato';
     }
-  }
-
-  protected severityColor(severidad?: string): string {
-    return SEVERITY_COLORS[String(severidad ?? '').toUpperCase()] ?? SEVERITY_COLORS['MEDIA'];
-  }
-
-  protected formatEnum(value?: string): string {
-    return String(value || '')
-      .toLowerCase()
-      .split('_')
-      .filter(Boolean)
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-      .join(' ');
   }
 
   protected iconPath(icon: string): string {

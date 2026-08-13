@@ -12,6 +12,7 @@ import { SessionService } from '../../core/services/session.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
 import { SearchableMultiSelectComponent } from '../../shared/searchable-multi-select/searchable-multi-select.component';
+import { LoteHistorialComponent } from '../../shared/lote-historial/lote-historial.component';
 import type { Operario } from '../../core/models/operarios.models';
 import type {
   AplicacionFitosanitaria,
@@ -26,14 +27,11 @@ import type {
   DeteccionPlaga,
   DeteccionPlagaRequest,
   EstadoDeteccionPlaga,
-  EventoSiembra,
   EventoSiembraRequest,
   TipoEvento,
-  HistoricoCultivo,
   Lote,
   PageResponse,
   PlagasDashboard,
-  RegistroCosecha,
   ResultadoSeguimientoPlaga,
   SeguimientoPlaga,
   SeguimientoPlagaRequest,
@@ -64,7 +62,7 @@ type DeteccionPinGroup = {
 @Component({
   selector: 'app-plagas-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent, ConfigurableSelectComponent, SearchableMultiSelectComponent],
+  imports: [CommonModule, FormsModule, NgxMapLibreGLModule, RemoteSearchSelectComponent, ConfigurableSelectComponent, SearchableMultiSelectComponent, LoteHistorialComponent],
   templateUrl: './plagas-page.component.html',
   styleUrl: './plagas-page.component.css',
 })
@@ -996,9 +994,17 @@ export class PlagasPageComponent {
   protected openHistorialLoteSeleccionado() {
     const lote = this.selectedLote();
     if (!lote) return;
+    this.openHistorialLote(lote.id);
+  }
+
+  // Abre el historico del lote (scope LOTE). El timeline lo renderiza el componente
+  // compartido app-lote-historial (misma vista que en Lotes y replica del mobile).
+  protected openHistorialLote(loteId: string) {
+    const lote = this.lotes().find((item) => item.id === loteId) ?? null;
     this.selectedDeteccion.set(null);
+    this.historialLote.set(lote);
+    this.historialScope.set('LOTE');
     this.modal.set('HISTORICO');
-    this.loadHistorialLoteById(lote.id);
   }
 
   protected historialModalTitle() {
@@ -1152,37 +1158,6 @@ export class PlagasPageComponent {
     this.recalcPorcentajeAfectado();
   }
 
-  private loadHistorialLote(deteccion: DeteccionPlaga) {
-    this.loadHistorialLoteById(deteccion.loteId);
-  }
-
-  private loadHistorialLoteById(loteId: string) {
-    const lote = this.lotes().find((item) => item.id === loteId) ?? null;
-    this.historialLote.set(lote);
-    this.historialScope.set('LOTE');
-    this.historialLoading.set(true);
-    this.historialEventos.set([]);
-    this.historialExpandido.set(null);
-
-    forkJoin({
-      siembra: this.agricolaService.getEventosByLote(loteId),
-      cosechas: this.agricolaService.getCosechasByLote(loteId),
-      cultivos: this.agricolaService.getHistorialByLote(loteId),
-      aplicaciones: this.agricolaService.getAplicacionesFitosanitarias(),
-      seguimientos: this.agricolaService.getSeguimientosPlaga(),
-    }).subscribe({
-      next: ({ siembra, cosechas, cultivos, aplicaciones, seguimientos }) => {
-        this.historialEventos.set(this.buildHistorialLote(loteId, siembra, cosechas, cultivos, aplicaciones, seguimientos));
-        this.historialLoading.set(false);
-      },
-      error: () => {
-        this.historialEventos.set(this.buildHistorialLote(loteId, [], [], [], [], []));
-        this.historialLoading.set(false);
-        this.errorMessage.set('No se pudo cargar el historial completo del lote.');
-      },
-    });
-  }
-
   private loadHistorialDeteccion(deteccion: DeteccionPlaga) {
     const lote = this.lotes().find((item) => item.id === deteccion.loteId) ?? null;
     this.historialLote.set(lote);
@@ -1305,97 +1280,6 @@ export class PlagasPageComponent {
 
     return [deteccionEvent, ...aplicacionEvents, ...seguimientoEvents]
       .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-  }
-
-  private buildHistorialLote(
-    loteId: string,
-    siembra: EventoSiembra[],
-    cosechas: RegistroCosecha[],
-    cultivos: HistoricoCultivo[],
-    aplicaciones: AplicacionFitosanitaria[],
-    seguimientos: SeguimientoPlaga[],
-  ): HistorialPlagaEvento[] {
-    const detecciones = this.mapDetecciones().filter((item) => item.loteId === loteId);
-    const detectionIds = new Set(detecciones.map((item) => item.id));
-    const deteccionEvents = detecciones.map((item) => this.deteccionEvento(item));
-    const aplicacionEvents = aplicaciones
-      .filter((item) => item.loteId === loteId)
-      .map((item) => this.aplicacionEvento(item));
-    const seguimientoEvents = seguimientos
-      .filter((item) => detectionIds.has(item.deteccionId))
-      .map((item) => this.seguimientoEvento(item));
-    const siembraEvents = siembra.map((item): HistorialPlagaEvento => ({
-      tipo: item.tipoEvento === 'SIEMBRA' ? 'Siembra' : 'Evento',
-      fecha: item.fecha,
-      titulo: item.estadoFenologico || item.tipoEvento,
-      color: '#9FE870',
-      campos: this.buildCampos([
-        ['Tipo de evento', item.tipoEvento],
-        ['Estado fenológico', item.estadoFenologico],
-        ['Descripción', item.descripcion],
-        ['Registrado', this.fmtFecha(item.createdAt)],
-      ]),
-    }));
-    const cosechaEvents = cosechas.map((item): HistorialPlagaEvento => ({
-      tipo: 'Cosecha',
-      fecha: item.fecha,
-      titulo: `${this.num(item.rendimientoKgHa ?? 0)} kg/ha`,
-      color: '#FFB84D',
-      campos: this.buildCampos([
-        ['Toneladas', item.toneladasTotal != null ? `${this.num(item.toneladasTotal)} tn` : ''],
-        ['Calidad de grano', item.calidadGrano],
-        ['Humedad', item.humedad != null ? `${item.humedad} %` : ''],
-        ['Área real cosechada', item.areaRealCosechadaPct != null ? `${item.areaRealCosechadaPct} %` : ''],
-        ['Ha cosechadas', item.hectareasCosechadas != null ? `${this.num(item.hectareasCosechadas)} ha` : ''],
-        ['Pérdida', item.perdidaKgHa != null ? `${this.num(item.perdidaKgHa)} kg/ha` : ''],
-        ['Granos perdidos', item.granosPerdidosKg != null ? `${this.num(item.granosPerdidosKg)} kg` : ''],
-        ['Tipo de pérdida', item.tipoPerdidaNombre || item.tipoPerdida],
-        ['Destino', item.destinoNombre || item.destino],
-        ['Destino (cantidad)', item.destinoCantidadTn != null ? `${this.num(item.destinoCantidadTn)} tn` : ''],
-        ['Observaciones', item.observaciones],
-        ['Registrado', this.fmtFecha(item.createdAt)],
-      ]),
-    }));
-    const cultivoEvents = cultivos.flatMap((item): HistorialPlagaEvento[] => {
-      const events: HistorialPlagaEvento[] = [];
-      if (item.fechaSiembra) {
-        events.push({
-          tipo: 'Historial',
-          fecha: item.fechaSiembra,
-          titulo: `Siembra ${item.cultivo}`,
-          color: '#9FE870',
-          campos: this.buildCampos([
-            ['Cultivo', item.cultivo],
-            ['Temporada', item.temporada],
-            ['Observaciones', item.observaciones],
-          ]),
-        });
-      }
-      if (item.fechaCosecha) {
-        events.push({
-          tipo: 'Historial',
-          fecha: item.fechaCosecha,
-          titulo: `Cosecha ${item.cultivo}`,
-          color: '#FFB84D',
-          campos: this.buildCampos([
-            ['Cultivo', item.cultivo],
-            ['Temporada', item.temporada],
-            ['Rendimiento', item.rendimientoKgHa != null ? `${this.num(item.rendimientoKgHa)} kg/ha` : ''],
-            ['Observaciones', item.observaciones],
-          ]),
-        });
-      }
-      return events;
-    });
-
-    return [
-      ...deteccionEvents,
-      ...aplicacionEvents,
-      ...seguimientoEvents,
-      ...siembraEvents,
-      ...cosechaEvents,
-      ...cultivoEvents,
-    ].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
   }
 
   private nowLocalDateTime() {

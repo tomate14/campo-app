@@ -305,6 +305,9 @@
 .history-card__label { flex: 0 0 92px; color: #7f95b3; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
 .history-card__value { flex: 1; color: #dce8f8; font-size: 13px; word-break: break-word; }
 .history-card__empty { color: #7f95b3; font-size: 12px; font-style: italic; }
+/* Nombre de lote clickeable en las tablas: abre el historico del lote. */
+.lote-link { background: none; border: none; padding: 0; margin: 0; font: inherit; color: #9fe870; font-weight: 700; cursor: pointer; text-align: left; border-bottom: 1px dashed rgba(159, 232, 112, .45); transition: color .15s ease, border-color .15s ease; }
+.lote-link:hover { color: #c6f7a6; border-bottom-color: rgba(198, 247, 166, .8); }
 .history-card__chevron { flex: 0 0 auto; margin-top: 2px; color: #7f95b3; transition: transform .2s ease, color .18s ease; }
 .history-card--open .history-card__chevron { transform: rotate(180deg); color: var(--kind-color); }
 .error-box, .premium-empty-box, .empty-box { padding: 16px; border-radius: 16px; background: rgba(127, 29, 29, .18); color: #fecaca; border: 1px solid rgba(248, 113, 113, .25); }
