@@ -36,6 +36,7 @@ import type {
   OrdenAplicacion,
   OrdenAplicacionRequest,
   EstadoOrdenAplicacion,
+  OperarioAsignable,
   PropiedadSueloRequest,
   RegistroCosecha,
   RegistroCosechaRequest,
@@ -334,6 +335,10 @@ export class AgricolaService {
 
   getOrdenAplicacion(id: string) {
     return this.http.get<ApiResponse<OrdenAplicacion> | OrdenAplicacion>(`${API_BASE_URL}/agricola/plagas/ordenes/${id}`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getOperariosAsignables() {
+    return this.http.get<ApiResponse<OperarioAsignable[]> | OperarioAsignable[]>(`${API_BASE_URL}/agricola/plagas/ordenes/operarios`).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   getOrdenesAplicacionByLote(loteId: string) {

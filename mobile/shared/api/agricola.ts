@@ -7,7 +7,7 @@ import type {
   PropiedadSuelo, PropiedadSueloRequest,
   HistoricoCultivo, HistoricoCultivoRequest, RotacionRecomendacion,
   UtilidadOpcion,
-  OrdenAplicacion, OrdenAplicacionRequest, EstadoOrdenAplicacion,
+  OrdenAplicacion, OrdenAplicacionRequest, EstadoOrdenAplicacion, OperarioAsignable,
 } from '../types/agricola'
 
 // Asset elegido con expo-image-picker que se sube al backend (feature 54).
@@ -195,6 +195,9 @@ export const getSeguimientosPlaga = () =>
 // Feature 58: ordenes de aplicacion.
 export const getOrdenesAplicacion = (params?: { estado?: EstadoOrdenAplicacion; operarioId?: string; responsableId?: string; loteId?: string }) =>
   api.get<ApiResponse<OrdenAplicacion[]> | OrdenAplicacion[]>('/agricola/plagas/ordenes', { params }).then(r => unwrapListResponse(r.data))
+
+export const getOperariosAsignables = () =>
+  api.get<ApiResponse<OperarioAsignable[]> | OperarioAsignable[]>('/agricola/plagas/ordenes/operarios').then(r => unwrapListResponse(r.data))
 
 export const getOrdenesAplicacionByLote = (loteId: string) =>
   api.get<ApiResponse<OrdenAplicacion[]> | OrdenAplicacion[]>('/agricola/plagas/ordenes', { params: { loteId } }).then(r => unwrapListResponse(r.data))

@@ -390,6 +390,14 @@ export interface SeguimientoPlagaRequest {
 // Feature 58: orden de aplicacion (flujo responsable -> operario tercerizado).
 export type EstadoOrdenAplicacion = 'PENDIENTE' | 'ACEPTADA' | 'RECHAZADA'
 
+// Operario asignable (lista minima, endpoint con permiso read:lotes).
+export interface OperarioAsignable {
+  id: string
+  nombre: string
+  apellido: string
+  userId?: string
+}
+
 export interface OrdenAplicacion {
   id: string
   numero?: number

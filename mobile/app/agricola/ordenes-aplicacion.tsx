@@ -3,9 +3,10 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 
 import { useLocalSearchParams } from 'expo-router'
 import { Check, ClipboardCheck, Plus, X } from 'lucide-react-native'
 import { readCurrentUser } from '../../shared/auth/session'
+import { useQuery } from '@tanstack/react-query'
+import { getOperariosAsignables } from '../../shared/api/agricola'
 import { useLotes } from '../../shared/hooks/useLotes'
 import { useDeteccionesPlaga } from '../../shared/hooks/usePlagas'
-import { useOperarios } from '../../shared/hooks/useOperarios'
 import { useUtilidadOpciones } from '../../shared/hooks/useUtilidades'
 import {
   useAceptarOrdenAplicacion,
@@ -34,7 +35,7 @@ export default function OrdenesAplicacionScreen() {
   const ordenesQuery = useOrdenesAplicacion()
   const lotesQuery = useLotes()
   const deteccionesQuery = useDeteccionesPlaga()
-  const operariosQuery = useOperarios({ estado: 'ACTIVO' })
+  const operariosQuery = useQuery({ queryKey: ['operarios-asignables'], queryFn: getOperariosAsignables })
   const unidadesQuery = useUtilidadOpciones('UNIDAD_DOSIS')
 
   const crear = useCreateOrdenAplicacion()
@@ -55,7 +56,8 @@ export default function OrdenesAplicacionScreen() {
   const ordenes = ordenesQuery.data ?? []
   const lotes = lotesQuery.data ?? []
   const detecciones = deteccionesQuery.data ?? []
-  const operarios = useMemo(() => (operariosQuery.data ?? []).filter((o) => o.estado === 'ACTIVO'), [operariosQuery.data])
+  // El endpoint ya devuelve solo operarios activos.
+  const operarios = operariosQuery.data ?? []
   const unidades = unidadesQuery.data ?? []
 
   // Total de dosis a utilizar = dosis x superficie (la unidad del total quita el "/ha").

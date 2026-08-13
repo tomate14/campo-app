@@ -1,5 +1,6 @@
 package com.campoapp.agricultura.controller;
 
+import com.campoapp.agricultura.dto.plagas.OperarioAsignableResponse;
 import com.campoapp.agricultura.dto.plagas.OrdenAplicacionRequest;
 import com.campoapp.agricultura.dto.plagas.OrdenAplicacionResponse;
 import com.campoapp.agricultura.dto.plagas.RechazoOrdenRequest;
@@ -35,6 +36,13 @@ public class OrdenAplicacionController {
             @RequestParam(required = false) String responsableId,
             @RequestParam(required = false) String loteId) {
         return ResponseEntity.ok(ApiResponse.ok(ordenAplicacionService.listar(estado, operarioId, responsableId, loteId)));
+    }
+
+    @GetMapping("/operarios")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    @Operation(summary = "Listar operarios asignables (lista minima, accesible por operarios)")
+    public ResponseEntity<ApiResponse<List<OperarioAsignableResponse>>> operariosAsignables() {
+        return ResponseEntity.ok(ApiResponse.ok(ordenAplicacionService.listarOperariosAsignables()));
     }
 
     @GetMapping("/{id}")

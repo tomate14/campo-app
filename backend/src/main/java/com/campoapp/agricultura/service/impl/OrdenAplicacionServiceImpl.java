@@ -2,6 +2,7 @@ package com.campoapp.agricultura.service.impl;
 
 import com.campoapp.agricultura.dto.plagas.AplicacionFitosanitariaRequest;
 import com.campoapp.agricultura.dto.plagas.AplicacionFitosanitariaResponse;
+import com.campoapp.agricultura.dto.plagas.OperarioAsignableResponse;
 import com.campoapp.agricultura.dto.plagas.OrdenAplicacionRequest;
 import com.campoapp.agricultura.dto.plagas.OrdenAplicacionResponse;
 import com.campoapp.agricultura.entity.Lote;
@@ -41,6 +42,18 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
     private final OperarioRepository operarioRepository;
     // Reutiliza el alta de aplicacion "normal" del sistema al aceptar la orden.
     private final PlagasService plagasService;
+
+    @Override
+    public List<OperarioAsignableResponse> listarOperariosAsignables() {
+        return operarioRepository.findAllActive().stream()
+                .filter(o -> o.getEstado() == null || "ACTIVO".equalsIgnoreCase(o.getEstado()))
+                .map(o -> new OperarioAsignableResponse(
+                        o.getId(),
+                        o.getNombre(),
+                        o.getApellido(),
+                        o.getUser() != null ? o.getUser().getId() : null))
+                .toList();
+    }
 
     @Override
     public List<OrdenAplicacionResponse> listar(EstadoOrdenAplicacion estado, String operarioId, String responsableId, String loteId) {

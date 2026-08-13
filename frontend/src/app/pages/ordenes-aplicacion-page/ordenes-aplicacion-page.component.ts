@@ -7,13 +7,12 @@ import type {
   DeteccionPlaga,
   EstadoOrdenAplicacion,
   Lote,
+  OperarioAsignable,
   OrdenAplicacion,
   OrdenAplicacionRequest,
+  UtilidadOpcion,
 } from '../../core/models/agricola.models';
-import type { Operario } from '../../core/models/operarios.models';
-import type { UtilidadOpcion } from '../../core/models/agricola.models';
 import { AgricolaService } from '../../core/services/agricola.service';
-import { OperariosService } from '../../core/services/operarios.service';
 import { SessionService } from '../../core/services/session.service';
 import { UtilidadesService } from '../../core/services/utilidades.service';
 
@@ -28,13 +27,12 @@ type OrdenFormState = OrdenAplicacionRequest & { id?: string };
 })
 export class OrdenesAplicacionPageComponent implements OnInit {
   private readonly agricolaService = inject(AgricolaService);
-  private readonly operariosService = inject(OperariosService);
   private readonly sessionService = inject(SessionService);
   private readonly utilidadesService = inject(UtilidadesService);
   private readonly route = inject(ActivatedRoute);
 
   protected readonly ordenes = signal<OrdenAplicacion[]>([]);
-  protected readonly operarios = signal<Operario[]>([]);
+  protected readonly operarios = signal<OperarioAsignable[]>([]);
   protected readonly lotes = signal<Lote[]>([]);
   protected readonly detecciones = signal<DeteccionPlaga[]>([]);
   // Unidades de dosis desde el catalogo de Utilidades (categoria UNIDAD_DOSIS).
@@ -55,7 +53,8 @@ export class OrdenesAplicacionPageComponent implements OnInit {
   protected readonly modalOpen = signal(false);
   protected readonly form = signal<OrdenFormState>(this.emptyForm());
 
-  protected readonly operariosActivos = computed(() => this.operarios().filter((o) => o.estado === 'ACTIVO'));
+  // El endpoint ya devuelve solo operarios activos.
+  protected readonly operariosActivos = computed(() => this.operarios());
 
   protected readonly deteccionesDelLote = computed(() => {
     const loteId = this.form().loteId;
@@ -106,7 +105,7 @@ export class OrdenesAplicacionPageComponent implements OnInit {
     this.error.set(null);
     forkJoin({
       ordenes: this.agricolaService.getOrdenesAplicacion(),
-      operarios: this.operariosService.getOperarios({ estado: 'ACTIVO' }),
+      operarios: this.agricolaService.getOperariosAsignables(),
       lotes: this.agricolaService.getLotes(undefined),
       detecciones: this.agricolaService.getDeteccionesPlaga(),
       unidades: this.utilidadesService.getUtilidadOpciones('UNIDAD_DOSIS'),
