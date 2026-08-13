@@ -33,6 +33,9 @@ import type {
   MovimientoInsumoRequest,
   PageResponse,
   PropiedadSuelo,
+  OrdenAplicacion,
+  OrdenAplicacionRequest,
+  EstadoOrdenAplicacion,
   PropiedadSueloRequest,
   RegistroCosecha,
   RegistroCosechaRequest,
@@ -322,6 +325,35 @@ export class AgricolaService {
 
   getMapaPlagasLote(loteId: string) {
     return this.http.get<ApiResponse<DeteccionPlaga[]> | DeteccionPlaga[]>(`${API_BASE_URL}/agricola/plagas/lotes/${loteId}/mapa`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  // Feature 58: ordenes de aplicacion.
+  getOrdenesAplicacion(params?: { estado?: EstadoOrdenAplicacion; operarioId?: string; responsableId?: string; loteId?: string }) {
+    return this.http.get<ApiResponse<OrdenAplicacion[]> | OrdenAplicacion[]>(`${API_BASE_URL}/agricola/plagas/ordenes`, { params: cleanParams(params as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getOrdenAplicacion(id: string) {
+    return this.http.get<ApiResponse<OrdenAplicacion> | OrdenAplicacion>(`${API_BASE_URL}/agricola/plagas/ordenes/${id}`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getOrdenesAplicacionByLote(loteId: string) {
+    return this.http.get<ApiResponse<OrdenAplicacion[]> | OrdenAplicacion[]>(`${API_BASE_URL}/agricola/plagas/ordenes`, { params: cleanParams({ loteId }) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  createOrdenAplicacion(data: OrdenAplicacionRequest) {
+    return this.http.post<ApiResponse<OrdenAplicacion> | OrdenAplicacion>(`${API_BASE_URL}/agricola/plagas/ordenes`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  updateOrdenAplicacion(id: string, data: OrdenAplicacionRequest) {
+    return this.http.put<ApiResponse<OrdenAplicacion> | OrdenAplicacion>(`${API_BASE_URL}/agricola/plagas/ordenes/${id}`, data).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  aceptarOrdenAplicacion(id: string) {
+    return this.http.post<ApiResponse<OrdenAplicacion> | OrdenAplicacion>(`${API_BASE_URL}/agricola/plagas/ordenes/${id}/aceptar`, {}).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  rechazarOrdenAplicacion(id: string, motivo?: string) {
+    return this.http.post<ApiResponse<OrdenAplicacion> | OrdenAplicacion>(`${API_BASE_URL}/agricola/plagas/ordenes/${id}/rechazar`, { motivo }).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   resolverLotePorPunto(latitud: number, longitud: number) {

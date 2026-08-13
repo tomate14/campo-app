@@ -69,6 +69,11 @@
         <span *ngIf="!collapsed()">Plagas</span>
       </a>
 
+      <a *ngIf="isMenuVisible('agricola-ordenes-aplicacion')" routerLink="/agricola/ordenes-aplicacion" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Órdenes de aplicación' : ''">
+        <svg viewBox="0 0 24 24"><path d="M9 4h6a1 1 0 0 1 1 1v1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h1V5a1 1 0 0 1 1-1Z" /><path d="M9 13l2 2 4-4" /></svg>
+        <span *ngIf="!collapsed()">Órdenes de aplicación</span>
+      </a>
+
       <a *ngIf="isMenuVisible('agricola-insumos')" routerLink="/agricola/insumos" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Insumos' : ''">
         <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4Z" /><path d="M4 7v10l8 4 8-4V7" /><path d="M12 11v10" /></svg>
         <span *ngIf="!collapsed()">Insumos</span>

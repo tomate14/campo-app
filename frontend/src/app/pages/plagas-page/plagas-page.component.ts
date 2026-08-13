@@ -9,6 +9,7 @@ import { AgricolaService } from '../../core/services/agricola.service';
 import { API_ORIGIN } from '../../core/services/api.config';
 import { OperariosService } from '../../core/services/operarios.service';
 import { SessionService } from '../../core/services/session.service';
+import { Router } from '@angular/router';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 import { ConfigurableSelectComponent } from '../../shared/configurable-select/configurable-select.component';
 import { SearchableMultiSelectComponent } from '../../shared/searchable-multi-select/searchable-multi-select.component';
@@ -70,6 +71,7 @@ export class PlagasPageComponent {
   private readonly agricolaService = inject(AgricolaService);
   private readonly operariosService = inject(OperariosService);
   private readonly sessionService = inject(SessionService);
+  private readonly router = inject(Router);
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
@@ -995,6 +997,16 @@ export class PlagasPageComponent {
     const lote = this.selectedLote();
     if (!lote) return;
     this.openHistorialLote(lote.id);
+  }
+
+  // Feature 58: la burbuja del mapa lleva a la pantalla de ordenes de aplicacion abriendo el
+  // alta, preseleccionando el lote (y la deteccion) si hay uno enfocado.
+  protected abrirOrdenAplicacion() {
+    const lote = this.selectedLote();
+    const deteccion = this.selectedDeteccion();
+    this.router.navigate(['/agricola/ordenes-aplicacion'], {
+      queryParams: { nueva: 1, loteId: lote?.id, deteccionId: deteccion?.loteId === lote?.id ? deteccion?.id : undefined },
+    });
   }
 
   // Abre el historico del lote (scope LOTE). El timeline lo renderiza el componente
