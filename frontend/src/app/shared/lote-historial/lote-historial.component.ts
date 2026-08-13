@@ -194,6 +194,7 @@ export class LoteHistorialComponent implements OnChanges {
         ['Principio activo', item.principioActivo],
         ['Dosis', `${this.num(item.dosis)} ${item.unidadDosis}`],
         ['Superficie', item.superficieTratadaHa != null ? `${this.num(item.superficieTratadaHa)} ha` : ''],
+        ['Total dosis', item.superficieTratadaHa ? `${this.num(Math.round(item.dosis * item.superficieTratadaHa * 100) / 100)} ${(item.unidadDosis || '').replace(/\s*\/\s*ha$/i, '')}` : ''],
         ['Responsable', item.responsableNombre || item.responsableId],
         ['Operario', item.operarioNombre || item.operarioId],
         ['Motivo rechazo', item.motivoRechazo],

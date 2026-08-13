@@ -11,9 +11,11 @@ import type {
   OrdenAplicacionRequest,
 } from '../../core/models/agricola.models';
 import type { Operario } from '../../core/models/operarios.models';
+import type { UtilidadOpcion } from '../../core/models/agricola.models';
 import { AgricolaService } from '../../core/services/agricola.service';
 import { OperariosService } from '../../core/services/operarios.service';
 import { SessionService } from '../../core/services/session.service';
+import { UtilidadesService } from '../../core/services/utilidades.service';
 
 type OrdenFormState = OrdenAplicacionRequest & { id?: string };
 
@@ -28,12 +30,15 @@ export class OrdenesAplicacionPageComponent implements OnInit {
   private readonly agricolaService = inject(AgricolaService);
   private readonly operariosService = inject(OperariosService);
   private readonly sessionService = inject(SessionService);
+  private readonly utilidadesService = inject(UtilidadesService);
   private readonly route = inject(ActivatedRoute);
 
   protected readonly ordenes = signal<OrdenAplicacion[]>([]);
   protected readonly operarios = signal<Operario[]>([]);
   protected readonly lotes = signal<Lote[]>([]);
   protected readonly detecciones = signal<DeteccionPlaga[]>([]);
+  // Unidades de dosis desde el catalogo de Utilidades (categoria UNIDAD_DOSIS).
+  protected readonly unidades = signal<UtilidadOpcion[]>([]);
   protected readonly loading = signal(false);
   protected readonly saving = signal(false);
   protected readonly error = signal<string | null>(null);
@@ -55,6 +60,15 @@ export class OrdenesAplicacionPageComponent implements OnInit {
   protected readonly deteccionesDelLote = computed(() => {
     const loteId = this.form().loteId;
     return this.detecciones().filter((d) => d.loteId === loteId);
+  });
+
+  // Total de dosis a utilizar = dosis x superficie. La unidad del total quita el "/ha".
+  protected readonly totalDosis = computed(() => {
+    const f = this.form();
+    const dosis = Number(f.dosis);
+    const sup = Number(f.superficieTratadaHa);
+    if (!isFinite(dosis) || dosis <= 0 || !isFinite(sup) || sup <= 0) return null;
+    return { valor: Math.round(dosis * sup * 100) / 100, unidad: (f.unidadDosis ?? '').replace(/\s*\/\s*ha$/i, '').trim() };
   });
 
   protected readonly ordenesFiltradas = computed(() => {
@@ -95,12 +109,14 @@ export class OrdenesAplicacionPageComponent implements OnInit {
       operarios: this.operariosService.getOperarios({ estado: 'ACTIVO' }),
       lotes: this.agricolaService.getLotes(undefined),
       detecciones: this.agricolaService.getDeteccionesPlaga(),
+      unidades: this.utilidadesService.getUtilidadOpciones('UNIDAD_DOSIS'),
     }).subscribe({
-      next: ({ ordenes, operarios, lotes, detecciones }) => {
+      next: ({ ordenes, operarios, lotes, detecciones, unidades }) => {
         this.ordenes.set(Array.isArray(ordenes) ? ordenes : []);
         this.operarios.set(Array.isArray(operarios) ? operarios : []);
         this.lotes.set(Array.isArray(lotes) ? lotes : []);
         this.detecciones.set(Array.isArray(detecciones) ? detecciones : []);
+        this.unidades.set(Array.isArray(unidades) ? unidades : []);
         this.loading.set(false);
       },
       error: () => {
@@ -158,10 +174,7 @@ export class OrdenesAplicacionPageComponent implements OnInit {
       unidadDosis: orden.unidadDosis,
       volumenCaldoLHa: orden.volumenCaldoLHa,
       superficieTratadaHa: orden.superficieTratadaHa,
-      periodoCarenciaDias: orden.periodoCarenciaDias,
-      periodoReingresoHoras: orden.periodoReingresoHoras,
       maquinariaId: orden.maquinariaId,
-      condicionesClimaticas: orden.condicionesClimaticas,
       observaciones: orden.observaciones,
       operarioId: orden.operarioId,
     });
@@ -195,10 +208,7 @@ export class OrdenesAplicacionPageComponent implements OnInit {
       unidadDosis: state.unidadDosis,
       volumenCaldoLHa: state.volumenCaldoLHa != null ? Number(state.volumenCaldoLHa) : undefined,
       superficieTratadaHa: state.superficieTratadaHa != null ? Number(state.superficieTratadaHa) : undefined,
-      periodoCarenciaDias: state.periodoCarenciaDias != null ? Number(state.periodoCarenciaDias) : undefined,
-      periodoReingresoHoras: state.periodoReingresoHoras != null ? Number(state.periodoReingresoHoras) : undefined,
       maquinariaId: state.maquinariaId,
-      condicionesClimaticas: state.condicionesClimaticas,
       observaciones: state.observaciones,
       operarioId: state.operarioId,
     };

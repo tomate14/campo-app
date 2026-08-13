@@ -55,6 +55,11 @@
 .form-grid textarea { min-height: 72px; resize: vertical; }
 .form-grid input:disabled, .form-grid select:disabled { opacity: .55; }
 
+.total-box { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,184,77,.28); background: rgba(255,184,77,.08); }
+.total-label { color: #9bb0cc; font-size: 12px; font-weight: 600; }
+.total-value { color: #ffd166; font-size: 18px; font-weight: 900; }
+.total-hint { color: #7f95b3; font-size: 11px; margin-left: auto; font-style: italic; }
+
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
 @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }

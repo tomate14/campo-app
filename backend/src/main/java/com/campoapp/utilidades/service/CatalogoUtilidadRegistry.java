@@ -25,15 +25,18 @@ public class CatalogoUtilidadRegistry {
     public static final String TIPO_PLAGA = "TIPO_PLAGA";
     public static final String TIPO_INSUMO = "TIPO_INSUMO";
     public static final String UNIDAD_INSUMO = "UNIDAD_INSUMO";
+    // Feature 58: unidad de dosis de las ordenes de aplicacion (l/ha, cc/ha, kg/ha, ...).
+    public static final String UNIDAD_DOSIS = "UNIDAD_DOSIS";
 
     // Whitelist inmutable categoria -> tabla fisica.
-    private static final Map<String, String> CATALOGOS = Map.of(
-            DESTINO_COSECHA, "utilidad_destino_cosecha",
-            TIPO_PERDIDA_COSECHA, "utilidad_tipo_perdida",
-            CULTIVO, "utilidad_cultivo",
-            TIPO_PLAGA, "utilidad_tipo_plaga",
-            TIPO_INSUMO, "utilidad_tipo_insumo",
-            UNIDAD_INSUMO, "utilidad_unidad_insumo"
+    private static final Map<String, String> CATALOGOS = Map.ofEntries(
+            Map.entry(DESTINO_COSECHA, "utilidad_destino_cosecha"),
+            Map.entry(TIPO_PERDIDA_COSECHA, "utilidad_tipo_perdida"),
+            Map.entry(CULTIVO, "utilidad_cultivo"),
+            Map.entry(TIPO_PLAGA, "utilidad_tipo_plaga"),
+            Map.entry(TIPO_INSUMO, "utilidad_tipo_insumo"),
+            Map.entry(UNIDAD_INSUMO, "utilidad_unidad_insumo"),
+            Map.entry(UNIDAD_DOSIS, "utilidad_unidad_dosis")
     );
 
     /**

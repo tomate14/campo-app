@@ -83,10 +83,7 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
                 .unidadDosis(request.unidadDosis())
                 .volumenCaldoLHa(request.volumenCaldoLHa())
                 .superficieTratadaHa(request.superficieTratadaHa())
-                .periodoCarenciaDias(request.periodoCarenciaDias())
-                .periodoReingresoHoras(request.periodoReingresoHoras())
                 .maquinariaId(request.maquinariaId())
-                .condicionesClimaticas(request.condicionesClimaticas())
                 .observaciones(request.observaciones())
                 .responsableId(responsableId)
                 .operarioId(operarioId)
@@ -120,10 +117,7 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
         orden.setUnidadDosis(request.unidadDosis());
         orden.setVolumenCaldoLHa(request.volumenCaldoLHa());
         orden.setSuperficieTratadaHa(request.superficieTratadaHa());
-        orden.setPeriodoCarenciaDias(request.periodoCarenciaDias());
-        orden.setPeriodoReingresoHoras(request.periodoReingresoHoras());
         orden.setMaquinariaId(request.maquinariaId());
-        orden.setCondicionesClimaticas(request.condicionesClimaticas());
         orden.setObservaciones(request.observaciones());
         // El responsable no cambia (queda el creador); solo se puede reasignar el operario.
         orden.setOperarioId(validateOperario(request.operarioId()));
@@ -150,12 +144,12 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
                 orden.getUnidadDosis(),
                 orden.getVolumenCaldoLHa(),
                 orden.getSuperficieTratadaHa(),
-                orden.getPeriodoCarenciaDias(),
-                orden.getPeriodoReingresoHoras(),
+                null,
+                null,
                 orden.getMaquinariaId(),
                 orden.getOperarioId(),
                 null,
-                orden.getCondicionesClimaticas(),
+                null,
                 orden.getObservaciones()
         );
         AplicacionFitosanitariaResponse aplicacion = plagasService.crearAplicacion(orden.getDeteccion().getId(), aplicacionRequest);
@@ -276,10 +270,7 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
                 o.getUnidadDosis(),
                 o.getVolumenCaldoLHa(),
                 o.getSuperficieTratadaHa(),
-                o.getPeriodoCarenciaDias(),
-                o.getPeriodoReingresoHoras(),
                 o.getMaquinariaId(),
-                o.getCondicionesClimaticas(),
                 o.getObservaciones(),
                 o.getResponsableId(),
                 operarioNombre(o.getResponsableId()),

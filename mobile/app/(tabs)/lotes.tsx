@@ -804,6 +804,7 @@ function buildLoteHistory(
       ['Principio activo', item.principioActivo],
       ['Dosis', `${numAr(item.dosis)} ${item.unidadDosis}`],
       ['Superficie', item.superficieTratadaHa != null ? `${numAr(item.superficieTratadaHa)} ha` : ''],
+      ['Total dosis', item.superficieTratadaHa ? `${numAr(Math.round(item.dosis * item.superficieTratadaHa * 100) / 100)} ${(item.unidadDosis || '').replace(/\s*\/\s*ha$/i, '')}` : ''],
       ['Responsable', item.responsableNombre || item.responsableId],
       ['Operario', item.operarioNombre || item.operarioId],
       ['Motivo rechazo', item.motivoRechazo],

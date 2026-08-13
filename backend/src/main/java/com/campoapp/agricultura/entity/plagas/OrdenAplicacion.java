@@ -48,17 +48,8 @@ public class OrdenAplicacion extends AuditableEntity {
     @Column(name = "superficie_tratada_ha", precision = 12, scale = 2)
     private BigDecimal superficieTratadaHa;
 
-    @Column(name = "periodo_carencia_dias")
-    private Integer periodoCarenciaDias;
-
-    @Column(name = "periodo_reingreso_horas")
-    private Integer periodoReingresoHoras;
-
     @Column(name = "maquinaria_id", length = 36)
     private String maquinariaId;
-
-    @Column(name = "condiciones_climaticas", length = 260)
-    private String condicionesClimaticas;
 
     @Column(columnDefinition = "TEXT")
     private String observaciones;

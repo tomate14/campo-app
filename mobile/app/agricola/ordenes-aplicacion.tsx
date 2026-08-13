@@ -6,6 +6,7 @@ import { readCurrentUser } from '../../shared/auth/session'
 import { useLotes } from '../../shared/hooks/useLotes'
 import { useDeteccionesPlaga } from '../../shared/hooks/usePlagas'
 import { useOperarios } from '../../shared/hooks/useOperarios'
+import { useUtilidadOpciones } from '../../shared/hooks/useUtilidades'
 import {
   useAceptarOrdenAplicacion,
   useCreateOrdenAplicacion,
@@ -34,6 +35,7 @@ export default function OrdenesAplicacionScreen() {
   const lotesQuery = useLotes()
   const deteccionesQuery = useDeteccionesPlaga()
   const operariosQuery = useOperarios({ estado: 'ACTIVO' })
+  const unidadesQuery = useUtilidadOpciones('UNIDAD_DOSIS')
 
   const crear = useCreateOrdenAplicacion()
   const actualizar = useUpdateOrdenAplicacion()
@@ -54,6 +56,15 @@ export default function OrdenesAplicacionScreen() {
   const lotes = lotesQuery.data ?? []
   const detecciones = deteccionesQuery.data ?? []
   const operarios = useMemo(() => (operariosQuery.data ?? []).filter((o) => o.estado === 'ACTIVO'), [operariosQuery.data])
+  const unidades = unidadesQuery.data ?? []
+
+  // Total de dosis a utilizar = dosis x superficie (la unidad del total quita el "/ha").
+  const total = useMemo(() => {
+    const dosis = Number(form.dosis)
+    const sup = Number(form.superficieTratadaHa)
+    if (!isFinite(dosis) || dosis <= 0 || !isFinite(sup) || sup <= 0) return null
+    return { valor: Math.round(dosis * sup * 100) / 100, unidad: (form.unidadDosis ?? '').replace(/\s*\/\s*ha$/i, '').trim() }
+  }, [form.dosis, form.superficieTratadaHa, form.unidadDosis])
 
   const miOperarioId = useMemo(() => operarios.find((o) => o.userId === userId)?.id, [operarios, userId])
 
@@ -241,13 +252,25 @@ export default function OrdenesAplicacionScreen() {
                   <TextInput style={styles.input} keyboardType="numeric" value={form.dosis != null ? String(form.dosis) : ''} onChangeText={(v) => setForm((f) => ({ ...f, dosis: v === '' ? undefined : Number(v) }))} placeholder="0" placeholderTextColor="#5E6B85" />
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.label}>Unidad</Text>
-                  <TextInput style={styles.input} value={form.unidadDosis ?? ''} onChangeText={(v) => setForm((f) => ({ ...f, unidadDosis: v }))} placeholder="l/ha" placeholderTextColor="#5E6B85" />
+                  <Text style={styles.label}>Superficie (ha)</Text>
+                  <TextInput style={styles.input} keyboardType="numeric" value={form.superficieTratadaHa != null ? String(form.superficieTratadaHa) : ''} onChangeText={(v) => setForm((f) => ({ ...f, superficieTratadaHa: v === '' ? undefined : Number(v) }))} placeholder="0" placeholderTextColor="#5E6B85" />
                 </View>
               </View>
 
-              <Text style={styles.label}>Superficie (ha)</Text>
-              <TextInput style={styles.input} keyboardType="numeric" value={form.superficieTratadaHa != null ? String(form.superficieTratadaHa) : ''} onChangeText={(v) => setForm((f) => ({ ...f, superficieTratadaHa: v === '' ? undefined : Number(v) }))} placeholder="0" placeholderTextColor="#5E6B85" />
+              <Text style={styles.label}>Unidad</Text>
+              <ChipRow
+                options={unidades.map((u) => ({ id: u.valor, label: u.valor }))}
+                selected={form.unidadDosis}
+                onSelect={(id) => setForm((f) => ({ ...f, unidadDosis: id }))}
+                emptyLabel="Sin unidades cargadas"
+              />
+
+              {!!total && (
+                <View style={styles.totalBox}>
+                  <Text style={styles.totalLabel}>Total de dosis a utilizar</Text>
+                  <Text style={styles.totalValue}>{total.valor} {total.unidad}</Text>
+                </View>
+              )}
 
               <Text style={styles.label}>Observaciones</Text>
               <TextInput style={[styles.input, styles.textarea]} multiline value={form.observaciones ?? ''} onChangeText={(v) => setForm((f) => ({ ...f, observaciones: v }))} placeholder="Opcional" placeholderTextColor="#5E6B85" />
@@ -327,6 +350,9 @@ const styles = StyleSheet.create({
   chipText: { color: '#A6B0CF', fontSize: 12, fontWeight: '600' },
   chipTextActive: { color: '#9FE870' },
   chipEmpty: { color: '#7E8BAA', fontSize: 12, fontStyle: 'italic', paddingVertical: 6 },
+  totalBox: { marginTop: 14, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,184,77,0.28)', backgroundColor: 'rgba(255,184,77,0.08)' },
+  totalLabel: { color: '#9BB0CC', fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.4 },
+  totalValue: { color: '#FFD166', fontSize: 18, fontWeight: '900', marginTop: 2 },
   saveButton: { marginTop: 20, backgroundColor: '#9FE870', borderRadius: 14, paddingVertical: 13, alignItems: 'center' },
   saveButtonText: { color: '#06210a', fontSize: 14, fontWeight: '900' },
 })

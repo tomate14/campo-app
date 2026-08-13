@@ -18,10 +18,7 @@ public record OrdenAplicacionRequest(
         @NotBlank String unidadDosis,
         BigDecimal volumenCaldoLHa,
         BigDecimal superficieTratadaHa,
-        Integer periodoCarenciaDias,
-        Integer periodoReingresoHoras,
         String maquinariaId,
-        String condicionesClimaticas,
         String observaciones,
         String responsableId,
         @NotBlank String operarioId

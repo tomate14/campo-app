@@ -679,10 +679,7 @@ export interface OrdenAplicacion {
   unidadDosis: string
   volumenCaldoLHa?: number
   superficieTratadaHa?: number
-  periodoCarenciaDias?: number
-  periodoReingresoHoras?: number
   maquinariaId?: string
-  condicionesClimaticas?: string
   observaciones?: string
   responsableId: string
   responsableNombre?: string
@@ -705,10 +702,7 @@ export interface OrdenAplicacionRequest {
   unidadDosis: string
   volumenCaldoLHa?: number
   superficieTratadaHa?: number
-  periodoCarenciaDias?: number
-  periodoReingresoHoras?: number
   maquinariaId?: string
-  condicionesClimaticas?: string
   observaciones?: string
   responsableId?: string
   operarioId: string

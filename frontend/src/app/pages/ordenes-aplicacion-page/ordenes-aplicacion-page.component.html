@@ -114,7 +114,10 @@
           <input type="number" step="0.01" [ngModel]="form().dosis" (ngModelChange)="form.update(f => ({ ...f, dosis: $event }))" />
         </label>
         <label><span>Unidad</span>
-          <input type="text" [ngModel]="form().unidadDosis" (ngModelChange)="form.update(f => ({ ...f, unidadDosis: $event }))" placeholder="l/ha" />
+          <select [ngModel]="form().unidadDosis" (ngModelChange)="form.update(f => ({ ...f, unidadDosis: $event }))">
+            <option value="">Seleccionar unidad</option>
+            <option *ngFor="let u of unidades()" [value]="u.valor">{{ u.valor }}</option>
+          </select>
         </label>
         <label><span>Superficie (ha)</span>
           <input type="number" step="0.01" [ngModel]="form().superficieTratadaHa" (ngModelChange)="form.update(f => ({ ...f, superficieTratadaHa: $event }))" />
@@ -122,15 +125,11 @@
         <label><span>Volumen caldo (l/ha)</span>
           <input type="number" step="0.01" [ngModel]="form().volumenCaldoLHa" (ngModelChange)="form.update(f => ({ ...f, volumenCaldoLHa: $event }))" />
         </label>
-        <label><span>Carencia (días)</span>
-          <input type="number" [ngModel]="form().periodoCarenciaDias" (ngModelChange)="form.update(f => ({ ...f, periodoCarenciaDias: $event }))" />
-        </label>
-        <label><span>Reingreso (horas)</span>
-          <input type="number" [ngModel]="form().periodoReingresoHoras" (ngModelChange)="form.update(f => ({ ...f, periodoReingresoHoras: $event }))" />
-        </label>
-        <label class="full"><span>Condiciones climáticas</span>
-          <input type="text" [ngModel]="form().condicionesClimaticas" (ngModelChange)="form.update(f => ({ ...f, condicionesClimaticas: $event }))" />
-        </label>
+        <div class="full total-box" *ngIf="totalDosis() as total">
+          <span class="total-label">Total de dosis a utilizar</span>
+          <span class="total-value">{{ total.valor }} {{ total.unidad }}</span>
+          <span class="total-hint">dosis × superficie</span>
+        </div>
         <label class="full"><span>Observaciones</span>
           <textarea [ngModel]="form().observaciones" (ngModelChange)="form.update(f => ({ ...f, observaciones: $event }))"></textarea>
         </label>
