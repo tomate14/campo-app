@@ -72,4 +72,5 @@ la **acepta**, se transforma en un **registro de aplicación** normal del sistem
   12/13 (operarios/usuarios del sistema como referencia).
 
 ## Estado
-En desarrollo (branch `58_plagas_ordenes_aplicacion_flujo_tercerizado`).
+Realizada (backend + web + mobile). Numero correlativo en tabla separada
+`orden_aplicacion_numero`. Pendiente de verificacion end-to-end contra Docker.
