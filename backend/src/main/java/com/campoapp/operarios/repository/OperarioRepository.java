@@ -16,6 +16,10 @@ public interface OperarioRepository extends JpaRepository<Operario, String> {
     @Query("select o from Operario o where o.id = :id and o.deletedAt is null")
     Optional<Operario> findActiveById(@Param("id") String id);
 
+    // Feature 58: operario vinculado al usuario logueado (para precargar el responsable).
+    @Query("select o from Operario o where o.user.id = :userId and o.deletedAt is null")
+    Optional<Operario> findActiveByUserId(@Param("userId") String userId);
+
     boolean existsByLegajoAndDeletedAtIsNull(String legajo);
 
     boolean existsByDocumentoNumeroAndDeletedAtIsNull(String documentoNumero);
