@@ -471,9 +471,11 @@
                 </div>
                 <div class="history-card__title">{{ evento.titulo }}</div>
                 <div class="history-card__detail" *ngIf="historialExpandido() === i">
-                  <div class="history-card__row"><span class="history-card__label">Detalle</span><span class="history-card__value">{{ evento.detalle || '-' }}</span></div>
-                  <div class="history-card__row"><span class="history-card__label">Responsable</span><span class="history-card__value">{{ evento.responsable || 'Sin dato' }}</span></div>
-                  <div class="history-card__row"><span class="history-card__label">Estado</span><span class="history-card__value">{{ evento.estado || '-' }}</span></div>
+                  <div class="history-card__row" *ngFor="let campo of evento.campos">
+                    <span class="history-card__label">{{ campo.label }}</span>
+                    <span class="history-card__value">{{ campo.value }}</span>
+                  </div>
+                  <div class="history-card__empty" *ngIf="!evento.campos.length">Sin datos adicionales.</div>
                 </div>
               </div>
               <svg class="history-card__chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

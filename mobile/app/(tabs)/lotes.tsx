@@ -66,15 +66,15 @@ const actions = [
   { label: 'Nueva detección', layer: 'Detecciones', Icon: Crosshair, color: '#9A7DFF', route: '/agricola/plagas', mode: 'deteccion', primary: true },
 ]
 type LayerState = Record<string, boolean>
+type LoteHistoryCampo = { label: string; value: string }
 type LoteHistoryEvent = {
   id: string
   tipo: string
   titulo: string
-  detalle: string
   fecha: string
-  responsable?: string
-  estado?: string
   color: string
+  // Todos los campos cargados del evento (solo los que tienen valor). Se listan al expandir la card.
+  campos: LoteHistoryCampo[]
 }
 
 const mapModes: Array<{ label: string; description: string; value: MapMode; Icon: LucideIcon }> = [
@@ -618,18 +618,15 @@ function LoteHistoryPanel({
                   <Text style={styles.historyItemTitle}>{event.titulo}</Text>
                   {open && (
                     <View style={styles.historyDetailBlock}>
-                      <View style={styles.historyDetailRow}>
-                        <Text style={styles.historyDetailLabel}>Detalle</Text>
-                        <Text style={styles.historyDetailValue}>{event.detalle || '—'}</Text>
-                      </View>
-                      <View style={styles.historyDetailRow}>
-                        <Text style={styles.historyDetailLabel}>Responsable</Text>
-                        <Text style={styles.historyDetailValue}>{event.responsable || 'Sin dato'}</Text>
-                      </View>
-                      <View style={styles.historyDetailRow}>
-                        <Text style={styles.historyDetailLabel}>Estado</Text>
-                        <Text style={styles.historyDetailValue}>{event.estado || '—'}</Text>
-                      </View>
+                      {event.campos.map((campo) => (
+                        <View key={campo.label} style={styles.historyDetailRow}>
+                          <Text style={styles.historyDetailLabel}>{campo.label}</Text>
+                          <Text style={styles.historyDetailValue}>{campo.value}</Text>
+                        </View>
+                      ))}
+                      {!event.campos.length && (
+                        <Text style={styles.historyDetailEmpty}>Sin datos adicionales.</Text>
+                      )}
                     </View>
                   )}
                 </View>
@@ -741,6 +738,26 @@ function formatDateTime(value?: string): string {
   }).format(date)
 }
 
+// Arma la lista de campos del evento descartando los que no tienen valor.
+function buildHistCampos(entries: Array<[string, string | number | null | undefined]>): LoteHistoryCampo[] {
+  return entries
+    .filter(([, value]) => value !== null && value !== undefined && `${value}`.trim() !== '')
+    .map(([label, value]) => ({ label, value: `${value}` }))
+}
+
+function numAr(value?: number | null): string {
+  return value === null || value === undefined ? '' : Number(value).toLocaleString('es-AR')
+}
+
+function fmtFecha(value?: string): string {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return new Intl.DateTimeFormat('es-AR', {
+    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+  }).format(date)
+}
+
 function buildLoteHistory(
   lote: Lote | null,
   data: {
@@ -760,11 +777,23 @@ function buildLoteHistory(
     id: item.id,
     tipo: 'Detección',
     titulo: item.plagaNombre,
-    detalle: `${item.severidad}${item.areaAfectadaHa ? ` · ${item.areaAfectadaHa} ha` : ''}`,
     fecha: item.fechaDeteccion,
-    responsable: item.responsable,
-    estado: item.estado,
     color: severityColorFor(item.severidad),
+    campos: buildHistCampos([
+      ['Tipo', item.tipoNombre || item.tipo],
+      ['Cultivo', item.cultivoNombre || item.cultivo],
+      ['Severidad', item.severidad],
+      ['Estado', item.estado],
+      ['Área afectada', item.areaAfectadaHa ? `${numAr(item.areaAfectadaHa)} ha` : ''],
+      ['% afectado', item.porcentajeAfectado ? `${item.porcentajeAfectado} %` : ''],
+      ['Responsable', item.responsable],
+      ['Descripción', item.descripcion],
+      ['Ubicación', item.latitud != null && item.longitud != null ? `${item.latitud}, ${item.longitud}` : ''],
+      ['Precisión', item.precisionMetros ? `${item.precisionMetros} m` : ''],
+      ['Origen', item.origenGeolocalizacion],
+      ['Foto', item.fotoNombre],
+      ['Registrado', fmtFecha(item.createdAt)],
+    ]),
   }))
 
   const aplicacionEvents = data.aplicaciones
@@ -773,11 +802,22 @@ function buildLoteHistory(
       id: item.id,
       tipo: 'Aplicación',
       titulo: item.producto,
-      detalle: `${item.dosis} ${item.unidadDosis}${item.superficieTratadaHa ? ` · ${item.superficieTratadaHa} ha` : ''}`,
       fecha: item.fechaAplicacion,
-      responsable: item.operarioResponsable,
-      estado: item.principioActivo,
       color: '#6EA8FF',
+      campos: buildHistCampos([
+        ['Principio activo', item.principioActivo],
+        ['Dosis', `${numAr(item.dosis)} ${item.unidadDosis}`],
+        ['Volumen caldo', item.volumenCaldoLHa ? `${numAr(item.volumenCaldoLHa)} L/ha` : ''],
+        ['Superficie tratada', item.superficieTratadaHa ? `${numAr(item.superficieTratadaHa)} ha` : ''],
+        ['Período carencia', item.periodoCarenciaDias ? `${item.periodoCarenciaDias} días` : ''],
+        ['Período reingreso', item.periodoReingresoHoras ? `${item.periodoReingresoHoras} h` : ''],
+        ['Reingreso seguro', fmtFecha(item.fechaReingresoSeguro)],
+        ['Cosecha segura', fmtFecha(item.fechaCosechaSegura)],
+        ['Condiciones', item.condicionesClimaticas],
+        ['Responsable', item.operarioResponsable],
+        ['Observaciones', item.observaciones],
+        ['Registrado', fmtFecha(item.createdAt)],
+      ]),
     }))
 
   const seguimientoEvents = data.seguimientos
@@ -786,31 +826,51 @@ function buildLoteHistory(
       id: item.id,
       tipo: 'Seguimiento',
       titulo: item.plagaNombre,
-      detalle: item.observaciones || item.resultado,
       fecha: item.fecha,
-      responsable: item.responsable,
-      estado: item.severidad,
       color: '#39D0D8',
+      campos: buildHistCampos([
+        ['Resultado', item.resultado],
+        ['Severidad', item.severidad],
+        ['Responsable', item.responsable],
+        ['Observaciones', item.observaciones],
+        ['Registrado', fmtFecha(item.createdAt)],
+      ]),
     }))
 
   const siembraEvents = data.siembraEventos.map((item): LoteHistoryEvent => ({
     id: item.id,
     tipo: item.tipoEvento === 'SIEMBRA' ? 'Siembra' : 'Evento',
     titulo: item.estadoFenologico || item.tipoEvento,
-    detalle: item.descripcion || lote.cultivoNombre || lote.cultivo,
     fecha: item.fecha,
-    estado: item.tipoEvento,
     color: '#9FE870',
+    campos: buildHistCampos([
+      ['Tipo de evento', item.tipoEvento],
+      ['Estado fenológico', item.estadoFenologico],
+      ['Descripción', item.descripcion],
+      ['Registrado', fmtFecha(item.createdAt)],
+    ]),
   }))
 
   const cosechaEvents = data.cosechas.map((item): LoteHistoryEvent => ({
     id: item.id,
     tipo: 'Cosecha',
-    titulo: `${Number(item.rendimientoKgHa ?? 0).toLocaleString('es-AR')} kg/ha`,
-    detalle: `${Number(item.toneladasTotal ?? 0).toLocaleString('es-AR')} tn${item.humedad ? ` · Humedad ${item.humedad}%` : ''}`,
+    titulo: `${numAr(item.rendimientoKgHa ?? 0)} kg/ha`,
     fecha: item.fecha,
-    estado: item.calidadGrano,
     color: '#FFB84D',
+    campos: buildHistCampos([
+      ['Toneladas', item.toneladasTotal != null ? `${numAr(item.toneladasTotal)} tn` : ''],
+      ['Calidad de grano', item.calidadGrano],
+      ['Humedad', item.humedad != null ? `${item.humedad} %` : ''],
+      ['Área real cosechada', item.areaRealCosechadaPct != null ? `${item.areaRealCosechadaPct} %` : ''],
+      ['Ha cosechadas', item.hectareasCosechadas != null ? `${numAr(item.hectareasCosechadas)} ha` : ''],
+      ['Pérdida', item.perdidaKgHa != null ? `${numAr(item.perdidaKgHa)} kg/ha` : ''],
+      ['Granos perdidos', item.granosPerdidosKg != null ? `${numAr(item.granosPerdidosKg)} kg` : ''],
+      ['Tipo de pérdida', item.tipoPerdidaNombre || item.tipoPerdida],
+      ['Destino', item.destinoNombre || item.destino],
+      ['Destino (cantidad)', item.destinoCantidadTn != null ? `${numAr(item.destinoCantidadTn)} tn` : ''],
+      ['Observaciones', item.observaciones],
+      ['Registrado', fmtFecha(item.createdAt)],
+    ]),
   }))
 
   const cultivoEvents = data.historicoCultivos.flatMap((item): LoteHistoryEvent[] => {
@@ -820,10 +880,13 @@ function buildLoteHistory(
         id: `${item.id}-siembra`,
         tipo: 'Historial',
         titulo: `Siembra ${item.cultivo}`,
-        detalle: item.temporada,
         fecha: item.fechaSiembra,
-        estado: item.observaciones,
         color: '#9FE870',
+        campos: buildHistCampos([
+          ['Cultivo', item.cultivo],
+          ['Temporada', item.temporada],
+          ['Observaciones', item.observaciones],
+        ]),
       })
     }
     if (item.fechaCosecha) {
@@ -831,10 +894,14 @@ function buildLoteHistory(
         id: `${item.id}-cosecha`,
         tipo: 'Historial',
         titulo: `Cosecha ${item.cultivo}`,
-        detalle: item.rendimientoKgHa ? `${item.rendimientoKgHa} kg/ha` : item.temporada,
         fecha: item.fechaCosecha,
-        estado: item.observaciones,
         color: '#FFB84D',
+        campos: buildHistCampos([
+          ['Cultivo', item.cultivo],
+          ['Temporada', item.temporada],
+          ['Rendimiento', item.rendimientoKgHa != null ? `${numAr(item.rendimientoKgHa)} kg/ha` : ''],
+          ['Observaciones', item.observaciones],
+        ]),
       })
     }
     return events
@@ -1465,6 +1532,11 @@ const styles = StyleSheet.create({
     color: '#DCE8F8',
     fontSize: 12,
     lineHeight: 17,
+  },
+  historyDetailEmpty: {
+    color: '#7E8BAA',
+    fontSize: 12,
+    fontStyle: 'italic',
   },
   sheetBackdrop: {
     flex: 1,

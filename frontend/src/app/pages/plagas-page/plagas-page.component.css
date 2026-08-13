@@ -304,6 +304,7 @@
 .history-card__row { display: flex; align-items: baseline; gap: 10px; }
 .history-card__label { flex: 0 0 92px; color: #7f95b3; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
 .history-card__value { flex: 1; color: #dce8f8; font-size: 13px; word-break: break-word; }
+.history-card__empty { color: #7f95b3; font-size: 12px; font-style: italic; }
 .history-card__chevron { flex: 0 0 auto; margin-top: 2px; color: #7f95b3; transition: transform .2s ease, color .18s ease; }
 .history-card--open .history-card__chevron { transform: rotate(180deg); color: var(--kind-color); }
 .error-box, .premium-empty-box, .empty-box { padding: 16px; border-radius: 16px; background: rgba(127, 29, 29, .18); color: #fecaca; border: 1px solid rgba(248, 113, 113, .25); }

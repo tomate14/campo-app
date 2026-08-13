@@ -44,15 +44,15 @@ type ActiveTab = 'DETECCIONES' | 'APLICACIONES' | 'SEGUIMIENTOS' | 'CATALOGO' | 
 // Feature 73: grupo de plagas de referencia agrupadas por cultivo.
 type ReferenciaGrupo = { cultivoNombre: string; items: PlagaReferencia[] };
 type ModalType = 'DETECCION' | 'APLICACION' | 'SEGUIMIENTO' | 'EVENTO' | 'HISTORICO' | 'CATALOGO' | 'FICHA' | null;
+type HistorialCampo = { label: string; value: string };
 type HistorialPlagaEvento = {
   tipo: string;
   fecha: string;
   titulo: string;
-  detalle: string;
-  responsable?: string;
-  estado?: string;
   // Color de la serie (banda/punto de la card). Replica el mapeo del historico mobile.
   color: string;
+  // Todos los campos cargados del evento (solo los que tienen valor). Se listan al expandir la card.
+  campos: HistorialCampo[];
 };
 type DeteccionPinGroup = {
   key: string;
@@ -1207,42 +1207,101 @@ export class PlagasPageComponent {
     });
   }
 
+  // Arma la lista de campos del evento descartando los que no tienen valor.
+  private buildCampos(entries: Array<[string, string | number | null | undefined]>): HistorialCampo[] {
+    return entries
+      .filter(([, value]) => value !== null && value !== undefined && `${value}`.trim() !== '')
+      .map(([label, value]) => ({ label, value: `${value}` }));
+  }
+
+  private fmtFecha(value?: string): string {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return new Intl.DateTimeFormat('es-AR', {
+      day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+    }).format(date);
+  }
+
+  private num(value?: number | null): string {
+    return value === null || value === undefined ? '' : Number(value).toLocaleString('es-AR');
+  }
+
+  private deteccionEvento(item: DeteccionPlaga): HistorialPlagaEvento {
+    return {
+      tipo: 'Detección',
+      fecha: item.fechaDeteccion,
+      titulo: item.plagaNombre,
+      color: this.pinColor(item.severidad),
+      campos: this.buildCampos([
+        ['Tipo', item.tipoNombre || item.tipo],
+        ['Cultivo', item.cultivoNombre || item.cultivo],
+        ['Severidad', item.severidad],
+        ['Estado', item.estado],
+        ['Área afectada', item.areaAfectadaHa ? `${this.num(item.areaAfectadaHa)} ha` : ''],
+        ['% afectado', item.porcentajeAfectado ? `${item.porcentajeAfectado} %` : ''],
+        ['Responsable', item.responsable],
+        ['Descripción', item.descripcion],
+        ['Ubicación', item.latitud != null && item.longitud != null ? `${item.latitud}, ${item.longitud}` : ''],
+        ['Precisión', item.precisionMetros ? `${item.precisionMetros} m` : ''],
+        ['Origen', item.origenGeolocalizacion],
+        ['Foto', item.fotoNombre],
+        ['Registrado', this.fmtFecha(item.createdAt)],
+      ]),
+    };
+  }
+
+  private aplicacionEvento(item: AplicacionFitosanitaria): HistorialPlagaEvento {
+    return {
+      tipo: 'Aplicación',
+      fecha: item.fechaAplicacion,
+      titulo: item.producto,
+      color: '#6EA8FF',
+      campos: this.buildCampos([
+        ['Principio activo', item.principioActivo],
+        ['Dosis', `${this.num(item.dosis)} ${item.unidadDosis}`],
+        ['Volumen caldo', item.volumenCaldoLHa ? `${this.num(item.volumenCaldoLHa)} L/ha` : ''],
+        ['Superficie tratada', item.superficieTratadaHa ? `${this.num(item.superficieTratadaHa)} ha` : ''],
+        ['Período carencia', item.periodoCarenciaDias ? `${item.periodoCarenciaDias} días` : ''],
+        ['Período reingreso', item.periodoReingresoHoras ? `${item.periodoReingresoHoras} h` : ''],
+        ['Reingreso seguro', this.fmtFecha(item.fechaReingresoSeguro)],
+        ['Cosecha segura', this.fmtFecha(item.fechaCosechaSegura)],
+        ['Condiciones', item.condicionesClimaticas],
+        ['Responsable', item.operarioResponsable],
+        ['Observaciones', item.observaciones],
+        ['Registrado', this.fmtFecha(item.createdAt)],
+      ]),
+    };
+  }
+
+  private seguimientoEvento(item: SeguimientoPlaga): HistorialPlagaEvento {
+    return {
+      tipo: 'Seguimiento',
+      fecha: item.fecha,
+      titulo: item.plagaNombre,
+      color: '#39D0D8',
+      campos: this.buildCampos([
+        ['Resultado', item.resultado],
+        ['Severidad', item.severidad],
+        ['Responsable', item.responsable],
+        ['Observaciones', item.observaciones],
+        ['Registrado', this.fmtFecha(item.createdAt)],
+      ]),
+    };
+  }
+
   private buildHistorialDeteccion(
     deteccion: DeteccionPlaga,
     aplicaciones: AplicacionFitosanitaria[],
     seguimientos: SeguimientoPlaga[],
   ): HistorialPlagaEvento[] {
-    const deteccionEvent: HistorialPlagaEvento = {
-      tipo: 'Detección',
-      fecha: deteccion.fechaDeteccion,
-      titulo: deteccion.plagaNombre,
-      detalle: `${deteccion.severidad}${deteccion.areaAfectadaHa ? ` · ${deteccion.areaAfectadaHa} ha` : ''}`,
-      responsable: deteccion.responsable,
-      estado: deteccion.estado,
-      color: this.pinColor(deteccion.severidad),
-    };
+    const deteccionEvent = this.deteccionEvento(deteccion);
     const aplicacionEvents = aplicaciones
       .filter((item) => item.deteccionId === deteccion.id)
-      .map((item): HistorialPlagaEvento => ({
-        tipo: 'Aplicación',
-        fecha: item.fechaAplicacion,
-        titulo: item.producto,
-        detalle: `${item.dosis} ${item.unidadDosis}${item.superficieTratadaHa ? ` · ${item.superficieTratadaHa} ha` : ''}`,
-        responsable: item.operarioResponsable,
-        estado: item.principioActivo || 'Aplicada',
-        color: '#6EA8FF',
-      }));
+      .map((item) => this.aplicacionEvento(item));
     const seguimientoEvents = seguimientos
       .filter((item) => item.deteccionId === deteccion.id)
-      .map((item): HistorialPlagaEvento => ({
-        tipo: 'Seguimiento',
-        fecha: item.fecha,
-        titulo: item.plagaNombre,
-        detalle: item.observaciones || item.resultado,
-        responsable: item.responsable,
-        estado: item.severidad,
-        color: '#39D0D8',
-      }));
+      .map((item) => this.seguimientoEvento(item));
 
     return [deteccionEvent, ...aplicacionEvents, ...seguimientoEvents]
       .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
@@ -1258,53 +1317,44 @@ export class PlagasPageComponent {
   ): HistorialPlagaEvento[] {
     const detecciones = this.mapDetecciones().filter((item) => item.loteId === loteId);
     const detectionIds = new Set(detecciones.map((item) => item.id));
-    const lote = this.lotes().find((item) => item.id === loteId) ?? null;
-    const deteccionEvents = detecciones.map((item): HistorialPlagaEvento => ({
-      tipo: 'Detección',
-      fecha: item.fechaDeteccion,
-      titulo: item.plagaNombre,
-      detalle: `${item.severidad}${item.areaAfectadaHa ? ` · ${item.areaAfectadaHa} ha` : ''}`,
-      responsable: item.responsable,
-      estado: item.estado,
-      color: this.pinColor(item.severidad),
-    }));
+    const deteccionEvents = detecciones.map((item) => this.deteccionEvento(item));
     const aplicacionEvents = aplicaciones
       .filter((item) => item.loteId === loteId)
-      .map((item): HistorialPlagaEvento => ({
-        tipo: 'Aplicación',
-        fecha: item.fechaAplicacion,
-        titulo: item.producto,
-        detalle: `${item.dosis} ${item.unidadDosis}${item.superficieTratadaHa ? ` · ${item.superficieTratadaHa} ha` : ''}`,
-        responsable: item.operarioResponsable,
-        estado: item.principioActivo || 'Aplicada',
-        color: '#6EA8FF',
-      }));
+      .map((item) => this.aplicacionEvento(item));
     const seguimientoEvents = seguimientos
       .filter((item) => detectionIds.has(item.deteccionId))
-      .map((item): HistorialPlagaEvento => ({
-        tipo: 'Seguimiento',
-        fecha: item.fecha,
-        titulo: item.plagaNombre,
-        detalle: item.observaciones || item.resultado,
-        responsable: item.responsable,
-        estado: item.severidad,
-        color: '#39D0D8',
-      }));
+      .map((item) => this.seguimientoEvento(item));
     const siembraEvents = siembra.map((item): HistorialPlagaEvento => ({
       tipo: item.tipoEvento === 'SIEMBRA' ? 'Siembra' : 'Evento',
       fecha: item.fecha,
       titulo: item.estadoFenologico || item.tipoEvento,
-      detalle: item.descripcion || lote?.cultivoNombre || lote?.cultivo || item.loteNombre,
-      estado: item.tipoEvento,
       color: '#9FE870',
+      campos: this.buildCampos([
+        ['Tipo de evento', item.tipoEvento],
+        ['Estado fenológico', item.estadoFenologico],
+        ['Descripción', item.descripcion],
+        ['Registrado', this.fmtFecha(item.createdAt)],
+      ]),
     }));
     const cosechaEvents = cosechas.map((item): HistorialPlagaEvento => ({
       tipo: 'Cosecha',
       fecha: item.fecha,
-      titulo: `${Number(item.rendimientoKgHa ?? 0).toLocaleString('es-AR')} kg/ha`,
-      detalle: `${Number(item.toneladasTotal ?? 0).toLocaleString('es-AR')} tn${item.humedad ? ` · Humedad ${item.humedad}%` : ''}`,
-      estado: item.calidadGrano,
+      titulo: `${this.num(item.rendimientoKgHa ?? 0)} kg/ha`,
       color: '#FFB84D',
+      campos: this.buildCampos([
+        ['Toneladas', item.toneladasTotal != null ? `${this.num(item.toneladasTotal)} tn` : ''],
+        ['Calidad de grano', item.calidadGrano],
+        ['Humedad', item.humedad != null ? `${item.humedad} %` : ''],
+        ['Área real cosechada', item.areaRealCosechadaPct != null ? `${item.areaRealCosechadaPct} %` : ''],
+        ['Ha cosechadas', item.hectareasCosechadas != null ? `${this.num(item.hectareasCosechadas)} ha` : ''],
+        ['Pérdida', item.perdidaKgHa != null ? `${this.num(item.perdidaKgHa)} kg/ha` : ''],
+        ['Granos perdidos', item.granosPerdidosKg != null ? `${this.num(item.granosPerdidosKg)} kg` : ''],
+        ['Tipo de pérdida', item.tipoPerdidaNombre || item.tipoPerdida],
+        ['Destino', item.destinoNombre || item.destino],
+        ['Destino (cantidad)', item.destinoCantidadTn != null ? `${this.num(item.destinoCantidadTn)} tn` : ''],
+        ['Observaciones', item.observaciones],
+        ['Registrado', this.fmtFecha(item.createdAt)],
+      ]),
     }));
     const cultivoEvents = cultivos.flatMap((item): HistorialPlagaEvento[] => {
       const events: HistorialPlagaEvento[] = [];
@@ -1313,9 +1363,12 @@ export class PlagasPageComponent {
           tipo: 'Historial',
           fecha: item.fechaSiembra,
           titulo: `Siembra ${item.cultivo}`,
-          detalle: item.temporada,
-          estado: item.observaciones,
           color: '#9FE870',
+          campos: this.buildCampos([
+            ['Cultivo', item.cultivo],
+            ['Temporada', item.temporada],
+            ['Observaciones', item.observaciones],
+          ]),
         });
       }
       if (item.fechaCosecha) {
@@ -1323,9 +1376,13 @@ export class PlagasPageComponent {
           tipo: 'Historial',
           fecha: item.fechaCosecha,
           titulo: `Cosecha ${item.cultivo}`,
-          detalle: item.rendimientoKgHa ? `${item.rendimientoKgHa} kg/ha` : item.temporada,
-          estado: item.observaciones,
           color: '#FFB84D',
+          campos: this.buildCampos([
+            ['Cultivo', item.cultivo],
+            ['Temporada', item.temporada],
+            ['Rendimiento', item.rendimientoKgHa != null ? `${this.num(item.rendimientoKgHa)} kg/ha` : ''],
+            ['Observaciones', item.observaciones],
+          ]),
         });
       }
       return events;
