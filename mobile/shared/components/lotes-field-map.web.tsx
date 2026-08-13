@@ -336,7 +336,11 @@ function createPinElement(color: string, iconSvg: string, count = 1) {
   const wrap = document.createElement('div')
   wrap.style.width = '52px'
   wrap.style.height = '64px'
-  wrap.style.position = 'relative'
+  // MapLibre posiciona el elemento del marker con transform y su CSS lo pone en position:absolute.
+  // Fix (feature 57): antes se forzaba position:relative, lo que pisaba ese absolute -> el marker
+  // quedaba en flujo normal y se desplazaba distinto por pin, "flotando" al hacer zoom. Debe ser
+  // absolute (ademas sirve de contexto de posicionamiento para los hijos glow/badge/tip).
+  wrap.style.position = 'absolute'
   wrap.style.zIndex = '1200'
   wrap.style.display = 'flex'
   wrap.style.flexDirection = 'column'
