@@ -51,6 +51,8 @@ type HistorialPlagaEvento = {
   detalle: string;
   responsable?: string;
   estado?: string;
+  // Color de la serie (banda/punto de la card). Replica el mapeo del historico mobile.
+  color: string;
 };
 type DeteccionPinGroup = {
   key: string;
@@ -102,6 +104,12 @@ export class PlagasPageComponent {
   protected readonly historialLoading = signal(false);
   protected readonly historialLote = signal<Lote | null>(null);
   protected readonly historialScope = signal<'DETECCION' | 'LOTE'>('LOTE');
+  // Card colapsable del historico: indice del evento expandido (null = todos colapsados).
+  protected readonly historialExpandido = signal<number | null>(null);
+
+  protected toggleHistorialEvento(index: number) {
+    this.historialExpandido.set(this.historialExpandido() === index ? null : index);
+  }
 
   protected readonly severidades: SeveridadPlaga[] = ['BAJA', 'MEDIA', 'ALTA', 'CRITICA'];
   protected readonly estados: EstadoDeteccionPlaga[] = ['ABIERTA', 'EN_TRATAMIENTO', 'CONTROLADA', 'CERRADA'];
@@ -1154,6 +1162,7 @@ export class PlagasPageComponent {
     this.historialScope.set('LOTE');
     this.historialLoading.set(true);
     this.historialEventos.set([]);
+    this.historialExpandido.set(null);
 
     forkJoin({
       siembra: this.agricolaService.getEventosByLote(loteId),
@@ -1180,6 +1189,7 @@ export class PlagasPageComponent {
     this.historialScope.set('DETECCION');
     this.historialLoading.set(true);
     this.historialEventos.set([]);
+    this.historialExpandido.set(null);
 
     forkJoin({
       aplicaciones: this.agricolaService.getAplicacionesFitosanitarias(),
@@ -1203,32 +1213,35 @@ export class PlagasPageComponent {
     seguimientos: SeguimientoPlaga[],
   ): HistorialPlagaEvento[] {
     const deteccionEvent: HistorialPlagaEvento = {
-      tipo: 'DETECCION',
+      tipo: 'Detección',
       fecha: deteccion.fechaDeteccion,
       titulo: deteccion.plagaNombre,
       detalle: `${deteccion.severidad}${deteccion.areaAfectadaHa ? ` · ${deteccion.areaAfectadaHa} ha` : ''}`,
       responsable: deteccion.responsable,
       estado: deteccion.estado,
+      color: this.pinColor(deteccion.severidad),
     };
     const aplicacionEvents = aplicaciones
       .filter((item) => item.deteccionId === deteccion.id)
       .map((item): HistorialPlagaEvento => ({
-        tipo: 'APLICACION',
+        tipo: 'Aplicación',
         fecha: item.fechaAplicacion,
         titulo: item.producto,
         detalle: `${item.dosis} ${item.unidadDosis}${item.superficieTratadaHa ? ` · ${item.superficieTratadaHa} ha` : ''}`,
         responsable: item.operarioResponsable,
         estado: item.principioActivo || 'Aplicada',
+        color: '#6EA8FF',
       }));
     const seguimientoEvents = seguimientos
       .filter((item) => item.deteccionId === deteccion.id)
       .map((item): HistorialPlagaEvento => ({
-        tipo: 'SEGUIMIENTO',
+        tipo: 'Seguimiento',
         fecha: item.fecha,
         titulo: item.plagaNombre,
         detalle: item.observaciones || item.resultado,
         responsable: item.responsable,
         estado: item.severidad,
+        color: '#39D0D8',
       }));
 
     return [deteccionEvent, ...aplicacionEvents, ...seguimientoEvents]
@@ -1245,66 +1258,74 @@ export class PlagasPageComponent {
   ): HistorialPlagaEvento[] {
     const detecciones = this.mapDetecciones().filter((item) => item.loteId === loteId);
     const detectionIds = new Set(detecciones.map((item) => item.id));
+    const lote = this.lotes().find((item) => item.id === loteId) ?? null;
     const deteccionEvents = detecciones.map((item): HistorialPlagaEvento => ({
-      tipo: 'DETECCION',
+      tipo: 'Detección',
       fecha: item.fechaDeteccion,
       titulo: item.plagaNombre,
       detalle: `${item.severidad}${item.areaAfectadaHa ? ` · ${item.areaAfectadaHa} ha` : ''}`,
       responsable: item.responsable,
       estado: item.estado,
+      color: this.pinColor(item.severidad),
     }));
     const aplicacionEvents = aplicaciones
       .filter((item) => item.loteId === loteId)
       .map((item): HistorialPlagaEvento => ({
-        tipo: 'APLICACION',
+        tipo: 'Aplicación',
         fecha: item.fechaAplicacion,
         titulo: item.producto,
         detalle: `${item.dosis} ${item.unidadDosis}${item.superficieTratadaHa ? ` · ${item.superficieTratadaHa} ha` : ''}`,
         responsable: item.operarioResponsable,
         estado: item.principioActivo || 'Aplicada',
+        color: '#6EA8FF',
       }));
     const seguimientoEvents = seguimientos
       .filter((item) => detectionIds.has(item.deteccionId))
       .map((item): HistorialPlagaEvento => ({
-        tipo: 'SEGUIMIENTO',
+        tipo: 'Seguimiento',
         fecha: item.fecha,
         titulo: item.plagaNombre,
         detalle: item.observaciones || item.resultado,
         responsable: item.responsable,
         estado: item.severidad,
+        color: '#39D0D8',
       }));
     const siembraEvents = siembra.map((item): HistorialPlagaEvento => ({
-      tipo: item.tipoEvento === 'SIEMBRA' ? 'SIEMBRA' : 'EVENTO',
+      tipo: item.tipoEvento === 'SIEMBRA' ? 'Siembra' : 'Evento',
       fecha: item.fecha,
       titulo: item.estadoFenologico || item.tipoEvento,
-      detalle: item.descripcion || item.loteNombre,
+      detalle: item.descripcion || lote?.cultivoNombre || lote?.cultivo || item.loteNombre,
       estado: item.tipoEvento,
+      color: '#9FE870',
     }));
     const cosechaEvents = cosechas.map((item): HistorialPlagaEvento => ({
-      tipo: 'COSECHA',
+      tipo: 'Cosecha',
       fecha: item.fecha,
-      titulo: `${item.rendimientoKgHa} kg/ha`,
-      detalle: `${item.toneladasTotal} tn${item.humedad ? ` · Humedad ${item.humedad}%` : ''}`,
+      titulo: `${Number(item.rendimientoKgHa ?? 0).toLocaleString('es-AR')} kg/ha`,
+      detalle: `${Number(item.toneladasTotal ?? 0).toLocaleString('es-AR')} tn${item.humedad ? ` · Humedad ${item.humedad}%` : ''}`,
       estado: item.calidadGrano,
+      color: '#FFB84D',
     }));
     const cultivoEvents = cultivos.flatMap((item): HistorialPlagaEvento[] => {
       const events: HistorialPlagaEvento[] = [];
       if (item.fechaSiembra) {
         events.push({
-          tipo: 'HISTORIAL',
+          tipo: 'Historial',
           fecha: item.fechaSiembra,
           titulo: `Siembra ${item.cultivo}`,
           detalle: item.temporada,
           estado: item.observaciones,
+          color: '#9FE870',
         });
       }
       if (item.fechaCosecha) {
         events.push({
-          tipo: 'HISTORIAL',
+          tipo: 'Historial',
           fecha: item.fechaCosecha,
           titulo: `Cosecha ${item.cultivo}`,
           detalle: item.rendimientoKgHa ? `${item.rendimientoKgHa} kg/ha` : item.temporada,
           estado: item.observaciones,
+          color: '#FFB84D',
         });
       }
       return events;

@@ -568,6 +568,9 @@ function LoteHistoryPanel({
   onWeather: () => void
   onClose: () => void
 }) {
+  // Card colapsable: key del evento expandido (null = todos colapsados). Replica del historico web.
+  const [expandedKey, setExpandedKey] = useState<string | null>(null)
+
   return (
     <View style={styles.historyPanel}>
       <View style={styles.historyHead}>
@@ -597,23 +600,48 @@ function LoteHistoryPanel({
 
       {!loading && Boolean(events.length) && (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.historyList}>
-          {events.map((event) => (
-            <View key={`${event.tipo}-${event.id}`} style={styles.historyItem}>
-              <View style={[styles.historyDot, { backgroundColor: event.color, shadowColor: event.color }]} />
-              <View style={styles.historyCopy}>
-                <View style={styles.historyItemTop}>
-                  <Text style={styles.historyKind}>{event.tipo}</Text>
-                  <Text style={styles.historyDate}>{formatDateTime(event.fecha)}</Text>
+          {events.map((event) => {
+            const key = `${event.tipo}-${event.id}`
+            const open = expandedKey === key
+            return (
+              <Pressable
+                key={key}
+                style={[styles.historyItem, open && styles.historyItemOpen, open && { borderColor: `${event.color}66` }]}
+                onPress={() => setExpandedKey(open ? null : key)}
+              >
+                <View style={[styles.historyDot, { backgroundColor: event.color, shadowColor: event.color }]} />
+                <View style={styles.historyCopy}>
+                  <View style={styles.historyItemTop}>
+                    <Text style={[styles.historyKind, { color: event.color }]}>{event.tipo}</Text>
+                    <Text style={styles.historyDate}>{formatDateTime(event.fecha)}</Text>
+                  </View>
+                  <Text style={styles.historyItemTitle}>{event.titulo}</Text>
+                  {open && (
+                    <View style={styles.historyDetailBlock}>
+                      <View style={styles.historyDetailRow}>
+                        <Text style={styles.historyDetailLabel}>Detalle</Text>
+                        <Text style={styles.historyDetailValue}>{event.detalle || '—'}</Text>
+                      </View>
+                      <View style={styles.historyDetailRow}>
+                        <Text style={styles.historyDetailLabel}>Responsable</Text>
+                        <Text style={styles.historyDetailValue}>{event.responsable || 'Sin dato'}</Text>
+                      </View>
+                      <View style={styles.historyDetailRow}>
+                        <Text style={styles.historyDetailLabel}>Estado</Text>
+                        <Text style={styles.historyDetailValue}>{event.estado || '—'}</Text>
+                      </View>
+                    </View>
+                  )}
                 </View>
-                <Text style={styles.historyItemTitle}>{event.titulo}</Text>
-                <Text style={styles.historyItemDetail}>{event.detalle}</Text>
-                <View style={styles.historyMetaRow}>
-                  {event.responsable && <Text style={styles.historyMeta}>Resp. {event.responsable}</Text>}
-                  {event.estado && <Text style={styles.historyMeta}>{event.estado}</Text>}
-                </View>
-              </View>
-            </View>
-          ))}
+                <ChevronDown
+                  size={16}
+                  color={open ? event.color : '#7E8BAA'}
+                  strokeWidth={2.4}
+                  style={{ marginTop: 3, transform: [{ rotate: open ? '180deg' : '0deg' }] }}
+                />
+              </Pressable>
+            )
+          })}
         </ScrollView>
       )}
     </View>
@@ -1364,12 +1392,16 @@ const styles = StyleSheet.create({
   },
   historyItem: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
     gap: 11,
     padding: 12,
     borderRadius: 18,
     backgroundColor: 'rgba(11, 23, 48, 0.68)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.07)',
+  },
+  historyItemOpen: {
+    backgroundColor: 'rgba(9, 19, 38, 0.9)',
   },
   historyDot: {
     width: 11,
@@ -1407,27 +1439,32 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     marginTop: 5,
   },
-  historyItemDetail: {
-    color: '#A6B0CF',
+  historyDetailBlock: {
+    marginTop: 10,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(148,163,184,0.14)',
+    gap: 7,
+  },
+  historyDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+  },
+  historyDetailLabel: {
+    width: 84,
+    color: '#7E8BAA',
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+    marginTop: 1,
+  },
+  historyDetailValue: {
+    flex: 1,
+    color: '#DCE8F8',
     fontSize: 12,
     lineHeight: 17,
-    marginTop: 3,
-  },
-  historyMetaRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginTop: 8,
-  },
-  historyMeta: {
-    color: '#DCE8F8',
-    fontSize: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
   },
   sheetBackdrop: {
     flex: 1,

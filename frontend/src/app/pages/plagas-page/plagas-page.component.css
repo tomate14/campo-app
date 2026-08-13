@@ -287,16 +287,25 @@
 .history-summary { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; padding: 12px 14px; border: 1px solid rgba(110, 168, 255, .13); border-radius: 16px; background: rgba(7, 15, 31, .42); }
 .history-summary strong { color: #f8fbff; font-size: 13px; }
 .history-summary small { margin-left: auto; color: #9bb0cc; font-size: 12px; }
-.history-table-wrap { overflow: auto; border: 1px solid rgba(110, 168, 255, .13); border-radius: 18px; background: rgba(7, 15, 31, .32); }
-.history-table { width: 100%; border-collapse: collapse; min-width: 780px; }
-.history-table th, .history-table td { padding: 14px 16px; border-bottom: 1px solid rgba(148, 163, 184, .08); text-align: left; font-size: 13px; }
-.history-table th { color: #9bb0cc; font-weight: 500; background: rgba(8, 18, 37, .62); }
-.history-table td { color: #f8fbff; }
-.history-table tbody tr:hover { background: rgba(159, 232, 112, .035); }
-.history-kind { display: inline-flex; align-items: center; border: 1px solid rgba(159, 232, 112, .18); border-radius: 999px; padding: 6px 9px; color: #9fe870; background: rgba(159, 232, 112, .08); font-size: 11px; font-weight: 800; }
-.history-kind--follow { border-color: rgba(110, 168, 255, .2); color: #9dc8ff; background: rgba(110, 168, 255, .09); }
-.history-kind--detection { border-color: rgba(255, 184, 77, .24); color: #ffd166; background: rgba(255, 184, 77, .1); }
-.history-kind--harvest { border-color: rgba(154, 125, 255, .24); color: #c8bbff; background: rgba(154, 125, 255, .1); }
+/* Timeline de historico del lote: cards colapsables (replica del historico mobile).
+   Colapsada muestra tipo + fecha + titulo; al hacer click expande detalle/responsable/estado. */
+.history-timeline-wrap { max-height: 52vh; overflow-y: auto; padding-right: 4px; }
+.history-timeline { display: flex; flex-direction: column; gap: 10px; }
+.history-card { --kind-color: #9fe870; position: relative; display: flex; align-items: flex-start; gap: 12px; width: 100%; text-align: left; padding: 14px 14px 14px 18px; border: 1px solid rgba(110, 168, 255, .13); border-radius: 16px; background: rgba(7, 15, 31, .42); color: #f8fbff; cursor: pointer; transition: border-color .18s ease, background .18s ease, transform .12s ease; overflow: hidden; }
+.history-card:hover { border-color: color-mix(in srgb, var(--kind-color) 42%, transparent); background: rgba(9, 19, 38, .58); }
+.history-card--open { border-color: color-mix(in srgb, var(--kind-color) 52%, transparent); background: rgba(9, 19, 38, .66); box-shadow: 0 10px 30px -18px color-mix(in srgb, var(--kind-color) 60%, transparent); }
+.history-card__band { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 4px 0 0 4px; background: var(--kind-color); box-shadow: 0 0 14px -2px color-mix(in srgb, var(--kind-color) 70%, transparent); }
+.history-card__body { flex: 1; min-width: 0; }
+.history-card__top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.history-card__kind { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: .2px; color: var(--kind-color); border: 1px solid color-mix(in srgb, var(--kind-color) 26%, transparent); background: color-mix(in srgb, var(--kind-color) 12%, transparent); }
+.history-card__date { margin-left: auto; color: #9bb0cc; font-size: 12px; font-weight: 500; }
+.history-card__title { color: #f8fbff; font-size: 14px; font-weight: 700; line-height: 1.3; word-break: break-word; }
+.history-card__detail { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(148, 163, 184, .12); display: flex; flex-direction: column; gap: 8px; }
+.history-card__row { display: flex; align-items: baseline; gap: 10px; }
+.history-card__label { flex: 0 0 92px; color: #7f95b3; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+.history-card__value { flex: 1; color: #dce8f8; font-size: 13px; word-break: break-word; }
+.history-card__chevron { flex: 0 0 auto; margin-top: 2px; color: #7f95b3; transition: transform .2s ease, color .18s ease; }
+.history-card--open .history-card__chevron { transform: rotate(180deg); color: var(--kind-color); }
 .error-box, .premium-empty-box, .empty-box { padding: 16px; border-radius: 16px; background: rgba(127, 29, 29, .18); color: #fecaca; border: 1px solid rgba(248, 113, 113, .25); }
 .premium-empty-box, .empty-box { background: rgba(7, 15, 31, .36); color: #9bb0cc; border-color: rgba(148, 163, 184, .14); }
 
