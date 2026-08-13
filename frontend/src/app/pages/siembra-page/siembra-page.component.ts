@@ -92,6 +92,19 @@ export class SiembraPageComponent implements OnInit {
     });
   }
 
+  // Area real cosechada (%) = hectareas cosechadas / hectareas totales del lote * 100.
+  // Campo derivado de solo lectura; se recalcula al cambiar hectareas cosechadas o el lote.
+  protected recalcAreaRealCosechada(): void {
+    const lote = this.lotes.find((item) => item.id === this.cosechaForm.loteId);
+    const cosechadas = Number(this.cosechaForm.hectareasCosechadas);
+    const total = Number(lote?.area);
+    if (!lote || !isFinite(cosechadas) || cosechadas <= 0 || !isFinite(total) || total <= 0) {
+      this.cosechaForm.areaRealCosechadaPct = undefined;
+      return;
+    }
+    this.cosechaForm.areaRealCosechadaPct = Math.round((cosechadas / total) * 1000) / 10;
+  }
+
   protected totalItems() {
     return this.activeTab === 'COSECHA' ? this.cosechas.length : this.eventos.length;
   }

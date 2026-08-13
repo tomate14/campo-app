@@ -1,9 +1,7 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import MapView, { Marker, Polygon } from 'react-native-maps'
-import type { LatLng, Region } from 'react-native-maps'
-import { Bell, Bug, Crosshair, ShieldAlert, Trees } from 'lucide-react-native'
-import type { LucideIcon } from 'lucide-react-native'
+import MapView, { Circle, Marker, Polygon } from 'react-native-maps'
+import type { LatLng, MapMarkerProps, Region } from 'react-native-maps'
 import type { LotesFieldMapProps, MapMode, MapPoint, MapRegion } from './lotes-field-map.types'
 
 export default function LotesFieldMap({
@@ -15,15 +13,21 @@ export default function LotesFieldMap({
   locationGranted,
   command,
   mapMode,
+  showAffectedArea = true,
   onLotePress,
   onDetectionPress,
   onAlertaPress,
 }: LotesFieldMapProps) {
   const mapRef = useRef<MapView | null>(null)
 
+  // Fix (feature 57): encuadrar el mapa UNA sola vez al cargar. Antes se llamaba animateToRegion
+  // en cada cambio de initialRegion (referencia inestable), re-centrando el mapa y "arrastrando"
+  // los pines al hacer zoom. El encuadre manual sigue via command.type === 'fit'.
+  const hasFittedRef = useRef(false)
   useEffect(() => {
-    if (!mapItems.length || !mapRef.current) return
+    if (hasFittedRef.current || !mapItems.length || !mapRef.current) return
     mapRef.current.animateToRegion(toNativeRegion(initialRegion), 450)
+    hasFittedRef.current = true
   }, [initialRegion, mapItems.length])
 
   useEffect(() => {
@@ -70,86 +74,97 @@ export default function LotesFieldMap({
             tappable
             onPress={() => onLotePress(item.lote.id)}
           />
-          <Marker coordinate={toNativePoint(item.center)} title={item.lote.nombre} description={`${item.lote.area} ha`}>
+          <TrackedMarker
+            coordinate={item.center}
+            contentKey={`${item.lote.id}|${item.lote.nombre}|${item.lote.area}`}
+            onPress={(event) => {
+              event.stopPropagation()
+              onLotePress(item.lote.id)
+            }}
+          >
             <View style={styles.marker}>
               <Text style={styles.markerTitle}>{item.lote.nombre}</Text>
               <Text style={styles.markerArea}>{item.lote.area} ha</Text>
             </View>
-          </Marker>
+          </TrackedMarker>
         </View>
       ))}
 
+      {/* Feature 57: circulo proporcional al area afectada (radio en metros). */}
+      {showAffectedArea &&
+        detections.map((item) => {
+          const areaHa = Number(item.deteccion.areaAfectadaHa)
+          if (!Number.isFinite(areaHa) || areaHa <= 0) return null
+          return (
+            <Circle
+              key={`area-${item.deteccion.id}`}
+              center={item.coordinate}
+              radius={Math.sqrt((areaHa * 10000) / Math.PI)}
+              strokeColor={item.color}
+              fillColor={`${item.color}22`}
+              strokeWidth={1.6}
+              zIndex={10}
+            />
+          )
+        })}
+
+      {/* Pines nativos (pinColor): react-native-maps los ancla a la coordenada de forma nativa,
+          sin rasterizar una vista React con react-native-svg (que en Android/Google Maps "flota"
+          al hacer zoom). El color codifica la severidad; el tap abre el preview con el grupo. */}
       {detections.map((item) => (
         <Marker
           key={item.deteccion.id}
           identifier={item.deteccion.id}
-          coordinate={toNativePoint(item.coordinate)}
-          anchor={{ x: 0.5, y: 1 }}
+          coordinate={item.coordinate}
+          pinColor={item.color}
           zIndex={20}
-          tracksViewChanges
           onPress={(event) => {
             event.stopPropagation()
             onDetectionPress(item.detecciones)
           }}
-        >
-          <MapPin Icon={iconForType(item.deteccion.tipoNombre ?? item.deteccion.tipo)} color={item.color} count={item.detecciones.length} />
-        </Marker>
+        />
       ))}
 
       {alertas.map((item) => (
         <Marker
           key={item.alerta.id}
           identifier={item.alerta.id}
-          coordinate={toNativePoint(item.coordinate)}
-          anchor={{ x: 0.5, y: 1 }}
+          coordinate={item.coordinate}
+          pinColor={item.color}
           zIndex={22}
-          tracksViewChanges
           onPress={(event) => {
             event.stopPropagation()
             onAlertaPress?.(item.alertas)
           }}
-        >
-          <MapPin Icon={Bell} color={item.color} count={item.alertas.length} />
-        </Marker>
+        />
       ))}
     </MapView>
   )
 }
 
-// Pin generico del mapa (detecciones de plagas y alertas de potrero):
-// cabeza circular coloreada con glow, punta y badge de cantidad.
-function MapPin({
-  Icon,
-  color,
-  count,
-}: {
-  Icon: LucideIcon
-  color: string
-  count: number
-}) {
-  return (
-    <View style={styles.pinWrap}>
-      <View style={[styles.pinGlow, { backgroundColor: color }]} />
-      <View style={[styles.pinHead, { borderColor: color, shadowColor: color }]}>
-        <Icon size={25} color="#FFFFFF" strokeWidth={2.25} />
-        {count > 1 && (
-          <View style={[styles.pinCount, { borderColor: color }]}>
-            <Text style={styles.pinCountText}>{count}</Text>
-          </View>
-        )}
-      </View>
-      <View style={[styles.pinTip, { borderTopColor: color }]} />
-      <View style={[styles.pinTipInner, { borderTopColor: 'rgba(11,23,48,0.96)' }]} />
-    </View>
-  )
-}
+// Marker que queda FIJO en su coordenada al hacer zoom. En react-native-maps, un marker con vista
+// custom y tracksViewChanges=true se re-renderiza cada frame y su bitmap se desplaza respecto de la
+// proyeccion ("flota"); ademas, en Android, sin `collapsable={false}` la vista del marker se colapsa
+// y se posiciona mal. Aca: (a) envolvemos el contenido en un View `collapsable={false}`, y (b)
+// congelamos `tracksViewChanges` por-marker (true al montar/cambiar contenido, false tras 400ms).
+function TrackedMarker({
+  children,
+  contentKey,
+  ...markerProps
+}: MapMarkerProps & { children: ReactNode; contentKey?: string | number }) {
+  const [tracks, setTracks] = useState(true)
 
-function iconForType(tipo?: string): LucideIcon {
-  const normalized = tipo?.toUpperCase()
-  if (normalized === 'PLAGA') return Bug
-  if (normalized === 'MALEZA') return Trees
-  if (normalized === 'ENFERMEDAD') return ShieldAlert
-  return Crosshair
+  useEffect(() => {
+    setTracks(true)
+    const timer = setTimeout(() => setTracks(false), 400)
+    return () => clearTimeout(timer)
+  }, [contentKey])
+
+  return (
+    <Marker {...markerProps} tracksViewChanges={tracks}>
+      <View collapsable={false}>{children}</View>
+    </Marker>
+  )
 }
 
 function toNativeMapType(mode: MapMode) {

@@ -76,6 +76,7 @@ import type { PlagaImageAsset } from '../../shared/api/agricola'
 import { resolveAssetUrl } from '../../shared/api/client'
 import { isOnline, subscribeConnectivity } from '../../shared/sync/connectivity'
 import { getOperarios } from '../../shared/api/operarios'
+import { readCurrentUser } from '../../shared/auth/session'
 import type {
   AplicacionFitosanitaria,
   AplicacionFitosanitariaRequest,
@@ -304,6 +305,13 @@ export default function PlagasMobilePage() {
         catalogoPlagaId: firstPlaga?.id ?? '',
         cultivo: lotesData.find(lote => lote.id === params.loteId)?.cultivo ?? firstLote?.cultivo,
       }))
+      // Feature 57: precargar el responsable con el operario del usuario logueado (editable).
+      const user = await readCurrentUser()
+      const currentOperario = user ? operariosData.find(op => op.userId === user.id) : undefined
+      if (currentOperario) {
+        setDeteccionForm(current => (current.responsableId ? current : { ...current, responsableId: currentOperario.id }))
+        setSeguimientoForm(current => (current.responsableId ? current : { ...current, responsableId: currentOperario.id }))
+      }
     } catch {
       Alert.alert('Control de plagas', 'No se pudieron cargar los datos iniciales.')
     } finally {
@@ -687,6 +695,17 @@ function DetectionForm({
   onOpenFicha: (id: string) => void
   setForm: React.Dispatch<React.SetStateAction<DeteccionPlagaRequest>>
 }) {
+  // Feature 57: % afectado = areaAfectadaHa / area del lote * 100 (solo lectura, auto).
+  useEffect(() => {
+    const lote = lotes.find(item => item.id === form.loteId)
+    const area = Number(lote?.area)
+    const afectada = Number(form.areaAfectadaHa)
+    const pct = Number.isFinite(area) && area > 0 && Number.isFinite(afectada) && afectada > 0
+      ? Math.round((afectada / area) * 10000) / 100
+      : undefined
+    setForm(current => (current.porcentajeAfectado === pct ? current : { ...current, porcentajeAfectado: pct }))
+  }, [form.areaAfectadaHa, form.loteId, lotes, setForm])
+
   // Chips de cultivo por id (feature 72): value = opcion.id, label = opcion.valor.
   // El cultivo autocompletado desde el lote se conserva como chip activo aunque no este en el catalogo activo.
   const cultivoChips = useMemo(() => {
@@ -723,7 +742,8 @@ function DetectionForm({
       <ChipGroup label="Estado" value={form.estado ?? 'ABIERTA'} options={stateOptions} onChange={(value) => setForm(current => ({ ...current, estado: value as EstadoDeteccionPlaga }))} />
       <View style={styles.gridTwo}>
         <Field label="Área afectada ha" keyboardType="numeric" value={form.areaAfectadaHa?.toString() ?? ''} onChangeText={(value) => setForm(current => ({ ...current, areaAfectadaHa: cleanNumber(value) }))} />
-        <Field label="% afectado" keyboardType="numeric" value={form.porcentajeAfectado?.toString() ?? ''} onChangeText={(value) => setForm(current => ({ ...current, porcentajeAfectado: cleanNumber(value) }))} />
+        {/* Feature 57: % afectado derivado del area del lote (solo lectura). */}
+        <Field label="% afectado (auto)" editable={false} value={form.porcentajeAfectado != null ? `${form.porcentajeAfectado}%` : '—'} onChangeText={() => {}} />
       </View>
       <View style={styles.coordPanel}>
         <View>
@@ -1537,6 +1557,14 @@ function IdMultiChipGroup({ label, value, options, onChange }: { label: string; 
 
 function ResponsibleSelect({ label, value, operarios, onChange }: { label: string; value: string; operarios: Operario[]; onChange: (value: string) => void }) {
   const [query, setQuery] = useState('')
+  // Feature 57: mantiene el buscador en blanco vs. reflejando el label del value elegido.
+  const [touched, setTouched] = useState(false)
+  // Feature 57: cuando el value viene precargado (usuario logueado) mostramos su nombre
+  // en el buscador, sin pisar lo que el usuario esté tipeando.
+  const selectedName = useMemo(() => operarios.find(item => item.id === value)?.nombreCompleto ?? '', [operarios, value])
+  useEffect(() => {
+    if (!touched) setQuery(selectedName)
+  }, [selectedName, touched])
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase()
     return operarios
@@ -1552,7 +1580,7 @@ function ResponsibleSelect({ label, value, operarios, onChange }: { label: strin
         <TextInput
           style={styles.searchInput}
           value={query}
-          onChangeText={setQuery}
+          onChangeText={(text) => { setTouched(true); setQuery(text) }}
           placeholder="Buscar responsable"
           placeholderTextColor="#64748B"
         />
@@ -1563,6 +1591,7 @@ function ResponsibleSelect({ label, value, operarios, onChange }: { label: strin
           return (
             <Pressable key={item.id} style={[styles.personItem, active && styles.personItemActive]} onPress={() => {
               onChange(item.id)
+              setTouched(false)
               setQuery(item.nombreCompleto)
             }}>
               <View style={styles.personIcon}>
@@ -1581,17 +1610,18 @@ function ResponsibleSelect({ label, value, operarios, onChange }: { label: strin
   )
 }
 
-function Field({ label, icon, value, onChangeText, keyboardType }: { label: string; icon?: React.ReactNode; value: string; onChangeText: (value: string) => void; keyboardType?: 'default' | 'numeric' }) {
+function Field({ label, icon, value, onChangeText, keyboardType, editable }: { label: string; icon?: React.ReactNode; value: string; onChangeText: (value: string) => void; keyboardType?: 'default' | 'numeric'; editable?: boolean }) {
   return (
     <View style={styles.fieldGroup}>
       <Text style={styles.label}>{label}</Text>
-      <View style={styles.inputShell}>
+      <View style={[styles.inputShell, editable === false && styles.inputShellReadonly]}>
         {icon}
         <TextInput
-          style={styles.input}
+          style={[styles.input, editable === false && styles.inputReadonly]}
           keyboardType={keyboardType}
           value={value}
           onChangeText={onChangeText}
+          editable={editable}
           placeholderTextColor="#64748B"
         />
       </View>
@@ -1731,6 +1761,8 @@ const styles = StyleSheet.create({
   gridField: { flex: 1, minWidth: 0 },
   inputShell: { minHeight: 54, flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: 18, paddingHorizontal: 12, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)' },
   input: { flex: 1, color: '#FFFFFF', fontSize: 14, paddingVertical: 0 },
+  inputShellReadonly: { backgroundColor: 'rgba(8,18,37,.5)', borderColor: 'rgba(159,232,112,.14)' },
+  inputReadonly: { color: '#A6B0CF' },
   textarea: { minHeight: 104, borderRadius: 20, padding: 14, backgroundColor: '#081225', borderWidth: 1, borderColor: 'rgba(255,255,255,.08)', color: '#FFFFFF', fontSize: 14 },
   counter: { alignSelf: 'flex-end', color: '#A6B0CF', fontSize: 11, marginTop: -2 },
   coordPanel: { minHeight: 66, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, borderRadius: 20, padding: 12, backgroundColor: 'rgba(57,208,216,.06)', borderWidth: 1, borderColor: 'rgba(57,208,216,.16)' },

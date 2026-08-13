@@ -20,6 +20,9 @@ mapa los pines resueltos manteniéndolos en un histórico con opción de mostrar
 4. **Pines resueltos → histórico del mapa**: cuando una detección/alerta queda
    resuelta, su pin se **quita del mapa** por defecto, pero permanece en el
    histórico; agregar un toggle "Mostrar resueltos" para volver a verlos.
+   Criterio de "resuelto" para detecciones: estado en `CONTROLADA`/`CERRADA`.
+5. **Toggle "Área afectada" (mobile)**: en el menú de capas/opciones del mapa de
+   mobile, agregar un toggle para mostrar u ocultar el círculo de área afectada.
 
 ## Requisitos Técnicos
 - Web: círculo con MapLibre (layer circle o GeoJSON); mobile: `Circle` de
@@ -33,4 +36,15 @@ mapa los pines resueltos manteniéndolos en un histórico con opción de mostrar
 - Feature 37 (plagas), 38/47 (mapas y alertas), 31 (selector con buscador).
 
 ## Estado
-Pendiente.
+Realizada.
+
+## Implementacion (2026-08-08)
+- Web (`plagas-page`) y mobile (`lotes.tsx` mapa + `plagas.tsx` forms + `lotes-field-map`): sin backend.
+- Circulo de area afectada: web como poligono-circulo GeoJSON (48 vertices); mobile con `Circle`
+  de react-native-maps (y aproximacion GeoJSON en la variante web del mapa). Radio =
+  `sqrt(areaHa*10000/PI)` metros.
+- % afectado: derivado `areaAfectadaHa / Lote.area * 100`, solo lectura.
+- Responsable: precargado con el operario cuyo `userId === usuario logueado.id` (editable).
+- Resueltos (`CONTROLADA`/`CERRADA`) fuera del mapa por defecto + toggle "Mostrar resueltos"
+  (web en controles del mapa; mobile en el sheet de capas).
+- Mobile: toggle "Area afectada" en el sheet de capas para mostrar/ocultar el circulo.

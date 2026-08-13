@@ -4,7 +4,7 @@ import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { GeoJSONSourceSpecification, LngLatBoundsLike, Map as MapLibreMap, Marker, StyleSpecification } from 'maplibre-gl'
 import type { FeatureCollection, Polygon } from 'geojson'
-import type { LotesFieldMapProps, MapMode, MapPoint, MapRegion } from './lotes-field-map.types'
+import type { LotesFieldMapProps, LoteMapItem, MapMode, MapPoint, MapRegion } from './lotes-field-map.types'
 
 function buildStyle(mode: MapMode): StyleSpecification {
   const satellite = mode === 'satellite' || mode === 'hybrid'
@@ -16,7 +16,6 @@ function buildStyle(mode: MapMode): StyleSpecification {
 
   return {
   version: 8,
-  glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
   sources: {
     base: {
       type: 'raster',
@@ -39,6 +38,7 @@ export default function LotesFieldMap({
   userCoords,
   command,
   mapMode,
+  showAffectedArea = true,
   onLotePress,
   onDetectionPress,
   onAlertaPress,
@@ -49,11 +49,29 @@ export default function LotesFieldMap({
   const detectionsRef = useRef(detections)
   const alertMarkersRef = useRef<Marker[]>([])
   const alertasRef = useRef(alertas)
+  // Feature 57 (perf): labels de lote (nombre + ha) como markers DOM en vez de una capa symbol.
+  // La capa symbol descargaba glyphs desde demotiles.maplibre.org (servidor demo lento) y eso
+  // demoraba ~1 min en mostrar "la informacion" de los poligonos. Con DOM no hay fetch de glyphs.
+  const loteLabelMarkersRef = useRef<Marker[]>([])
+  const mapItemsRef = useRef(mapItems)
+  // Fix (feature 57): encuadrar el mapa UNA sola vez al cargar. Antes se llamaba fitToRegion en
+  // cada cambio de initialRegion (referencia inestable), re-centrando el mapa continuamente y
+  // "arrastrando" los pines al hacer zoom.
+  const hasFittedRef = useRef(false)
   const sourceData = useMemo(() => toFeatureCollection(mapItems), [mapItems])
+  // Feature 57: circulos de area afectada como poligonos GeoJSON (radio en metros).
+  const affectedData = useMemo(
+    () => toAffectedAreas(showAffectedArea ? detections : []),
+    [detections, showAffectedArea]
+  )
 
   useEffect(() => {
     detectionsRef.current = detections
   }, [detections])
+
+  useEffect(() => {
+    mapItemsRef.current = mapItems
+  }, [mapItems])
 
   useEffect(() => {
     alertasRef.current = alertas
@@ -75,6 +93,7 @@ export default function LotesFieldMap({
 
     map.on('load', () => {
       map.addSource('lotes', { type: 'geojson', data: sourceData } satisfies GeoJSONSourceSpecification)
+      map.addSource('affected-areas', { type: 'geojson', data: affectedData } satisfies GeoJSONSourceSpecification)
       map.addLayer({
         id: 'lotes-fill',
         type: 'fill',
@@ -95,19 +114,22 @@ export default function LotesFieldMap({
         },
       })
       map.addLayer({
-        id: 'lotes-label',
-        type: 'symbol',
-        source: 'lotes',
-        layout: {
-          'text-field': ['concat', ['get', 'nombre'], '\n', ['get', 'area'], ' ha'],
-          'text-size': 12,
-          'text-font': ['Open Sans Semibold'],
-          'text-allow-overlap': true,
-        },
+        id: 'affected-fill',
+        type: 'fill',
+        source: 'affected-areas',
         paint: {
-          'text-color': '#FFFFFF',
-          'text-halo-color': '#081225',
-          'text-halo-width': 1.5,
+          'fill-color': ['get', 'color'],
+          'fill-opacity': 0.14,
+        },
+      })
+      map.addLayer({
+        id: 'affected-line',
+        type: 'line',
+        source: 'affected-areas',
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 1.6,
+          'line-opacity': 0.85,
         },
       })
       map.on('click', 'lotes-fill', (event) => {
@@ -117,6 +139,7 @@ export default function LotesFieldMap({
       })
       map.on('mouseenter', 'lotes-fill', () => { map.getCanvas().style.cursor = 'pointer' })
       map.on('mouseleave', 'lotes-fill', () => { map.getCanvas().style.cursor = '' })
+      syncLoteLabels(map, mapItemsRef.current, onLotePress, loteLabelMarkersRef)
       syncDetectionMarkers(map, detectionsRef.current, onDetectionPress, detectionMarkersRef)
       syncAlertMarkers(map, alertasRef.current, onAlertaPress, alertMarkersRef)
       fitToRegion(map, initialRegion)
@@ -127,6 +150,8 @@ export default function LotesFieldMap({
       detectionMarkersRef.current = []
       alertMarkersRef.current.forEach((marker) => marker.remove())
       alertMarkersRef.current = []
+      loteLabelMarkersRef.current.forEach((marker) => marker.remove())
+      loteLabelMarkersRef.current = []
       map.remove()
       mapRef.current = null
     }
@@ -137,10 +162,18 @@ export default function LotesFieldMap({
     if (!map || !map.isStyleLoaded()) return
     const source = map.getSource('lotes') as maplibregl.GeoJSONSource | undefined
     source?.setData(sourceData)
+    const affectedSource = map.getSource('affected-areas') as maplibregl.GeoJSONSource | undefined
+    affectedSource?.setData(affectedData)
+    syncLoteLabels(map, mapItems, onLotePress, loteLabelMarkersRef)
     syncDetectionMarkers(map, detections, onDetectionPress, detectionMarkersRef)
     syncAlertMarkers(map, alertas, onAlertaPress, alertMarkersRef)
-    fitToRegion(map, initialRegion)
-  }, [sourceData, detections, alertas, initialRegion])
+    // Encuadre automatico SOLO la primera vez que hay datos; despues no re-centrar (respeta el
+    // zoom/pan del usuario). El encuadre manual sigue disponible via command.type === 'fit'.
+    if (!hasFittedRef.current && mapItems.length) {
+      fitToRegion(map, initialRegion)
+      hasFittedRef.current = true
+    }
+  }, [sourceData, affectedData, detections, alertas, mapItems.length])
 
   useEffect(() => {
     const map = mapRef.current
@@ -209,12 +242,98 @@ function toFeatureCollection(mapItems: LotesFieldMapProps['mapItems']): FeatureC
   }
 }
 
+// Feature 57: convierte cada deteccion con area afectada en un poligono circular
+// (aprox. de 48 lados) cuyo radio en metros representa la superficie afectada.
+function toAffectedAreas(detections: LotesFieldMapProps['detections']): FeatureCollection<Polygon> {
+  return {
+    type: 'FeatureCollection',
+    features: detections
+      .map((item) => {
+        const areaHa = Number(item.deteccion.areaAfectadaHa)
+        if (!Number.isFinite(areaHa) || areaHa <= 0) return null
+        const radius = Math.sqrt((areaHa * 10000) / Math.PI)
+        return {
+          type: 'Feature' as const,
+          properties: { color: item.color },
+          geometry: {
+            type: 'Polygon' as const,
+            coordinates: [circleRing(item.coordinate, radius)],
+          },
+        }
+      })
+      .filter((feature): feature is NonNullable<typeof feature> => Boolean(feature)),
+  }
+}
+
+// Anillo de coordenadas [lng, lat] que aproxima un circulo geografico de radio en metros.
+function circleRing(center: MapPoint, radiusMeters: number, steps = 48): number[][] {
+  const earth = 6378137
+  const latRad = (center.latitude * Math.PI) / 180
+  const ring: number[][] = []
+  for (let i = 0; i <= steps; i += 1) {
+    const angle = (i / steps) * 2 * Math.PI
+    const dx = radiusMeters * Math.cos(angle)
+    const dy = radiusMeters * Math.sin(angle)
+    const dLng = (dx / (earth * Math.cos(latRad))) * (180 / Math.PI)
+    const dLat = (dy / earth) * (180 / Math.PI)
+    ring.push([center.longitude + dLng, center.latitude + dLat])
+  }
+  return ring
+}
+
 function closeRing(points: MapPoint[]): MapPoint[] {
   if (!points.length) return []
   const first = points[0]
   const last = points[points.length - 1]
   if (first.latitude === last.latitude && first.longitude === last.longitude) return points
   return [...points, first]
+}
+
+// Labels de lote (nombre + ha) como markers DOM en el centroide. No usa la capa symbol de MapLibre
+// (que descargaba glyphs remotos lentos). pointer-events:none para no bloquear el click del poligono.
+function syncLoteLabels(
+  map: MapLibreMap,
+  mapItems: LoteMapItem[],
+  onLotePress: LotesFieldMapProps['onLotePress'],
+  markersRef: MutableRefObject<Marker[]>,
+) {
+  markersRef.current.forEach((marker) => marker.remove())
+  markersRef.current = mapItems.map((item) => {
+    // La etiqueta es el target de click del lote -> abre el historico (los poligonos suelen ser
+    // chicos y quedan tapados por los pines; la etiqueta siempre esta visible y es facil de tocar).
+    const element = createLabelElement(item.lote.nombre, `${item.lote.area} ha`, () => onLotePress(item.lote.id))
+    return new maplibregl.Marker({ element, anchor: 'center' })
+      .setLngLat([item.center.longitude, item.center.latitude])
+      .addTo(map)
+  })
+}
+
+function createLabelElement(nombre: string, area: string, onClick: () => void) {
+  // No setear position: MapLibre lo pone absolute; forzar relative rompe el posicionamiento.
+  const wrap = document.createElement('div')
+  wrap.style.pointerEvents = 'auto'
+  wrap.style.cursor = 'pointer'
+  wrap.addEventListener('click', (event) => {
+    event.stopPropagation()
+    onClick()
+  })
+  wrap.style.textAlign = 'center'
+  wrap.style.whiteSpace = 'nowrap'
+  wrap.style.fontFamily = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+  wrap.style.textShadow = '0 1px 3px rgba(2,8,23,0.95), 0 0 6px rgba(2,8,23,0.8)'
+  const name = document.createElement('div')
+  name.textContent = nombre
+  name.style.color = '#FFFFFF'
+  name.style.fontSize = '12px'
+  name.style.fontWeight = '800'
+  const areaEl = document.createElement('div')
+  areaEl.textContent = area
+  areaEl.style.color = '#9FE870'
+  areaEl.style.fontSize = '10px'
+  areaEl.style.fontWeight = '700'
+  wrap.appendChild(name)
+  wrap.appendChild(areaEl)
+  return wrap
 }
 
 function syncDetectionMarkers(
@@ -260,7 +379,11 @@ function createPinElement(color: string, iconSvg: string, count = 1) {
   const wrap = document.createElement('div')
   wrap.style.width = '52px'
   wrap.style.height = '64px'
-  wrap.style.position = 'relative'
+  // MapLibre posiciona el elemento del marker con transform y su CSS lo pone en position:absolute.
+  // Fix (feature 57): antes se forzaba position:relative, lo que pisaba ese absolute -> el marker
+  // quedaba en flujo normal y se desplazaba distinto por pin, "flotando" al hacer zoom. Debe ser
+  // absolute (ademas sirve de contexto de posicionamiento para los hijos glow/badge/tip).
+  wrap.style.position = 'absolute'
   wrap.style.zIndex = '1200'
   wrap.style.display = 'flex'
   wrap.style.flexDirection = 'column'

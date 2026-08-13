@@ -32,6 +32,18 @@
 .map-controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 .map-controls button { min-height: 40px; border: 1px solid rgba(110, 168, 255, .13); border-radius: 12px; padding: 0 14px; background: rgba(7, 15, 31, .46); color: #b9c8dd; font-weight: 700; }
 .map-controls button.active { color: #9fe870; border-color: rgba(159, 232, 112, .38); background: rgba(159, 232, 112, .08); }
+/* Feature 57: toggle "Mostrar resueltos" con icono ojo. */
+.map-controls .map-toggle { display: inline-flex; align-items: center; gap: 8px; }
+.map-controls .map-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.map-controls .map-toggle.active { color: #6ea8ff; border-color: rgba(110, 168, 255, .4); background: rgba(110, 168, 255, .1); }
+/* Feature 57: display de solo lectura del % afectado derivado. */
+.form-grid .pct-field .pct-display { display: flex; align-items: center; gap: 8px; min-height: 42px; border: 1px solid rgba(159, 232, 112, .22); border-radius: 12px; background: rgba(159, 232, 112, .06); padding: 0 12px; }
+.form-grid .pct-field .pct-display svg { width: 16px; height: 16px; flex: none; fill: none; stroke: #9fe870; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.form-grid .pct-field .pct-display strong { color: #f8fbff; font-size: 15px; font-weight: 700; }
+.form-grid .pct-field .pct-display small { color: #7d8cab; font-size: 11px; }
+.form-grid .pct-field .pct-display.is-empty { border-color: rgba(148, 163, 184, .14); background: rgba(7, 15, 31, .48); }
+.form-grid .pct-field .pct-display.is-empty svg { stroke: #7d8cab; }
+.form-grid .pct-field .pct-display.is-empty strong { color: #9bb0cc; }
 .map-frame { position: relative; height: 430px; overflow: hidden; border-radius: 18px; border: 1px solid rgba(110, 168, 255, .13); }
 .map-frame mgl-map { display: block; height: 100%; }
 .map-pin {
@@ -107,6 +119,9 @@
   right: 16px;
   top: 16px;
   width: 320px;
+  max-height: calc(100% - 32px);
+  overflow-y: auto;
+  overflow-x: hidden;
   z-index: 20;
   border: 1px solid rgba(159,232,112,.14);
   border-radius: 22px;
@@ -114,7 +129,12 @@
   background: rgba(8, 18, 37, .96);
   backdrop-filter: blur(16px);
   box-shadow: 0 22px 50px rgba(0, 0, 0, .38), 0 0 34px rgba(159,232,112,.08);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(159,232,112,.5) transparent;
 }
+.pin-card::-webkit-scrollbar { width: 8px; }
+.pin-card::-webkit-scrollbar-track { background: transparent; }
+.pin-card::-webkit-scrollbar-thumb { background: rgba(159,232,112,.45); border-radius: 999px; }
 .pin-card__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
 .pin-card__nav {
   height: 32px;

@@ -42,6 +42,19 @@ export default function RegistroCosechaScreen() {
     }
   }, [loteId, lotes])
 
+  // Area real cosechada (%) = hectareas cosechadas / hectareas totales del lote * 100.
+  // Campo derivado de solo lectura (no se carga a mano).
+  useEffect(() => {
+    const lote = lotes.find((item) => item.id === loteId)
+    const has = Number(hectareasCosechadas)
+    const total = Number(lote?.area)
+    if (!lote || !Number.isFinite(has) || has <= 0 || !Number.isFinite(total) || total <= 0) {
+      setAreaRealCosechadaPct('')
+      return
+    }
+    setAreaRealCosechadaPct(((has / total) * 100).toFixed(1))
+  }, [hectareasCosechadas, loteId, lotes])
+
   const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: c.background },
     content: { padding: 20, gap: 14 },
@@ -57,6 +70,10 @@ export default function RegistroCosechaScreen() {
     input: {
       height: 52, borderRadius: 12, borderWidth: 1, borderColor: c.border,
       backgroundColor: c.card, paddingHorizontal: 14, color: c.foreground, fontSize: 15,
+    },
+    inputReadonly: {
+      opacity: 0.7,
+      color: c.mutedForeground,
     },
     textarea: {
       minHeight: 100, borderRadius: 12, borderWidth: 1, borderColor: c.border,
@@ -162,13 +179,13 @@ export default function RegistroCosechaScreen() {
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>Area real cosechada (%)</Text>
-          <TextInput value={areaRealCosechadaPct} onChangeText={setAreaRealCosechadaPct} style={styles.input} keyboardType="decimal-pad" placeholder="95" placeholderTextColor={c.mutedForeground} />
+          <Text style={styles.label}>Hectareas cosechadas</Text>
+          <TextInput value={hectareasCosechadas} onChangeText={setHectareasCosechadas} style={styles.input} keyboardType="decimal-pad" placeholder="48.5" placeholderTextColor={c.mutedForeground} />
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>Hectareas cosechadas</Text>
-          <TextInput value={hectareasCosechadas} onChangeText={setHectareasCosechadas} style={styles.input} keyboardType="decimal-pad" placeholder="48.5" placeholderTextColor={c.mutedForeground} />
+          <Text style={styles.label}>Area real cosechada (%) · auto</Text>
+          <TextInput value={areaRealCosechadaPct ? `${areaRealCosechadaPct} %` : '—'} editable={false} style={[styles.input, styles.inputReadonly]} placeholder="—" placeholderTextColor={c.mutedForeground} />
         </View>
 
         <View style={styles.row}>

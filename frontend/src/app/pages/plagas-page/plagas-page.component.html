@@ -39,6 +39,12 @@
         <div class="map-controls">
           <button type="button" [class.active]="mapMode() === 'mapa'" (click)="mapMode.set('mapa')">Mapa</button>
           <button type="button" [class.active]="mapMode() === 'satelite'" (click)="mapMode.set('satelite')">Sat&eacute;lite</button>
+          <!-- Feature 57: toggle para mostrar/ocultar detecciones resueltas en el mapa. -->
+          <button type="button" class="map-toggle" [class.active]="mostrarResueltos()" (click)="toggleMostrarResueltos()" [attr.aria-pressed]="mostrarResueltos()">
+            <svg viewBox="0 0 24 24" *ngIf="mostrarResueltos()"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg viewBox="0 0 24 24" *ngIf="!mostrarResueltos()"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M6.61 6.61A18.5 18.5 0 0 0 2 12s3.5 7 10 7a9.12 9.12 0 0 0 4.4-1.11"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/></svg>
+            <span>Mostrar resueltos</span>
+          </button>
           <button type="button" *ngIf="selectedLote()" (click)="openHistorialLoteSeleccionado()">Hist&oacute;rico lote</button>
         </div>
       </div>
@@ -47,7 +53,11 @@
           <mgl-geojson-source id="plagas-lote-source" [data]="mapData()"></mgl-geojson-source>
           <mgl-layer id="plagas-lote-fill" type="fill" source="plagas-lote-source" [paint]="{ 'fill-color': ['get', 'color'], 'fill-opacity': 0.24 }"></mgl-layer>
           <mgl-layer id="plagas-lote-line" type="line" source="plagas-lote-source" [paint]="{ 'line-color': ['get', 'color'], 'line-width': 2.4, 'line-opacity': 0.92 }"></mgl-layer>
-          <mgl-marker *ngFor="let pin of pins()" [lngLat]="[pin.longitud, pin.latitud]">
+          <!-- Feature 57: circulos proporcionales al area afectada, debajo de los pines. -->
+          <mgl-geojson-source id="plagas-area-source" [data]="areaCirclesData()"></mgl-geojson-source>
+          <mgl-layer id="plagas-area-fill" type="fill" source="plagas-area-source" [paint]="{ 'fill-color': ['get', 'color'], 'fill-opacity': 0.12 }"></mgl-layer>
+          <mgl-layer id="plagas-area-line" type="line" source="plagas-area-source" [paint]="{ 'line-color': ['get', 'color'], 'line-width': 1.4, 'line-opacity': 0.55, 'line-dasharray': [2, 2] }"></mgl-layer>
+          <mgl-marker *ngFor="let pin of pins()" [lngLat]="[pin.longitud, pin.latitud]" [anchor]="'bottom'">
             <button class="map-pin" type="button" [style.--pin-color]="pinColor(pin.detecciones[0].severidad)" (click)="$event.stopPropagation(); openPinCard(pin)">
               <span class="map-pin__glow"></span>
               <span class="map-pin__head">
@@ -361,7 +371,7 @@
           <button type="button" (click)="volverAFotoDeteccion()">Cambiar</button>
         </div>
         <div class="form-grid">
-          <label><span>Lote</span><select [ngModel]="deteccionForm().loteId" (ngModelChange)="deteccionForm.update(f => ({ ...f, loteId: $event }))"><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
+          <label><span>Lote</span><select [ngModel]="deteccionForm().loteId" (ngModelChange)="onDeteccionLoteChange($event)"><option *ngFor="let lote of lotes()" [value]="lote.id">{{ lote.nombre }}</option></select></label>
           <label><span>Plaga</span><select [ngModel]="deteccionForm().catalogoPlagaId" (ngModelChange)="deteccionForm.update(f => ({ ...f, catalogoPlagaId: $event }))"><option *ngFor="let item of catalogoOpciones()" [value]="item.id">{{ item.nombreComun }}</option></select></label>
           <label><span>Fecha</span><input type="datetime-local" [ngModel]="deteccionForm().fechaDeteccion" (ngModelChange)="deteccionForm.update(f => ({ ...f, fechaDeteccion: $event }))" /></label>
           <app-configurable-select categoria="CULTIVO" label="Cultivo" placeholder="Seleccionar cultivo..." [value]="deteccionForm().cultivo" (valueChange)="deteccionForm.update(f => ({ ...f, cultivo: $event }))"></app-configurable-select>
@@ -370,8 +380,16 @@
           <label><span>Latitud</span><input type="number" step="0.0000001" [ngModel]="deteccionForm().latitud" (ngModelChange)="deteccionForm.update(f => ({ ...f, latitud: $event }))" /></label>
           <label><span>Longitud</span><input type="number" step="0.0000001" [ngModel]="deteccionForm().longitud" (ngModelChange)="deteccionForm.update(f => ({ ...f, longitud: $event }))" /></label>
           <label class="gps-field"><span>Ubicaci&oacute;n</span><button class="btn-secondary gps-locate" type="button" [disabled]="capturandoUbicacion()" (click)="capturarUbicacionActual()"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8Z"/></svg>{{ capturandoUbicacion() ? 'Ubicando…' : 'Usar mi ubicación (GPS)' }}</button></label>
-          <label><span>&Aacute;rea afectada ha</span><input type="number" [ngModel]="deteccionForm().areaAfectadaHa" (ngModelChange)="deteccionForm.update(f => ({ ...f, areaAfectadaHa: $event }))" /></label>
-          <label><span>% afectado</span><input type="number" [ngModel]="deteccionForm().porcentajeAfectado" (ngModelChange)="deteccionForm.update(f => ({ ...f, porcentajeAfectado: $event }))" /></label>
+          <label><span>&Aacute;rea afectada ha</span><input type="number" [ngModel]="deteccionForm().areaAfectadaHa" (ngModelChange)="onDeteccionAreaChange($event)" /></label>
+          <!-- Feature 57: % afectado derivado del area del lote, solo lectura. -->
+          <label class="pct-field">
+            <span>% afectado <small>(auto)</small></span>
+            <div class="pct-display" [class.is-empty]="porcentajeAfectadoCalc() === null">
+              <svg viewBox="0 0 24 24"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+              <strong>{{ porcentajeAfectadoCalc() !== null ? porcentajeAfectadoCalc() + '%' : '—' }}</strong>
+              <small>del lote</small>
+            </div>
+          </label>
           <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="deteccionForm().responsableId" (valueChange)="deteccionForm.update(f => ({ ...f, responsableId: $event }))"></app-remote-search-select>
         </div>
         <label class="textarea-field"><span>Descripci&oacute;n</span><textarea [ngModel]="deteccionForm().descripcion" (ngModelChange)="deteccionForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
