@@ -141,7 +141,7 @@
         <ng-container *ngIf="activeTab === 'COSECHA'">
           <label>
             <span>Lote</span>
-            <select [(ngModel)]="cosechaForm.loteId" name="cosechaLoteId" required>
+            <select [ngModel]="cosechaForm.loteId" (ngModelChange)="cosechaForm.loteId = $event; recalcAreaRealCosechada()" name="cosechaLoteId" required>
               <option value="">Seleccionar...</option>
               <option *ngFor="let lote of lotes" [value]="lote.id">{{ lote.nombre }}</option>
             </select>
@@ -160,8 +160,8 @@
 
           <p class="form-section-title">Pérdidas de cosecha</p>
           <div class="form-grid-2">
-            <label><span>Área real cosechada (%)</span><input [(ngModel)]="cosechaForm.areaRealCosechadaPct" name="areaRealCosechadaPct" type="number" step="0.01" min="0" /></label>
-            <label><span>Hectáreas cosechadas</span><input [(ngModel)]="cosechaForm.hectareasCosechadas" name="hectareasCosechadas" type="number" step="0.01" min="0" /></label>
+            <label><span>Hectáreas cosechadas</span><input [ngModel]="cosechaForm.hectareasCosechadas" (ngModelChange)="cosechaForm.hectareasCosechadas = $event; recalcAreaRealCosechada()" name="hectareasCosechadas" type="number" step="0.01" min="0" /></label>
+            <label><span>Área real cosechada (%) · auto</span><input [ngModel]="cosechaForm.areaRealCosechadaPct" name="areaRealCosechadaPct" type="number" readonly title="Se calcula automáticamente: hectáreas cosechadas / hectáreas totales del lote × 100" /></label>
             <label><span>Pérdida (kg/ha)</span><input [(ngModel)]="cosechaForm.perdidaKgHa" name="perdidaKgHa" type="number" step="0.01" min="0" /></label>
             <label><span>Granos perdidos (kg)</span><input [(ngModel)]="cosechaForm.granosPerdidosKg" name="granosPerdidosKg" type="number" step="0.01" min="0" /></label>
           </div>
