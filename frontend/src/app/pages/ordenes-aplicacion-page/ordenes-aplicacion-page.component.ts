@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import type {
   DeteccionPlaga,
   EstadoOrdenAplicacion,
@@ -108,7 +109,8 @@ export class OrdenesAplicacionPageComponent implements OnInit {
       operarios: this.agricolaService.getOperariosAsignables(),
       lotes: this.agricolaService.getLotes(undefined),
       detecciones: this.agricolaService.getDeteccionesPlaga(),
-      unidades: this.utilidadesService.getUtilidadOpciones('UNIDAD_DOSIS'),
+      // Resiliente: si el catalogo de unidades no es legible, no debe tumbar la lista de ordenes.
+      unidades: this.utilidadesService.getUtilidadOpciones('UNIDAD_DOSIS').pipe(catchError(() => of([]))),
     }).subscribe({
       next: ({ ordenes, operarios, lotes, detecciones, unidades }) => {
         this.ordenes.set(Array.isArray(ordenes) ? ordenes : []);
