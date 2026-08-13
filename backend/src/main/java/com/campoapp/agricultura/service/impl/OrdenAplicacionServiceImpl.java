@@ -21,6 +21,7 @@ import com.campoapp.common.exception.ResourceNotFoundException;
 import com.campoapp.operarios.entity.Operario;
 import com.campoapp.operarios.repository.OperarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -141,6 +142,7 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
     @Transactional
     public OrdenAplicacionResponse aceptar(String id) {
         OrdenAplicacion orden = findOrden(id);
+        assertOperarioAsignado(orden);
         // Idempotente: si ya se acepto, no se duplica la aplicacion.
         if (orden.getEstado() == EstadoOrdenAplicacion.ACEPTADA) {
             return toResponse(orden, numeroDe(id));
@@ -175,6 +177,7 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
     @Transactional
     public OrdenAplicacionResponse rechazar(String id, String motivo) {
         OrdenAplicacion orden = findOrden(id);
+        assertOperarioAsignado(orden);
         if (orden.getEstado() == EstadoOrdenAplicacion.ACEPTADA) {
             throw new BusinessException("La orden ya fue aceptada y no puede rechazarse");
         }
@@ -246,6 +249,16 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
     private String currentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth != null && auth.getPrincipal() instanceof String principal ? principal : null;
+    }
+
+    // Solo el operario asignado a la orden puede aceptarla o rechazarla.
+    private void assertOperarioAsignado(OrdenAplicacion orden) {
+        String userId = currentUserId();
+        String operarioId = userId == null ? null
+                : operarioRepository.findActiveByUserId(userId).map(Operario::getId).orElse(null);
+        if (operarioId == null || !operarioId.equals(orden.getOperarioId())) {
+            throw new AccessDeniedException("Solo el operario asignado puede aceptar o rechazar la orden");
+        }
     }
 
     private OrdenAplicacion findOrden(String id) {

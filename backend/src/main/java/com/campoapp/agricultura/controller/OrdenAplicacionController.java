@@ -53,29 +53,29 @@ public class OrdenAplicacionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('create:lotes')")
+    @PreAuthorize("hasAuthority('read:lotes')")
     @Operation(summary = "Crear orden de aplicacion (responsable = usuario logueado)")
     public ResponseEntity<ApiResponse<OrdenAplicacionResponse>> crear(@Valid @RequestBody OrdenAplicacionRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(ordenAplicacionService.crear(request)));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('update:lotes')")
+    @PreAuthorize("hasAuthority('read:lotes')")
     @Operation(summary = "Editar orden de aplicacion pendiente")
     public ResponseEntity<ApiResponse<OrdenAplicacionResponse>> actualizar(@PathVariable String id, @Valid @RequestBody OrdenAplicacionRequest request) {
         return ResponseEntity.ok(ApiResponse.ok(ordenAplicacionService.actualizar(id, request)));
     }
 
     @PostMapping("/{id}/aceptar")
-    @PreAuthorize("hasAuthority('create:lotes')")
-    @Operation(summary = "El operario acepta la orden -> genera el registro de aplicacion")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    @Operation(summary = "El operario asignado acepta la orden -> genera el registro de aplicacion")
     public ResponseEntity<ApiResponse<OrdenAplicacionResponse>> aceptar(@PathVariable String id) {
         return ResponseEntity.ok(ApiResponse.ok(ordenAplicacionService.aceptar(id)));
     }
 
     @PostMapping("/{id}/rechazar")
-    @PreAuthorize("hasAuthority('update:lotes')")
-    @Operation(summary = "El operario rechaza la orden (con motivo)")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    @Operation(summary = "El operario asignado rechaza la orden (con motivo)")
     public ResponseEntity<ApiResponse<OrdenAplicacionResponse>> rechazar(@PathVariable String id, @RequestBody(required = false) RechazoOrdenRequest request) {
         return ResponseEntity.ok(ApiResponse.ok(ordenAplicacionService.rechazar(id, request != null ? request.motivo() : null)));
     }
