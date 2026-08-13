@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { NgxMapLibreGLModule } from '@maplibre/ngx-maplibre-gl';
 import type { Feature, FeatureCollection, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
@@ -49,7 +48,6 @@ const HEALTH_LEGEND: Array<{ label: string; color: string }> = [
 })
 export class LotesPageComponent {
   private readonly agricolaService = inject(AgricolaService);
-  private readonly router = inject(Router);
 
   protected readonly lotes = signal<Lote[]>([]);
   protected readonly loading = signal(false);
@@ -322,10 +320,6 @@ export class LotesPageComponent {
 
   protected closeDetail(): void {
     this.detailLote.set(null);
-  }
-
-  protected openDetail(id: string): void {
-    void this.router.navigate(['/agricola/lotes', id]);
   }
 
   // ---- Alta / edicion / borrado ----
