@@ -76,9 +76,11 @@ export default function LotesFieldMap({
           />
           <TrackedMarker
             coordinate={item.center}
-            title={item.lote.nombre}
-            description={`${item.lote.area} ha`}
             contentKey={`${item.lote.id}|${item.lote.nombre}|${item.lote.area}`}
+            onPress={(event) => {
+              event.stopPropagation()
+              onLotePress(item.lote.id)
+            }}
           >
             <View style={styles.marker}>
               <Text style={styles.markerTitle}>{item.lote.nombre}</Text>

@@ -139,7 +139,7 @@ export default function LotesFieldMap({
       })
       map.on('mouseenter', 'lotes-fill', () => { map.getCanvas().style.cursor = 'pointer' })
       map.on('mouseleave', 'lotes-fill', () => { map.getCanvas().style.cursor = '' })
-      syncLoteLabels(map, mapItemsRef.current, loteLabelMarkersRef)
+      syncLoteLabels(map, mapItemsRef.current, onLotePress, loteLabelMarkersRef)
       syncDetectionMarkers(map, detectionsRef.current, onDetectionPress, detectionMarkersRef)
       syncAlertMarkers(map, alertasRef.current, onAlertaPress, alertMarkersRef)
       fitToRegion(map, initialRegion)
@@ -164,7 +164,7 @@ export default function LotesFieldMap({
     source?.setData(sourceData)
     const affectedSource = map.getSource('affected-areas') as maplibregl.GeoJSONSource | undefined
     affectedSource?.setData(affectedData)
-    syncLoteLabels(map, mapItems, loteLabelMarkersRef)
+    syncLoteLabels(map, mapItems, onLotePress, loteLabelMarkersRef)
     syncDetectionMarkers(map, detections, onDetectionPress, detectionMarkersRef)
     syncAlertMarkers(map, alertas, onAlertaPress, alertMarkersRef)
     // Encuadre automatico SOLO la primera vez que hay datos; despues no re-centrar (respeta el
@@ -291,20 +291,32 @@ function closeRing(points: MapPoint[]): MapPoint[] {
 
 // Labels de lote (nombre + ha) como markers DOM en el centroide. No usa la capa symbol de MapLibre
 // (que descargaba glyphs remotos lentos). pointer-events:none para no bloquear el click del poligono.
-function syncLoteLabels(map: MapLibreMap, mapItems: LoteMapItem[], markersRef: MutableRefObject<Marker[]>) {
+function syncLoteLabels(
+  map: MapLibreMap,
+  mapItems: LoteMapItem[],
+  onLotePress: LotesFieldMapProps['onLotePress'],
+  markersRef: MutableRefObject<Marker[]>,
+) {
   markersRef.current.forEach((marker) => marker.remove())
   markersRef.current = mapItems.map((item) => {
-    const element = createLabelElement(item.lote.nombre, `${item.lote.area} ha`)
+    // La etiqueta es el target de click del lote -> abre el historico (los poligonos suelen ser
+    // chicos y quedan tapados por los pines; la etiqueta siempre esta visible y es facil de tocar).
+    const element = createLabelElement(item.lote.nombre, `${item.lote.area} ha`, () => onLotePress(item.lote.id))
     return new maplibregl.Marker({ element, anchor: 'center' })
       .setLngLat([item.center.longitude, item.center.latitude])
       .addTo(map)
   })
 }
 
-function createLabelElement(nombre: string, area: string) {
+function createLabelElement(nombre: string, area: string, onClick: () => void) {
   // No setear position: MapLibre lo pone absolute; forzar relative rompe el posicionamiento.
   const wrap = document.createElement('div')
-  wrap.style.pointerEvents = 'none'
+  wrap.style.pointerEvents = 'auto'
+  wrap.style.cursor = 'pointer'
+  wrap.addEventListener('click', (event) => {
+    event.stopPropagation()
+    onClick()
+  })
   wrap.style.textAlign = 'center'
   wrap.style.whiteSpace = 'nowrap'
   wrap.style.fontFamily = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
