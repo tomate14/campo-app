@@ -5,6 +5,7 @@ import {
   getOrdenesAplicacion,
   rechazarOrdenAplicacion,
   updateOrdenAplicacion,
+  validarOrdenAplicacion,
 } from '../api/agricola'
 import type { OrdenAplicacionRequest } from '../types/agricola'
 
@@ -38,6 +39,14 @@ export function useAceptarOrdenAplicacion() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => aceptarOrdenAplicacion(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [ORDENES_APLICACION_KEY] }),
+  })
+}
+
+export function useValidarOrdenAplicacion() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => validarOrdenAplicacion(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: [ORDENES_APLICACION_KEY] }),
   })
 }

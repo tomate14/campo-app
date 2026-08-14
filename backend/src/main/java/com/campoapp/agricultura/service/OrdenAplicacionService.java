@@ -15,9 +15,11 @@ public interface OrdenAplicacionService {
     OrdenAplicacionResponse obtener(String id);
     OrdenAplicacionResponse crear(OrdenAplicacionRequest request);
     OrdenAplicacionResponse actualizar(String id, OrdenAplicacionRequest request);
-    // El operario acepta la orden -> se genera el registro de aplicacion (idempotente).
+    // El operario asignado acepta la orden (pasa a ACEPTADA, vuelve al responsable/admins).
     OrdenAplicacionResponse aceptar(String id);
-    // El operario rechaza la orden (con motivo).
+    // El responsable o un admin valida la orden -> genera el registro de aplicacion (idempotente).
+    OrdenAplicacionResponse validar(String id);
+    // El operario asignado rechaza la orden (con motivo).
     OrdenAplicacionResponse rechazar(String id, String motivo);
     // Ordenes de un lote para el historico.
     List<OrdenAplicacionResponse> listarPorLote(String loteId);

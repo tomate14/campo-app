@@ -663,7 +663,7 @@ export interface SeguimientoPlaga {
 }
 
 // Feature 58: orden de aplicacion (flujo responsable -> operario tercerizado).
-export type EstadoOrdenAplicacion = 'PENDIENTE' | 'ACEPTADA' | 'RECHAZADA'
+export type EstadoOrdenAplicacion = 'PENDIENTE' | 'ACEPTADA' | 'VALIDADA' | 'RECHAZADA'
 
 // Operario asignable (lista minima, endpoint con permiso read:lotes).
 export interface OperarioAsignable {

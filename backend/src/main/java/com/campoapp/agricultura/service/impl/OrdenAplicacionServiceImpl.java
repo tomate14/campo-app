@@ -23,6 +23,7 @@ import com.campoapp.operarios.repository.OperarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,14 +144,33 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
     public OrdenAplicacionResponse aceptar(String id) {
         OrdenAplicacion orden = findOrden(id);
         assertOperarioAsignado(orden);
-        // Idempotente: si ya se acepto, no se duplica la aplicacion.
+        // Idempotente: si ya la acepto, no cambia nada.
         if (orden.getEstado() == EstadoOrdenAplicacion.ACEPTADA) {
             return toResponse(orden, numeroDe(id));
         }
-        if (orden.getEstado() == EstadoOrdenAplicacion.RECHAZADA) {
-            throw new BusinessException("La orden fue rechazada y no puede aceptarse");
+        if (orden.getEstado() != EstadoOrdenAplicacion.PENDIENTE) {
+            throw new BusinessException("Solo se puede aceptar una orden pendiente");
         }
-        // Genera el registro de aplicacion normal del sistema; el operario asignado es el aplicador.
+        // El operario acepta: la orden vuelve al responsable/admins para validar.
+        // La aplicacion NO se genera aca, sino al validar.
+        orden.setEstado(EstadoOrdenAplicacion.ACEPTADA);
+        return toResponse(ordenRepository.save(orden), numeroDe(id));
+    }
+
+    @Override
+    @Transactional
+    public OrdenAplicacionResponse validar(String id) {
+        OrdenAplicacion orden = findOrden(id);
+        assertPuedeValidar(orden);
+        // Idempotente: si ya se valido, no se duplica la aplicacion.
+        if (orden.getEstado() == EstadoOrdenAplicacion.VALIDADA) {
+            return toResponse(orden, numeroDe(id));
+        }
+        if (orden.getEstado() != EstadoOrdenAplicacion.ACEPTADA) {
+            throw new BusinessException("La orden debe estar aceptada por el operario para poder validarse");
+        }
+        // Al validar se genera el registro de aplicacion normal del sistema;
+        // el operario asignado es el aplicador.
         AplicacionFitosanitariaRequest aplicacionRequest = new AplicacionFitosanitariaRequest(
                 orden.getFechaAplicacion(),
                 orden.getProducto(),
@@ -169,7 +189,7 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
         );
         AplicacionFitosanitariaResponse aplicacion = plagasService.crearAplicacion(orden.getDeteccion().getId(), aplicacionRequest);
         orden.setAplicacionId(aplicacion.id());
-        orden.setEstado(EstadoOrdenAplicacion.ACEPTADA);
+        orden.setEstado(EstadoOrdenAplicacion.VALIDADA);
         return toResponse(ordenRepository.save(orden), numeroDe(id));
     }
 
@@ -178,8 +198,8 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
     public OrdenAplicacionResponse rechazar(String id, String motivo) {
         OrdenAplicacion orden = findOrden(id);
         assertOperarioAsignado(orden);
-        if (orden.getEstado() == EstadoOrdenAplicacion.ACEPTADA) {
-            throw new BusinessException("La orden ya fue aceptada y no puede rechazarse");
+        if (orden.getEstado() != EstadoOrdenAplicacion.PENDIENTE) {
+            throw new BusinessException("Solo se puede rechazar una orden pendiente");
         }
         orden.setEstado(EstadoOrdenAplicacion.RECHAZADA);
         orden.setMotivoRechazo(blankToNull(motivo));
@@ -259,6 +279,29 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
         if (operarioId == null || !operarioId.equals(orden.getOperarioId())) {
             throw new AccessDeniedException("Solo el operario asignado puede aceptar o rechazar la orden");
         }
+    }
+
+    // Validar la orden lo puede hacer el responsable (creador) o un admin/super_admin.
+    private void assertPuedeValidar(OrdenAplicacion orden) {
+        if (isAdmin()) {
+            return;
+        }
+        String userId = currentUserId();
+        String operarioId = userId == null ? null
+                : operarioRepository.findActiveByUserId(userId).map(Operario::getId).orElse(null);
+        if (operarioId == null || !operarioId.equals(orden.getResponsableId())) {
+            throw new AccessDeniedException("Solo el responsable o un administrador puede validar la orden");
+        }
+    }
+
+    private boolean isAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+        return auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(a -> a.equals("ROLE_ADMIN") || a.equals("ROLE_SUPER_ADMIN"));
     }
 
     private OrdenAplicacion findOrden(String id) {

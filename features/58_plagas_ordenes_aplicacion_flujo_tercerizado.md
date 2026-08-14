@@ -17,14 +17,19 @@ la **acepta**, se transforma en un **registro de aplicación** normal del sistem
    - `operarioId` = otro usuario del sistema, seleccionable por id (el "tercero").
    - Se le asigna un **número de orden** correlativo empezando en 1.
 2. La orden queda **PENDIENTE** y visible para el operario asignado.
-3. El **operario acepta** la orden → se genera un **registro de aplicación**
-   (`AplicacionFitosanitaria`) con los datos de la orden, tal como funciona hoy el
-   sistema; la orden pasa a **ACEPTADA**. Si la **rechaza**, pasa a **RECHAZADA**
-   (con motivo).
-4. La orden aparece en el **histórico del lote** (web y mobile) como un evento más.
+3. El **operario acepta** la orden → pasa a **ACEPTADA** y vuelve al **responsable**
+   (creador) y a los **admin/super_admin** para su validación (aún **sin** generar la
+   aplicación). Si la **rechaza**, pasa a **RECHAZADA** (con motivo).
+4. El **responsable o un admin/super_admin valida** la orden (botón "Validar") →
+   recién ahí se genera el **registro de aplicación** (`AplicacionFitosanitaria`) con
+   los datos de la orden, tal como funciona hoy el sistema; la orden pasa a **VALIDADA**.
+5. La orden aparece en el **histórico del lote** (web y mobile) como un evento más.
 
 ## Estados de la orden
-`PENDIENTE → ACEPTADA` (genera el registro de aplicación) | `RECHAZADA` (con motivo).
+`PENDIENTE → ACEPTADA` (por el operario) `→ VALIDADA` (por el responsable/admin: genera
+el registro de aplicación) | `RECHAZADA` (por el operario, con motivo).
+Autorización: acepta/rechaza solo el operario asignado; valida solo el responsable o un
+admin/super_admin.
 
 ## Número de orden (tabla separada)
 - El **número correlativo** de la orden NO vive en la tabla de la orden: se guarda en

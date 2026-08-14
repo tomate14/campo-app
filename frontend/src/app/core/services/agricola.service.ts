@@ -357,6 +357,10 @@ export class AgricolaService {
     return this.http.post<ApiResponse<OrdenAplicacion> | OrdenAplicacion>(`${API_BASE_URL}/agricola/plagas/ordenes/${id}/aceptar`, {}).pipe(map((response) => unwrapApiResponse(response)));
   }
 
+  validarOrdenAplicacion(id: string) {
+    return this.http.post<ApiResponse<OrdenAplicacion> | OrdenAplicacion>(`${API_BASE_URL}/agricola/plagas/ordenes/${id}/validar`, {}).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
   rechazarOrdenAplicacion(id: string, motivo?: string) {
     return this.http.post<ApiResponse<OrdenAplicacion> | OrdenAplicacion>(`${API_BASE_URL}/agricola/plagas/ordenes/${id}/rechazar`, { motivo }).pipe(map((response) => unwrapApiResponse(response)));
   }

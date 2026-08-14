@@ -139,7 +139,12 @@ export class OrdenesAplicacionPageComponent implements OnInit {
   }
 
   protected estadoLabel(estado: EstadoOrdenAplicacion): string {
-    return estado === 'ACEPTADA' ? 'Aceptada' : estado === 'RECHAZADA' ? 'Rechazada' : 'Pendiente';
+    switch (estado) {
+      case 'ACEPTADA': return 'Aceptada';
+      case 'VALIDADA': return 'Validada';
+      case 'RECHAZADA': return 'Rechazada';
+      default: return 'Pendiente';
+    }
   }
 
   protected estadoClass(estado: EstadoOrdenAplicacion): string {
@@ -154,6 +159,17 @@ export class OrdenesAplicacionPageComponent implements OnInit {
   protected soyOperario(orden: OrdenAplicacion): boolean {
     const mi = this.miOperarioId();
     return !!mi && orden.operarioId === mi;
+  }
+
+  // Admin/super_admin: pueden validar cualquier orden aceptada.
+  protected esAdmin(): boolean {
+    const roles = this.sessionService.getCurrentUser()?.roles ?? [];
+    return roles.includes('admin') || roles.includes('super_admin');
+  }
+
+  // Puede validar una orden aceptada: el responsable (creador) o un admin/super_admin.
+  protected puedeValidar(orden: OrdenAplicacion): boolean {
+    return orden.estado === 'ACEPTADA' && (this.soyResponsable(orden) || this.esAdmin());
   }
 
   // ---- Alta / edicion ----
@@ -229,12 +245,19 @@ export class OrdenesAplicacionPageComponent implements OnInit {
     });
   }
 
-  // ---- Aceptar / rechazar ----
+  // ---- Aceptar / validar / rechazar ----
 
   protected aceptar(orden: OrdenAplicacion): void {
     this.agricolaService.aceptarOrdenAplicacion(orden.id).subscribe({
       next: () => this.reloadOrdenes(),
       error: () => this.error.set('No se pudo aceptar la orden.'),
+    });
+  }
+
+  protected validar(orden: OrdenAplicacion): void {
+    this.agricolaService.validarOrdenAplicacion(orden.id).subscribe({
+      next: () => this.reloadOrdenes(),
+      error: () => this.error.set('No se pudo validar la orden.'),
     });
   }
 

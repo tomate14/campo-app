@@ -68,9 +68,16 @@ public class OrdenAplicacionController {
 
     @PostMapping("/{id}/aceptar")
     @PreAuthorize("hasAuthority('read:lotes')")
-    @Operation(summary = "El operario asignado acepta la orden -> genera el registro de aplicacion")
+    @Operation(summary = "El operario asignado acepta la orden (pasa a ACEPTADA, a validar)")
     public ResponseEntity<ApiResponse<OrdenAplicacionResponse>> aceptar(@PathVariable String id) {
         return ResponseEntity.ok(ApiResponse.ok(ordenAplicacionService.aceptar(id)));
+    }
+
+    @PostMapping("/{id}/validar")
+    @PreAuthorize("hasAuthority('read:lotes')")
+    @Operation(summary = "El responsable o un admin valida la orden -> genera el registro de aplicacion")
+    public ResponseEntity<ApiResponse<OrdenAplicacionResponse>> validar(@PathVariable String id) {
+        return ResponseEntity.ok(ApiResponse.ok(ordenAplicacionService.validar(id)));
     }
 
     @PostMapping("/{id}/rechazar")

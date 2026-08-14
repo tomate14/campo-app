@@ -211,6 +211,9 @@ export const updateOrdenAplicacion = (id: string, data: OrdenAplicacionRequest) 
 export const aceptarOrdenAplicacion = (id: string) =>
   api.post<ApiResponse<OrdenAplicacion>>(`/agricola/plagas/ordenes/${id}/aceptar`, {}).then(r => r.data.data)
 
+export const validarOrdenAplicacion = (id: string) =>
+  api.post<ApiResponse<OrdenAplicacion>>(`/agricola/plagas/ordenes/${id}/validar`, {}).then(r => r.data.data)
+
 export const rechazarOrdenAplicacion = (id: string, motivo?: string) =>
   api.post<ApiResponse<OrdenAplicacion>>(`/agricola/plagas/ordenes/${id}/rechazar`, { motivo }).then(r => r.data.data)
 

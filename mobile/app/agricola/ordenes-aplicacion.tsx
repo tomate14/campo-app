@@ -14,6 +14,7 @@ import {
   useOrdenesAplicacion,
   useRechazarOrdenAplicacion,
   useUpdateOrdenAplicacion,
+  useValidarOrdenAplicacion,
 } from '../../shared/hooks/useOrdenesAplicacion'
 import type { EstadoOrdenAplicacion, OrdenAplicacion, OrdenAplicacionRequest } from '../../shared/types/agricola'
 
@@ -22,12 +23,13 @@ type FormState = Partial<OrdenAplicacionRequest> & { id?: string }
 
 const ESTADO_COLOR: Record<EstadoOrdenAplicacion, string> = {
   PENDIENTE: '#FFB84D',
-  ACEPTADA: '#6EA8FF',
+  ACEPTADA: '#9A7DFF',
+  VALIDADA: '#6EA8FF',
   RECHAZADA: '#FF6B6B',
 }
 
 function estadoLabel(estado: EstadoOrdenAplicacion): string {
-  return estado === 'ACEPTADA' ? 'Aceptada' : estado === 'RECHAZADA' ? 'Rechazada' : 'Pendiente'
+  return estado === 'ACEPTADA' ? 'Aceptada' : estado === 'VALIDADA' ? 'Validada' : estado === 'RECHAZADA' ? 'Rechazada' : 'Pendiente'
 }
 
 export default function OrdenesAplicacionScreen() {
@@ -41,16 +43,22 @@ export default function OrdenesAplicacionScreen() {
   const crear = useCreateOrdenAplicacion()
   const actualizar = useUpdateOrdenAplicacion()
   const aceptar = useAceptarOrdenAplicacion()
+  const validar = useValidarOrdenAplicacion()
   const rechazar = useRechazarOrdenAplicacion()
 
   const [userId, setUserId] = useState<string | null>(null)
+  const [esAdmin, setEsAdmin] = useState(false)
   const [vista, setVista] = useState<Vista>('asignadas')
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState<FormState>(emptyForm())
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    void readCurrentUser().then((user) => setUserId(user?.id ?? null))
+    void readCurrentUser().then((user) => {
+      setUserId(user?.id ?? null)
+      const roles = user?.roles ?? []
+      setEsAdmin(roles.includes('admin') || roles.includes('super_admin'))
+    })
   }, [])
 
   const ordenes = ordenesQuery.data ?? []
@@ -203,6 +211,16 @@ export default function OrdenesAplicacionScreen() {
                       <Text style={styles.actionText}>Editar</Text>
                     </Pressable>
                   )}
+                </View>
+              )}
+
+              {/* Aceptada por el operario: el responsable o un admin la valida -> genera la aplicacion. */}
+              {orden.estado === 'ACEPTADA' && (soyResponsable(orden) || esAdmin) && (
+                <View style={styles.cardActions}>
+                  <Pressable style={[styles.action, styles.actionOk]} onPress={() => validar.mutate(orden.id)}>
+                    <Check size={14} color="#9FE870" strokeWidth={2.6} />
+                    <Text style={[styles.actionText, { color: '#9FE870' }]}>Validar</Text>
+                  </Pressable>
                 </View>
               )}
             </View>

@@ -796,10 +796,10 @@ function buildLoteHistory(
     tipo: 'Orden de aplicación',
     titulo: `#${item.numero ?? '—'} · ${item.producto}`,
     fecha: item.fechaAplicacion,
-    color: item.estado === 'ACEPTADA' ? '#6EA8FF' : item.estado === 'RECHAZADA' ? '#FF6B6B' : '#FFB84D',
+    color: item.estado === 'VALIDADA' ? '#6EA8FF' : item.estado === 'ACEPTADA' ? '#9A7DFF' : item.estado === 'RECHAZADA' ? '#FF6B6B' : '#FFB84D',
     campos: buildHistCampos([
       ['N° de orden', item.numero != null ? `${item.numero}` : ''],
-      ['Estado', item.estado === 'ACEPTADA' ? 'Aceptada' : item.estado === 'RECHAZADA' ? 'Rechazada' : 'Pendiente'],
+      ['Estado', item.estado === 'ACEPTADA' ? 'Aceptada' : item.estado === 'VALIDADA' ? 'Validada' : item.estado === 'RECHAZADA' ? 'Rechazada' : 'Pendiente'],
       ['Plaga', item.plagaNombre],
       ['Principio activo', item.principioActivo],
       ['Dosis', `${numAr(item.dosis)} ${item.unidadDosis}`],

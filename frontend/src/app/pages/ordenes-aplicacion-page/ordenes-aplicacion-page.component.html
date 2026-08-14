@@ -62,7 +62,9 @@
               <button type="button" *ngIf="orden.estado === 'PENDIENTE' && soyResponsable(orden)" (click)="editarOrden(orden)">Editar</button>
               <button type="button" class="ok" *ngIf="orden.estado === 'PENDIENTE' && soyOperario(orden)" (click)="aceptar(orden)">Aceptar</button>
               <button type="button" class="danger" *ngIf="orden.estado === 'PENDIENTE' && soyOperario(orden)" (click)="rechazar(orden)">Rechazar</button>
-              <span class="muted" *ngIf="orden.estado === 'ACEPTADA'">Aplicación registrada</span>
+              <button type="button" class="ok" *ngIf="puedeValidar(orden)" (click)="validar(orden)">Validar</button>
+              <span class="muted" *ngIf="orden.estado === 'ACEPTADA' && !puedeValidar(orden)">Aceptada · a validar</span>
+              <span class="muted" *ngIf="orden.estado === 'VALIDADA'">Aplicación registrada</span>
               <span class="muted" *ngIf="orden.estado === 'RECHAZADA'" [title]="orden.motivoRechazo || ''">Rechazada</span>
             </div>
           </td>

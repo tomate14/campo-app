@@ -180,13 +180,13 @@ export class LoteHistorialComponent implements OnChanges {
   }
 
   private ordenEvento(item: OrdenAplicacion): HistorialEvento {
-    const estadoLabel = item.estado === 'ACEPTADA' ? 'Aceptada' : item.estado === 'RECHAZADA' ? 'Rechazada' : 'Pendiente';
+    const estadoLabel = item.estado === 'ACEPTADA' ? 'Aceptada' : item.estado === 'VALIDADA' ? 'Validada' : item.estado === 'RECHAZADA' ? 'Rechazada' : 'Pendiente';
     return {
       tipo: 'Orden de aplicación',
       fecha: item.fechaAplicacion,
       titulo: `#${item.numero ?? '—'} · ${item.producto}`,
-      // Naranja mientras esta pendiente/rechazada; azul (como aplicacion) cuando se acepto.
-      color: item.estado === 'ACEPTADA' ? '#6EA8FF' : item.estado === 'RECHAZADA' ? '#FF6B6B' : '#FFB84D',
+      // Azul (como aplicacion) al validarse; violeta aceptada; rojo rechazada; naranja pendiente.
+      color: item.estado === 'VALIDADA' ? '#6EA8FF' : item.estado === 'ACEPTADA' ? '#9A7DFF' : item.estado === 'RECHAZADA' ? '#FF6B6B' : '#FFB84D',
       campos: this.buildCampos([
         ['N° de orden', item.numero != null ? `${item.numero}` : ''],
         ['Estado', estadoLabel],
