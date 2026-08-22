@@ -61,7 +61,11 @@ admin/super_admin.
      **responsable**, ve las órdenes **que creó** (con edición posterior).
    - Aceptar/rechazar la orden desde mobile (aceptar genera la aplicación).
    - La orden aparece en el histórico del lote (`buildLoteHistory`).
-4. **Offline**: encolar alta/edición de orden y aceptación/rechazo (outbox, feature 24).
+4. **Offline** (implementado): las mutaciones de orden operan offline vía el outbox
+   (feature 24): alta (POST), edición (PUT), y aceptar/validar/rechazar (POST acción).
+   El remap de tempId reescribe el id en la URL, así que aceptar/validar sobre una orden
+   creada offline se resuelve al drenar; el drain usa Idempotency-Key y las acciones son
+   idempotentes en el backend.
 
 ## Requisitos Técnicos
 - `responsableId` automático (usuario logueado); `operarioId` referenciando a otro
