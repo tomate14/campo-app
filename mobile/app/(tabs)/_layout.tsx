@@ -6,6 +6,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import {
   Beef,
   CalendarDays,
+  ClipboardCheck,
   CloudSun,
   Fence,
   Home,
@@ -42,6 +43,7 @@ const sections: DrawerSection[] = [
     items: [
       { label: 'Lotes', route: '/(tabs)/lotes', Icon: Map },
       { label: 'Ciclo agricola', route: '/agricola/nueva-siembra', Icon: Sprout },
+      { label: 'Órdenes de aplicación', route: '/agricola/ordenes-aplicacion', Icon: ClipboardCheck },
       { label: 'Clima', route: '/clima', Icon: CloudSun },
     ],
   },

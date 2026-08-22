@@ -1,0 +1,282 @@
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import type {
+  DeteccionPlaga,
+  EstadoOrdenAplicacion,
+  Lote,
+  OperarioAsignable,
+  OrdenAplicacion,
+  OrdenAplicacionRequest,
+  UtilidadOpcion,
+} from '../../core/models/agricola.models';
+import { AgricolaService } from '../../core/services/agricola.service';
+import { SessionService } from '../../core/services/session.service';
+import { UtilidadesService } from '../../core/services/utilidades.service';
+
+type OrdenFormState = OrdenAplicacionRequest & { id?: string };
+
+@Component({
+  selector: 'app-ordenes-aplicacion-page',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './ordenes-aplicacion-page.component.html',
+  styleUrl: './ordenes-aplicacion-page.component.css',
+})
+export class OrdenesAplicacionPageComponent implements OnInit {
+  private readonly agricolaService = inject(AgricolaService);
+  private readonly sessionService = inject(SessionService);
+  private readonly utilidadesService = inject(UtilidadesService);
+  private readonly route = inject(ActivatedRoute);
+
+  protected readonly ordenes = signal<OrdenAplicacion[]>([]);
+  protected readonly operarios = signal<OperarioAsignable[]>([]);
+  protected readonly lotes = signal<Lote[]>([]);
+  protected readonly detecciones = signal<DeteccionPlaga[]>([]);
+  // Unidades de dosis desde el catalogo de Utilidades (categoria UNIDAD_DOSIS).
+  protected readonly unidades = signal<UtilidadOpcion[]>([]);
+  protected readonly loading = signal(false);
+  protected readonly saving = signal(false);
+  protected readonly error = signal<string | null>(null);
+
+  // Filtros de la barra superior.
+  protected readonly filtroEstado = signal<EstadoOrdenAplicacion | ''>('');
+  protected readonly filtroOperario = signal<string>('');
+  protected readonly filtroTexto = signal<string>('');
+  protected readonly soloMias = signal(false);
+
+  protected readonly estados: EstadoOrdenAplicacion[] = ['PENDIENTE', 'ACEPTADA', 'RECHAZADA'];
+
+  // Modal de alta/edicion.
+  protected readonly modalOpen = signal(false);
+  protected readonly form = signal<OrdenFormState>(this.emptyForm());
+
+  // El endpoint ya devuelve solo operarios activos.
+  protected readonly operariosActivos = computed(() => this.operarios());
+
+  protected readonly deteccionesDelLote = computed(() => {
+    const loteId = this.form().loteId;
+    return this.detecciones().filter((d) => d.loteId === loteId);
+  });
+
+  // Total de dosis a utilizar = dosis x superficie. La unidad del total quita el "/ha".
+  protected readonly totalDosis = computed(() => {
+    const f = this.form();
+    const dosis = Number(f.dosis);
+    const sup = Number(f.superficieTratadaHa);
+    if (!isFinite(dosis) || dosis <= 0 || !isFinite(sup) || sup <= 0) return null;
+    return { valor: Math.round(dosis * sup * 100) / 100, unidad: (f.unidadDosis ?? '').replace(/\s*\/\s*ha$/i, '').trim() };
+  });
+
+  protected readonly ordenesFiltradas = computed(() => {
+    const estado = this.filtroEstado();
+    const operario = this.filtroOperario();
+    const texto = this.filtroTexto().trim().toLowerCase();
+    const miOperarioId = this.miOperarioId();
+    const soloMias = this.soloMias();
+    return this.ordenes().filter((orden) => {
+      if (estado && orden.estado !== estado) return false;
+      if (operario && orden.operarioId !== operario) return false;
+      if (soloMias && miOperarioId && orden.responsableId !== miOperarioId) return false;
+      if (texto) {
+        const haystack = `${orden.numero ?? ''} ${orden.producto} ${orden.loteNombre} ${orden.plagaNombre} ${orden.operarioNombre ?? ''} ${orden.responsableNombre ?? ''}`.toLowerCase();
+        if (!haystack.includes(texto)) return false;
+      }
+      return true;
+    });
+  });
+
+  ngOnInit(): void {
+    this.loadAll();
+    // Feature 58: si se llega desde la burbuja del mapa (?nueva=1), abre el alta preseleccionando.
+    const params = this.route.snapshot.queryParamMap;
+    if (params.get('nueva')) {
+      const loteId = params.get('loteId') ?? '';
+      const deteccionId = params.get('deteccionId') ?? '';
+      this.form.set({ ...this.form(), loteId, deteccionId });
+      this.modalOpen.set(true);
+    }
+  }
+
+  protected loadAll(): void {
+    this.loading.set(true);
+    this.error.set(null);
+    forkJoin({
+      ordenes: this.agricolaService.getOrdenesAplicacion(),
+      operarios: this.agricolaService.getOperariosAsignables(),
+      lotes: this.agricolaService.getLotes(undefined),
+      detecciones: this.agricolaService.getDeteccionesPlaga(),
+      // Resiliente: si el catalogo de unidades no es legible, no debe tumbar la lista de ordenes.
+      unidades: this.utilidadesService.getUtilidadOpciones('UNIDAD_DOSIS').pipe(catchError(() => of([]))),
+    }).subscribe({
+      next: ({ ordenes, operarios, lotes, detecciones, unidades }) => {
+        this.ordenes.set(Array.isArray(ordenes) ? ordenes : []);
+        this.operarios.set(Array.isArray(operarios) ? operarios : []);
+        this.lotes.set(Array.isArray(lotes) ? lotes : []);
+        this.detecciones.set(Array.isArray(detecciones) ? detecciones : []);
+        this.unidades.set(Array.isArray(unidades) ? unidades : []);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.error.set('No se pudieron cargar las órdenes de aplicación.');
+      },
+    });
+  }
+
+  private reloadOrdenes(): void {
+    this.agricolaService.getOrdenesAplicacion().subscribe((ordenes) => this.ordenes.set(Array.isArray(ordenes) ? ordenes : []));
+  }
+
+  // Operario vinculado al usuario logueado (para "solo mías" y para saber si soy el asignado).
+  protected miOperarioId(): string | undefined {
+    const userId = this.sessionService.getCurrentUser()?.id;
+    if (!userId) return undefined;
+    return this.operarios().find((o) => o.userId === userId)?.id;
+  }
+
+  protected estadoLabel(estado: EstadoOrdenAplicacion): string {
+    switch (estado) {
+      case 'ACEPTADA': return 'Aceptada';
+      case 'VALIDADA': return 'Validada';
+      case 'RECHAZADA': return 'Rechazada';
+      default: return 'Pendiente';
+    }
+  }
+
+  protected estadoClass(estado: EstadoOrdenAplicacion): string {
+    return `estado-badge estado-${estado.toLowerCase()}`;
+  }
+
+  protected soyResponsable(orden: OrdenAplicacion): boolean {
+    const mi = this.miOperarioId();
+    return !!mi && orden.responsableId === mi;
+  }
+
+  protected soyOperario(orden: OrdenAplicacion): boolean {
+    const mi = this.miOperarioId();
+    return !!mi && orden.operarioId === mi;
+  }
+
+  // Admin/super_admin: pueden validar cualquier orden aceptada.
+  protected esAdmin(): boolean {
+    const roles = this.sessionService.getCurrentUser()?.roles ?? [];
+    return roles.includes('admin') || roles.includes('super_admin');
+  }
+
+  // Puede validar una orden aceptada: el responsable (creador) o un admin/super_admin.
+  protected puedeValidar(orden: OrdenAplicacion): boolean {
+    return orden.estado === 'ACEPTADA' && (this.soyResponsable(orden) || this.esAdmin());
+  }
+
+  // ---- Alta / edicion ----
+
+  protected nuevaOrden(): void {
+    this.form.set(this.emptyForm());
+    this.modalOpen.set(true);
+  }
+
+  protected editarOrden(orden: OrdenAplicacion): void {
+    this.form.set({
+      id: orden.id,
+      loteId: orden.loteId,
+      deteccionId: orden.deteccionId,
+      fechaAplicacion: orden.fechaAplicacion?.slice(0, 16),
+      producto: orden.producto,
+      principioActivo: orden.principioActivo,
+      dosis: orden.dosis,
+      unidadDosis: orden.unidadDosis,
+      volumenCaldoLHa: orden.volumenCaldoLHa,
+      superficieTratadaHa: orden.superficieTratadaHa,
+      maquinariaId: orden.maquinariaId,
+      observaciones: orden.observaciones,
+      operarioId: orden.operarioId,
+    });
+    this.modalOpen.set(true);
+  }
+
+  protected closeModal(): void {
+    this.modalOpen.set(false);
+  }
+
+  protected onLoteChange(loteId: string): void {
+    // Al cambiar el lote se resetea la deteccion seleccionada.
+    this.form.update((f) => ({ ...f, loteId, deteccionId: '' }));
+  }
+
+  protected guardar(): void {
+    const state = this.form();
+    if (!state.loteId || !state.deteccionId || !state.producto || !state.unidadDosis || state.dosis == null || !state.operarioId) {
+      this.error.set('Completá lote, detección, producto, dosis, unidad y operario asignado.');
+      return;
+    }
+    this.saving.set(true);
+    this.error.set(null);
+    const payload: OrdenAplicacionRequest = {
+      loteId: state.loteId,
+      deteccionId: state.deteccionId,
+      fechaAplicacion: state.fechaAplicacion,
+      producto: state.producto,
+      principioActivo: state.principioActivo,
+      dosis: Number(state.dosis),
+      unidadDosis: state.unidadDosis,
+      volumenCaldoLHa: state.volumenCaldoLHa != null ? Number(state.volumenCaldoLHa) : undefined,
+      superficieTratadaHa: state.superficieTratadaHa != null ? Number(state.superficieTratadaHa) : undefined,
+      maquinariaId: state.maquinariaId,
+      observaciones: state.observaciones,
+      operarioId: state.operarioId,
+    };
+    const request$ = state.id
+      ? this.agricolaService.updateOrdenAplicacion(state.id, payload)
+      : this.agricolaService.createOrdenAplicacion(payload);
+    request$.subscribe({
+      next: () => {
+        this.saving.set(false);
+        this.modalOpen.set(false);
+        this.reloadOrdenes();
+      },
+      error: () => {
+        this.saving.set(false);
+        this.error.set('No se pudo guardar la orden de aplicación.');
+      },
+    });
+  }
+
+  // ---- Aceptar / validar / rechazar ----
+
+  protected aceptar(orden: OrdenAplicacion): void {
+    this.agricolaService.aceptarOrdenAplicacion(orden.id).subscribe({
+      next: () => this.reloadOrdenes(),
+      error: () => this.error.set('No se pudo aceptar la orden.'),
+    });
+  }
+
+  protected validar(orden: OrdenAplicacion): void {
+    this.agricolaService.validarOrdenAplicacion(orden.id).subscribe({
+      next: () => this.reloadOrdenes(),
+      error: () => this.error.set('No se pudo validar la orden.'),
+    });
+  }
+
+  protected rechazar(orden: OrdenAplicacion): void {
+    const motivo = window.prompt('Motivo del rechazo (opcional):') ?? undefined;
+    this.agricolaService.rechazarOrdenAplicacion(orden.id, motivo).subscribe({
+      next: () => this.reloadOrdenes(),
+      error: () => this.error.set('No se pudo rechazar la orden.'),
+    });
+  }
+
+  private emptyForm(): OrdenFormState {
+    return {
+      loteId: '',
+      deteccionId: '',
+      producto: '',
+      dosis: 0,
+      unidadDosis: 'l/ha',
+      operarioId: '',
+    };
+  }
+}

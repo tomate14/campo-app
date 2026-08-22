@@ -7,6 +7,7 @@ import type {
   PropiedadSuelo, PropiedadSueloRequest,
   HistoricoCultivo, HistoricoCultivoRequest, RotacionRecomendacion,
   UtilidadOpcion,
+  OrdenAplicacion, OrdenAplicacionRequest, EstadoOrdenAplicacion, OperarioAsignable,
 } from '../types/agricola'
 
 // Asset elegido con expo-image-picker que se sube al backend (feature 54).
@@ -190,6 +191,31 @@ export const getAplicacionesFitosanitarias = () =>
 
 export const getSeguimientosPlaga = () =>
   api.get<ApiResponse<SeguimientoPlaga[]>>('/agricola/plagas/seguimientos').then(r => r.data.data)
+
+// Feature 58: ordenes de aplicacion.
+export const getOrdenesAplicacion = (params?: { estado?: EstadoOrdenAplicacion; operarioId?: string; responsableId?: string; loteId?: string }) =>
+  api.get<ApiResponse<OrdenAplicacion[]> | OrdenAplicacion[]>('/agricola/plagas/ordenes', { params }).then(r => unwrapListResponse(r.data))
+
+export const getOperariosAsignables = () =>
+  api.get<ApiResponse<OperarioAsignable[]> | OperarioAsignable[]>('/agricola/plagas/ordenes/operarios').then(r => unwrapListResponse(r.data))
+
+export const getOrdenesAplicacionByLote = (loteId: string) =>
+  api.get<ApiResponse<OrdenAplicacion[]> | OrdenAplicacion[]>('/agricola/plagas/ordenes', { params: { loteId } }).then(r => unwrapListResponse(r.data))
+
+export const createOrdenAplicacion = (data: OrdenAplicacionRequest) =>
+  api.post<ApiResponse<OrdenAplicacion>>('/agricola/plagas/ordenes', data).then(r => r.data.data)
+
+export const updateOrdenAplicacion = (id: string, data: OrdenAplicacionRequest) =>
+  api.put<ApiResponse<OrdenAplicacion>>(`/agricola/plagas/ordenes/${id}`, data).then(r => r.data.data)
+
+export const aceptarOrdenAplicacion = (id: string) =>
+  api.post<ApiResponse<OrdenAplicacion>>(`/agricola/plagas/ordenes/${id}/aceptar`, {}).then(r => r.data.data)
+
+export const validarOrdenAplicacion = (id: string) =>
+  api.post<ApiResponse<OrdenAplicacion>>(`/agricola/plagas/ordenes/${id}/validar`, {}).then(r => r.data.data)
+
+export const rechazarOrdenAplicacion = (id: string, motivo?: string) =>
+  api.post<ApiResponse<OrdenAplicacion>>(`/agricola/plagas/ordenes/${id}/rechazar`, { motivo }).then(r => r.data.data)
 
 // Catalogo configurable de Utilidades (feature 60): opciones por categoria
 export const getUtilidadOpciones = (categoria: string) =>

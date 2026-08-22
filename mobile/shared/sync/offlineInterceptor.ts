@@ -27,6 +27,13 @@ export const RULES: OfflineRule[] = [
   { pattern: /^\/agricola\/plagas\/detecciones$/, label: 'Deteccion de plaga' },
   { pattern: /^\/agricola\/plagas\/detecciones\/[^/]+\/aplicaciones$/, label: 'Aplicacion fitosanitaria' },
   { pattern: /^\/agricola\/plagas\/detecciones\/[^/]+\/seguimientos$/, label: 'Seguimiento de plaga' },
+  // Feature 58: ordenes de aplicacion offline. Alta (POST), edicion (PUT /{id}) y las
+  // acciones aceptar/validar/rechazar (POST /{id}/accion). El remap de tempId del outbox
+  // reescribe el id en la URL, asi que aceptar/validar sobre una orden creada offline
+  // se resuelve al drenar. GET /ordenes/operarios no se intercepta (solo POST/PUT).
+  { pattern: /^\/agricola\/plagas\/ordenes$/, label: 'Orden de aplicación' },
+  { pattern: /^\/agricola\/plagas\/ordenes\/[^/]+\/(aceptar|validar|rechazar)$/, label: 'Orden de aplicación' },
+  { pattern: /^\/agricola\/plagas\/ordenes\/[^/]+$/, label: 'Orden de aplicación' },
   // La regla de alertas va ANTES que la de potrero: la regex de potrero tambien matchea /alertas y find devuelve la primera.
   { pattern: /^\/ganaderia\/potreros\/alertas$/, label: 'Alerta de potrero' },
   { pattern: /^\/ganaderia\/potreros(\/[^/]+)?$/, label: 'Potrero' },

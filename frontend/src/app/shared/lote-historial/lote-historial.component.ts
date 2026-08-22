@@ -6,6 +6,7 @@ import type {
   DeteccionPlaga,
   EventoSiembra,
   HistoricoCultivo,
+  OrdenAplicacion,
   RegistroCosecha,
   SeguimientoPlaga,
   SeveridadPlaga,
@@ -64,9 +65,10 @@ export class LoteHistorialComponent implements OnChanges {
       aplicaciones: this.agricolaService.getAplicacionesFitosanitarias(),
       seguimientos: this.agricolaService.getSeguimientosPlaga(),
       detecciones: this.agricolaService.getDeteccionesPlaga({ loteId }),
+      ordenes: this.agricolaService.getOrdenesAplicacionByLote(loteId),
     }).subscribe({
-      next: ({ siembra, cosechas, cultivos, aplicaciones, seguimientos, detecciones }) => {
-        this.eventos.set(this.build(loteId, siembra, cosechas, cultivos, aplicaciones, seguimientos, detecciones));
+      next: ({ siembra, cosechas, cultivos, aplicaciones, seguimientos, detecciones, ordenes }) => {
+        this.eventos.set(this.build(loteId, siembra, cosechas, cultivos, aplicaciones, seguimientos, detecciones, ordenes));
         this.loading.set(false);
       },
       error: () => {
@@ -86,11 +88,13 @@ export class LoteHistorialComponent implements OnChanges {
     aplicaciones: AplicacionFitosanitaria[],
     seguimientos: SeguimientoPlaga[],
     detecciones: DeteccionPlaga[],
+    ordenes: OrdenAplicacion[],
   ): HistorialEvento[] {
     const deteccionesLote = detecciones.filter((item) => item.loteId === loteId);
     const detectionIds = new Set(deteccionesLote.map((item) => item.id));
 
     const deteccionEvents = deteccionesLote.map((item) => this.deteccionEvento(item));
+    const ordenEvents = ordenes.map((item) => this.ordenEvento(item));
     const aplicacionEvents = aplicaciones
       .filter((item) => item.loteId === loteId)
       .map((item) => this.aplicacionEvento(item));
@@ -166,12 +170,37 @@ export class LoteHistorialComponent implements OnChanges {
 
     return [
       ...deteccionEvents,
+      ...ordenEvents,
       ...aplicacionEvents,
       ...seguimientoEvents,
       ...siembraEvents,
       ...cosechaEvents,
       ...cultivoEvents,
     ].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+  }
+
+  private ordenEvento(item: OrdenAplicacion): HistorialEvento {
+    const estadoLabel = item.estado === 'ACEPTADA' ? 'Aceptada' : item.estado === 'VALIDADA' ? 'Validada' : item.estado === 'RECHAZADA' ? 'Rechazada' : 'Pendiente';
+    return {
+      tipo: 'Orden de aplicación',
+      fecha: item.fechaAplicacion,
+      titulo: `#${item.numero ?? '—'} · ${item.producto}`,
+      // Azul (como aplicacion) al validarse; violeta aceptada; rojo rechazada; naranja pendiente.
+      color: item.estado === 'VALIDADA' ? '#6EA8FF' : item.estado === 'ACEPTADA' ? '#9A7DFF' : item.estado === 'RECHAZADA' ? '#FF6B6B' : '#FFB84D',
+      campos: this.buildCampos([
+        ['N° de orden', item.numero != null ? `${item.numero}` : ''],
+        ['Estado', estadoLabel],
+        ['Plaga', item.plagaNombre],
+        ['Principio activo', item.principioActivo],
+        ['Dosis', `${this.num(item.dosis)} ${item.unidadDosis}`],
+        ['Superficie', item.superficieTratadaHa != null ? `${this.num(item.superficieTratadaHa)} ha` : ''],
+        ['Total dosis', item.superficieTratadaHa ? `${this.num(Math.round(item.dosis * item.superficieTratadaHa * 100) / 100)} ${(item.unidadDosis || '').replace(/\s*\/\s*ha$/i, '')}` : ''],
+        ['Responsable', item.responsableNombre || item.responsableId],
+        ['Operario', item.operarioNombre || item.operarioId],
+        ['Motivo rechazo', item.motivoRechazo],
+        ['Registrada', this.fmtFecha(item.createdAt)],
+      ]),
+    };
   }
 
   private deteccionEvento(item: DeteccionPlaga): HistorialEvento {

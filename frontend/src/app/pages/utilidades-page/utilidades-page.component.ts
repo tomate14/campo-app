@@ -54,6 +54,12 @@ const CATALOGOS: CatalogoDef[] = [
     titulo: 'Unidad de insumo',
     descripcion: 'Unidades de medida de insumos.',
   },
+  // Feature 58: unidad de dosis de las ordenes de aplicacion.
+  {
+    categoria: 'UNIDAD_DOSIS',
+    titulo: 'Unidad de dosis',
+    descripcion: 'Unidades de dosis para órdenes de aplicación (l/ha, cc/ha, kg/ha, etc.).',
+  },
 ];
 
 @Component({

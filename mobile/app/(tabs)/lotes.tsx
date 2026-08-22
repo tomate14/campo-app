@@ -12,6 +12,7 @@ import {
   ChevronRight,
   CircleDot,
   ClipboardList,
+  ClipboardCheck,
   ClipboardPlus,
   CloudSun,
   Crosshair,
@@ -33,7 +34,7 @@ import {
 } from 'lucide-react-native'
 import { Colors } from '../../constants/colors'
 import LotesFieldMap from '../../shared/components/lotes-field-map'
-import { getCosechasByLote, getEventosByLote, getHistorialByLote } from '../../shared/api/agricola'
+import { getCosechasByLote, getEventosByLote, getHistorialByLote, getOrdenesAplicacionByLote } from '../../shared/api/agricola'
 import { resolveAssetUrl } from '../../shared/api/client'
 import { useLotes } from '../../shared/hooks/useLotes'
 import { useAplicacionesFitosanitarias, useDeteccionesPlaga, useSeguimientosPlaga } from '../../shared/hooks/usePlagas'
@@ -43,6 +44,7 @@ import type {
   EventoSiembra,
   HistoricoCultivo,
   Lote,
+  OrdenAplicacion,
   RegistroCosecha,
   SeguimientoPlaga,
   SeveridadPlaga,
@@ -62,6 +64,7 @@ const actions = [
   { label: 'Registrar evento', layer: 'Eventos', Icon: ClipboardPlus, color: '#9FE870', route: '/agricola/nueva-siembra' },
   { label: 'Registrar aplicación', layer: 'Aplicaciones', Icon: SprayCan, color: '#6EA8FF', route: '/agricola/plagas', mode: 'aplicacion' },
   { label: 'Registrar seguimiento', layer: 'Seguimientos', Icon: Sprout, color: '#39D0D8', route: '/agricola/plagas', mode: 'seguimiento' },
+  { label: 'Orden de aplicación', layer: 'Aplicaciones', Icon: ClipboardCheck, color: '#FFB84D', route: '/agricola/ordenes-aplicacion' },
   { label: 'Ver histórico', layer: 'Eventos', Icon: History, color: '#FFB84D', route: '/agricola/plagas', mode: 'historico' },
   { label: 'Nueva detección', layer: 'Detecciones', Icon: Crosshair, color: '#9A7DFF', route: '/agricola/plagas', mode: 'deteccion', primary: true },
 ]
@@ -185,6 +188,11 @@ export default function LotesScreen() {
     queryFn: () => getHistorialByLote(selectedLoteId),
     enabled: Boolean(selectedLoteId),
   })
+  const { data: ordenesAplicacion = [] } = useQuery({
+    queryKey: ['lote-historial-ordenes', selectedLoteId],
+    queryFn: () => getOrdenesAplicacionByLote(selectedLoteId),
+    enabled: Boolean(selectedLoteId),
+  })
   const loteHistory = useMemo(
     () => buildLoteHistory(selectedLote, {
       detecciones,
@@ -193,8 +201,9 @@ export default function LotesScreen() {
       siembraEventos,
       cosechas,
       historicoCultivos,
+      ordenesAplicacion,
     }),
-    [selectedLote, detecciones, aplicaciones, seguimientos, siembraEventos, cosechas, historicoCultivos]
+    [selectedLote, detecciones, aplicaciones, seguimientos, siembraEventos, cosechas, historicoCultivos, ordenesAplicacion]
   )
   const historyLoading = loadingSiembra || loadingCosechas || loadingHistoricoCultivos
 
@@ -207,6 +216,14 @@ export default function LotesScreen() {
           ...(selectedLote?.id ? { loteId: selectedLote.id } : {}),
           ...extraParams,
         },
+      } as never)
+      return
+    }
+    // Feature 58: la orden de aplicacion se carga en su pantalla, abriendo el alta.
+    if (action.route === '/agricola/ordenes-aplicacion') {
+      router.push({
+        pathname: '/agricola/ordenes-aplicacion',
+        params: { nueva: '1', ...(selectedLote?.id ? { loteId: selectedLote.id } : {}) },
       } as never)
       return
     }
@@ -767,11 +784,33 @@ function buildLoteHistory(
     siembraEventos: EventoSiembra[]
     cosechas: RegistroCosecha[]
     historicoCultivos: HistoricoCultivo[]
+    ordenesAplicacion?: OrdenAplicacion[]
   }
 ): LoteHistoryEvent[] {
   if (!lote) return []
   const deteccionesLote = data.detecciones.filter((item) => item.loteId === lote.id)
   const detectionIds = new Set(deteccionesLote.map((item) => item.id))
+
+  const ordenEvents = (data.ordenesAplicacion ?? []).map((item): LoteHistoryEvent => ({
+    id: `orden-${item.id}`,
+    tipo: 'Orden de aplicación',
+    titulo: `#${item.numero ?? '—'} · ${item.producto}`,
+    fecha: item.fechaAplicacion,
+    color: item.estado === 'VALIDADA' ? '#6EA8FF' : item.estado === 'ACEPTADA' ? '#9A7DFF' : item.estado === 'RECHAZADA' ? '#FF6B6B' : '#FFB84D',
+    campos: buildHistCampos([
+      ['N° de orden', item.numero != null ? `${item.numero}` : ''],
+      ['Estado', item.estado === 'ACEPTADA' ? 'Aceptada' : item.estado === 'VALIDADA' ? 'Validada' : item.estado === 'RECHAZADA' ? 'Rechazada' : 'Pendiente'],
+      ['Plaga', item.plagaNombre],
+      ['Principio activo', item.principioActivo],
+      ['Dosis', `${numAr(item.dosis)} ${item.unidadDosis}`],
+      ['Superficie', item.superficieTratadaHa != null ? `${numAr(item.superficieTratadaHa)} ha` : ''],
+      ['Total dosis', item.superficieTratadaHa ? `${numAr(Math.round(item.dosis * item.superficieTratadaHa * 100) / 100)} ${(item.unidadDosis || '').replace(/\s*\/\s*ha$/i, '')}` : ''],
+      ['Responsable', item.responsableNombre || item.responsableId],
+      ['Operario', item.operarioNombre || item.operarioId],
+      ['Motivo rechazo', item.motivoRechazo],
+      ['Registrada', fmtFecha(item.createdAt)],
+    ]),
+  }))
 
   const deteccionEvents = deteccionesLote.map((item): LoteHistoryEvent => ({
     id: item.id,
@@ -909,6 +948,7 @@ function buildLoteHistory(
 
   return [
     ...deteccionEvents,
+    ...ordenEvents,
     ...aplicacionEvents,
     ...seguimientoEvents,
     ...siembraEvents,

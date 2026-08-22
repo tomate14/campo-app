@@ -662,6 +662,60 @@ export interface SeguimientoPlaga {
   createdAt: string
 }
 
+// Feature 58: orden de aplicacion (flujo responsable -> operario tercerizado).
+export type EstadoOrdenAplicacion = 'PENDIENTE' | 'ACEPTADA' | 'VALIDADA' | 'RECHAZADA'
+
+// Operario asignable (lista minima, endpoint con permiso read:lotes).
+export interface OperarioAsignable {
+  id: string
+  nombre: string
+  apellido: string
+  userId?: string
+}
+
+export interface OrdenAplicacion {
+  id: string
+  numero?: number
+  loteId: string
+  loteNombre: string
+  deteccionId: string
+  plagaNombre: string
+  fechaAplicacion: string
+  producto: string
+  principioActivo?: string
+  dosis: number
+  unidadDosis: string
+  volumenCaldoLHa?: number
+  superficieTratadaHa?: number
+  maquinariaId?: string
+  observaciones?: string
+  responsableId: string
+  responsableNombre?: string
+  operarioId: string
+  operarioNombre?: string
+  estado: EstadoOrdenAplicacion
+  motivoRechazo?: string
+  aplicacionId?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface OrdenAplicacionRequest {
+  loteId: string
+  deteccionId: string
+  fechaAplicacion?: string
+  producto: string
+  principioActivo?: string
+  dosis: number
+  unidadDosis: string
+  volumenCaldoLHa?: number
+  superficieTratadaHa?: number
+  maquinariaId?: string
+  observaciones?: string
+  responsableId?: string
+  operarioId: string
+}
+
 export interface SeguimientoPlagaRequest {
   fecha?: string
   resultado: ResultadoSeguimientoPlaga

@@ -1,0 +1,146 @@
+<div class="ordenes-page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Campo App &middot; Agricultura</p>
+      <h2>Órdenes de aplicación</h2>
+      <p>Cargá una orden, asignala a un operario y, al aceptarla, se registra la aplicación.</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn-primary" type="button" (click)="nuevaOrden()">Nueva orden</button>
+    </div>
+  </header>
+
+  <div class="error-box" *ngIf="error()">{{ error() }}</div>
+
+  <!-- Barra de filtros -->
+  <section class="filters-card">
+    <label><span>Estado</span>
+      <select [ngModel]="filtroEstado()" (ngModelChange)="filtroEstado.set($event)">
+        <option value="">Todos</option>
+        <option *ngFor="let e of estados" [value]="e">{{ estadoLabel(e) }}</option>
+      </select>
+    </label>
+    <label><span>Operario</span>
+      <select [ngModel]="filtroOperario()" (ngModelChange)="filtroOperario.set($event)">
+        <option value="">Todos</option>
+        <option *ngFor="let o of operariosActivos()" [value]="o.id">{{ o.nombre }} {{ o.apellido }}</option>
+      </select>
+    </label>
+    <label class="filters-search"><span>Buscar</span>
+      <input type="text" [ngModel]="filtroTexto()" (ngModelChange)="filtroTexto.set($event)" placeholder="N°, producto, lote, plaga..." />
+    </label>
+    <label class="filters-toggle">
+      <input type="checkbox" [ngModel]="soloMias()" (ngModelChange)="soloMias.set($event)" />
+      <span>Solo las que creé</span>
+    </label>
+  </section>
+
+  <section class="card table-card">
+    <div class="empty-box" *ngIf="loading()">Cargando órdenes...</div>
+    <div class="empty-box" *ngIf="!loading() && !ordenesFiltradas().length">No hay órdenes para los filtros seleccionados.</div>
+
+    <table class="records-table" *ngIf="!loading() && ordenesFiltradas().length">
+      <thead>
+        <tr>
+          <th>N°</th><th>Lote</th><th>Plaga</th><th>Producto</th><th>Dosis</th>
+          <th>Superficie</th><th>Responsable</th><th>Operario</th><th>Estado</th><th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let orden of ordenesFiltradas()">
+          <td><strong>#{{ orden.numero ?? '—' }}</strong></td>
+          <td>{{ orden.loteNombre }}</td>
+          <td>{{ orden.plagaNombre }}</td>
+          <td>{{ orden.producto }}</td>
+          <td>{{ orden.dosis }} {{ orden.unidadDosis }}</td>
+          <td>{{ orden.superficieTratadaHa ? orden.superficieTratadaHa + ' ha' : '—' }}</td>
+          <td>{{ orden.responsableNombre || '—' }}</td>
+          <td>{{ orden.operarioNombre || '—' }}</td>
+          <td><span [class]="estadoClass(orden.estado)">{{ estadoLabel(orden.estado) }}</span></td>
+          <td>
+            <div class="table-actions">
+              <button type="button" *ngIf="orden.estado === 'PENDIENTE' && soyResponsable(orden)" (click)="editarOrden(orden)">Editar</button>
+              <button type="button" class="ok" *ngIf="orden.estado === 'PENDIENTE' && soyOperario(orden)" (click)="aceptar(orden)">Aceptar</button>
+              <button type="button" class="danger" *ngIf="orden.estado === 'PENDIENTE' && soyOperario(orden)" (click)="rechazar(orden)">Rechazar</button>
+              <button type="button" class="ok" *ngIf="puedeValidar(orden)" (click)="validar(orden)">Validar</button>
+              <span class="muted" *ngIf="orden.estado === 'ACEPTADA' && !puedeValidar(orden)">Aceptada · a validar</span>
+              <span class="muted" *ngIf="orden.estado === 'VALIDADA'">Aplicación registrada</span>
+              <span class="muted" *ngIf="orden.estado === 'RECHAZADA'" [title]="orden.motivoRechazo || ''">Rechazada</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Modal alta / edicion -->
+  <div class="modal-backdrop" *ngIf="modalOpen()">
+    <article class="modal-panel">
+      <button class="modal-close" type="button" aria-label="Cerrar" (click)="closeModal()">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+      <div class="modal-head">
+        <h3>{{ form().id ? 'Editar orden de aplicación' : 'Nueva orden de aplicación' }}</h3>
+        <p>El responsable es el usuario logueado; asignás la orden a un operario.</p>
+      </div>
+
+      <div class="form-grid">
+        <label><span>Lote</span>
+          <select [ngModel]="form().loteId" (ngModelChange)="onLoteChange($event)">
+            <option value="">Seleccionar lote</option>
+            <option *ngFor="let l of lotes()" [value]="l.id">{{ l.nombre }}</option>
+          </select>
+        </label>
+        <label><span>Detección</span>
+          <select [ngModel]="form().deteccionId" (ngModelChange)="form.update(f => ({ ...f, deteccionId: $event }))" [disabled]="!form().loteId">
+            <option value="">Seleccionar detección</option>
+            <option *ngFor="let d of deteccionesDelLote()" [value]="d.id">{{ d.plagaNombre }} · {{ d.severidad }}</option>
+          </select>
+        </label>
+        <label><span>Operario asignado</span>
+          <select [ngModel]="form().operarioId" (ngModelChange)="form.update(f => ({ ...f, operarioId: $event }))">
+            <option value="">Seleccionar operario</option>
+            <option *ngFor="let o of operariosActivos()" [value]="o.id">{{ o.nombre }} {{ o.apellido }}</option>
+          </select>
+        </label>
+        <label><span>Fecha</span>
+          <input type="datetime-local" [ngModel]="form().fechaAplicacion" (ngModelChange)="form.update(f => ({ ...f, fechaAplicacion: $event }))" />
+        </label>
+        <label><span>Producto</span>
+          <input type="text" [ngModel]="form().producto" (ngModelChange)="form.update(f => ({ ...f, producto: $event }))" />
+        </label>
+        <label><span>Principio activo</span>
+          <input type="text" [ngModel]="form().principioActivo" (ngModelChange)="form.update(f => ({ ...f, principioActivo: $event }))" />
+        </label>
+        <label><span>Dosis</span>
+          <input type="number" step="0.01" [ngModel]="form().dosis" (ngModelChange)="form.update(f => ({ ...f, dosis: $event }))" />
+        </label>
+        <label><span>Unidad</span>
+          <select [ngModel]="form().unidadDosis" (ngModelChange)="form.update(f => ({ ...f, unidadDosis: $event }))">
+            <option value="">Seleccionar unidad</option>
+            <option *ngFor="let u of unidades()" [value]="u.valor">{{ u.valor }}</option>
+          </select>
+        </label>
+        <label><span>Superficie (ha)</span>
+          <input type="number" step="0.01" [ngModel]="form().superficieTratadaHa" (ngModelChange)="form.update(f => ({ ...f, superficieTratadaHa: $event }))" />
+        </label>
+        <label><span>Volumen caldo (l/ha)</span>
+          <input type="number" step="0.01" [ngModel]="form().volumenCaldoLHa" (ngModelChange)="form.update(f => ({ ...f, volumenCaldoLHa: $event }))" />
+        </label>
+        <div class="full total-box" *ngIf="totalDosis() as total">
+          <span class="total-label">Total de dosis a utilizar</span>
+          <span class="total-value">{{ total.valor }} {{ total.unidad }}</span>
+          <span class="total-hint">dosis × superficie</span>
+        </div>
+        <label class="full"><span>Observaciones</span>
+          <textarea [ngModel]="form().observaciones" (ngModelChange)="form.update(f => ({ ...f, observaciones: $event }))"></textarea>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button>
+        <button class="btn-primary" type="button" [disabled]="saving()" (click)="guardar()">{{ saving() ? 'Guardando...' : 'Guardar' }}</button>
+      </div>
+    </article>
+  </div>
+</div>

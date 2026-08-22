@@ -21,4 +21,19 @@ describe('reglas del outbox offline', () => {
   it('resuelve /ganaderia/potreros (creacion) a la regla de potrero', () => {
     expect(labelFor('/ganaderia/potreros')).toBe('Potrero')
   })
+
+  // Feature 58: ordenes de aplicacion offline (alta, edicion y acciones).
+  it('resuelve el alta de orden de aplicacion', () => {
+    expect(labelFor('/agricola/plagas/ordenes')).toBe('Orden de aplicación')
+  })
+
+  it('resuelve la edicion de una orden de aplicacion', () => {
+    expect(labelFor('/agricola/plagas/ordenes/abc-123')).toBe('Orden de aplicación')
+  })
+
+  it('resuelve aceptar/validar/rechazar de una orden de aplicacion', () => {
+    expect(labelFor('/agricola/plagas/ordenes/abc-123/aceptar')).toBe('Orden de aplicación')
+    expect(labelFor('/agricola/plagas/ordenes/abc-123/validar')).toBe('Orden de aplicación')
+    expect(labelFor('/agricola/plagas/ordenes/abc-123/rechazar')).toBe('Orden de aplicación')
+  })
 })

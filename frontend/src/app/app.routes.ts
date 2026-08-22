@@ -40,6 +40,7 @@ export const routes: Routes = [
       { path: 'agricola/cosecha', redirectTo: 'agricola/siembra' },
       { path: 'agricola/analytics', component: AnalyticsPageComponent },
       { path: 'agricola/plagas', component: PlagasPageComponent },
+      { path: 'agricola/ordenes-aplicacion', loadComponent: () => import('./pages/ordenes-aplicacion-page/ordenes-aplicacion-page.component').then((m) => m.OrdenesAplicacionPageComponent) },
       { path: 'agricola/insumos', component: AgricolaInsumosPageComponent },
       { path: 'reportes/agricola', component: ReportesAgricolaPageComponent },
       { path: 'reportes/ganaderia', loadComponent: () => import('./pages/reportes-ganaderia-page/reportes-ganaderia-page.component').then((m) => m.ReportesGanaderiaPageComponent) },
