@@ -32,5 +32,18 @@ El usuario pidió investigar cómo hacer el mapa de verdes. Propuesta:
 ## Dependencias
 - Lotes con polígono (features 01/38), infraestructura de mapas (38/47).
 
+## Decisiones tomadas
+- Fuente: **Sentinel-2 (gratis)** vía **Copernicus Data Space Ecosystem (CDSE)**, API
+  Sentinel Hub Process API, auth OAuth2 client-credentials. Credenciales en `.env`
+  (`NDVI_CLIENT_ID`/`NDVI_CLIENT_SECRET`), nunca en el repo.
+- Salida: **un PNG NDVI por lote** recortado al polígono (rampa de verdes + enmascarado
+  de nubes por SCL), guardado en un **volumen de Docker** (`backend_ndvi:/app/ndvi`),
+  archivo `{loteId}.png` que **se pisa** en cada corrida (solo la última).
+
 ## Estado
-Pendiente.
+En desarrollo — Fase 1 (backend): generación y guardado del PNG por lote.
+Implementado: `NdviProperties`/`NdviConfig`/`SentinelAuthClient`/`NdviService`/
+`NdviScheduler` (cron cada ~15 días + trigger al arrancar, gated por credenciales),
+config en `application.yml` desde `.env`, volumen `backend_ndvi`. Compila OK.
+Pendiente: credenciales CDSE en `.env` para probar end-to-end. Fase 2 (endpoint +
+overlay web/mobile + leyenda/fecha/fuente) queda para definir dónde mostrarlo.
