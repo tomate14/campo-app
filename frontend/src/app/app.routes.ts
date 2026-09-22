@@ -25,6 +25,7 @@ import { UtilidadesPageComponent } from './pages/utilidades-page/utilidades-page
 import { FinanzasFacturacionPageComponent } from './pages/finanzas-facturacion-page/finanzas-facturacion-page.component';
 import { FinanzasComprasPageComponent } from './pages/finanzas-compras-page/finanzas-compras-page.component';
 import { FinanzasReportesPageComponent } from './pages/finanzas-reportes-page/finanzas-reportes-page.component';
+import { NdviPageComponent } from './pages/ndvi-page/ndvi-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] },
@@ -35,6 +36,7 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'reportes/agricola' },
       { path: 'agricola/lotes', component: LotesPageComponent },
+      { path: 'agricola/lotes/:id/ndvi', component: NdviPageComponent },
       { path: 'agricola/lotes/:id', component: LoteDetailPageComponent },
       { path: 'agricola/siembra', component: SiembraPageComponent },
       { path: 'agricola/cosecha', redirectTo: 'agricola/siembra' },

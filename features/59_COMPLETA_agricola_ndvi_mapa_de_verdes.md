@@ -41,9 +41,16 @@ El usuario pidió investigar cómo hacer el mapa de verdes. Propuesta:
   archivo `{loteId}.png` que **se pisa** en cada corrida (solo la última).
 
 ## Estado
-En desarrollo — Fase 1 (backend): generación y guardado del PNG por lote.
-Implementado: `NdviProperties`/`NdviConfig`/`SentinelAuthClient`/`NdviService`/
-`NdviScheduler` (cron cada ~15 días + trigger al arrancar, gated por credenciales),
-config en `application.yml` desde `.env`, volumen `backend_ndvi`. Compila OK.
-Pendiente: credenciales CDSE en `.env` para probar end-to-end. Fase 2 (endpoint +
-overlay web/mobile + leyenda/fecha/fuente) queda para definir dónde mostrarlo.
+Completa.
+
+- Backend: generación Sentinel-2/CDSE, cache PNG por lote, scheduler, manifiesto
+  autenticado y endpoint de descarga versionado por fecha/tamaño.
+- Web: NDVI dentro del selector del mapa general, overlays de todos los lotes
+  activos, leyenda/fuente y visor dedicado desde el detalle del lote.
+- Mobile: NDVI dentro del selector del mapa general, visor dedicado desde el
+  detalle del lote y descarga anticipada para uso offline mediante el sync-down.
+- Cache mobile: actualización atómica, conservación de la versión anterior ante
+  fallos y limpieza de archivos pertenecientes a lotes que dejaron de estar activos.
+- Verificación: pruebas unitarias NDVI backend y mobile, type-check mobile y build
+  Angular. La validación visual con imágenes satelitales reales requiere ejecutar
+  el stack con acceso a CDSE y Docker.

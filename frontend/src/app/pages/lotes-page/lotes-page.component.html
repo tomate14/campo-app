@@ -56,6 +56,9 @@
         <div class="map-toggle">
           <button type="button" [class.active]="mapMode() === 'satelite'" (click)="mapMode.set('satelite')">Satélite</button>
           <button type="button" [class.active]="mapMode() === 'mapa'" (click)="mapMode.set('mapa')">Mapa</button>
+          <button type="button" [class.active]="mapMode() === 'hibrido'" (click)="mapMode.set('hibrido')">Híbrido</button>
+          <button type="button" [class.active]="mapMode() === 'terreno'" (click)="mapMode.set('terreno')">Terreno</button>
+          <button type="button" [class.active]="mapMode() === 'ndvi'" (click)="mapMode.set('ndvi')">NDVI</button>
         </div>
       </div>
 
@@ -75,6 +78,12 @@
           (mapClick)="onMapClick($event)"
           (mapDblClick)="onMapDoubleClick($event)"
         >
+          <ng-container *ngIf="mapMode() === 'ndvi'">
+            <ng-container *ngFor="let overlay of ndviOverlays()">
+              <mgl-image-source [id]="'ndvi-source-' + overlay.loteId" [url]="overlay.url" [coordinates]="overlay.coordinates"></mgl-image-source>
+              <mgl-layer [id]="'ndvi-layer-' + overlay.loteId" type="raster" [source]="'ndvi-source-' + overlay.loteId" [paint]="{ 'raster-opacity': 0.82 }"></mgl-layer>
+            </ng-container>
+          </ng-container>
           <mgl-geojson-source id="lotes-source" [data]="lotesData()"></mgl-geojson-source>
           <mgl-layer
             id="lotes-fill"
@@ -119,6 +128,12 @@
 
       <div class="legend">
         <span *ngFor="let item of legendItems"><i [style.background]="item.color"></i>{{ item.label }}</span>
+      </div>
+      <div class="ndvi-legend" *ngIf="mapMode() === 'ndvi'">
+        <strong>Vigor vegetal NDVI</strong>
+        <span class="ndvi-gradient"></span>
+        <div><small>Suelo / bajo vigor</small><small>Alto vigor</small></div>
+        <p>Sentinel-2 / Copernicus CDSE · {{ ndviOverlays().length }} lotes disponibles</p>
       </div>
     </article>
 
@@ -204,9 +219,17 @@
   <div class="modal-backdrop" *ngIf="detailLote() as lote">
     <article class="lote-detail-modal" [style.--lote-color]="colorFor(lote)">
       <span class="lote-band"></span>
-      <button class="modal-close" type="button" aria-label="Cerrar" (click)="closeDetail()">
-        <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
-      </button>
+      <div class="modal-tools">
+        <button type="button" aria-label="Ver NDVI" title="Ver mapa NDVI" (click)="openNdvi(lote)">
+          <svg viewBox="0 0 24 24"><path d="M12 20V10"/><path d="M18 4c-4.5 0-6 2.5-6 6 3.5 0 6-1.5 6-6Z"/><path d="M6 7c4 0 6 2 6 5-3 0-6-1-6-5Z"/></svg>
+        </button>
+        <button type="button" aria-label="Ver clima" title="Ver clima" (click)="openClimate(lote)">
+          <svg viewBox="0 0 24 24"><path d="M12 3v2"/><path d="m4.2 6.2 1.4 1.4"/><path d="M3 14h2"/><path d="M19 14h2"/><path d="m18.4 7.6 1.4-1.4"/><path d="M8 15a4 4 0 1 1 7.5 2H7a3 3 0 1 1 1-5.8"/></svg>
+        </button>
+        <button type="button" aria-label="Cerrar" (click)="closeDetail()">
+          <svg viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+        </button>
+      </div>
       <div class="modal-head">
         <span class="modal-icon lote-icon">
           <svg viewBox="0 0 24 24"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7Z" /><path d="M12 4v16" /><path d="M4 7l8 3 8-3" /></svg>

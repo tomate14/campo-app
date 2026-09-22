@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import MapView, { Circle, Marker, Polygon } from 'react-native-maps'
+import MapView, { Circle, MapOverlay, Marker, Polygon } from 'react-native-maps'
 import type { LatLng, MapMarkerProps, Region } from 'react-native-maps'
 import type { LotesFieldMapProps, MapMode, MapPoint, MapRegion } from './lotes-field-map.types'
+import { polygonToNdviBounds } from '../ndvi/ndviGeometry'
 
 export default function LotesFieldMap({
   mapItems,
@@ -13,6 +14,7 @@ export default function LotesFieldMap({
   locationGranted,
   command,
   mapMode,
+  ndviOverlays = [],
   showAffectedArea = true,
   onLotePress,
   onDetectionPress,
@@ -64,6 +66,22 @@ export default function LotesFieldMap({
       showsCompass={false}
       toolbarEnabled={false}
     >
+      {mapMode === 'ndvi' && ndviOverlays.map((overlay) => {
+        const item = mapItems.find((candidate) => candidate.lote.id === overlay.loteId)
+        if (!item) return null
+        const bounds = polygonToNdviBounds(item.polygon)
+        return (
+          <MapOverlay
+            key={`${overlay.loteId}-${overlay.version}`}
+            bounds={[
+              [bounds.northWest.latitude, bounds.northWest.longitude],
+              [bounds.southEast.latitude, bounds.southEast.longitude],
+            ]}
+            image={{ uri: overlay.localUri }}
+            opacity={0.82}
+          />
+        )
+      })}
       {mapItems.map((item) => (
         <View key={item.lote.id}>
           <Polygon

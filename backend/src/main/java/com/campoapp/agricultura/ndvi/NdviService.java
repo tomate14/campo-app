@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import com.campoapp.common.exception.ResourceNotFoundException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,6 +21,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 // Feature 59 (fase 1): genera el "mapa de verdes" (NDVI) por lote con Sentinel-2 (CDSE)
 // y guarda UNA imagen por lote (se pisa la anterior) en el volumen NDVI_DIR.
@@ -53,6 +55,29 @@ public class NdviService {
               else return [0.0, 0.4, 0.0, 1];
             }
             """;
+
+    public List<NdviManifestResponse> listarManifest() {
+        return loteRepository.findAllActive().stream()
+                .map(this::toManifestItem)
+                .toList();
+    }
+
+    public NdviImageResource obtenerImagen(String loteId) {
+        loteRepository.findActiveById(loteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lote activo no encontrado: " + loteId));
+
+        Path imagePath = imagePath(loteId);
+        if (!Files.isRegularFile(imagePath)) {
+            throw new ResourceNotFoundException("Imagen NDVI no disponible para el lote: " + loteId);
+        }
+        try {
+            Instant generatedAt = Files.getLastModifiedTime(imagePath).toInstant();
+            long size = Files.size(imagePath);
+            return new NdviImageResource(imagePath, generatedAt, size, version(generatedAt, size));
+        } catch (IOException e) {
+            throw new IllegalStateException("No se pudo leer la imagen NDVI del lote " + loteId, e);
+        }
+    }
 
     // Genera/actualiza el NDVI de todos los lotes con poligono. Cada imagen pisa la anterior.
     public void generarTodos() {
@@ -103,10 +128,45 @@ public class NdviService {
             throw new IllegalStateException("CDSE devolvio una imagen vacia");
         }
 
-        Path target = Paths.get(properties.getDir()).toAbsolutePath().resolve(lote.getId() + ".png").normalize();
+        Path target = imagePath(lote.getId());
         Files.createDirectories(target.getParent());
         Files.write(target, png, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         log.debug("NDVI guardado para lote {} en {}", lote.getId(), target);
+    }
+
+    private NdviManifestResponse toManifestItem(Lote lote) {
+        Path imagePath = imagePath(lote.getId());
+        if (!Files.isRegularFile(imagePath)) {
+            return new NdviManifestResponse(lote.getId(), lote.getNombre(), false, null, null, null);
+        }
+        try {
+            Instant generatedAt = Files.getLastModifiedTime(imagePath).toInstant();
+            long size = Files.size(imagePath);
+            return new NdviManifestResponse(
+                    lote.getId(),
+                    lote.getNombre(),
+                    true,
+                    generatedAt,
+                    version(generatedAt, size),
+                    "/api/v1/agricola/ndvi/" + lote.getId() + "/imagen"
+            );
+        } catch (IOException e) {
+            log.warn("No se pudo inspeccionar el NDVI del lote {}: {}", lote.getId(), e.getMessage());
+            return new NdviManifestResponse(lote.getId(), lote.getNombre(), false, null, null, null);
+        }
+    }
+
+    private Path imagePath(String loteId) {
+        Path root = Paths.get(properties.getDir()).toAbsolutePath().normalize();
+        Path target = root.resolve(loteId + ".png").normalize();
+        if (!target.startsWith(root)) {
+            throw new IllegalArgumentException("Identificador de lote invalido");
+        }
+        return target;
+    }
+
+    private String version(Instant generatedAt, long size) {
+        return generatedAt.toEpochMilli() + "-" + size;
     }
 
     // Arma el cuerpo del Process API: geometria del lote (recorta al poligono), Sentinel-2 L2A

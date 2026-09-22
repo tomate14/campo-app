@@ -121,6 +121,7 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="lotes/nuevo" options={{ presentation: 'modal', headerShown: true, title: 'Nuevo lote' }} />
           <Stack.Screen name="lotes/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="ndvi/[loteId]" options={{ headerShown: false }} />
           <Stack.Screen name="agricola/nueva-siembra" options={{ presentation: 'modal', headerShown: false }} />
           <Stack.Screen name="agricola/registro-cosecha" options={{ presentation: 'modal', headerShown: true, title: 'Registrar cosecha' }} />
           <Stack.Screen name="agricola/plagas" options={{ presentation: 'modal', headerShown: false }} />

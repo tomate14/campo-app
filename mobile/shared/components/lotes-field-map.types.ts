@@ -1,5 +1,6 @@
 import type { DeteccionPlaga, Lote } from '../types/agricola'
 import type { AlertaPotrero } from '../types/ganaderia'
+import type { NdviOverlay } from '../ndvi/ndvi.types'
 
 export type MapPoint = {
   latitude: number
@@ -38,7 +39,7 @@ export type MapCommand = {
   type: 'fit' | 'user' | 'zoom-in' | 'zoom-out'
 }
 
-export type MapMode = 'satellite' | 'standard' | 'hybrid' | 'terrain'
+export type MapMode = 'satellite' | 'standard' | 'hybrid' | 'terrain' | 'ndvi'
 
 export type LotesFieldMapProps = {
   mapItems: LoteMapItem[]
@@ -49,6 +50,7 @@ export type LotesFieldMapProps = {
   locationGranted: boolean
   command: MapCommand | null
   mapMode: MapMode
+  ndviOverlays?: NdviOverlay[]
   // Feature 57: dibuja un circulo proporcional al area afectada de cada deteccion.
   showAffectedArea?: boolean
   onLotePress: (id: string) => void

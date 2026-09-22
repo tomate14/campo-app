@@ -714,6 +714,42 @@ svg {
   z-index: 5;
 }
 
+.modal-tools {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 8;
+}
+
+.modal-tools button {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(159, 232, 112, .2);
+  border-radius: 12px;
+  background: rgba(7, 15, 31, .78);
+  color: #9fe870;
+  cursor: pointer;
+}
+
+.modal-tools svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; }
+
+.ndvi-legend {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px solid rgba(159, 232, 112, .2);
+  border-radius: 16px;
+  background: rgba(8, 18, 37, .86);
+}
+
+.ndvi-legend strong { display: block; margin-bottom: 8px; color: #fff; }
+.ndvi-gradient { display: block; height: 10px; border-radius: 999px; background: linear-gradient(90deg, #d9d9d9, #e6d966, #80cc4c, #339933, #006600); }
+.ndvi-legend div { display: flex; justify-content: space-between; margin-top: 4px; color: #a6b0cf; }
+.ndvi-legend p { margin: 8px 0 0; color: #a6b0cf; font-size: 12px; }
+
 .modal-icon {
   width: 58px;
   height: 58px;

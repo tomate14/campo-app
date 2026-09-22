@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, OnDestroy, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgxMapLibreGLModule } from '@maplibre/ngx-maplibre-gl';
 import type { Feature, FeatureCollection, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
@@ -9,8 +10,10 @@ import type {
   Lote,
   LoteReporte,
   LoteRequest,
+  NdviManifestItem,
 } from '../../core/models/agricola.models';
 import { AgricolaService } from '../../core/services/agricola.service';
+import { catchError, forkJoin, map, of } from 'rxjs';
 import { LoteFormComponent } from '../../shared/lote-form/lote-form.component';
 import { LoteHistorialComponent } from '../../shared/lote-historial/lote-historial.component';
 import {
@@ -39,6 +42,12 @@ const HEALTH_LEGEND: Array<{ label: string; color: string }> = [
   { label: 'Crítica', color: '#FF6B6B' },
 ];
 
+type WebMapMode = 'satelite' | 'mapa' | 'hibrido' | 'terreno' | 'ndvi';
+type NdviMapOverlay = NdviManifestItem & {
+  url: string;
+  coordinates: [[number, number], [number, number], [number, number], [number, number]];
+};
+
 @Component({
   selector: 'app-lotes-page',
   standalone: true,
@@ -46,8 +55,9 @@ const HEALTH_LEGEND: Array<{ label: string; color: string }> = [
   templateUrl: './lotes-page.component.html',
   styleUrl: './lotes-page.component.css',
 })
-export class LotesPageComponent {
+export class LotesPageComponent implements OnDestroy {
   private readonly agricolaService = inject(AgricolaService);
+  private readonly router = inject(Router);
 
   protected readonly lotes = signal<Lote[]>([]);
   protected readonly loading = signal(false);
@@ -77,6 +87,7 @@ export class LotesPageComponent {
   // Todas las detecciones del establecimiento (feature 81): alimentan el color por salud del mapa.
   protected readonly detecciones = signal<DeteccionPlaga[]>([]);
   protected readonly loadingReporte = signal(false);
+  protected readonly ndviOverlays = signal<NdviMapOverlay[]>([]);
 
   protected readonly satelliteStyle: StyleSpecification = {
     version: 8,
@@ -92,8 +103,24 @@ export class LotesPageComponent {
   };
 
   protected readonly streetStyle = 'https://tiles.openfreemap.org/styles/bright';
-  protected readonly mapMode = signal<'satelite' | 'mapa'>('satelite');
-  protected readonly mapStyle = computed(() => (this.mapMode() === 'satelite' ? this.satelliteStyle : this.streetStyle));
+  protected readonly terrainStyle: StyleSpecification = {
+    version: 8,
+    sources: {
+      terrain: {
+        type: 'raster',
+        tiles: ['https://tile.opentopomap.org/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        attribution: 'OpenTopoMap',
+      },
+    },
+    layers: [{ id: 'terrain', type: 'raster', source: 'terrain' }],
+  };
+  protected readonly mapMode = signal<WebMapMode>('satelite');
+  protected readonly mapStyle = computed(() => {
+    if (this.mapMode() === 'mapa') return this.streetStyle;
+    if (this.mapMode() === 'terreno') return this.terrainStyle;
+    return this.satelliteStyle;
+  });
   protected readonly mapZoom = computed<[number]>(() => {
     if (this.selectedLote() || this.drawingPoints().length) {
       return [14];
@@ -162,6 +189,10 @@ export class LotesPageComponent {
     this.load();
   }
 
+  ngOnDestroy(): void {
+    this.clearNdviUrls();
+  }
+
   @HostListener('document:keydown.escape')
   protected onEscape(): void {
     if (this.detailLote()) {
@@ -192,6 +223,7 @@ export class LotesPageComponent {
       next: (lotes) => {
         this.lotes.set(Array.isArray(lotes) ? lotes : []);
         this.loading.set(false);
+        this.loadNdviOverlays();
       },
       error: () => {
         this.lotes.set([]);
@@ -320,6 +352,54 @@ export class LotesPageComponent {
 
   protected closeDetail(): void {
     this.detailLote.set(null);
+  }
+
+  protected openClimate(lote: Lote): void {
+    void this.router.navigate(['/clima'], { queryParams: { loteId: lote.id } });
+  }
+
+  protected openNdvi(lote: Lote): void {
+    void this.router.navigate(['/agricola/lotes', lote.id, 'ndvi']);
+  }
+
+  private loadNdviOverlays(): void {
+    this.clearNdviUrls();
+    this.agricolaService.getNdviManifest().subscribe({
+      next: (manifest) => {
+        const available = manifest.filter((item) => item.disponible && item.version);
+        if (!available.length) return;
+
+        forkJoin(available.map((item) => this.agricolaService.getNdviImage(item.loteId).pipe(
+          map((blob) => ({ item, blob })),
+          catchError(() => of(null)),
+        ))).subscribe((downloads) => {
+          const overlays = downloads.map((download) => {
+            if (!download) return null;
+            const lote = this.lotes().find((candidate) => candidate.id === download.item.loteId);
+            const points = lote ? parsePolygon(lote.poligono) : [];
+            if (!lote || points.length < 3) return null;
+            const lngs = points.map((point) => point.lng);
+            const lats = points.map((point) => point.lat);
+            const west = Math.min(...lngs);
+            const east = Math.max(...lngs);
+            const south = Math.min(...lats);
+            const north = Math.max(...lats);
+            return {
+              ...download.item,
+              url: URL.createObjectURL(download.blob),
+              coordinates: [[west, north], [east, north], [east, south], [west, south]],
+            } as NdviMapOverlay;
+          }).filter((item): item is NdviMapOverlay => item !== null);
+          this.ndviOverlays.set(overlays);
+        });
+      },
+      error: () => this.ndviOverlays.set([]),
+    });
+  }
+
+  private clearNdviUrls(): void {
+    this.ndviOverlays().forEach((overlay) => URL.revokeObjectURL(overlay.url));
+    this.ndviOverlays.set([]);
   }
 
   // ---- Alta / edicion / borrado ----

@@ -38,6 +38,7 @@ import { getCosechasByLote, getEventosByLote, getHistorialByLote, getOrdenesApli
 import { resolveAssetUrl } from '../../shared/api/client'
 import { useLotes } from '../../shared/hooks/useLotes'
 import { useAplicacionesFitosanitarias, useDeteccionesPlaga, useSeguimientosPlaga } from '../../shared/hooks/usePlagas'
+import { getNdviOverlays } from '../../shared/ndvi/ndviCache'
 import type {
   AplicacionFitosanitaria,
   DeteccionPlaga,
@@ -85,6 +86,7 @@ const mapModes: Array<{ label: string; description: string; value: MapMode; Icon
   { label: 'Mapa', description: 'Mapa vectorial.', value: 'standard', Icon: MapIcon },
   { label: 'Híbrido', description: 'Satélite + etiquetas.', value: 'hybrid', Icon: MapPinned },
   { label: 'Terreno', description: 'Relieve y elevaciones.', value: 'terrain', Icon: Mountain },
+  { label: 'NDVI', description: 'Vigor vegetal Sentinel-2.', value: 'ndvi', Icon: Leaf },
 ]
 
 const operationalLayers: Array<{ label: string; Icon: LucideIcon }> = [
@@ -102,6 +104,11 @@ export default function LotesScreen() {
   const { data: detecciones = [] } = useDeteccionesPlaga()
   const { data: aplicaciones = [] } = useAplicacionesFitosanitarias()
   const { data: seguimientos = [] } = useSeguimientosPlaga()
+  const { data: ndviOverlays = [] } = useQuery({ queryKey: ['ndvi-cache'], queryFn: getNdviOverlays })
+  const latestNdvi = useMemo(
+    () => [...ndviOverlays].sort((a, b) => new Date(b.generadoAt).getTime() - new Date(a.generadoAt).getTime())[0],
+    [ndviOverlays]
+  )
   const [locationStatus, setLocationStatus] = useState<'idle' | 'granted' | 'denied'>('idle')
   const [coords, setCoords] = useState<Location.LocationObjectCoords | null>(null)
   const [mapCommand, setMapCommand] = useState<MapCommand | null>(null)
@@ -268,6 +275,7 @@ export default function LotesScreen() {
           locationGranted={locationStatus === 'granted'}
           command={mapCommand}
           mapMode={mapMode}
+          ndviOverlays={ndviOverlays}
           showAffectedArea={showAffectedArea}
           onLotePress={(id) => {
             const lote = lotes.find((item) => item.id === id)
@@ -310,6 +318,16 @@ export default function LotesScreen() {
             <Text style={styles.quickLabel}>{Math.round(totalArea).toLocaleString('es-AR')} ha</Text>
           </View>
         </View>
+
+        {mapMode === 'ndvi' && (
+          <View style={styles.ndviGeneralLegend}>
+            <View style={styles.ndviGeneralHead}><Leaf size={15} color="#9FE870" /><Text style={styles.ndviGeneralTitle}>Vigor NDVI</Text></View>
+            <View style={styles.ndviGeneralGradient} />
+            <View style={styles.ndviGeneralScale}><Text style={styles.ndviGeneralMeta}>Bajo</Text><Text style={styles.ndviGeneralMeta}>Alto</Text></View>
+            <Text style={styles.ndviGeneralMeta}>Sentinel-2 / CDSE</Text>
+            <Text style={styles.ndviGeneralMeta}>{latestNdvi ? formatDateTime(latestNdvi.generadoAt) : 'Sin imagenes descargadas'}</Text>
+          </View>
+        )}
 
         <View style={styles.actionRail}>
           {visibleActions.map((action) => {
@@ -384,6 +402,7 @@ export default function LotesScreen() {
             events={loteHistory}
             loading={historyLoading}
             onWeather={() => router.push({ pathname: '/clima/[loteId]', params: { loteId: selectedLote.id, loteNombre: selectedLote.nombre } })}
+            onNdvi={() => router.push({ pathname: '/ndvi/[loteId]', params: { loteId: selectedLote.id, loteNombre: selectedLote.nombre } } as never)}
             onClose={() => setSelectedLote(null)}
           />
         )}
@@ -577,12 +596,14 @@ function LoteHistoryPanel({
   events,
   loading,
   onWeather,
+  onNdvi,
   onClose,
 }: {
   lote: Lote
   events: LoteHistoryEvent[]
   loading: boolean
   onWeather: () => void
+  onNdvi: () => void
   onClose: () => void
 }) {
   // Card colapsable: key del evento expandido (null = todos colapsados). Replica del historico web.
@@ -597,6 +618,9 @@ function LoteHistoryPanel({
           <Text style={styles.historySubtitle}>{lote.cultivoNombre ?? lote.cultivo} · {lote.area} ha</Text>
         </View>
         <View style={styles.historyActions}>
+          <Pressable style={[styles.previewClose, styles.weatherButton]} onPress={onNdvi}>
+            <Leaf size={16} color="#9FE870" strokeWidth={2.2} />
+          </Pressable>
           <Pressable style={[styles.previewClose, styles.weatherButton]} onPress={onWeather}>
             <CloudSun size={16} color="#9FE870" strokeWidth={2.2} />
           </Pressable>
@@ -1147,6 +1171,23 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     marginTop: 1,
   },
+  ndviGeneralLegend: {
+    position: 'absolute',
+    top: 154,
+    left: 20,
+    width: 174,
+    padding: 12,
+    borderRadius: 17,
+    backgroundColor: 'rgba(8, 18, 37, 0.9)',
+    borderWidth: 1,
+    borderColor: 'rgba(159,232,112,0.22)',
+    zIndex: 800,
+  },
+  ndviGeneralHead: { flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 8 },
+  ndviGeneralTitle: { color: '#FFFFFF', fontSize: 12, fontWeight: '800' },
+  ndviGeneralGradient: { height: 7, borderRadius: 99, backgroundColor: '#54A53A' },
+  ndviGeneralScale: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 },
+  ndviGeneralMeta: { color: '#A6B0CF', fontSize: 9, marginTop: 3 },
   actionRail: {
     position: 'absolute',
     left: 18,
