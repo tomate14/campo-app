@@ -5,7 +5,6 @@ export type NdviCachePlan = {
   retained: NdviCachedItem[]
   removals: NdviCachedItem[]
 }
-
 export function buildNdviCachePlan(server: NdviManifestItem[], local: NdviCacheManifest): NdviCachePlan {
   const activeIds = new Set(server.map((item) => item.loteId))
   const downloads = server.filter((item) => {

@@ -46,4 +46,3 @@ public class NdviController {
                 .body(new FileSystemResource(image.path()));
     }
 }
-

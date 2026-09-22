@@ -5,4 +5,3 @@ import java.time.Instant;
 
 public record NdviImageResource(Path path, Instant generatedAt, long size, String version) {
 }
-

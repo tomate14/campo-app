@@ -23,4 +23,3 @@ mgl-map { display: block; width: 100%; height: 100%; }
 .status { position: absolute; z-index: 6; top: 86px; left: 50%; transform: translateX(-50%); padding: 10px 16px; border-radius: 999px; background: rgba(8,18,37,.92); color: #a6b0cf; }
 .status.error { color: #ff8f8f; }
 @media (max-width: 760px) { .ndvi-page { padding: 14px; } .mode-switcher { right: 12px; left: 12px; overflow-x: auto; } .mode-switcher button { padding: 9px 11px; } }
-

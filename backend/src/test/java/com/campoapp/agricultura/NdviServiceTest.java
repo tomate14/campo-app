@@ -86,4 +86,3 @@ class NdviServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 }
-

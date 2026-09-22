@@ -103,4 +103,3 @@ export class NdviPageComponent implements OnDestroy {
     return value ? new Intl.DateTimeFormat('es-AR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)) : 'Sin fecha';
   }
 }
-

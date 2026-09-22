@@ -21,4 +21,3 @@ describe('buildNdviCachePlan', () => {
     expect(plan.retained.map((item) => item.loteId)).toEqual(['2'])
   })
 })
-
