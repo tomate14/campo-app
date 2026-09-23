@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,4 +78,18 @@ public interface CompraProveedorRepository extends JpaRepository<CompraProveedor
                                        @Param("fechaDesde") LocalDate fechaDesde,
                                        @Param("fechaHasta") LocalDate fechaHasta,
                                        Pageable pageable);
+
+    // Feature 84: compras con fecha de emision en el rango que tengan al menos uno de los lotes del
+    // conjunto. Se devuelven distinct; sus lotes completos se leen luego (lazy) para el prorrateo.
+    @Query("""
+        select distinct c from CompraProveedor c
+        join c.lotes l
+        where c.deletedAt is null
+          and c.estado <> com.campoapp.finanzas.entity.EstadoCompra.ANULADA
+          and c.fechaEmision between :desde and :hasta
+          and l.id in :loteIds
+        """)
+    List<CompraProveedor> findConLoteEnRango(@Param("desde") LocalDate desde,
+                                             @Param("hasta") LocalDate hasta,
+                                             @Param("loteIds") Collection<String> loteIds);
 }

@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { useLocalSearchParams } from 'expo-router'
-import { Check, ClipboardCheck, Plus, X } from 'lucide-react-native'
+import { Check, ClipboardCheck, FlaskConical, Plus, X } from 'lucide-react-native'
 import { readCurrentUser } from '../../shared/auth/session'
 import { useQuery } from '@tanstack/react-query'
 import { getOperariosAsignables } from '../../shared/api/agricola'
+import { CatalogSelect } from '../../shared/components/ganaderia-form-kit'
 import { useLotes } from '../../shared/hooks/useLotes'
 import { useDeteccionesPlaga } from '../../shared/hooks/usePlagas'
+import { useInsumosActivos } from '../../shared/hooks/useInsumos'
 import { useUtilidadOpciones } from '../../shared/hooks/useUtilidades'
 import {
   useAceptarOrdenAplicacion,
@@ -19,7 +21,8 @@ import {
 import type { EstadoOrdenAplicacion, OrdenAplicacion, OrdenAplicacionRequest } from '../../shared/types/agricola'
 
 type Vista = 'asignadas' | 'creadas'
-type FormState = Partial<OrdenAplicacionRequest> & { id?: string }
+// insumoNombre solo se usa para mostrar la seleccion en el formulario (no se envia).
+type FormState = Partial<OrdenAplicacionRequest> & { id?: string; insumoNombre?: string }
 
 const ESTADO_COLOR: Record<EstadoOrdenAplicacion, string> = {
   PENDIENTE: '#FFB84D',
@@ -38,6 +41,7 @@ export default function OrdenesAplicacionScreen() {
   const lotesQuery = useLotes()
   const deteccionesQuery = useDeteccionesPlaga()
   const operariosQuery = useQuery({ queryKey: ['operarios-asignables'], queryFn: getOperariosAsignables })
+  const insumosQuery = useInsumosActivos()
   const unidadesQuery = useUtilidadOpciones('UNIDAD_DOSIS')
 
   const crear = useCreateOrdenAplicacion()
@@ -66,6 +70,7 @@ export default function OrdenesAplicacionScreen() {
   const detecciones = deteccionesQuery.data ?? []
   // El endpoint ya devuelve solo operarios activos.
   const operarios = operariosQuery.data ?? []
+  const insumos = insumosQuery.data ?? []
   const unidades = unidadesQuery.data ?? []
 
   // Total de dosis a utilizar = dosis x superficie (la unidad del total quita el "/ha").
@@ -109,6 +114,8 @@ export default function OrdenesAplicacionScreen() {
       id: orden.id,
       loteId: orden.loteId,
       deteccionId: orden.deteccionId,
+      insumoId: orden.insumoId,
+      insumoNombre: orden.insumoNombre,
       producto: orden.producto,
       principioActivo: orden.principioActivo,
       dosis: orden.dosis,
@@ -122,13 +129,14 @@ export default function OrdenesAplicacionScreen() {
   }
 
   const guardar = () => {
-    if (!form.loteId || !form.deteccionId || !form.producto || !form.unidadDosis || form.dosis == null || !form.operarioId) {
-      setError('Completá lote, detección, producto, dosis, unidad y operario.')
+    if (!form.loteId || !form.deteccionId || !form.insumoId || !form.producto || !form.unidadDosis || form.dosis == null || !form.operarioId) {
+      setError('Completá lote, detección, insumo, producto, dosis, unidad y operario.')
       return
     }
     const payload: OrdenAplicacionRequest = {
       loteId: form.loteId,
       deteccionId: form.deteccionId,
+      insumoId: form.insumoId,
       producto: form.producto,
       principioActivo: form.principioActivo,
       dosis: Number(form.dosis),
@@ -253,6 +261,31 @@ export default function OrdenesAplicacionScreen() {
                 emptyLabel="Elegí un lote primero"
               />
 
+              {/* Feature 84: insumo del catalogo (inventario). Al seleccionar prellena
+                  producto y principio activo; su costo se contabiliza al validar la orden. */}
+              <CatalogSelect
+                label="Insumo del catálogo"
+                items={insumos}
+                value={form.insumoId ?? ''}
+                onChange={(id, item) => setForm((f) => ({
+                  ...f,
+                  insumoId: id,
+                  insumoNombre: item.nombre,
+                  producto: f.producto ? f.producto : item.nombre,
+                  principioActivo: f.principioActivo ? f.principioActivo : (item.principioActivo ?? f.principioActivo),
+                }))}
+                placeholder={insumosQuery.isLoading ? 'Cargando insumos...' : 'Buscar insumo del inventario'}
+                getId={(item) => item.id}
+                getLabel={(item) => item.nombre}
+                getSubtitle={(item) => item.unidadMedidaNombre ?? item.unidadMedida ?? item.tipoNombre}
+                Icon={FlaskConical}
+                limit={2}
+                emptyText="Sin insumos disponibles en el inventario."
+              />
+              {!!form.insumoId && !!form.insumoNombre && (
+                <Text style={styles.insumoSelected}>Insumo seleccionado: {form.insumoNombre}</Text>
+              )}
+
               <Text style={styles.label}>Operario asignado</Text>
               <ChipRow
                 options={operarios.map((o) => ({ id: o.id, label: `${o.nombre} ${o.apellido}` }))}
@@ -322,7 +355,7 @@ function ChipRow({ options, selected, onSelect, emptyLabel }: { options: Array<{
 }
 
 function emptyForm(): FormState {
-  return { loteId: '', deteccionId: '', producto: '', dosis: undefined, unidadDosis: 'l/ha', operarioId: '' }
+  return { loteId: '', deteccionId: '', insumoId: '', insumoNombre: '', producto: '', dosis: undefined, unidadDosis: 'l/ha', operarioId: '' }
 }
 
 const styles = StyleSheet.create({
@@ -370,6 +403,7 @@ const styles = StyleSheet.create({
   chipText: { color: '#A6B0CF', fontSize: 12, fontWeight: '600' },
   chipTextActive: { color: '#9FE870' },
   chipEmpty: { color: '#7E8BAA', fontSize: 12, fontStyle: 'italic', paddingVertical: 6 },
+  insumoSelected: { color: '#9FE870', fontSize: 12, fontWeight: '700', marginTop: 8 },
   totalBox: { marginTop: 14, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,184,77,0.28)', backgroundColor: 'rgba(255,184,77,0.08)' },
   totalLabel: { color: '#9BB0CC', fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.4 },
   totalValue: { color: '#FFD166', fontSize: 18, fontWeight: '900', marginTop: 2 },

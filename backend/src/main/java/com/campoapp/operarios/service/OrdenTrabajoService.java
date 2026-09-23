@@ -2,6 +2,7 @@ package com.campoapp.operarios.service;
 
 import com.campoapp.operarios.dto.OrdenTrabajoActividadRequest;
 import com.campoapp.operarios.dto.OrdenTrabajoCierreRequest;
+import com.campoapp.operarios.dto.OrdenTrabajoDashboardResponse;
 import com.campoapp.operarios.dto.OrdenTrabajoEstadoRequest;
 import com.campoapp.operarios.dto.OrdenTrabajoRequest;
 import com.campoapp.operarios.dto.OrdenTrabajoResponse;
@@ -11,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrdenTrabajoService {
+    // Feature 84: resumen por estado de las ordenes de trabajo (reusado por el dashboard de gestion).
+    OrdenTrabajoDashboardResponse dashboard();
     OrdenTrabajoResumenResponse resumen(String search, String estado, String operarioId, String loteId, String prioridad);
     OrdenTrabajoResumenResponse resumen(String search, String estado, String operarioId, String loteId, String prioridad, LocalDateTime fechaInicio, LocalDateTime fechaFin);
     List<OrdenTrabajoResponse> listar(String search, String estado, String operarioId, String loteId, String prioridad);

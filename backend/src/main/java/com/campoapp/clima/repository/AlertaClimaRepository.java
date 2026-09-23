@@ -15,6 +15,10 @@ public interface AlertaClimaRepository extends JpaRepository<AlertaClima, String
     @Query("SELECT a FROM AlertaClima a WHERE a.lote.id = :loteId AND a.activa = true AND a.deletedAt IS NULL ORDER BY a.fecha DESC")
     List<AlertaClima> findActivasByLoteId(@Param("loteId") String loteId);
 
+    // Feature 84: todas las alertas activas (consolidado de gestion), con lote precargado.
+    @Query("SELECT a FROM AlertaClima a JOIN FETCH a.lote WHERE a.activa = true AND a.deletedAt IS NULL ORDER BY a.fecha DESC")
+    List<AlertaClima> findActivas();
+
     @Query("SELECT a FROM AlertaClima a WHERE a.lote.id = :loteId AND a.deletedAt IS NULL ORDER BY a.fecha DESC")
     List<AlertaClima> findAllByLoteId(@Param("loteId") String loteId);
 

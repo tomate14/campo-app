@@ -13,5 +13,7 @@ public record CompraRequest(
         LocalDate fechaEmision,
         LocalDate fechaVencimiento,
         String observaciones,
-        List<CompraItemRequest> items
+        List<CompraItemRequest> items,
+        // Feature 84: lotes a los que se atribuye el comprobante (opcional).
+        List<String> loteIds
 ) {}

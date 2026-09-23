@@ -398,6 +398,23 @@ export interface OperarioAsignable {
   userId?: string
 }
 
+// Feature 84: catalogo de insumos agricolas (inventario propio). Espejo de
+// InsumoAgricolaResponse; la orden de aplicacion referencia un insumo del catalogo.
+export interface InsumoAgricola {
+  id: string
+  codigo?: string
+  nombre: string
+  tipo?: string
+  tipoNombre?: string
+  marca?: string
+  presentacion?: string
+  unidadMedida?: string
+  unidadMedidaNombre?: string
+  principioActivo?: string
+  precioUnitario?: number
+  activo?: boolean
+}
+
 export interface OrdenAplicacion {
   id: string
   numero?: number
@@ -406,6 +423,9 @@ export interface OrdenAplicacion {
   deteccionId: string
   plagaNombre: string
   fechaAplicacion: string
+  // Feature 84: insumo del catalogo (nullable en ordenes previas a la migracion V56).
+  insumoId?: string
+  insumoNombre?: string
   producto: string
   principioActivo?: string
   dosis: number
@@ -428,6 +448,8 @@ export interface OrdenAplicacion {
 export interface OrdenAplicacionRequest {
   loteId: string
   deteccionId: string
+  // Feature 84: insumo del catalogo (requerido a nivel aplicacion en ordenes nuevas).
+  insumoId: string
   fechaAplicacion?: string
   producto: string
   principioActivo?: string

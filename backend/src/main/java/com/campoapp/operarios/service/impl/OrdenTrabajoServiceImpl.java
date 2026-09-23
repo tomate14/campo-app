@@ -198,7 +198,9 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
         return cambiarEstado(id, new OrdenTrabajoEstadoRequest(ESTADO_RECHAZADA, blankToNull(request.responsable()), orden.getMotivoRechazo()));
     }
 
-    private OrdenTrabajoDashboardResponse dashboard() {
+    @Override
+    @Transactional(readOnly = true)
+    public OrdenTrabajoDashboardResponse dashboard() {
         List<OrdenTrabajo> ordenes = ordenRepository.search(null, null, null, null, null, null, null);
         return new OrdenTrabajoDashboardResponse(
                 ordenes.size(),

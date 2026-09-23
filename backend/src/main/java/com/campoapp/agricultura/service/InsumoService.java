@@ -1,6 +1,7 @@
 package com.campoapp.agricultura.service;
 
 import com.campoapp.agricultura.dto.insumos.*;
+import com.campoapp.agricultura.entity.plagas.OrdenAplicacion;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -20,4 +21,8 @@ public interface InsumoService {
     StockInsumoResponse registrarStock(StockInsumoRequest request);
     MovimientoInsumoResponse registrarMovimiento(MovimientoInsumoRequest request);
     Page<MovimientoInsumoResponse> listarMovimientos(int page, int size);
+
+    // Feature 84: genera el movimiento de salida al validar una orden de aplicacion.
+    // Descuenta stock (cuando hay) y toma el costo del insumo. Es idempotente por orden.
+    MovimientoInsumoResponse generarSalidaPorOrden(OrdenAplicacion orden, Long numero);
 }

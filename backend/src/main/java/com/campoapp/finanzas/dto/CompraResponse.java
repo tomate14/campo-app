@@ -26,5 +26,7 @@ public record CompraResponse(
         BigDecimal saldoPendiente,
         String observaciones,
         List<CompraItemResponse> items,
+        // Feature 84: lotes atribuidos al comprobante (para el prorrateo por hectarea).
+        List<CompraLoteRef> lotes,
         LocalDateTime createdAt
 ) {}

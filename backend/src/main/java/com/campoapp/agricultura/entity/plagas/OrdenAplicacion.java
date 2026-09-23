@@ -1,6 +1,7 @@
 package com.campoapp.agricultura.entity.plagas;
 
 import com.campoapp.agricultura.entity.Lote;
+import com.campoapp.agricultura.entity.insumos.InsumoAgricola;
 import com.campoapp.common.entity.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,6 +27,13 @@ public class OrdenAplicacion extends AuditableEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "deteccion_id", nullable = false)
     private DeteccionPlaga deteccion;
+
+    // Feature 84: insumo del catalogo (inventario propio) aplicado por la orden. Nullable en
+    // la columna por compatibilidad con datos viejos; requerido para las ordenes nuevas.
+    // Al validar la orden se genera un movimiento de salida que descuenta stock y toma el costo.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "insumo_id")
+    private InsumoAgricola insumo;
 
     @Column(name = "fecha_aplicacion", nullable = false)
     private LocalDateTime fechaAplicacion;

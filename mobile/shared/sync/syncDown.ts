@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import type { QueryClient } from '@tanstack/react-query'
-import { getDeteccionesPlaga, getLotes, getUtilidadOpciones } from '../api/agricola'
+import { getDeteccionesPlaga, getInsumosActivos, getLotes, getUtilidadOpciones } from '../api/agricola'
 import {
   getAlertasPotreros,
   getAnimales,
@@ -35,6 +35,9 @@ const DATASETS: Array<{ queryKey: unknown[]; fetch: () => Promise<unknown> }> = 
   { queryKey: ['razas-bovinas'], fetch: () => getRazasBovinas() },
   { queryKey: ['dietas'], fetch: () => getDietas() },
   { queryKey: ['plagas-detecciones'], fetch: () => getDeteccionesPlaga() },
+  // Catalogo de insumos agricolas activos (feature 84): misma key que useInsumosActivos.
+  // Necesario offline para el selector de insumo de la orden de aplicacion.
+  { queryKey: ['insumos-activos'], fetch: () => getInsumosActivos() },
   // Catalogo de destino de cosecha (feature 60): misma key que useUtilidadOpciones.
   { queryKey: ['utilidad-opciones', 'DESTINO_COSECHA'], fetch: () => getUtilidadOpciones('DESTINO_COSECHA') },
   // Catalogo de tipo de perdida de cosecha (feature 70): misma key que useUtilidadOpciones.
