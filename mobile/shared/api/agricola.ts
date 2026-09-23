@@ -9,6 +9,7 @@ import type {
   UtilidadOpcion,
   OrdenAplicacion, OrdenAplicacionRequest, EstadoOrdenAplicacion, OperarioAsignable,
 } from '../types/agricola'
+import type { NdviManifestItem } from '../ndvi/ndvi.types'
 
 // Asset elegido con expo-image-picker que se sube al backend (feature 54).
 export interface PlagaImageAsset {
@@ -37,6 +38,9 @@ export const importLotesGeoJson = (data: GeoJsonImportRequest) =>
 
 export const getReporteLote = (id: string) =>
   api.get<ApiResponse<LoteReporte>>(`/agricola/lotes/${id}/reporte`).then(r => r.data.data)
+
+export const getNdviManifest = () =>
+  api.get<ApiResponse<NdviManifestItem[]>>('/agricola/ndvi').then(r => r.data.data)
 
 export const deleteLote = (id: string) =>
   api.delete(`/agricola/lotes/${id}`)

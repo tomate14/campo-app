@@ -58,8 +58,20 @@ services:
       # Feature 76: si es true, carga el dataset de demo al arrancar (idempotente).
       SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
       UPLOADS_DIR: /app/uploads
+      # Feature 59: NDVI / mapa de verdes (Sentinel-2 via CDSE).
+      NDVI_ENABLED: ${NDVI_ENABLED:-true}
+      NDVI_CLIENT_ID: ${NDVI_CLIENT_ID:-}
+      NDVI_CLIENT_SECRET: ${NDVI_CLIENT_SECRET:-}
+      NDVI_TOKEN_URL: ${NDVI_TOKEN_URL:-https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token}
+      NDVI_PROCESS_URL: ${NDVI_PROCESS_URL:-https://sh.dataspace.copernicus.eu/api/v1/process}
+      NDVI_DIR: /app/ndvi
+      NDVI_SYNC_CRON: ${NDVI_SYNC_CRON:-0 0 4 */15 * *}
+      NDVI_VENTANA_DIAS: ${NDVI_VENTANA_DIAS:-15}
+      NDVI_MAX_NUBOSIDAD: ${NDVI_MAX_NUBOSIDAD:-40}
+      NDVI_IMG_SIZE: ${NDVI_IMG_SIZE:-512}
     volumes:
       - backend_uploads:/app/uploads
+      - backend_ndvi:/app/ndvi
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     healthcheck:
@@ -131,6 +143,7 @@ volumes:
   frontend_node_modules:
   mobile_node_modules:
   backend_uploads:
+  backend_ndvi:
 
 networks:
   campo-net:

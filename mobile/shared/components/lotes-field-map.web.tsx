@@ -5,9 +5,10 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import type { GeoJSONSourceSpecification, LngLatBoundsLike, Map as MapLibreMap, Marker, StyleSpecification } from 'maplibre-gl'
 import type { FeatureCollection, Polygon } from 'geojson'
 import type { LotesFieldMapProps, LoteMapItem, MapMode, MapPoint, MapRegion } from './lotes-field-map.types'
+import { polygonToNdviBounds } from '../ndvi/ndviGeometry'
 
 function buildStyle(mode: MapMode): StyleSpecification {
-  const satellite = mode === 'satellite' || mode === 'hybrid'
+  const satellite = mode === 'satellite' || mode === 'hybrid' || mode === 'ndvi'
   const terrain = mode === 'terrain'
   const tiles = satellite
     ? ['https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}']
@@ -38,6 +39,7 @@ export default function LotesFieldMap({
   userCoords,
   command,
   mapMode,
+  ndviOverlays = [],
   showAffectedArea = true,
   onLotePress,
   onDetectionPress,
@@ -103,6 +105,7 @@ export default function LotesFieldMap({
           'fill-opacity': 0.24,
         },
       })
+      syncNdviLayers(map, mapMode, mapItemsRef.current, ndviOverlays)
       map.addLayer({
         id: 'lotes-line',
         type: 'line',
@@ -167,13 +170,14 @@ export default function LotesFieldMap({
     syncLoteLabels(map, mapItems, onLotePress, loteLabelMarkersRef)
     syncDetectionMarkers(map, detections, onDetectionPress, detectionMarkersRef)
     syncAlertMarkers(map, alertas, onAlertaPress, alertMarkersRef)
+    syncNdviLayers(map, mapMode, mapItems, ndviOverlays)
     // Encuadre automatico SOLO la primera vez que hay datos; despues no re-centrar (respeta el
     // zoom/pan del usuario). El encuadre manual sigue disponible via command.type === 'fit'.
     if (!hasFittedRef.current && mapItems.length) {
       fitToRegion(map, initialRegion)
       hasFittedRef.current = true
     }
-  }, [sourceData, affectedData, detections, alertas, mapItems.length])
+  }, [sourceData, affectedData, detections, alertas, mapItems, mapMode, ndviOverlays])
 
   useEffect(() => {
     const map = mapRef.current
@@ -221,6 +225,46 @@ export default function LotesFieldMap({
   }, [userCoords])
 
   return <div ref={containerRef} style={containerStyle} />
+}
+
+function syncNdviLayers(
+  map: MapLibreMap,
+  mode: MapMode,
+  mapItems: LoteMapItem[],
+  overlays: NonNullable<LotesFieldMapProps['ndviOverlays']>,
+) {
+  const layerIds = map.getStyle().layers
+    .map((layer) => layer.id)
+    .filter((id) => id.startsWith('ndvi-layer-'))
+  layerIds.forEach((id) => {
+    if (map.getLayer(id)) map.removeLayer(id)
+    const sourceId = id.replace('ndvi-layer-', 'ndvi-source-')
+    if (map.getSource(sourceId)) map.removeSource(sourceId)
+  })
+  if (mode !== 'ndvi') return
+
+  overlays.forEach((overlay) => {
+    const item = mapItems.find((candidate) => candidate.lote.id === overlay.loteId)
+    if (!item) return
+    const bounds = polygonToNdviBounds(item.polygon)
+    const safeId = overlay.loteId.replace(/[^a-zA-Z0-9_-]/g, '-')
+    const sourceId = `ndvi-source-${safeId}`
+    const layerId = `ndvi-layer-${safeId}`
+    map.addSource(sourceId, {
+      type: 'image',
+      url: overlay.localUri,
+      coordinates: [
+        [bounds.northWest.longitude, bounds.northWest.latitude],
+        [bounds.northEast.longitude, bounds.northEast.latitude],
+        [bounds.southEast.longitude, bounds.southEast.latitude],
+        [bounds.southWest.longitude, bounds.southWest.latitude],
+      ],
+    })
+    map.addLayer(
+      { id: layerId, type: 'raster', source: sourceId, paint: { 'raster-opacity': 0.82 } },
+      map.getLayer('lotes-fill') ? 'lotes-fill' : undefined,
+    )
+  })
 }
 
 function toFeatureCollection(mapItems: LotesFieldMapProps['mapItems']): FeatureCollection<Polygon> {

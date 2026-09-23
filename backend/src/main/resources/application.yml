@@ -69,6 +69,19 @@ clima:
   retencion-dias: 30
   forecast-days: 7
 
+# NDVI - Mapa de verdes (feature 59). Credenciales/URLs desde el .env.
+ndvi:
+  enabled: ${NDVI_ENABLED:true}
+  client-id: ${NDVI_CLIENT_ID:}
+  client-secret: ${NDVI_CLIENT_SECRET:}
+  token-url: ${NDVI_TOKEN_URL:https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token}
+  process-url: ${NDVI_PROCESS_URL:https://sh.dataspace.copernicus.eu/api/v1/process}
+  dir: ${NDVI_DIR:/app/ndvi}
+  sync-cron: ${NDVI_SYNC_CRON:0 0 4 */15 * *}
+  ventana-dias: ${NDVI_VENTANA_DIAS:15}
+  max-nubosidad: ${NDVI_MAX_NUBOSIDAD:40}
+  img-size: ${NDVI_IMG_SIZE:512}
+
 # GBIF - Catalogo de referencia de plagas (feature 73)
 gbif:
   base-url: https://api.gbif.org/v1

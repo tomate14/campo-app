@@ -6,7 +6,9 @@ Registro de features implementadas y estado del proyecto.
 
 ## Features Completadas
 
-- Features finalizadas y renombradas con `_COMPLETA_`: 00_01, 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10-reportes, 12, 13, 26, 37 y 38.
+- Features finalizadas y renombradas con `_COMPLETA_`: 00_01, 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10-reportes, 12, 13, 26, 37, 38 y 59.
+
+- Feature 59: NDVI Sentinel-2/CDSE se muestra superpuesto tanto en el mapa general de lotes como en un visor dedicado web/mobile. Mobile descarga anticipadamente las imágenes versionadas de los lotes activos durante el sync-down y usa primero el archivo local para funcionar offline.
 
 ### âœ… Feature 26 â€” AutenticaciÃ³n, Seguridad y GestiÃ³n de Tokens
 **Fecha**: 2026-05-18  

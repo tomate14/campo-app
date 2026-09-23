@@ -29,6 +29,7 @@ import type {
   LoteReporte,
   Lote,
   LoteRequest,
+  NdviManifestItem,
   MovimientoInsumo,
   MovimientoInsumoRequest,
   PageResponse,
@@ -105,6 +106,14 @@ export class AgricolaService {
 
   getReporteLote(id: string) {
     return this.http.get<ApiResponse<LoteReporte> | LoteReporte>(`${API_BASE_URL}/agricola/lotes/${id}/reporte`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getNdviManifest() {
+    return this.http.get<ApiResponse<NdviManifestItem[]> | NdviManifestItem[]>(`${API_BASE_URL}/agricola/ndvi`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  getNdviImage(loteId: string) {
+    return this.http.get(`${API_BASE_URL}/agricola/ndvi/${loteId}/imagen`, { responseType: 'blob' });
   }
 
   getAnalytics(params: AnalyticsFiltros) {

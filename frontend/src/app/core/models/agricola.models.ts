@@ -829,3 +829,12 @@ export interface ReporteTareaResumen {
   lotesAfectados: number
   origen: string
 }
+
+export interface NdviManifestItem {
+  loteId: string
+  loteNombre: string
+  disponible: boolean
+  generadoAt: string | null
+  version: string | null
+  imagenUrl: string | null
+}

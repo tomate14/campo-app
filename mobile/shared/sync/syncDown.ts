@@ -17,6 +17,7 @@ import {
   getVacunas,
 } from '../api/ganaderia'
 import { getOperarios } from '../api/operarios'
+import { syncNdviCache } from '../ndvi/ndviCache'
 
 const LAST_SYNC_KEY = 'sync_last_down_v1'
 
@@ -68,6 +69,8 @@ export async function runSyncDown(queryClient: QueryClient): Promise<boolean> {
         staleTime: 0,
       })
     }
+    const ndviOverlays = await syncNdviCache()
+    queryClient.setQueryData(['ndvi-cache'], ndviOverlays)
     lastSyncAt = new Date().toISOString()
     await AsyncStorage.setItem(LAST_SYNC_KEY, lastSyncAt)
     return true
