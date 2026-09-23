@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   scroll: { flexGrow: 1 },
 
-  hero: { height: 300, position: 'relative', backgroundColor: '#0b1220', overflow: 'hidden' },
+  hero: { height: 330, position: 'relative', backgroundColor: '#0b1220', overflow: 'hidden' },
   lotes: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, transform: [{ rotate: '-8deg' }, { scale: 1.15 }] },
   tile: { position: 'absolute', borderRadius: 8, borderWidth: 1 },
   heroFade: {
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   chipAmberText: { color: '#ffd699', fontSize: 12, fontWeight: '600' },
   dot: { width: 6, height: 6, borderRadius: 3 },
 
-  emblem: { position: 'absolute', left: 0, right: 0, bottom: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
+  emblem: { position: 'absolute', left: 0, right: 0, bottom: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
   emblemItem: { alignItems: 'center', gap: 8 },
   emblemLine: { width: 20, height: 1, marginHorizontal: 6, marginBottom: 24, backgroundColor: 'rgba(159,232,112,0.4)' },
   emblemLabel: { fontSize: 10, color: '#8fa4c3', letterSpacing: 0.8, textTransform: 'uppercase' },
