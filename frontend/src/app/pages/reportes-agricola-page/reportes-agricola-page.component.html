@@ -12,9 +12,19 @@
     <div class="header-actions">
       <div class="fx-group">
         <div class="segmented" role="group" aria-label="Moneda">
-          <button type="button" class="is-active">ARS $</button>
-          <button type="button" disabled title="Próximamente (feature 85)">USD</button>
+          <button type="button" [class.is-active]="moneda() === 'ARS'" (click)="setMoneda('ARS')">ARS $</button>
+          <button
+            type="button"
+            [class.is-active]="moneda() === 'USD'"
+            [disabled]="!usdDisponible()"
+            [title]="usdDisponible() ? 'Ver montos en dólares (BNA vendedor)' : 'Cotización no disponible'"
+            (click)="setMoneda('USD')"
+          >USD</button>
         </div>
+        <span class="fx-rate" *ngIf="fxLegend() as legend">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20" /><path d="M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+          <span>{{ legend }}</span>
+        </span>
       </div>
       <div class="segmented lg">
         <button type="button" [class.is-active]="section() === 'estadisticas'" (click)="setSection('estadisticas')">Estadísticas</button>
@@ -143,7 +153,7 @@
           <div class="card-head"><h2>Composición del costo</h2></div>
           <div class="donut-wrap" *ngIf="composicion().length; else emptyComposicion">
             <div class="donut" [style.background]="donutGradient()">
-              <div class="donut-center"><small>$</small><strong>{{ moneyCompact(kpis()?.costoTotal).replace('$ ', '') }}</strong><span>costo total</span></div>
+              <div class="donut-center"><small>{{ currencySymbol() }}</small><strong>{{ moneyCompactValue(kpis()?.costoTotal) }}</strong><span>costo total</span></div>
             </div>
             <div class="legend-list">
               <span *ngFor="let row of composicion()"><i [style.background]="row.color"></i>{{ row.categoria }}<b>{{ percent(row.porcentaje) }}</b></span>

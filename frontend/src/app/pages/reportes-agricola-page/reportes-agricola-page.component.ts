@@ -5,6 +5,7 @@ import { NgxMapLibreGLModule } from '@maplibre/ngx-maplibre-gl';
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { StyleSpecification } from 'maplibre-gl';
 import { AgricolaService } from '../../core/services/agricola.service';
+import { FinanzasService, type CotizacionDolar } from '../../core/services/finanzas.service';
 import { MultiSearchSelectComponent } from '../../shared/multi-search-select/multi-search-select.component';
 import type {
   Lote,
@@ -16,6 +17,7 @@ import type {
 
 type Section = 'estadisticas' | 'gestion';
 type MapMode = 'salud' | 'costo';
+type Moneda = 'ARS' | 'USD';
 
 interface FilterOption {
   id: string;
@@ -47,8 +49,35 @@ const COSTO_SCALE = ['#9FE870', '#A3E635', '#FFB84D', '#FF8A4C', '#FF6B6B'];
 })
 export class ReportesAgricolaPageComponent {
   private readonly agricolaService = inject(AgricolaService);
+  private readonly finanzasService = inject(FinanzasService);
 
   protected readonly section = signal<Section>('estadisticas');
+
+  // Moneda · toggle ARS/USD. La conversión se aplica de forma centralizada en los helpers
+  // money()/moneyCompact() sobre los mismos datos en pesos (no se re-fetchea el backend).
+  protected readonly moneda = signal<Moneda>('ARS');
+  protected readonly cotizacion = signal<CotizacionDolar | null>(null);
+
+  // USD sólo disponible si hay cotización vendedora válida.
+  protected readonly usdDisponible = computed(() => {
+    const venta = this.cotizacion()?.venta;
+    return venta != null && venta > 0;
+  });
+
+  // Factor divisor aplicado a todo monto en pesos cuando la moneda activa es USD.
+  protected readonly fxFactor = computed(() => {
+    const venta = this.cotizacion()?.venta;
+    return this.moneda() === 'USD' && venta ? venta : 1;
+  });
+
+  protected readonly currencySymbol = computed(() => (this.moneda() === 'USD' ? 'US$' : '$'));
+
+  // Leyenda del diseño: "Dólar BNA vendedor: $ <venta> · <fecha>".
+  protected readonly fxLegend = computed(() => {
+    const c = this.cotizacion();
+    if (!c || c.venta == null) return null;
+    return `Dólar BNA vendedor: $ ${this.decimal(c.venta, 2)} · ${this.formatDate(c.fecha ?? undefined)}`;
+  });
 
   // Parte 1 · estadísticas.
   protected readonly costos = signal<ReporteCostosAgricolaResponse | null>(null);
@@ -211,10 +240,23 @@ export class ReportesAgricolaPageComponent {
     this.loadLotesCatalogo();
     this.loadCostos();
     this.loadGestion();
+    this.loadCotizacion();
   }
 
   protected setSection(value: Section): void {
     this.section.set(value);
+  }
+
+  protected setMoneda(value: Moneda): void {
+    if (value === 'USD' && !this.usdDisponible()) return;
+    this.moneda.set(value);
+  }
+
+  private loadCotizacion(): void {
+    this.finanzasService.cotizacionDolar().subscribe({
+      next: (data) => this.cotizacion.set(data ?? null),
+      error: () => this.cotizacion.set(null),
+    });
   }
 
   protected setMapMode(value: MapMode): void {
@@ -331,16 +373,26 @@ export class ReportesAgricolaPageComponent {
     return CULTIVO_COLORS[index % CULTIVO_COLORS.length];
   }
 
-  protected moneyCompact(value: number | undefined | null): string {
-    const num = Number(value ?? 0);
+  // Convierte un monto en pesos a la moneda activa (divide por la cotización si es USD).
+  private toDisplay(value: number | undefined | null): number {
+    return Number(value ?? 0) / this.fxFactor();
+  }
+
+  // Versión compacta sin símbolo (para reutilizar en el centro del donut).
+  protected moneyCompactValue(value: number | undefined | null): string {
+    const num = this.toDisplay(value);
     const abs = Math.abs(num);
-    if (abs >= 1_000_000) return `$ ${this.decimal(num / 1_000_000, 1)} M`;
-    if (abs >= 1_000) return `$ ${this.decimal(num / 1_000, 1)} k`;
-    return `$ ${this.decimal(num, 0)}`;
+    if (abs >= 1_000_000) return `${this.decimal(num / 1_000_000, 1)} M`;
+    if (abs >= 1_000) return `${this.decimal(num / 1_000, 1)} k`;
+    return `${this.decimal(num, this.moneda() === 'USD' ? 2 : 0)}`;
+  }
+
+  protected moneyCompact(value: number | undefined | null): string {
+    return `${this.currencySymbol()} ${this.moneyCompactValue(value)}`;
   }
 
   protected money(value: number | undefined | null): string {
-    return `$ ${this.decimal(Number(value ?? 0), 0)}`;
+    return `${this.currencySymbol()} ${this.decimal(this.toDisplay(value), this.moneda() === 'USD' ? 2 : 0)}`;
   }
 
   protected decimal(value: number, digits: number): string {

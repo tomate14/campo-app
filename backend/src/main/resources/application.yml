@@ -82,6 +82,13 @@ ndvi:
   max-nubosidad: ${NDVI_MAX_NUBOSIDAD:40}
   img-size: ${NDVI_IMG_SIZE:512}
 
+# Cotizacion Dolar BNA (feature 85). Fuente publica sin credenciales.
+cotizacion:
+  dolar:
+    enabled: ${COTIZACION_DOLAR_ENABLED:true}
+    url: ${COTIZACION_DOLAR_URL:https://dolarapi.com/v1/dolares/oficial}
+    sync-cron: ${COTIZACION_DOLAR_SYNC_CRON:0 0 8,14 * * *}
+
 # GBIF - Catalogo de referencia de plagas (feature 73)
 gbif:
   base-url: https://api.gbif.org/v1
