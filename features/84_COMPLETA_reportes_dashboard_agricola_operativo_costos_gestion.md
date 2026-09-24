@@ -169,4 +169,10 @@ que los alimenta.
 - Supersede parcialmente la feature 61 (costo/ha con terceros).
 
 ## Estado
-Pendiente.
+Realizada. Backend (migración V56, prorrateo por ha, costo de insumo al validar
+idempotente, endpoints `/reportes/agricola/costos` y `/gestion`, `/inventario/insumos/activos`),
+web (dashboard 2 partes según diseño, multiselect de lotes en Compras, selector de
+insumo en órdenes de aplicación) y mobile (selector de insumo + catálogo offline)
+implementados y validados (tests JUnit 19/19, type-check web y mobile limpios).
+El toggle ARS/USD queda preparado (USD deshabilitado); su integración real es la
+feature 85.
