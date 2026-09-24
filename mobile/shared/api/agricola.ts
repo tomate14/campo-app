@@ -8,6 +8,7 @@ import type {
   HistoricoCultivo, HistoricoCultivoRequest, RotacionRecomendacion,
   UtilidadOpcion,
   OrdenAplicacion, OrdenAplicacionRequest, EstadoOrdenAplicacion, OperarioAsignable,
+  InsumoAgricola,
 } from '../types/agricola'
 import type { NdviManifestItem } from '../ndvi/ndvi.types'
 
@@ -220,6 +221,11 @@ export const validarOrdenAplicacion = (id: string) =>
 
 export const rechazarOrdenAplicacion = (id: string, motivo?: string) =>
   api.post<ApiResponse<OrdenAplicacion>>(`/agricola/plagas/ordenes/${id}/rechazar`, { motivo }).then(r => r.data.data)
+
+// Feature 84: catalogo de insumos agricolas activos (inventario) para el selector
+// de la orden de aplicacion. Se replica offline via syncDown (misma query key).
+export const getInsumosActivos = () =>
+  api.get<ApiResponse<InsumoAgricola[]> | InsumoAgricola[]>('/inventario/insumos/activos').then(r => unwrapListResponse(r.data))
 
 // Catalogo configurable de Utilidades (feature 60): opciones por categoria
 export const getUtilidadOpciones = (categoria: string) =>

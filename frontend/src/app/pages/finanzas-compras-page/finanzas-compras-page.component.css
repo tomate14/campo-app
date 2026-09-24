@@ -104,6 +104,12 @@ td small { color: #a6b0cf; display: block; margin-top: 4px; }
   min-height: 46px;
 }
 
+/* Feature 84: campo multiselect de lotes en el alta de compra */
+.lotes-field { display: flex; flex-direction: column; gap: 8px; color: #9bb0cc; font-size: 13px; font-weight: 400; }
+.lotes-field ::ng-deep .ms { display: block; }
+.lotes-field ::ng-deep .ms > summary { width: 100%; box-sizing: border-box; min-height: 46px; border-radius: 14px; }
+.lotes-field ::ng-deep .ms-panel { width: 100%; }
+
 .items-box { display: grid; gap: 12px; margin-top: 18px; }
 .item-row { align-items: end; display: grid; gap: 10px; grid-template-columns: 1.2fr 1.5fr .7fr .6fr .8fr auto; }
 .item-field {

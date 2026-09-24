@@ -689,6 +689,9 @@ export interface OrdenAplicacion {
   superficieTratadaHa?: number
   maquinariaId?: string
   observaciones?: string
+  // Feature 84: insumo del catálogo (inventario) referenciado por la orden.
+  insumoId?: string
+  insumoNombre?: string
   responsableId: string
   responsableNombre?: string
   operarioId: string
@@ -712,6 +715,8 @@ export interface OrdenAplicacionRequest {
   superficieTratadaHa?: number
   maquinariaId?: string
   observaciones?: string
+  // Feature 84: insumo del catálogo (inventario) requerido al crear/editar la orden.
+  insumoId: string
   responsableId?: string
   operarioId: string
 }
@@ -837,4 +842,141 @@ export interface NdviManifestItem {
   generadoAt: string | null
   version: string | null
   imagenUrl: string | null
+}
+
+// Feature 84: dashboard operativo agrícola (costos por hectárea + gestión).
+// PARTE 1 · Estadísticas.
+export interface ReportePeriodo {
+  desde: string
+  hasta: string
+}
+
+export interface ReporteCostosKpis {
+  costoTotal: number
+  costoHectarea: number
+  costoInsumos: number
+  costoInsumosPct: number
+  costoComprobantes: number
+  costoComprobantesPct: number
+  costoPorTonelada?: number
+  toneladas: number
+  hectareas: number
+  lotesCount: number
+}
+
+export interface ReporteRankingLote {
+  loteId: string
+  nombre: string
+  costoHa: number
+  costoTotal: number
+}
+
+export interface ReporteComposicionCosto {
+  categoria: string
+  monto: number
+  porcentaje: number
+}
+
+export interface ReporteCostoCultivo {
+  cultivo: string
+  costoHa: number
+}
+
+export interface ReporteLoteCostoMapa {
+  loteId: string
+  nombre: string
+  cultivo: string
+  area: number
+  poligono: string
+  salud: string
+  saludColor: string
+  costoHa: number
+}
+
+export interface ReporteActividadDosis {
+  unidad: string
+  total: number
+}
+
+export interface ReporteActividadAplicaciones {
+  validadas: number
+  pendientes: number
+  rechazadas: number
+  dosisPorUnidad: ReporteActividadDosis[]
+}
+
+export interface ReporteContextoProductivo {
+  rendimientoComparativo: ReporteRendimientoComparativo
+  indiceSalud: number
+  precipitacionMm: number
+  distribucionCultivos: ReporteCultivoDistribucion[]
+  estadosFenologicos: ReporteCultivoFenologico[]
+  resumenCosecha: ReporteResumenCosecha
+}
+
+export interface ReporteCostosAgricolaResponse {
+  periodo: ReportePeriodo
+  kpis: ReporteCostosKpis
+  rankingLotes: ReporteRankingLote[]
+  composicion: ReporteComposicionCosto[]
+  evolucionMensual: ReporteSeriePunto[]
+  costoPorCultivo: ReporteCostoCultivo[]
+  lotesMapa: ReporteLoteCostoMapa[]
+  contexto: ReporteContextoProductivo
+  actividadAplicaciones: ReporteActividadAplicaciones
+  advertencias: string[]
+}
+
+export interface ReporteCostosFiltros {
+  desde: string
+  hasta: string
+  loteIds?: string[]
+  cultivos?: string[]
+}
+
+// PARTE 2 · Gestión (sin filtro de período).
+export interface ReporteGestionAlerta {
+  tipo: string
+  titulo: string
+  detalle: string
+  severidad: string
+  fecha: string
+  origen: string
+}
+
+export interface ReporteOrdenPorValidar {
+  id: string
+  numero: string
+  loteNombre: string
+  insumoNombre: string
+  dosis: number
+  unidadDosis: string
+  superficieTratadaHa: number
+  operarioNombre: string
+}
+
+export interface ReporteOrdenesTrabajoResumen {
+  pendientes: number
+  enProgreso: number
+  vencidas: number
+  completadas: number
+  canceladas: number
+  rechazadas: number
+}
+
+export interface ReporteGestionTarea {
+  tipo: string
+  titulo: string
+  detalle: string
+  fechaSugerida: string
+  prioridad: string
+  lotesAfectados: number
+  origen: string
+}
+
+export interface ReporteGestionAgricolaResponse {
+  alertas: ReporteGestionAlerta[]
+  ordenesPorValidar: ReporteOrdenPorValidar[]
+  ordenesTrabajo: ReporteOrdenesTrabajoResumen
+  tareasRecomendadas: ReporteGestionTarea[]
 }

@@ -43,6 +43,9 @@ import type {
   RegistroCosechaRequest,
   ResolverLoteResponse,
   ReporteAgricolaDashboard,
+  ReporteCostosAgricolaResponse,
+  ReporteCostosFiltros,
+  ReporteGestionAgricolaResponse,
   RotacionRecomendacion,
   SeguimientoPlaga,
   SeguimientoPlagaRequest,
@@ -380,6 +383,16 @@ export class AgricolaService {
 
   getReporteAgricolaDashboard() {
     return this.http.get<ApiResponse<ReporteAgricolaDashboard> | ReporteAgricolaDashboard>(`${API_BASE_URL}/reportes/agricola/dashboard`).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  // Feature 84: Parte 1 · estadísticas de costo/ha filtrables por período, lote(s) y cultivo(s).
+  getReporteCostosAgricola(filtros: ReporteCostosFiltros) {
+    return this.http.get<ApiResponse<ReporteCostosAgricolaResponse> | ReporteCostosAgricolaResponse>(`${API_BASE_URL}/reportes/agricola/costos`, { params: cleanParams(filtros as unknown as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
+  }
+
+  // Feature 84: Parte 2 · gestión operativa (sin filtro de período).
+  getReporteGestionAgricola() {
+    return this.http.get<ApiResponse<ReporteGestionAgricolaResponse> | ReporteGestionAgricolaResponse>(`${API_BASE_URL}/reportes/agricola/gestion`).pipe(map((response) => unwrapApiResponse(response)));
   }
 
   getInsumosDashboard() {

@@ -3,6 +3,7 @@ package com.campoapp.agricultura.service.impl;
 import com.campoapp.agricultura.dto.insumos.*;
 import com.campoapp.agricultura.entity.Lote;
 import com.campoapp.agricultura.entity.insumos.*;
+import com.campoapp.agricultura.entity.plagas.OrdenAplicacion;
 import com.campoapp.agricultura.repository.LoteRepository;
 import com.campoapp.agricultura.repository.insumos.InsumoAgricolaRepository;
 import com.campoapp.agricultura.repository.insumos.MovimientoInsumoAgricolaRepository;
@@ -217,11 +218,7 @@ public class InsumoServiceImpl implements InsumoService {
             stockRepository.save(stock);
         }
         if (tipo == TipoMovimientoInsumo.SALIDA || tipo == TipoMovimientoInsumo.USO) {
-            if (stock.getCantidadDisponible().compareTo(cantidad) < 0) {
-                throw new BusinessException("Stock insuficiente para el movimiento solicitado");
-            }
-            stock.setCantidadDisponible(stock.getCantidadDisponible().subtract(cantidad));
-            stockRepository.save(stock);
+            descontarStock(stock, cantidad);
         }
         if (tipo == TipoMovimientoInsumo.AJUSTE && stock != null) {
             stock.setCantidadDisponible(cantidad);
@@ -252,6 +249,60 @@ public class InsumoServiceImpl implements InsumoService {
     public Page<MovimientoInsumoResponse> listarMovimientos(int page, int size) {
         return movimientoRepository.findByDeletedAtIsNullOrderByFechaDesc(PageRequest.of(page, size))
                 .map(this::toMovimientoResponse);
+    }
+
+    // Feature 84: al validar la orden se genera un movimiento de salida que descuenta stock y
+    // toma el costo del insumo. Idempotente: si ya existe un movimiento para la orden, lo devuelve.
+    @Override
+    public MovimientoInsumoResponse generarSalidaPorOrden(OrdenAplicacion orden, Long numero) {
+        InsumoAgricola insumo = orden.getInsumo();
+        if (insumo == null) {
+            throw new BusinessException("La orden no tiene insumo asociado");
+        }
+        MovimientoInsumoAgricola existente = movimientoRepository.findFirstByOrdenAplicacionIdAndDeletedAtIsNull(orden.getId());
+        if (existente != null) {
+            return toMovimientoResponse(existente);
+        }
+        // cantidad = dosis x superficie tratada; si no hay superficie se usa la dosis.
+        BigDecimal cantidad = orden.getDosis() == null ? BigDecimal.ZERO : orden.getDosis();
+        if (orden.getSuperficieTratadaHa() != null) {
+            cantidad = cantidad.multiply(orden.getSuperficieTratadaHa());
+        }
+        // costo del insumo del catalogo; si es null se guarda null (el calculo lo trata como 0).
+        BigDecimal costoUnitario = insumo.getPrecioUnitario();
+
+        // Se descuenta del stock FEFO (vencimiento mas proximo con disponibilidad) reutilizando la
+        // logica de descuento. Si el inventario no tiene stock cargado, se guarda el movimiento sin
+        // stock para no bloquear la validacion (el costo igual se contabiliza).
+        StockInsumoAgricola stock = stockRepository.findByInsumoIdAndDeletedAtIsNullOrderByFechaVencimientoAsc(insumo.getId()).stream()
+                .filter(s -> s.getCantidadDisponible() != null && s.getCantidadDisponible().compareTo(BigDecimal.ZERO) > 0)
+                .findFirst()
+                .orElse(null);
+        if (stock != null) {
+            descontarStock(stock, cantidad);
+        }
+
+        MovimientoInsumoAgricola movimiento = MovimientoInsumoAgricola.builder()
+                .insumo(insumo)
+                .stock(stock)
+                .lote(orden.getLote())
+                .fecha(orden.getFechaAplicacion() == null ? LocalDateTime.now() : orden.getFechaAplicacion())
+                .tipoMovimiento(TipoMovimientoInsumo.SALIDA)
+                .cantidad(cantidad)
+                .costoUnitario(costoUnitario)
+                .tareaReferencia("Orden OA-" + (numero == null ? "" : numero))
+                .ordenAplicacion(orden)
+                .build();
+        return toMovimientoResponse(movimientoRepository.save(movimiento));
+    }
+
+    // Feature 84: descuento de stock reutilizado por movimientos manuales y por ordenes.
+    private void descontarStock(StockInsumoAgricola stock, BigDecimal cantidad) {
+        if (stock.getCantidadDisponible().compareTo(cantidad) < 0) {
+            throw new BusinessException("Stock insuficiente para el movimiento solicitado");
+        }
+        stock.setCantidadDisponible(stock.getCantidadDisponible().subtract(cantidad));
+        stockRepository.save(stock);
     }
 
     private void validateInsumo(InsumoAgricolaRequest request, String currentId) {

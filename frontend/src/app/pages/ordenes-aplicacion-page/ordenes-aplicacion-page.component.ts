@@ -7,6 +7,7 @@ import { catchError } from 'rxjs/operators';
 import type {
   DeteccionPlaga,
   EstadoOrdenAplicacion,
+  InsumoAgricola,
   Lote,
   OperarioAsignable,
   OrdenAplicacion,
@@ -16,13 +17,14 @@ import type {
 import { AgricolaService } from '../../core/services/agricola.service';
 import { SessionService } from '../../core/services/session.service';
 import { UtilidadesService } from '../../core/services/utilidades.service';
+import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
 
 type OrdenFormState = OrdenAplicacionRequest & { id?: string };
 
 @Component({
   selector: 'app-ordenes-aplicacion-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
   templateUrl: './ordenes-aplicacion-page.component.html',
   styleUrl: './ordenes-aplicacion-page.component.css',
 })
@@ -36,6 +38,8 @@ export class OrdenesAplicacionPageComponent implements OnInit {
   protected readonly operarios = signal<OperarioAsignable[]>([]);
   protected readonly lotes = signal<Lote[]>([]);
   protected readonly detecciones = signal<DeteccionPlaga[]>([]);
+  // Feature 84: catálogo de insumos activos (inventario) para el selector de la orden.
+  protected readonly insumos = signal<InsumoAgricola[]>([]);
   // Unidades de dosis desde el catalogo de Utilidades (categoria UNIDAD_DOSIS).
   protected readonly unidades = signal<UtilidadOpcion[]>([]);
   protected readonly loading = signal(false);
@@ -111,13 +115,16 @@ export class OrdenesAplicacionPageComponent implements OnInit {
       detecciones: this.agricolaService.getDeteccionesPlaga(),
       // Resiliente: si el catalogo de unidades no es legible, no debe tumbar la lista de ordenes.
       unidades: this.utilidadesService.getUtilidadOpciones('UNIDAD_DOSIS').pipe(catchError(() => of([]))),
+      // Feature 84: catálogo de insumos activos (inventario). Resiliente ante error.
+      insumos: this.agricolaService.getInsumosActivos().pipe(catchError(() => of([]))),
     }).subscribe({
-      next: ({ ordenes, operarios, lotes, detecciones, unidades }) => {
+      next: ({ ordenes, operarios, lotes, detecciones, unidades, insumos }) => {
         this.ordenes.set(Array.isArray(ordenes) ? ordenes : []);
         this.operarios.set(Array.isArray(operarios) ? operarios : []);
         this.lotes.set(Array.isArray(lotes) ? lotes : []);
         this.detecciones.set(Array.isArray(detecciones) ? detecciones : []);
         this.unidades.set(Array.isArray(unidades) ? unidades : []);
+        this.insumos.set(Array.isArray(insumos) ? insumos : []);
         this.loading.set(false);
       },
       error: () => {
@@ -193,6 +200,7 @@ export class OrdenesAplicacionPageComponent implements OnInit {
       superficieTratadaHa: orden.superficieTratadaHa,
       maquinariaId: orden.maquinariaId,
       observaciones: orden.observaciones,
+      insumoId: orden.insumoId ?? '',
       operarioId: orden.operarioId,
     });
     this.modalOpen.set(true);
@@ -207,10 +215,21 @@ export class OrdenesAplicacionPageComponent implements OnInit {
     this.form.update((f) => ({ ...f, loteId, deteccionId: '' }));
   }
 
+  // Feature 84: al elegir un insumo del catálogo se completan producto y principio activo.
+  protected onInsumoChange(insumoId: string): void {
+    const insumo = this.insumos().find((i) => i.id === insumoId);
+    this.form.update((f) => ({
+      ...f,
+      insumoId: insumoId ?? '',
+      producto: insumo?.nombre ?? f.producto,
+      principioActivo: insumo?.principioActivo ?? f.principioActivo,
+    }));
+  }
+
   protected guardar(): void {
     const state = this.form();
-    if (!state.loteId || !state.deteccionId || !state.producto || !state.unidadDosis || state.dosis == null || !state.operarioId) {
-      this.error.set('Completá lote, detección, producto, dosis, unidad y operario asignado.');
+    if (!state.loteId || !state.deteccionId || !state.insumoId || !state.producto || !state.unidadDosis || state.dosis == null || !state.operarioId) {
+      this.error.set('Completá lote, detección, insumo, producto, dosis, unidad y operario asignado.');
       return;
     }
     this.saving.set(true);
@@ -227,6 +246,7 @@ export class OrdenesAplicacionPageComponent implements OnInit {
       superficieTratadaHa: state.superficieTratadaHa != null ? Number(state.superficieTratadaHa) : undefined,
       maquinariaId: state.maquinariaId,
       observaciones: state.observaciones,
+      insumoId: state.insumoId,
       operarioId: state.operarioId,
     };
     const request$ = state.id
@@ -276,6 +296,7 @@ export class OrdenesAplicacionPageComponent implements OnInit {
       producto: '',
       dosis: 0,
       unidadDosis: 'l/ha',
+      insumoId: '',
       operarioId: '',
     };
   }

@@ -1,5 +1,6 @@
 package com.campoapp.finanzas.entity;
 
+import com.campoapp.agricultura.entity.Lote;
 import com.campoapp.common.entity.AuditableEntity;
 import com.campoapp.operarios.entity.Operario;
 import jakarta.persistence.*;
@@ -10,7 +11,9 @@ import org.hibernate.type.SqlTypes;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "finanzas_compras")
@@ -66,4 +69,14 @@ public class CompraProveedor extends AuditableEntity {
     @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<CompraProveedorItem> items = new ArrayList<>();
+
+    // Feature 84: lotes a los que se atribuye el comprobante. El monto se prorratea por
+    // hectarea en tiempo de lectura (no se persiste el monto por lote).
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "finanzas_compra_lotes",
+            joinColumns = @JoinColumn(name = "compra_id"),
+            inverseJoinColumns = @JoinColumn(name = "lote_id"))
+    @Builder.Default
+    private Set<Lote> lotes = new HashSet<>();
 }

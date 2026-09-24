@@ -1,0 +1,26 @@
+<details class="ms" [class.disabled]="disabled">
+  <summary>
+    <span class="ms-label" *ngIf="label">{{ label }}</span>
+    <span class="ms-value">{{ summaryText() }}</span>
+    <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" /></svg>
+  </summary>
+  <div class="ms-panel">
+    <div class="ms-search">
+      <svg viewBox="0 0 24 24"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z" /><path d="m20 20-3.5-3.5" /></svg>
+      <input type="search" [placeholder]="placeholder" [ngModel]="query()" (ngModelChange)="onSearch($event)" />
+    </div>
+    <label class="ms-option all">
+      <input type="checkbox" [checked]="allSelected()" (change)="toggleAll()" />
+      {{ allLabel }}
+    </label>
+    <div class="ms-list">
+      <label class="ms-option" *ngFor="let item of filtered()">
+        <input type="checkbox" [checked]="isChecked(item)" (change)="toggle(item)" />
+        <i class="dot" *ngIf="itemColor(item)" [style.background]="itemColor(item)"></i>
+        <span class="name">{{ itemLabel(item) }}</span>
+        <span class="meta" *ngIf="itemMeta(item)">{{ itemMeta(item) }}</span>
+      </label>
+      <div class="ms-empty" *ngIf="!filtered().length">Sin coincidencias.</div>
+    </div>
+  </div>
+</details>

@@ -6,14 +6,17 @@ import com.campoapp.agricultura.dto.plagas.OperarioAsignableResponse;
 import com.campoapp.agricultura.dto.plagas.OrdenAplicacionRequest;
 import com.campoapp.agricultura.dto.plagas.OrdenAplicacionResponse;
 import com.campoapp.agricultura.entity.Lote;
+import com.campoapp.agricultura.entity.insumos.InsumoAgricola;
 import com.campoapp.agricultura.entity.plagas.DeteccionPlaga;
 import com.campoapp.agricultura.entity.plagas.EstadoOrdenAplicacion;
 import com.campoapp.agricultura.entity.plagas.OrdenAplicacion;
 import com.campoapp.agricultura.entity.plagas.OrdenAplicacionNumero;
 import com.campoapp.agricultura.repository.LoteRepository;
+import com.campoapp.agricultura.repository.insumos.InsumoAgricolaRepository;
 import com.campoapp.agricultura.repository.plagas.DeteccionPlagaRepository;
 import com.campoapp.agricultura.repository.plagas.OrdenAplicacionNumeroRepository;
 import com.campoapp.agricultura.repository.plagas.OrdenAplicacionRepository;
+import com.campoapp.agricultura.service.InsumoService;
 import com.campoapp.agricultura.service.OrdenAplicacionService;
 import com.campoapp.agricultura.service.PlagasService;
 import com.campoapp.common.exception.BusinessException;
@@ -42,8 +45,11 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
     private final DeteccionPlagaRepository deteccionRepository;
     private final LoteRepository loteRepository;
     private final OperarioRepository operarioRepository;
+    private final InsumoAgricolaRepository insumoRepository;
     // Reutiliza el alta de aplicacion "normal" del sistema al aceptar la orden.
     private final PlagasService plagasService;
+    // Feature 84: genera el movimiento de salida (costo/descuento de stock) al validar.
+    private final InsumoService insumoService;
 
     @Override
     public List<OperarioAsignableResponse> listarOperariosAsignables() {
@@ -87,10 +93,12 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
         }
         String responsableId = resolveResponsable(request.responsableId());
         String operarioId = validateOperario(request.operarioId());
+        InsumoAgricola insumo = resolveInsumoRequerido(request.insumoId());
 
         OrdenAplicacion orden = OrdenAplicacion.builder()
                 .lote(lote)
                 .deteccion(deteccion)
+                .insumo(insumo)
                 .fechaAplicacion(request.fechaAplicacion() != null ? request.fechaAplicacion() : LocalDateTime.now())
                 .producto(request.producto())
                 .principioActivo(request.principioActivo())
@@ -125,6 +133,7 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
         }
         orden.setLote(lote);
         orden.setDeteccion(deteccion);
+        orden.setInsumo(resolveInsumoRequerido(request.insumoId()));
         orden.setFechaAplicacion(request.fechaAplicacion() != null ? request.fechaAplicacion() : orden.getFechaAplicacion());
         orden.setProducto(request.producto());
         orden.setPrincipioActivo(request.principioActivo());
@@ -190,7 +199,13 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
         AplicacionFitosanitariaResponse aplicacion = plagasService.crearAplicacion(orden.getDeteccion().getId(), aplicacionRequest);
         orden.setAplicacionId(aplicacion.id());
         orden.setEstado(EstadoOrdenAplicacion.VALIDADA);
-        return toResponse(ordenRepository.save(orden), numeroDe(id));
+        OrdenAplicacion validada = ordenRepository.save(orden);
+        // Feature 84: al validar se genera el movimiento de salida que descuenta stock y toma el costo
+        // del insumo del catalogo. El generador es idempotente por orden_aplicacion_id.
+        if (validada.getInsumo() != null) {
+            insumoService.generarSalidaPorOrden(validada, numeroDe(id));
+        }
+        return toResponse(validada, numeroDe(id));
     }
 
     @Override
@@ -245,6 +260,16 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
             throw new BusinessException("No se pudo determinar el responsable de la orden");
         }
         return validateOperario(fallback);
+    }
+
+    // Feature 84: el insumo del catalogo es requerido en las ordenes nuevas.
+    private InsumoAgricola resolveInsumoRequerido(String insumoId) {
+        String value = blankToNull(insumoId);
+        if (value == null) {
+            throw new BusinessException("El insumo aplicado es requerido");
+        }
+        return insumoRepository.findByIdAndDeletedAtIsNull(value)
+                .orElseThrow(() -> new ResourceNotFoundException("Insumo no encontrado con id: " + value));
     }
 
     private String validateOperario(String operarioId) {
@@ -348,6 +373,8 @@ public class OrdenAplicacionServiceImpl implements OrdenAplicacionService {
                 o.getEstado(),
                 o.getMotivoRechazo(),
                 o.getAplicacionId(),
+                o.getInsumo() != null ? o.getInsumo().getId() : null,
+                o.getInsumo() != null ? o.getInsumo().getNombre() : null,
                 o.getCreatedAt(),
                 o.getUpdatedAt()
         );

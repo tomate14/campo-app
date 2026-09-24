@@ -1,0 +1,27 @@
+/* Feature 84 · multiselect con buscador (patrón <details> del diseño premium dark SaaS) */
+.ms { position: relative; z-index: 50; }
+.ms.disabled { opacity: .55; pointer-events: none; }
+.ms > summary { list-style: none; display: inline-flex; align-items: center; gap: 9px; min-height: 38px; min-width: 200px; border: 1px solid rgba(110, 168, 255, .15); border-radius: 12px; background: rgba(7, 15, 31, .44); color: #dbe8fb; padding: 0 12px; font-size: 13px; cursor: pointer; }
+.ms > summary::-webkit-details-marker { display: none; }
+.ms > summary:hover, .ms[open] > summary { border-color: rgba(159, 232, 112, .45); }
+.ms-label { color: #8fa4c3; font-weight: 600; }
+.ms-value { color: #f8fbff; font-weight: 700; }
+.ms > summary svg { margin-left: auto; width: 14px; height: 14px; color: #8fa4c3; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ms[open] > summary svg { transform: rotate(180deg); }
+
+.ms-panel { position: absolute; left: 0; top: calc(100% + 6px); width: 270px; padding: 8px; border-radius: 14px; border: 1px solid rgba(110, 168, 255, .2); background: #0b1730; box-shadow: 0 24px 50px rgba(2, 8, 23, .6); display: flex; flex-direction: column; gap: 6px; z-index: 60; }
+.ms-search { position: relative; }
+.ms-search svg { position: absolute; left: 11px; top: 11px; width: 15px; height: 15px; color: #8fa4c3; pointer-events: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ms-search input { width: 100%; min-height: 38px; border: 1px solid rgba(110, 168, 255, .18); border-radius: 10px; background: rgba(7, 15, 31, .7); color: #f8fbff; padding: 8px 10px 8px 34px; font: inherit; font-size: 13px; outline: none; }
+.ms-search input:focus { border-color: #9fe870; box-shadow: 0 0 0 3px rgba(159, 232, 112, .15); }
+
+.ms-list { max-height: 230px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; scrollbar-width: thin; scrollbar-color: rgba(159, 232, 112, .45) transparent; }
+.ms-option { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 9px; color: #dbe8fb; font-size: 13px; cursor: pointer; }
+.ms-option:hover { background: rgba(110, 168, 255, .08); }
+.ms-option.all { font-weight: 700; border-bottom: 1px solid rgba(110, 168, 255, .1); border-radius: 9px 9px 0 0; }
+.ms-option input { appearance: none; -webkit-appearance: none; flex: 0 0 auto; width: 16px; height: 16px; margin: 0; border-radius: 5px; border: 1px solid rgba(110, 168, 255, .35); display: grid; place-items: center; cursor: pointer; }
+.ms-option input:checked { border-color: #9fe870; background: #9fe870 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b1220' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center / 12px no-repeat; }
+.ms-option .dot { flex: 0 0 auto; width: 8px; height: 8px; border-radius: 50%; }
+.ms-option .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms-option .meta { color: #6980a4; font-size: 11px; white-space: nowrap; }
+.ms-empty { padding: 12px 10px; color: #8ea0bb; font-size: 12px; }

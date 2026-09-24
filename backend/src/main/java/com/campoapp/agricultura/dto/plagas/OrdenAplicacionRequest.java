@@ -21,5 +21,7 @@ public record OrdenAplicacionRequest(
         String maquinariaId,
         String observaciones,
         String responsableId,
-        @NotBlank String operarioId
+        @NotBlank String operarioId,
+        // Feature 84: insumo del catalogo aplicado. Requerido a nivel aplicacion en crear/actualizar.
+        String insumoId
 ) {}

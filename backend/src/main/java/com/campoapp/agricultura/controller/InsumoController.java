@@ -41,8 +41,11 @@ public class InsumoController {
         return ResponseEntity.ok(ApiResponse.ok(insumoService.listarInsumos(search, tipo, activo, page, size)));
     }
 
+    // Feature 84: el catalogo de insumos activos alimenta el selector de la orden de aplicacion
+    // (mobile/operario). Se permite tambien a los roles agricolas (read:lotes), ademas de inventario,
+    // para no dar 403 al operario (mismo criterio que las ordenes de aplicacion, ver V55).
     @GetMapping("/activos")
-    @PreAuthorize("hasAuthority('read:inventario')")
+    @PreAuthorize("hasAuthority('read:inventario') or hasAuthority('read:lotes')")
     public ResponseEntity<ApiResponse<List<InsumoAgricolaResponse>>> activos() {
         return ResponseEntity.ok(ApiResponse.ok(insumoService.listarInsumosActivos()));
     }

@@ -1,6 +1,8 @@
 package com.campoapp.finanzas.service.impl;
 
+import com.campoapp.agricultura.entity.Lote;
 import com.campoapp.agricultura.entity.insumos.InsumoAgricola;
+import com.campoapp.agricultura.repository.LoteRepository;
 import com.campoapp.agricultura.repository.insumos.InsumoAgricolaRepository;
 import com.campoapp.common.exception.BusinessException;
 import com.campoapp.common.exception.ResourceNotFoundException;
@@ -19,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +33,7 @@ public class ComprasProveedoresServiceImpl implements ComprasProveedoresService 
     private final CompraProveedorRepository compraRepository;
     private final PagoProveedorRepository pagoRepository;
     private final InsumoAgricolaRepository insumoRepository;
+    private final LoteRepository loteRepository;
     private final OperarioRepository operarioRepository;
 
     @Override
@@ -132,7 +138,24 @@ public class ComprasProveedoresServiceImpl implements ComprasProveedoresService 
         compra.setIva(iva);
         compra.setTotal(subtotal.add(iva));
         compra.setSaldoPendiente(compra.getTotal());
+        compra.setLotes(resolveLotes(request.loteIds()));
         return toCompraResponse(compraRepository.save(compra));
+    }
+
+    // Feature 84: resuelve los lotes atribuidos a la compra (para el prorrateo por hectarea).
+    private Set<Lote> resolveLotes(List<String> loteIds) {
+        Set<Lote> lotes = new LinkedHashSet<>();
+        if (loteIds == null) {
+            return lotes;
+        }
+        for (String loteId : loteIds) {
+            if (loteId == null || loteId.isBlank()) {
+                continue;
+            }
+            lotes.add(loteRepository.findActiveById(loteId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Lote no encontrado con id: " + loteId)));
+        }
+        return lotes;
     }
 
     @Override
@@ -200,6 +223,6 @@ public class ComprasProveedoresServiceImpl implements ComprasProveedoresService 
 
     private ProveedorResponse toProveedorResponse(ProveedorFinanciero p) { return new ProveedorResponse(p.getId(), p.getRazonSocial(), p.getCuit(), p.getCondicionFiscal(), p.getEmail(), p.getTelefono(), p.getDireccion(), p.getCategoria(), p.getActivo(), p.getCreatedAt(), p.getUpdatedAt()); }
     private CompraItemResponse toItemResponse(CompraProveedorItem i) { return new CompraItemResponse(i.getId(), i.getInsumo() == null ? null : i.getInsumo().getId(), i.getInsumo() == null ? null : i.getInsumo().getNombre(), i.getDescripcion(), i.getCantidad(), i.getUnidad(), i.getPrecioUnitario(), i.getIvaPorcentaje(), i.getSubtotal()); }
-    private CompraResponse toCompraResponse(CompraProveedor c) { return new CompraResponse(c.getId(), c.getProveedor().getId(), c.getProveedor().getRazonSocial(), c.getProveedor().getCuit(), c.getOperario() == null ? null : c.getOperario().getId(), nombreCompleto(c.getOperario()), c.getTipoComprobante(), c.getNumeroComprobante(), c.getFechaEmision(), c.getFechaVencimiento(), c.getEstado(), c.getSubtotal(), c.getIva(), c.getTotal(), c.getSaldoPendiente(), c.getObservaciones(), c.getItems().stream().map(this::toItemResponse).toList(), c.getCreatedAt()); }
+    private CompraResponse toCompraResponse(CompraProveedor c) { return new CompraResponse(c.getId(), c.getProveedor().getId(), c.getProveedor().getRazonSocial(), c.getProveedor().getCuit(), c.getOperario() == null ? null : c.getOperario().getId(), nombreCompleto(c.getOperario()), c.getTipoComprobante(), c.getNumeroComprobante(), c.getFechaEmision(), c.getFechaVencimiento(), c.getEstado(), c.getSubtotal(), c.getIva(), c.getTotal(), c.getSaldoPendiente(), c.getObservaciones(), c.getItems().stream().map(this::toItemResponse).toList(), c.getLotes().stream().map(l -> new CompraLoteRef(l.getId(), l.getNombre(), l.getArea())).toList(), c.getCreatedAt()); }
     private PagoProveedorResponse toPagoResponse(PagoProveedor p) { return new PagoProveedorResponse(p.getId(), p.getCompra().getId(), p.getCompra().getNumeroComprobante(), p.getCompra().getProveedor().getRazonSocial(), p.getOperario() == null ? null : p.getOperario().getId(), nombreCompleto(p.getOperario()), p.getFecha(), p.getMetodoPago(), p.getImporte(), p.getReferencia(), p.getObservaciones(), p.getCreatedAt()); }
 }

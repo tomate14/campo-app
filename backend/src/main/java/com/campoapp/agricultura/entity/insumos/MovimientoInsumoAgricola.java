@@ -1,6 +1,7 @@
 package com.campoapp.agricultura.entity.insumos;
 
 import com.campoapp.agricultura.entity.Lote;
+import com.campoapp.agricultura.entity.plagas.OrdenAplicacion;
 import com.campoapp.common.entity.AuditableEntity;
 import com.campoapp.operarios.entity.Operario;
 import jakarta.persistence.*;
@@ -27,6 +28,12 @@ public class MovimientoInsumoAgricola extends AuditableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lote_id")
     private Lote lote;
+
+    // Feature 84: orden de aplicacion que genero este movimiento (nullable). Sirve para
+    // idempotencia (no duplicar el costo al re-validar) y para trazabilidad orden -> movimiento.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orden_aplicacion_id")
+    private OrdenAplicacion ordenAplicacion;
 
     @Column(nullable = false)
     private LocalDateTime fecha;

@@ -106,6 +106,17 @@
         <label><span>Fecha</span>
           <input type="datetime-local" [ngModel]="form().fechaAplicacion" (ngModelChange)="form.update(f => ({ ...f, fechaAplicacion: $event }))" />
         </label>
+        <app-remote-search-select
+          label="Insumo"
+          placeholder="Buscar insumo del catálogo"
+          [options]="insumos()"
+          valueField="id"
+          labelField="nombre"
+          [subtitleFields]="['unidadMedidaNombre', 'tipoNombre']"
+          [searchFields]="['nombre', 'codigo', 'principioActivo']"
+          [value]="form().insumoId"
+          (valueChange)="onInsumoChange($event)"
+        ></app-remote-search-select>
         <label><span>Producto</span>
           <input type="text" [ngModel]="form().producto" (ngModelChange)="form.update(f => ({ ...f, producto: $event }))" />
         </label>

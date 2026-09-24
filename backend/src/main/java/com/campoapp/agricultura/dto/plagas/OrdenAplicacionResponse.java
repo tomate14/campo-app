@@ -31,6 +31,9 @@ public record OrdenAplicacionResponse(
         EstadoOrdenAplicacion estado,
         String motivoRechazo,
         String aplicacionId,
+        // Feature 84: insumo del catalogo aplicado (nombre resuelto del catalogo de insumos).
+        String insumoId,
+        String insumoNombre,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {}

@@ -3,6 +3,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { API_BASE_URL } from '../../core/services/api.config'
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component'
+import { MultiSearchSelectComponent } from '../../shared/multi-search-select/multi-search-select.component'
 import { AgricolaService } from '../../core/services/agricola.service'
 import { OperariosService } from '../../core/services/operarios.service'
 import type { Operario } from '../../core/models/operarios.models'
@@ -16,7 +17,7 @@ type Modal = 'PROVEEDOR' | 'COMPRA' | 'PAGO' | 'DETALLE_COMPRA' | null
 @Component({
   selector: 'app-finanzas-compras-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
+  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent, MultiSearchSelectComponent],
   templateUrl: './finanzas-compras-page.component.html',
   styleUrl: './finanzas-compras-page.component.css',
 })
@@ -37,6 +38,8 @@ export class FinanzasComprasPageComponent implements OnInit {
   protected readonly comprasPage = signal<PageResponse<CompraProveedor> | null>(null)
   protected readonly pagosPage = signal<PageResponse<PagoProveedor> | null>(null)
   protected readonly insumos = signal<InsumoAgricola[]>([])
+  // Feature 84: catálogo de lotes para el multiselect de atribución de la compra.
+  protected readonly loteOptions = signal<{ id: string; nombre: string; metaText: string; color: string }[]>([])
   protected readonly tab = signal<Tab>('COMPRAS')
   protected readonly modal = signal<Modal>(null)
   protected readonly editingProveedorId = signal<string | null>(null)
@@ -59,12 +62,14 @@ export class FinanzasComprasPageComponent implements OnInit {
   protected readonly estadoOptions: EstadoCompra[] = ['REGISTRADA', 'PARCIAL', 'PAGADA', 'VENCIDA', 'ANULADA']
   protected readonly metodoPagoOptions: MetodoPago[] = ['EFECTIVO', 'TRANSFERENCIA', 'CHEQUE', 'TARJETA', 'RETENCION', 'OTRO']
   protected readonly proveedorForm = signal<ProveedorRequest>({ razonSocial: '', cuit: '', condicionFiscal: 'RESPONSABLE_INSCRIPTO', email: '', telefono: '', direccion: '', categoria: '', activo: true })
-  protected readonly compraForm = signal<CompraRequest>({ proveedorId: '', operarioId: '', tipoComprobante: 'FACTURA_A', numeroComprobante: '', fechaEmision: this.today(), fechaVencimiento: this.addDays(15), observaciones: '', items: [{ descripcion: '', cantidad: 1, unidad: 'UN', precioUnitario: 0, ivaPorcentaje: 21 }] })
+  protected readonly compraForm = signal<CompraRequest>({ proveedorId: '', operarioId: '', tipoComprobante: 'FACTURA_A', numeroComprobante: '', fechaEmision: this.today(), fechaVencimiento: this.addDays(15), observaciones: '', loteIds: [], items: [{ descripcion: '', cantidad: 1, unidad: 'UN', precioUnitario: 0, ivaPorcentaje: 21 }] })
   protected readonly pagoForm = signal<PagoProveedorRequest>({ compraId: '', operarioId: '', fecha: this.today(), metodoPago: 'TRANSFERENCIA', importe: 0, referencia: '', observaciones: '' })
 
   ngOnInit() {
     this.loadAll()
     this.agricola.getInsumosActivos().subscribe({ next: v => this.insumos.set(v), error: () => undefined })
+    // Feature 84: cargar lotes para el multiselect de atribución de la compra.
+    this.agricola.getLotes().subscribe({ next: v => this.loteOptions.set(v.map((l, i) => ({ id: l.id, nombre: l.nombre, metaText: `${this.number(l.area)} ha · ${l.cultivoNombre ?? l.cultivo ?? 'Sin cultivo'}`, color: ['#9fe870', '#ffb84d', '#6ea8ff', '#b68cff', '#a3e635', '#39d0d8'][i % 6] }))), error: () => undefined })
     // Cargar catalogos una sola vez para los selects con buscador (feature 62)
     this.service.proveedores({ size: 1000 }).subscribe({ next: v => this.proveedores.set(v.content), error: () => undefined })
     this.operariosService.getOperarios().subscribe({ next: v => this.operarios.set(v), error: () => undefined })
@@ -105,7 +110,8 @@ export class FinanzasComprasPageComponent implements OnInit {
   private afterSave() { this.closeModal(); this.loadAll() }
   private fail(msg: string) { this.saving.set(false); this.error.set(msg) }
   private cleanProveedor(): ProveedorRequest { const f = this.proveedorForm(); return { ...f, email: f.email || undefined, telefono: f.telefono || undefined, direccion: f.direccion || undefined, categoria: f.categoria || undefined } }
-  private cleanCompra(): CompraRequest { const f = this.compraForm(); return { ...f, operarioId: f.operarioId || undefined, observaciones: f.observaciones || undefined, items: f.items.map(i => ({ ...i, cantidad: Number(i.cantidad), precioUnitario: Number(i.precioUnitario), ivaPorcentaje: Number(i.ivaPorcentaje ?? 21) })) } }
+  protected onCompraLotesChange(ids: string[]) { this.compraForm.update(f => ({ ...f, loteIds: ids })) }
+  private cleanCompra(): CompraRequest { const f = this.compraForm(); return { ...f, operarioId: f.operarioId || undefined, observaciones: f.observaciones || undefined, loteIds: f.loteIds?.length ? f.loteIds : undefined, items: f.items.map(i => ({ ...i, cantidad: Number(i.cantidad), precioUnitario: Number(i.precioUnitario), ivaPorcentaje: Number(i.ivaPorcentaje ?? 21) })) } }
   private cleanPago(): PagoProveedorRequest { const f = this.pagoForm(); return { ...f, operarioId: f.operarioId || undefined, importe: Number(f.importe), referencia: f.referencia || undefined, observaciones: f.observaciones || undefined } }
   private resetProveedorForm() { this.editingProveedorId.set(null); this.proveedorForm.set({ razonSocial: '', cuit: '', condicionFiscal: 'RESPONSABLE_INSCRIPTO', email: '', telefono: '', direccion: '', categoria: '', activo: true }) }
   protected money(v?: number) { return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number(v || 0)) }
