@@ -1,272 +1,186 @@
-<div class="page">
-  <header class="sanidad-head">
-    <div>
-      <p class="eyebrow">Campo App · Ganadería</p>
-      <h2>Sanidad y vacunación</h2>
-      <p>Calendario sanitario, aplicaciones, tratamientos, diagnósticos y auditoría del rodeo.</p>
-    </div>
-    <div class="head-actions">
-      <button class="btn-secondary sanidad-action" type="button" (click)="exportReporte()">
-        <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>
-        Exportar auditoría
-      </button>
-      <button class="btn-secondary sanidad-action" type="button" (click)="openVacunaModal()">
-        <svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>
-        Nueva vacuna
-      </button>
-      <button class="btn-primary sanidad-action" type="button" (click)="openAplicacionModal()">
-        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
-        Registrar aplicación
-      </button>
-    </div>
-  </header>
+<div class="sanidad-page">
+  <app-page-header
+    eyebrow="Campo App · Ganadería"
+    title="Sanidad y vacunación"
+    subtitle="Calendario sanitario, aplicaciones, tratamientos, diagnósticos y auditoría del rodeo."
+  >
+    <button class="btn-secondary" type="button" (click)="exportReporte()">
+      <app-svg-icon [path]="icons.download" [size]="16"></app-svg-icon>
+      Exportar auditoría
+    </button>
+    <button class="btn-secondary" type="button" (click)="openVacunaModal()">
+      <app-svg-icon [path]="icons.syringe" [size]="16"></app-svg-icon>
+      Nueva vacuna
+    </button>
+    <button class="btn-primary" type="button" (click)="openAplicacionModal()">
+      <app-svg-icon [path]="icons.plus" [size]="16"></app-svg-icon>
+      Registrar aplicación
+    </button>
+  </app-page-header>
 
-  <div class="stats-grid sanidad-kpis" *ngIf="dashboard() as summary">
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></div><div class="kpi-copy"><span>Catálogo</span><small>Vacunas disponibles</small></div><strong>{{ summary.vacunasCatalogadas }}</strong></article>
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></div><div class="kpi-copy"><span>Aplicaciones del mes</span><small>Actividad sanitaria</small></div><strong>{{ summary.aplicacionesMesActual }}</strong></article>
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 4v7" /><path d="M8 8c0 2 1.8 4 4 4s4-2 4-4" /><path d="M7 14c0 3 2 6 5 6s5-3 5-6" /><path d="M6 4v3a2 2 0 0 0 4 0V4M14 4v3a2 2 0 0 0 4 0V4" /></svg></div><div class="kpi-copy"><span>Diagnósticos abiertos</span><small>Casos en seguimiento</small></div><strong>{{ summary.diagnosticosAbiertos }}</strong></article>
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg></div><div class="kpi-copy"><span>Tratamientos activos</span><small>Protocolos vigentes</small></div><strong>{{ summary.tratamientosActivos }}</strong></article>
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" /></svg></div><div class="kpi-copy"><span>Costo sanitario mes</span><small>Inversión mensual</small></div><strong>${{ summary.costoSanitarioMes | number:'1.0-2' }}</strong></article>
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 3.5 18h17L12 3Z" /><path d="M12 9v4m0 3h.01" /></svg></div><div class="kpi-copy"><span>Alertas vencidas</span><small>Requieren atención</small></div><strong>{{ alertasCriticas() }}</strong></article>
-  </div>
-
-  <div class="card filters-card">
-    <div class="filters-grid">
-      <label>
-        <span>Animal</span>
-        <select [ngModel]="filters().animalId" (ngModelChange)="updateFilter('animalId', $event)">
-          <option value="">Todos</option>
-          <option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option>
-        </select>
-      </label>
-      <label>
-        <span>Diagnostico</span>
-        <select [ngModel]="filters().estadoDiagnostico" (ngModelChange)="updateFilter('estadoDiagnostico', $event)">
-          <option value="">Todos</option>
-          <option value="ABIERTO">Abierto</option>
-          <option value="CONTROLADO">Controlado</option>
-          <option value="CERRADO">Cerrado</option>
-        </select>
-      </label>
-      <label>
-        <span>Vacunas</span>
-        <select [ngModel]="filters().obligatoria" (ngModelChange)="updateFilter('obligatoria', $event)">
-          <option value="">Todas</option>
-          <option value="true">Obligatorias</option>
-          <option value="false">Complementarias</option>
-        </select>
-      </label>
-    </div>
-    <div class="card-actions">
-      <button class="btn-primary" type="button" (click)="applyFilters()">Aplicar filtros</button>
-      <button class="btn-secondary" type="button" (click)="openTratamientoModal()">Nuevo tratamiento</button>
-      <button class="btn-secondary" type="button" (click)="openDiagnosticoModal()">Nuevo diagnostico</button>
-    </div>
-  </div>
+  <section class="kpi-grid" *ngIf="dashboard() as summary">
+    <app-kpi-card label="Catálogo" [value]="summary.vacunasCatalogadas" sub="Vacunas disponibles" tone="green">
+      <app-svg-icon icon [path]="icons.syringe" [size]="24"></app-svg-icon>
+    </app-kpi-card>
+    <app-kpi-card label="Aplicaciones del mes" [value]="summary.aplicacionesMesActual" sub="Actividad sanitaria" tone="blue">
+      <app-svg-icon icon [path]="icons.calendar" [size]="24"></app-svg-icon>
+    </app-kpi-card>
+    <app-kpi-card label="Diagnósticos abiertos" [value]="summary.diagnosticosAbiertos" sub="Casos en seguimiento" tone="yellow">
+      <app-svg-icon icon [path]="icons.stethoscope" [size]="24"></app-svg-icon>
+    </app-kpi-card>
+    <app-kpi-card label="Tratamientos activos" [value]="summary.tratamientosActivos" sub="Protocolos vigentes" tone="green">
+      <app-svg-icon icon [path]="icons.shield" [size]="24"></app-svg-icon>
+    </app-kpi-card>
+    <app-kpi-card label="Costo sanitario mes" [value]="formatMoney(summary.costoSanitarioMes)" sub="Inversión mensual" tone="cyan">
+      <app-svg-icon icon [path]="icons.dollar" [size]="24"></app-svg-icon>
+    </app-kpi-card>
+    <app-kpi-card label="Alertas vencidas" [value]="alertasCriticas()" sub="Requieren atención" tone="red">
+      <app-svg-icon icon [path]="icons.alert" [size]="24"></app-svg-icon>
+    </app-kpi-card>
+  </section>
 
   <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
-  <div class="card empty-box" *ngIf="loading()">Cargando sanidad...</div>
 
-  <div class="sanidad-stack" *ngIf="!loading()">
-    <div class="sanidad-top-row">
-    <section class="card top-panel vaccination-alert-panel">
-      <div class="sanitary-tabs-bar catalog-tabs-bar">
-        <div class="catalog-head catalog-head--inline">
-          <div class="catalog-head__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg>
-          </div>
-          <div>
-            <h3>Alertas de vacunación</h3>
-            <p>Vacunas próximas a inyectarse o vencidas para seguimiento operativo.</p>
-          </div>
-        </div>
-        <button class="section-toggle" type="button" (click)="toggleAlertas()" [attr.aria-expanded]="!alertasCollapsed()" aria-label="Colapsar alertas de vacunación">
-          <span>{{ alertasVacunacionPorVacuna().length }} vacunas</span>
-          <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="alertasCollapsed()"><path d="m6 9 6 6 6-6" /></svg>
+  <!-- Banda resumen de alertas de vacunación -->
+  <section class="alert-banner card">
+    <span class="alert-banner__icon"><app-svg-icon [path]="icons.bell" [size]="20"></app-svg-icon></span>
+    <strong class="alert-banner__title">Vacunación</strong>
+    <span class="pill" data-tone="red">{{ alertasCriticas() }} vencidas</span>
+    <span class="pill" data-tone="yellow">{{ totalProximasAVencer() }} próximas 30 días</span>
+    <span class="alert-banner__muted">{{ totalAnimalesConAlertasVacuna() }} animales afectados</span>
+    <button class="link-btn alert-banner__link" type="button" (click)="setActiveTab('ALERTAS')">
+      Ver alertas <app-svg-icon [path]="icons.arrowRight" [size]="14"></app-svg-icon>
+    </button>
+  </section>
+
+  <section class="panel card">
+    <div class="panel-top">
+      <app-stat-tabs [tabs]="sanidadTabs()" [active]="activeTab()" (activeChange)="setActiveTab($event)"></app-stat-tabs>
+      <span class="panel-count">{{ panelCountLabel() }}</span>
+    </div>
+
+    <div class="card empty-box" *ngIf="loading()">Cargando sanidad...</div>
+
+    <ng-container *ngIf="!loading()">
+      <!-- Fila de filtros comun a todas las pestanas -->
+      <div class="filters-row">
+        <label class="field">
+          <span>Animal</span>
+          <select [ngModel]="filters().animalId" (ngModelChange)="changeFilter('animalId', $event)">
+            <option value="">Todos</option>
+            <option *ngFor="let animal of animales()" [value]="animal.id">{{ animal.caravana }} · {{ animal.raza }}</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Diagnóstico</span>
+          <select [ngModel]="filters().estadoDiagnostico" (ngModelChange)="changeFilter('estadoDiagnostico', $event)">
+            <option value="">Todos</option>
+            <option value="ABIERTO">Abierto</option>
+            <option value="CONTROLADO">Controlado</option>
+            <option value="CERRADO">Cerrado</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Vacunas</span>
+          <select [ngModel]="filters().obligatoria" (ngModelChange)="changeFilter('obligatoria', $event)">
+            <option value="">Todas</option>
+            <option value="true">Obligatorias</option>
+            <option value="false">Complementarias</option>
+          </select>
+        </label>
+
+        <button class="btn-secondary filter-cta" type="button" *ngIf="activeTab() === 'TRATAMIENTOS'" (click)="openTratamientoModal()">
+          <app-svg-icon [path]="icons.plus" [size]="15"></app-svg-icon>
+          Nuevo tratamiento
         </button>
+        <button class="btn-secondary filter-cta" type="button" *ngIf="activeTab() === 'DIAGNOSTICOS'" (click)="openDiagnosticoModal()">
+          <app-svg-icon [path]="icons.plus" [size]="15"></app-svg-icon>
+          Nuevo diagnóstico
+        </button>
+        <button class="btn-secondary filter-cta" type="button" *ngIf="activeTab() === 'CATALOGO'" (click)="openVacunaModal()">
+          <app-svg-icon [path]="icons.plus" [size]="15"></app-svg-icon>
+          Nueva vacuna
+        </button>
+
+        <div class="view-toggle" *ngIf="activeTab() !== 'ALERTAS'">
+          <button type="button" [class.is-active]="viewMode() === 'TABLA'" (click)="setViewMode('TABLA')">
+            <app-svg-icon [path]="icons.table" [size]="15"></app-svg-icon>
+            Tabla
+          </button>
+          <button type="button" [class.is-active]="viewMode() === 'TARJETAS'" (click)="setViewMode('TARJETAS')">
+            <app-svg-icon [path]="icons.grid" [size]="15"></app-svg-icon>
+            Tarjetas
+          </button>
+        </div>
       </div>
 
-      <ng-container *ngIf="!alertasCollapsed(); else alertasCollapsedState">
-        <div class="vaccination-alert-table-wrap" *ngIf="alertasVacunacionPorVacuna().length; else noAlertas">
-          <div class="vaccination-alert-summary">
-            <div>
-              <span>Animales afectados</span>
-              <strong>{{ totalAnimalesConAlertasVacuna() }}</strong>
-            </div>
-            <div class="danger">
-              <span>Vencidas</span>
-              <strong>{{ alertasCriticas() }}</strong>
-            </div>
-            <div class="warning">
-              <span>Próximas a vencer</span>
-              <strong>{{ totalProximasAVencer() }}</strong>
-            </div>
+      <!-- TAB: ALERTAS DE VACUNACION -->
+      <ng-container *ngIf="activeTab() === 'ALERTAS'">
+        <div class="alert-summary">
+          <div class="alert-summary__item">
+            <span>Animales afectados</span>
+            <strong>{{ totalAnimalesConAlertasVacuna() }}</strong>
           </div>
-          <table class="vaccination-alert-table">
+          <div class="alert-summary__item alert-summary__item--danger">
+            <span>Vencidas</span>
+            <strong>{{ alertasCriticas() }}</strong>
+          </div>
+          <div class="alert-summary__item alert-summary__item--warning">
+            <span>Próximas a vencer</span>
+            <strong>{{ totalProximasAVencer() }}</strong>
+          </div>
+        </div>
+
+        <div class="table-wrap" *ngIf="alertasVacunacionPorVacuna().length; else noAlertas">
+          <table class="data-table">
             <thead>
               <tr>
-                <th>Vacuna</th>
-                <th>Tipo</th>
-                <th>Animales</th>
-                <th>Vencidas</th>
-                <th>Próximas</th>
-                <th>Más vencida</th>
-                <th>Próxima fecha</th>
+                <th>Vacuna</th><th>Tipo</th><th>Animales</th><th>Vencidas</th><th>Próximas</th><th>Más vencida</th><th>Próxima fecha</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let alerta of alertasVacunacionPorVacuna()">
                 <td>
-                  <div class="vaccine-table-identity">
-                    <span class="vaccine-table-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></span>
+                  <div class="cell-animal">
+                    <span class="cell-avatar"><app-svg-icon [path]="icons.bell" [size]="18"></app-svg-icon></span>
                     <div>
                       <strong>{{ alerta.vacunaNombre }}</strong>
                       <small>{{ alerta.vacunaCodigo || 'Sin código' }}</small>
                     </div>
                   </div>
                 </td>
-                <td><span class="catalog-badge" [class.catalog-badge--secondary]="!alerta.obligatoria">{{ alerta.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
+                <td><span class="pill" [attr.data-tone]="alerta.obligatoria ? 'green' : 'blue'">{{ alerta.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
                 <td><strong>{{ alerta.animalesAfectados }}</strong></td>
-                <td><span class="alert-count alert-count--danger">{{ alerta.vencidas }}</span></td>
-                <td><span class="alert-count alert-count--warning">{{ alerta.proximasAVencer }}</span></td>
+                <td><span class="pill" data-tone="red">{{ alerta.vencidas }} vencidas</span></td>
+                <td><span class="pill" data-tone="yellow">{{ alerta.proximasAVencer }} próximas</span></td>
                 <td>{{ alerta.fechaMasVencida || 'Sin vencidas' }}</td>
                 <td>
                   <strong>{{ alerta.proximaFecha || 'Sin próximas' }}</strong>
-                  <small class="table-muted" *ngIf="alerta.proximaFecha">{{ alerta.diasProximaFecha }} días</small>
+                  <small class="cell-muted" *ngIf="alerta.proximaFecha">{{ alerta.diasProximaFecha }} días</small>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+        <ng-template #noAlertas>
+          <div class="empty-box premium-empty-box">No hay próximas vacunas a inyectarse.</div>
+        </ng-template>
       </ng-container>
 
-      <ng-template #noAlertas>
-        <div class="empty-box premium-empty-box empty-box--section">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-          <div>
-            <strong>Sin próximas vacunas</strong>
-            <p>No hay próximas vacunas a inyectarse.</p>
-          </div>
-        </div>
-      </ng-template>
-
-      <ng-template #alertasCollapsedState>
-        <div class="section-collapsed-summary">Alertas ocultas. {{ alertasVacunacionPorVacuna().length }} vacunas con seguimiento pendiente.</div>
-      </ng-template>
-    </section>
-
-    <section class="card top-panel catalog-panel sanitary-tabs-panel">
-      <div class="sanitary-tabs-bar catalog-tabs-bar">
-        <div class="catalog-head catalog-head--inline">
-          <div class="catalog-head__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>
-          </div>
-          <div>
-            <h3>Catálogo de vacunación</h3>
-            <p>Gestión y referencia de vacunas disponibles.</p>
-          </div>
-        </div>
-        <div class="sanitary-tabs-meta">
-          <span *ngIf="!catalogCollapsed()">{{ catalogRangeLabel() }}</span>
-          <button type="button" (click)="previousCatalogPage()" [disabled]="catalogPage() === 1" aria-label="Anterior catálogo"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg></button>
-          <button type="button" *ngFor="let page of catalogPageNumbers()" [class.active]="page === catalogPage()" (click)="setCatalogPage(page)">{{ page }}</button>
-          <button type="button" (click)="nextCatalogPage()" [disabled]="catalogPage() === catalogTotalPages()" aria-label="Siguiente catálogo"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button>
-          <button class="section-toggle section-toggle--compact" type="button" (click)="toggleCatalogo()" [attr.aria-expanded]="!catalogCollapsed()" aria-label="Colapsar catálogo de vacunación">
-            <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="catalogCollapsed()"><path d="m6 9 6 6 6-6" /></svg>
-          </button>
-        </div>
-      </div>
-
-      <ng-container *ngIf="!catalogCollapsed(); else catalogCollapsedState">
-        <div class="catalog-table-wrap" *ngIf="paginatedVacunas().length; else noVacunasCatalogo">
-          <table class="catalog-data-table">
+      <!-- TAB: VACUNACIONES REGISTRADAS -->
+      <ng-container *ngIf="activeTab() === 'APLICACIONES'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && aplicaciones().length; else noAplicaciones">
+          <table class="data-table data-table--clickable">
             <thead>
               <tr>
-                <th>Vacuna</th>
-                <th>Tipo</th>
-                <th>Dosis</th>
-                <th>Frecuencia</th>
-                <th>Stock</th>
-                <th>Costo ref.</th>
+                <th>Vacuna</th><th>Animal</th><th>Fecha</th><th>Próxima dosis</th><th>Responsable</th><th>Lote / Serie</th><th>Costo</th><th>Tipo</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let vacuna of paginatedVacunas()">
+              <tr *ngFor="let aplicacion of aplicaciones()" (click)="openDetalleAplicacion(aplicacion)">
                 <td>
-                  <div class="vaccine-table-identity">
-                    <span class="vaccine-table-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></span>
-                    <div>
-                      <strong>{{ vacuna.nombre }}</strong>
-                      <small>{{ vacuna.codigo }} · {{ vacuna.laboratorio || 'Sin laboratorio' }}</small>
-                    </div>
-                  </div>
-                </td>
-                <td><span class="catalog-badge" [class.catalog-badge--secondary]="!vacuna.obligatoria">{{ vacuna.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
-                <td>{{ vacuna.dosisRecomendada || 'Sin dato' }}</td>
-                <td>{{ vacuna.frecuenciaDias ? (vacuna.frecuenciaDias + ' días') : 'Sin dato' }}</td>
-                <td>{{ vacuna.stockDisponible ?? 'Sin dato' }}</td>
-                <td>${{ vacuna.costoReferencia ?? 0 }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <ng-template #noVacunasCatalogo><div class="empty-box premium-empty-box">Sin vacunas disponibles.</div></ng-template>
-      </ng-container>
-
-      <ng-template #catalogCollapsedState>
-        <div class="section-collapsed-summary">Catálogo oculto. {{ vacunas().length }} vacunas disponibles.</div>
-      </ng-template>
-    </section>
-
-    </div>
-
-    <section class="card right-panel right-panel--premium sanitary-tabs-panel">
-      <div class="sanitary-tabs-bar">
-        <div class="sanitary-tabs">
-          <button type="button" [class.active]="activeTab() === 'APLICACIONES'" (click)="setActiveTab('APLICACIONES')">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v6c0 4.5 2.8 7.5 7 9 4.2-1.5 7-4.5 7-9V6l-7-3Z" /><path d="m9 12 2 2 4-5" /></svg>
-            <span>Vacunaciones registradas</span>
-          </button>
-          <button type="button" [class.active]="activeTab() === 'TRATAMIENTOS'" (click)="setActiveTab('TRATAMIENTOS')">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg>
-            <span>Tratamientos</span>
-          </button>
-          <button type="button" [class.active]="activeTab() === 'DIAGNOSTICOS'" (click)="setActiveTab('DIAGNOSTICOS')">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v7" /><path d="M8 8c0 2 1.8 4 4 4s4-2 4-4" /><path d="M7 14c0 3 2 6 5 6s5-3 5-6" /><path d="M6 4v3a2 2 0 0 0 4 0V4M14 4v3a2 2 0 0 0 4 0V4" /></svg>
-            <span>Diagnósticos</span>
-          </button>
-        </div>
-        <div class="sanitary-tabs-meta">
-          <span *ngIf="!registrosCollapsed()">{{ tabRangeLabel() }}</span>
-          <button type="button" (click)="previousTabPage()" [disabled]="tabPage() === 1" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg></button>
-          <button type="button" *ngFor="let page of tabPageNumbers()" [class.active]="page === tabPage()" (click)="setTabPage(page)">{{ page }}</button>
-          <button type="button" (click)="nextTabPage()" [disabled]="tabPage() === tabTotalPages()" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg></button>
-          <button class="section-toggle section-toggle--compact" type="button" (click)="toggleRegistros()" [attr.aria-expanded]="!registrosCollapsed()" aria-label="Colapsar registros sanitarios">
-            <svg viewBox="0 0 24 24" [class.section-toggle__icon--collapsed]="registrosCollapsed()"><path d="m6 9 6 6 6-6" /></svg>
-          </button>
-        </div>
-      </div>
-
-      <ng-container *ngIf="!registrosCollapsed(); else registrosCollapsedState">
-        <div class="sanitary-table-wrap" *ngIf="activeTab() === 'APLICACIONES'">
-          <table class="sanitary-data-table" *ngIf="aplicaciones().length; else noAplicaciones">
-            <thead>
-              <tr>
-                <th>Vacuna</th>
-                <th>Animal</th>
-                <th>Fecha</th>
-                <th>Proxima dosis</th>
-                <th>Responsable</th>
-                <th>Lote / Serie</th>
-                <th>Costo</th>
-                <th>Tipo</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let aplicacion of aplicaciones()">
-                <td>
-                  <div class="sanitary-table-identity">
-                    <span class="sanitary-table-icon sanitary-table-icon--green"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></span>
+                  <div class="cell-animal">
+                    <span class="cell-avatar"><app-svg-icon [path]="icons.shield" [size]="18"></app-svg-icon></span>
                     <div><strong>{{ aplicacion.vacunaNombre }}</strong><small>{{ aplicacion.observaciones || 'Sin observaciones' }}</small></div>
                   </div>
                 </td>
@@ -275,32 +189,53 @@
                 <td>{{ aplicacion.proximaDosisFecha || 'Sin fecha' }}</td>
                 <td>{{ aplicacion.operarioNombre || aplicacion.operario || 'Sin responsable' }}</td>
                 <td>{{ aplicacion.loteMarca || 'Sin lote' }}</td>
-                <td>${{ aplicacion.costoAplicado ?? 0 }}</td>
-                <td><span class="catalog-badge" [class.catalog-badge--secondary]="!aplicacion.vacunaObligatoria">{{ aplicacion.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
+                <td>{{ formatMoney(aplicacion.costoAplicado) }}</td>
+                <td><span class="pill" [attr.data-tone]="aplicacion.vacunaObligatoria ? 'green' : 'blue'">{{ aplicacion.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
               </tr>
             </tbody>
           </table>
         </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && aplicaciones().length">
+          <app-entity-card
+            *ngFor="let aplicacion of aplicaciones()"
+            [title]="aplicacion.vacunaNombre"
+            [subtitle]="'Animal ' + aplicacion.animalCaravana"
+            [chips]="aplicacionChips(aplicacion)"
+            [metrics]="aplicacionMetrics(aplicacion)"
+            (cardClick)="openDetalleAplicacion(aplicacion)"
+          >
+            <app-svg-icon avatar [path]="icons.shield" [size]="22"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <ng-template #noAplicaciones>
+          <div class="empty-box premium-empty-box" *ngIf="viewMode() === 'TABLA'">Sin aplicaciones con este filtro.</div>
+        </ng-template>
+        <div class="empty-box premium-empty-box" *ngIf="viewMode() === 'TARJETAS' && !aplicaciones().length">Sin aplicaciones con este filtro.</div>
 
-        <div class="sanitary-table-wrap" *ngIf="activeTab() === 'TRATAMIENTOS'">
-          <table class="sanitary-data-table" *ngIf="tratamientos().length; else noTratamientos">
+        <footer class="pagination" *ngIf="aplicaciones().length">
+          <span>Mostrando {{ tabRangeLabel() }} aplicaciones</span>
+          <div class="pager">
+            <button type="button" (click)="previousTabPage()" [disabled]="tabPage() === 1">Anterior</button>
+            <button type="button" *ngFor="let page of tabPageNumbers()" [class.active]="page === tabPage()" (click)="setTabPage(page)">{{ page }}</button>
+            <button type="button" (click)="nextTabPage()" [disabled]="tabPage() === tabTotalPages()">Siguiente</button>
+          </div>
+        </footer>
+      </ng-container>
+
+      <!-- TAB: TRATAMIENTOS -->
+      <ng-container *ngIf="activeTab() === 'TRATAMIENTOS'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && tratamientos().length; else noTratamientos">
+          <table class="data-table">
             <thead>
               <tr>
-                <th>Medicamento</th>
-                <th>Animal</th>
-                <th>Inicio</th>
-                <th>Fin</th>
-                <th>Dosis</th>
-                <th>Via</th>
-                <th>Responsable</th>
-                <th>Costo</th>
+                <th>Medicamento</th><th>Animal</th><th>Inicio</th><th>Fin</th><th>Dosis</th><th>Vía</th><th>Responsable</th><th>Costo</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let tratamiento of tratamientos()">
                 <td>
-                  <div class="sanitary-table-identity">
-                    <span class="sanitary-table-icon sanitary-table-icon--blue"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /></svg></span>
+                  <div class="cell-animal">
+                    <span class="cell-avatar cell-avatar--blue"><app-svg-icon [path]="icons.vial" [size]="18"></app-svg-icon></span>
                     <div><strong>{{ tratamiento.medicamento }}</strong><small>{{ tratamiento.motivo || 'Sin motivo' }}</small></div>
                   </div>
                 </td>
@@ -308,139 +243,280 @@
                 <td>{{ tratamiento.fechaInicio }}</td>
                 <td>{{ tratamiento.fechaFin || 'Activo' }}</td>
                 <td>{{ tratamiento.dosis || 'Sin dosis' }}</td>
-                <td>{{ tratamiento.viaAplicacion || 'Sin via' }}</td>
+                <td>{{ tratamiento.viaAplicacion || 'Sin vía' }}</td>
                 <td>{{ tratamiento.responsableNombre || tratamiento.responsable || 'Sin responsable' }}</td>
-                <td>${{ tratamiento.costo ?? 0 }}</td>
+                <td>{{ formatMoney(tratamiento.costo) }}</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && tratamientos().length">
+          <app-entity-card
+            *ngFor="let tratamiento of tratamientos()"
+            [title]="tratamiento.medicamento"
+            [subtitle]="'Animal ' + tratamiento.animalCaravana"
+            [chips]="tratamientoChips(tratamiento)"
+            [metrics]="tratamientoMetrics(tratamiento)"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.vial" [size]="22"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <ng-template #noTratamientos>
+          <div class="empty-box premium-empty-box" *ngIf="viewMode() === 'TABLA'">Sin tratamientos registrados.</div>
+        </ng-template>
+        <div class="empty-box premium-empty-box" *ngIf="viewMode() === 'TARJETAS' && !tratamientos().length">Sin tratamientos registrados.</div>
 
-        <div class="sanitary-table-wrap" *ngIf="activeTab() === 'DIAGNOSTICOS'">
-          <table class="sanitary-data-table" *ngIf="diagnosticos().length; else noDiagnosticos">
+        <footer class="pagination" *ngIf="tratamientos().length">
+          <span>Mostrando {{ tabRangeLabel() }} tratamientos</span>
+          <div class="pager">
+            <button type="button" (click)="previousTabPage()" [disabled]="tabPage() === 1">Anterior</button>
+            <button type="button" *ngFor="let page of tabPageNumbers()" [class.active]="page === tabPage()" (click)="setTabPage(page)">{{ page }}</button>
+            <button type="button" (click)="nextTabPage()" [disabled]="tabPage() === tabTotalPages()">Siguiente</button>
+          </div>
+        </footer>
+      </ng-container>
+
+      <!-- TAB: DIAGNOSTICOS -->
+      <ng-container *ngIf="activeTab() === 'DIAGNOSTICOS'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && diagnosticos().length; else noDiagnosticos">
+          <table class="data-table">
             <thead>
               <tr>
-                <th>Diagnostico</th>
-                <th>Animal</th>
-                <th>Fecha</th>
-                <th>Severidad</th>
-                <th>Estado</th>
-                <th>Veterinario</th>
-                <th>Tratamiento indicado</th>
+                <th>Diagnóstico</th><th>Animal</th><th>Fecha</th><th>Severidad</th><th>Estado</th><th>Veterinario</th><th>Tratamiento indicado</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let diagnostico of diagnosticos()">
                 <td>
-                  <div class="sanitary-table-identity">
-                    <span class="sanitary-table-icon sanitary-table-icon--warning"><svg viewBox="0 0 24 24"><path d="M12 4v7" /><path d="M8 8c0 2 1.8 4 4 4s4-2 4-4" /><path d="M7 14c0 3 2 6 5 6s5-3 5-6" /></svg></span>
+                  <div class="cell-animal">
+                    <span class="cell-avatar cell-avatar--yellow"><app-svg-icon [path]="icons.stethoscope" [size]="18"></app-svg-icon></span>
                     <div><strong>{{ diagnostico.enfermedad }}</strong><small>{{ diagnostico.observaciones || 'Sin observaciones' }}</small></div>
                   </div>
                 </td>
                 <td><strong>{{ diagnostico.animalCaravana }}</strong></td>
                 <td>{{ diagnostico.fechaDiagnostico }}</td>
-                <td><span class="severity-pill" [class.severity-pill--critical]="diagnostico.severidad === 'CRITICA'" [class.severity-pill--high]="diagnostico.severidad === 'ALTA'">{{ diagnostico.severidad }}</span></td>
-                <td><span class="catalog-badge" [class.state-chip--danger]="diagnostico.estado === 'ABIERTO' && diagnostico.severidad === 'CRITICA'">{{ diagnostico.estado }}</span></td>
+                <td><span class="pill" [attr.data-tone]="severidadTone(diagnostico.severidad)">{{ diagnostico.severidad }}</span></td>
+                <td><span class="pill" [attr.data-tone]="estadoDiagnosticoTone(diagnostico.estado)">{{ diagnostico.estado }}</span></td>
                 <td>{{ diagnostico.veterinarioNombre || diagnostico.veterinario || 'Sin veterinario' }}</td>
                 <td>{{ diagnostico.tratamientoIndicado || 'Sin indicar' }}</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && diagnosticos().length">
+          <app-entity-card
+            *ngFor="let diagnostico of diagnosticos()"
+            [title]="diagnostico.enfermedad"
+            [subtitle]="'Animal ' + diagnostico.animalCaravana"
+            [chips]="diagnosticoChips(diagnostico)"
+            [metrics]="diagnosticoMetrics(diagnostico)"
+            [badge]="diagnostico.estado"
+            [badgeTone]="estadoDiagnosticoTone(diagnostico.estado)"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.stethoscope" [size]="22"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <ng-template #noDiagnosticos>
+          <div class="empty-box premium-empty-box" *ngIf="viewMode() === 'TABLA'">Sin diagnósticos registrados.</div>
+        </ng-template>
+        <div class="empty-box premium-empty-box" *ngIf="viewMode() === 'TARJETAS' && !diagnosticos().length">Sin diagnósticos registrados.</div>
 
-        <ng-template #noAplicaciones><div class="empty-box premium-empty-box">Sin aplicaciones con este filtro.</div></ng-template>
-        <ng-template #noTratamientos><div class="empty-box premium-empty-box">Sin tratamientos registrados.</div></ng-template>
-        <ng-template #noDiagnosticos><div class="empty-box premium-empty-box">Sin diagnosticos registrados.</div></ng-template>
-      <div class="sanitary-tabs-footer"><div class="sanitary-footer-date"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg><span>Última actualización: 21/05/2026 19:45</span></div></div>
+        <footer class="pagination" *ngIf="diagnosticos().length">
+          <span>Mostrando {{ tabRangeLabel() }} diagnósticos</span>
+          <div class="pager">
+            <button type="button" (click)="previousTabPage()" [disabled]="tabPage() === 1">Anterior</button>
+            <button type="button" *ngFor="let page of tabPageNumbers()" [class.active]="page === tabPage()" (click)="setTabPage(page)">{{ page }}</button>
+            <button type="button" (click)="nextTabPage()" [disabled]="tabPage() === tabTotalPages()">Siguiente</button>
+          </div>
+        </footer>
       </ng-container>
 
-      <ng-template #registrosCollapsedState>
-        <div class="section-collapsed-summary">Registros ocultos. {{ activeTotal() }} elementos en la pestaña actual.</div>
-      </ng-template>
-    </section>
-  </div>
+      <!-- TAB: CATALOGO DE VACUNACION -->
+      <ng-container *ngIf="activeTab() === 'CATALOGO'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && paginatedVacunas().length; else noVacunas">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Vacuna</th><th>Tipo</th><th>Dosis</th><th>Frecuencia</th><th>Stock</th><th>Costo ref.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let vacuna of paginatedVacunas()">
+                <td>
+                  <div class="cell-animal">
+                    <span class="cell-avatar"><app-svg-icon [path]="icons.syringe" [size]="18"></app-svg-icon></span>
+                    <div>
+                      <strong>{{ vacuna.nombre }}</strong>
+                      <small>{{ vacuna.codigo }} · {{ vacuna.laboratorio || 'Sin laboratorio' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="pill" [attr.data-tone]="vacuna.obligatoria ? 'green' : 'blue'">{{ vacuna.obligatoria ? 'Obligatoria' : 'Complementaria' }}</span></td>
+                <td>{{ vacuna.dosisRecomendada || 'Sin dato' }}</td>
+                <td>{{ vacuna.frecuenciaDias ? (vacuna.frecuenciaDias + ' días') : 'Sin dato' }}</td>
+                <td>{{ vacuna.stockDisponible ?? 'Sin dato' }}</td>
+                <td>{{ formatMoney(vacuna.costoReferencia) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && paginatedVacunas().length">
+          <app-entity-card
+            *ngFor="let vacuna of paginatedVacunas()"
+            [title]="vacuna.nombre"
+            [subtitle]="vacuna.codigo + ' · ' + (vacuna.laboratorio || 'Sin laboratorio')"
+            [chips]="vacunaChips(vacuna)"
+            [metrics]="vacunaMetrics(vacuna)"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.syringe" [size]="22"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <ng-template #noVacunas>
+          <div class="empty-box premium-empty-box" *ngIf="viewMode() === 'TABLA'">Sin vacunas disponibles.</div>
+        </ng-template>
+        <div class="empty-box premium-empty-box" *ngIf="viewMode() === 'TARJETAS' && !paginatedVacunas().length">Sin vacunas disponibles.</div>
 
-  <div class="app-modal-backdrop" *ngIf="vacunaModalOpen() || aplicacionModalOpen() || tratamientoModalOpen() || diagnosticoModalOpen()" (click)="closeModals()" (document:keydown.escape)="closeModals()">
-    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">
-      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModals()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
-      <ng-container *ngIf="vacunaModalOpen()">
-        <div class="modal-head"><h3>Registrar vacuna</h3></div>
-        <div class="form-grid">
-          <label><span>Codigo</span><input [ngModel]="vacunaForm().codigo" (ngModelChange)="vacunaForm.update(f => ({ ...f, codigo: $event }))" /></label>
-          <label><span>Nombre</span><input [ngModel]="vacunaForm().nombre" (ngModelChange)="vacunaForm.update(f => ({ ...f, nombre: $event }))" /></label>
-          <label><span>Laboratorio</span><input [ngModel]="vacunaForm().laboratorio" (ngModelChange)="vacunaForm.update(f => ({ ...f, laboratorio: $event }))" /></label>
-          <label><span>Dosis</span><input [ngModel]="vacunaForm().dosisRecomendada" (ngModelChange)="vacunaForm.update(f => ({ ...f, dosisRecomendada: $event }))" /></label>
-          <label><span>Frecuencia dias</span><input type="number" [ngModel]="vacunaForm().frecuenciaDias" (ngModelChange)="vacunaForm.update(f => ({ ...f, frecuenciaDias: $event }))" /></label>
-          <label><span>Costo referencia</span><input type="number" [ngModel]="vacunaForm().costoReferencia" (ngModelChange)="vacunaForm.update(f => ({ ...f, costoReferencia: $event }))" /></label>
-          <label><span>Stock</span><input type="number" [ngModel]="vacunaForm().stockDisponible" (ngModelChange)="vacunaForm.update(f => ({ ...f, stockDisponible: $event }))" /></label>
-          <label><span>Via aplicacion</span><input [ngModel]="vacunaForm().viaAplicacion" (ngModelChange)="vacunaForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>
-          <label><span>Obligatoria</span><select [ngModel]="vacunaForm().obligatoria" (ngModelChange)="vacunaForm.update(f => ({ ...f, obligatoria: $event }))"><option [ngValue]="true">Si</option><option [ngValue]="false">No</option></select></label>
-        </div>
-        <label class="textarea-field"><span>Descripcion</span><textarea [ngModel]="vacunaForm().descripcion" (ngModelChange)="vacunaForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
-        <div class="modal-actions">
-          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
-          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitVacuna()">Guardar</button>
-        </div>
+        <footer class="pagination" *ngIf="vacunas().length">
+          <span>Mostrando {{ catalogRangeLabel() }} vacunas</span>
+          <div class="pager">
+            <button type="button" (click)="previousCatalogPage()" [disabled]="catalogPage() === 1">Anterior</button>
+            <button type="button" *ngFor="let page of catalogPageNumbers()" [class.active]="page === catalogPage()" (click)="setCatalogPage(page)">{{ page }}</button>
+            <button type="button" (click)="nextCatalogPage()" [disabled]="catalogPage() === catalogTotalPages()">Siguiente</button>
+          </div>
+        </footer>
       </ng-container>
+    </ng-container>
+  </section>
 
-      <ng-container *ngIf="aplicacionModalOpen()">
-        <div class="modal-head"><h3>Registrar aplicacion</h3></div>
-        <div class="form-grid">
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="aplicacionForm().animalId" (valueChange)="aplicacionForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
-          <app-remote-search-select label="Vacuna" placeholder="Buscar vacuna" [options]="vacunas()" valueField="id" labelField="nombre" [subtitleFields]="['codigo','laboratorio']" [searchFields]="['nombre','codigo','laboratorio']" [value]="aplicacionForm().vacunaId" (valueChange)="aplicacionForm.update(f => ({ ...f, vacunaId: $event }))"></app-remote-search-select>
-          <label><span>Fecha aplicacion</span><input type="date" [ngModel]="aplicacionForm().fechaAplicacion" (ngModelChange)="aplicacionForm.update(f => ({ ...f, fechaAplicacion: $event }))" /></label>
-          <label><span>Proxima dosis</span><input type="date" [ngModel]="aplicacionForm().proximaDosisFecha" (ngModelChange)="aplicacionForm.update(f => ({ ...f, proximaDosisFecha: $event }))" /></label>
-          <app-remote-search-select label="Operario" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="aplicacionForm().operario" (valueChange)="aplicacionForm.update(f => ({ ...f, operario: $event }))"></app-remote-search-select>
-          <label><span>Lote/marca</span><input [ngModel]="aplicacionForm().loteMarca" (ngModelChange)="aplicacionForm.update(f => ({ ...f, loteMarca: $event }))" /></label>
-          <label><span>Costo aplicado</span><input type="number" [ngModel]="aplicacionForm().costoAplicado" (ngModelChange)="aplicacionForm.update(f => ({ ...f, costoAplicado: $event }))" /></label>
-        </div>
-        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="aplicacionForm().observaciones" (ngModelChange)="aplicacionForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
-        <div class="modal-actions">
-          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
-          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAplicacion()">Guardar</button>
-        </div>
-      </ng-container>
-
-      <ng-container *ngIf="tratamientoModalOpen()">
-        <div class="modal-head"><h3>Registrar tratamiento</h3></div>
-        <div class="form-grid">
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="tratamientoForm().animalId" (valueChange)="tratamientoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
-          <label><span>Medicamento</span><input [ngModel]="tratamientoForm().medicamento" (ngModelChange)="tratamientoForm.update(f => ({ ...f, medicamento: $event }))" /></label>
-          <label><span>Fecha inicio</span><input type="date" [ngModel]="tratamientoForm().fechaInicio" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaInicio: $event }))" /></label>
-          <label><span>Fecha fin</span><input type="date" [ngModel]="tratamientoForm().fechaFin" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaFin: $event }))" /></label>
-          <label><span>Dosis</span><input [ngModel]="tratamientoForm().dosis" (ngModelChange)="tratamientoForm.update(f => ({ ...f, dosis: $event }))" /></label>
-          <label><span>Via aplicacion</span><input [ngModel]="tratamientoForm().viaAplicacion" (ngModelChange)="tratamientoForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>
-          <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="tratamientoForm().responsable" (valueChange)="tratamientoForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
-          <label><span>Costo</span><input type="number" [ngModel]="tratamientoForm().costo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, costo: $event }))" /></label>
-          <label><span>Motivo</span><input [ngModel]="tratamientoForm().motivo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, motivo: $event }))" /></label>
-        </div>
-        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="tratamientoForm().observaciones" (ngModelChange)="tratamientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
-        <div class="modal-actions">
-          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
-          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitTratamiento()">Guardar</button>
-        </div>
-      </ng-container>
-
-      <ng-container *ngIf="diagnosticoModalOpen()">
-        <div class="modal-head"><h3>Registrar diagnostico</h3></div>
-        <div class="form-grid">
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="diagnosticoForm().animalId" (valueChange)="diagnosticoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
-          <label><span>Enfermedad</span><input [ngModel]="diagnosticoForm().enfermedad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, enfermedad: $event }))" /></label>
-          <label><span>Fecha diagnostico</span><input type="date" [ngModel]="diagnosticoForm().fechaDiagnostico" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
-          <label><span>Severidad</span><select [ngModel]="diagnosticoForm().severidad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, severidad: $event }))"><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Critica</option></select></label>
-          <label><span>Estado</span><select [ngModel]="diagnosticoForm().estado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, estado: $event }))"><option value="ABIERTO">Abierto</option><option value="CONTROLADO">Controlado</option><option value="CERRADO">Cerrado</option></select></label>
-          <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [options]="veterinarios()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="diagnosticoForm().veterinario" (valueChange)="diagnosticoForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>
-          <label><span>Tratamiento indicado</span><input [ngModel]="diagnosticoForm().tratamientoIndicado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, tratamientoIndicado: $event }))" /></label>
-        </div>
-        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="diagnosticoForm().observaciones" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
-        <div class="modal-actions">
-          <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
-          <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDiagnostico()">Guardar</button>
-        </div>
-      </ng-container>
+  <!-- MODAL: detalle de vacunación (mockup 24) -->
+  <app-premium-modal
+    *ngIf="detalleAplicacion() as detalle"
+    [icon]="icons.shield"
+    [title]="detalle.vacunaNombre"
+    [subtitle]="detalle.observaciones || 'Sin observaciones'"
+    [badge]="detalle.vacunaObligatoria ? 'Obligatoria' : 'Complementaria'"
+    [badgeTone]="detalle.vacunaObligatoria ? 'green' : 'blue'"
+    size="wide"
+    (close)="closeDetalleAplicacion()"
+  >
+    <div class="tiles-grid">
+      <app-info-tile label="Animal" [value]="detalle.animalCaravana" [icon]="icons.animal"></app-info-tile>
+      <app-info-tile label="Fecha" [value]="detalle.fechaAplicacion" [icon]="icons.calendar"></app-info-tile>
+      <app-info-tile label="Próxima dosis" [value]="detalle.proximaDosisFecha || 'Sin fecha'" [icon]="icons.clock" tone="blue"></app-info-tile>
+      <app-info-tile label="Responsable" [value]="detalle.operarioNombre || detalle.operario || 'Sin dato'" [icon]="icons.user"></app-info-tile>
+      <app-info-tile label="Lote / Serie" [value]="detalle.loteMarca || 'Sin lote'" [icon]="icons.tag"></app-info-tile>
+      <app-info-tile label="Costo" [value]="formatMoney(detalle.costoAplicado)" [icon]="icons.dollar" tone="cyan"></app-info-tile>
+      <app-info-tile label="Tipo" [value]="detalle.vacunaObligatoria ? 'Obligatoria' : 'Complementaria'" [icon]="icons.shield" [tone]="detalle.vacunaObligatoria ? 'green' : 'blue'"></app-info-tile>
     </div>
-  </div>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeDetalleAplicacion()">Cerrar</button>
+    </div>
+  </app-premium-modal>
+
+  <!-- MODAL: registrar vacuna -->
+  <app-premium-modal
+    *ngIf="vacunaModalOpen()"
+    [icon]="icons.syringe"
+    title="Registrar vacuna"
+    subtitle="Alta de una vacuna en el catálogo sanitario."
+    size="wide"
+    (close)="closeModals()"
+  >
+    <div class="form-grid">
+      <label><span>Código</span><input [ngModel]="vacunaForm().codigo" (ngModelChange)="vacunaForm.update(f => ({ ...f, codigo: $event }))" /></label>
+      <label><span>Nombre</span><input [ngModel]="vacunaForm().nombre" (ngModelChange)="vacunaForm.update(f => ({ ...f, nombre: $event }))" /></label>
+      <label><span>Laboratorio</span><input [ngModel]="vacunaForm().laboratorio" (ngModelChange)="vacunaForm.update(f => ({ ...f, laboratorio: $event }))" /></label>
+      <label><span>Dosis</span><input [ngModel]="vacunaForm().dosisRecomendada" (ngModelChange)="vacunaForm.update(f => ({ ...f, dosisRecomendada: $event }))" /></label>
+      <label><span>Frecuencia días</span><input type="number" [ngModel]="vacunaForm().frecuenciaDias" (ngModelChange)="vacunaForm.update(f => ({ ...f, frecuenciaDias: $event }))" /></label>
+      <label><span>Costo referencia</span><input type="number" [ngModel]="vacunaForm().costoReferencia" (ngModelChange)="vacunaForm.update(f => ({ ...f, costoReferencia: $event }))" /></label>
+      <label><span>Stock</span><input type="number" [ngModel]="vacunaForm().stockDisponible" (ngModelChange)="vacunaForm.update(f => ({ ...f, stockDisponible: $event }))" /></label>
+      <label><span>Vía aplicación</span><input [ngModel]="vacunaForm().viaAplicacion" (ngModelChange)="vacunaForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>
+      <label><span>Obligatoria</span><select [ngModel]="vacunaForm().obligatoria" (ngModelChange)="vacunaForm.update(f => ({ ...f, obligatoria: $event }))"><option [ngValue]="true">Sí</option><option [ngValue]="false">No</option></select></label>
+    </div>
+    <label class="textarea-field"><span>Descripción</span><textarea [ngModel]="vacunaForm().descripcion" (ngModelChange)="vacunaForm.update(f => ({ ...f, descripcion: $event }))"></textarea></label>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitVacuna()">Guardar</button>
+    </div>
+  </app-premium-modal>
+
+  <!-- MODAL: registrar aplicación -->
+  <app-premium-modal
+    *ngIf="aplicacionModalOpen()"
+    [icon]="icons.shield"
+    title="Registrar aplicación"
+    subtitle="Cargá una vacunación aplicada al rodeo."
+    size="wide"
+    (close)="closeModals()"
+  >
+    <div class="form-grid">
+      <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="aplicacionForm().animalId" (valueChange)="aplicacionForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+      <app-remote-search-select label="Vacuna" placeholder="Buscar vacuna" [options]="vacunas()" valueField="id" labelField="nombre" [subtitleFields]="['codigo','laboratorio']" [searchFields]="['nombre','codigo','laboratorio']" [value]="aplicacionForm().vacunaId" (valueChange)="aplicacionForm.update(f => ({ ...f, vacunaId: $event }))"></app-remote-search-select>
+      <label><span>Fecha aplicación</span><input type="date" [ngModel]="aplicacionForm().fechaAplicacion" (ngModelChange)="aplicacionForm.update(f => ({ ...f, fechaAplicacion: $event }))" /></label>
+      <label><span>Próxima dosis</span><input type="date" [ngModel]="aplicacionForm().proximaDosisFecha" (ngModelChange)="aplicacionForm.update(f => ({ ...f, proximaDosisFecha: $event }))" /></label>
+      <app-remote-search-select label="Operario" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="aplicacionForm().operario" (valueChange)="aplicacionForm.update(f => ({ ...f, operario: $event }))"></app-remote-search-select>
+      <label><span>Lote / marca</span><input [ngModel]="aplicacionForm().loteMarca" (ngModelChange)="aplicacionForm.update(f => ({ ...f, loteMarca: $event }))" /></label>
+      <label><span>Costo aplicado</span><input type="number" [ngModel]="aplicacionForm().costoAplicado" (ngModelChange)="aplicacionForm.update(f => ({ ...f, costoAplicado: $event }))" /></label>
+    </div>
+    <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="aplicacionForm().observaciones" (ngModelChange)="aplicacionForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAplicacion()">Guardar</button>
+    </div>
+  </app-premium-modal>
+
+  <!-- MODAL: registrar tratamiento -->
+  <app-premium-modal
+    *ngIf="tratamientoModalOpen()"
+    [icon]="icons.vial"
+    title="Registrar tratamiento"
+    subtitle="Cargá un tratamiento o medicación del animal."
+    size="wide"
+    (close)="closeModals()"
+  >
+    <div class="form-grid">
+      <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="tratamientoForm().animalId" (valueChange)="tratamientoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+      <label><span>Medicamento</span><input [ngModel]="tratamientoForm().medicamento" (ngModelChange)="tratamientoForm.update(f => ({ ...f, medicamento: $event }))" /></label>
+      <label><span>Fecha inicio</span><input type="date" [ngModel]="tratamientoForm().fechaInicio" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaInicio: $event }))" /></label>
+      <label><span>Fecha fin</span><input type="date" [ngModel]="tratamientoForm().fechaFin" (ngModelChange)="tratamientoForm.update(f => ({ ...f, fechaFin: $event }))" /></label>
+      <label><span>Dosis</span><input [ngModel]="tratamientoForm().dosis" (ngModelChange)="tratamientoForm.update(f => ({ ...f, dosis: $event }))" /></label>
+      <label><span>Vía aplicación</span><input [ngModel]="tratamientoForm().viaAplicacion" (ngModelChange)="tratamientoForm.update(f => ({ ...f, viaAplicacion: $event }))" /></label>
+      <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="tratamientoForm().responsable" (valueChange)="tratamientoForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
+      <label><span>Costo</span><input type="number" [ngModel]="tratamientoForm().costo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, costo: $event }))" /></label>
+      <label><span>Motivo</span><input [ngModel]="tratamientoForm().motivo" (ngModelChange)="tratamientoForm.update(f => ({ ...f, motivo: $event }))" /></label>
+    </div>
+    <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="tratamientoForm().observaciones" (ngModelChange)="tratamientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitTratamiento()">Guardar</button>
+    </div>
+  </app-premium-modal>
+
+  <!-- MODAL: registrar diagnóstico -->
+  <app-premium-modal
+    *ngIf="diagnosticoModalOpen()"
+    [icon]="icons.stethoscope"
+    title="Registrar diagnóstico"
+    subtitle="Cargá un diagnóstico sanitario del animal."
+    size="wide"
+    (close)="closeModals()"
+  >
+    <div class="form-grid">
+      <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="diagnosticoForm().animalId" (valueChange)="diagnosticoForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+      <label><span>Enfermedad</span><input [ngModel]="diagnosticoForm().enfermedad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, enfermedad: $event }))" /></label>
+      <label><span>Fecha diagnóstico</span><input type="date" [ngModel]="diagnosticoForm().fechaDiagnostico" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
+      <label><span>Severidad</span><select [ngModel]="diagnosticoForm().severidad" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, severidad: $event }))"><option value="BAJA">Baja</option><option value="MEDIA">Media</option><option value="ALTA">Alta</option><option value="CRITICA">Crítica</option></select></label>
+      <label><span>Estado</span><select [ngModel]="diagnosticoForm().estado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, estado: $event }))"><option value="ABIERTO">Abierto</option><option value="CONTROLADO">Controlado</option><option value="CERRADO">Cerrado</option></select></label>
+      <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [options]="veterinarios()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="diagnosticoForm().veterinario" (valueChange)="diagnosticoForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>
+      <label><span>Tratamiento indicado</span><input [ngModel]="diagnosticoForm().tratamientoIndicado" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, tratamientoIndicado: $event }))" /></label>
+    </div>
+    <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="diagnosticoForm().observaciones" (ngModelChange)="diagnosticoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDiagnostico()">Guardar</button>
+    </div>
+  </app-premium-modal>
 </div>
-
-
-

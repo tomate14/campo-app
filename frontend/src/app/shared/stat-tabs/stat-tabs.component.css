@@ -1,0 +1,9 @@
+:host { display: block; }
+.stat-tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid rgba(110, 168, 255, .13); }
+.stat-tab { position: relative; display: inline-flex; align-items: center; gap: 9px; border: 0; background: transparent; color: #8ea0bb; padding: 13px 14px; font-size: 13px; font-weight: 800; cursor: pointer; border-radius: 12px 12px 0 0; transition: color .16s ease, background .16s ease; }
+.stat-tab:hover { color: #dbe8fb; background: rgba(110, 168, 255, .05); }
+.stat-tab.is-active { color: #9fe870; }
+.stat-tab.is-active::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; border-radius: 2px; background: #9fe870; box-shadow: 0 0 16px rgba(159, 232, 112, .4); }
+.stat-tab__icon { display: inline-flex; color: currentColor; }
+.stat-tab__badge { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 7px; border-radius: 999px; background: rgba(110, 168, 255, .12); color: #b8cff5; font-size: 11px; font-weight: 900; }
+.stat-tab.is-active .stat-tab__badge { background: rgba(159, 232, 112, .14); color: #c8f5a8; }

@@ -1,522 +1,532 @@
-<div class="page">
-  <header class="reproduction-head">
-    <div>
-      <p class="eyebrow">Campo App · Ganadería</p>
-      <h2>Reproducción y genealogía</h2>
-      <p>Programa reproductivo, preñez, partos, pedigree e índices genéticos del rodeo.</p>
-    </div>
-    <button class="btn-secondary reproduction-action" type="button" (click)="loadAll()">
-      <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7" /><path d="M20 4v6h-6" /></svg>
+<div class="repro-page">
+  <app-page-header
+    eyebrow="Campo App · Ganadería"
+    title="Reproducción y genealogía"
+    subtitle="Programa reproductivo, preñez, partos, pedigree e índices genéticos del rodeo."
+    [icon]="icons.female"
+  >
+    <button class="btn-secondary" type="button" (click)="loadAll()">
+      <app-svg-icon [path]="icons.refresh" [size]="16"></app-svg-icon>
       Actualizar
     </button>
-  </header>
+    <button class="btn-primary" type="button" (click)="openEventModal()">
+      <app-svg-icon [path]="icons.plus" [size]="16"></app-svg-icon>
+      Registrar evento
+    </button>
+  </app-page-header>
 
   <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
-  <div class="card empty-box" *ngIf="loading()">Cargando reproduccion...</div>
+  <div class="premium-empty-box" *ngIf="loading()">Cargando reproducción...</div>
 
   <ng-container *ngIf="!loading() && resumen() as data">
-    <section class="stats-grid reproduction-kpis">
-      <article class="kpi-card" *ngIf="kpiVisible(0)"><div class="metric-icon"><svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="5" /><path d="M14 10l6-6m0 0h-5m5 0v5" /></svg></div><div class="kpi-copy"><span>Montas</span><small>Eventos naturales</small></div><strong>{{ data.dashboard.montasRegistradas }}</strong></article>
-      <article class="kpi-card" *ngIf="kpiVisible(1)"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></div><div class="kpi-copy"><span>Inseminaciones</span><small>Protocolos IA</small></div><strong>{{ data.dashboard.inseminacionesRegistradas }}</strong></article>
-      <article class="kpi-card" *ngIf="kpiVisible(2)"><div class="metric-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="5" /><path d="M12 14v7m-4-3.5h8" /></svg></div><div class="kpi-copy"><span>Preñez activa</span><small>Vacas en seguimiento</small></div><strong>{{ data.dashboard.prenezActivas }}</strong></article>
-      <article class="kpi-card" *ngIf="kpiVisible(3)"><div class="metric-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" /><path d="M8 3v4m8-4v4M4 10h16" /></svg></div><div class="kpi-copy"><span>Partos</span><small>Nacimientos registrados</small></div><strong>{{ data.dashboard.partosRegistrados }}</strong></article>
-      <article class="kpi-card" *ngIf="kpiVisible(4)"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg></div><div class="kpi-copy"><span>Tasa preñez</span><small>Eficiencia reproductiva</small></div><strong>{{ data.dashboard.tasaPrenez }}%</strong></article>
-      <article class="kpi-card" *ngIf="kpiVisible(5)"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="M12 5v14" /><circle cx="12" cy="12" r="9" /></svg></div><div class="kpi-copy"><span>Servicios/preñez</span><small>Promedio operativo</small></div><strong>{{ data.dashboard.serviciosPorPrenez }}</strong></article>
-    </section>
-    <div class="kpi-carousel" *ngIf="showKpiCarousel()">
-      <button type="button" aria-label="KPIs anteriores" (click)="previousKpiCards()" [disabled]="kpiOffset() === 0">
-        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
-      </button>
-      <span>{{ kpiOffset() + 1 }}-{{ kpiOffset() + kpiPageSize }} de 6</span>
-      <button type="button" aria-label="KPIs siguientes" (click)="nextKpiCards()" [disabled]="kpiOffset() === maxKpiOffset()">
-        <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
-      </button>
-    </div>
-
-    <section class="birth-alerts">
-      <div class="birth-alerts__header">
-        <div class="birth-alerts__title">
-          <div class="birth-alerts__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" role="img">
-              <rect x="4" y="5" width="16" height="15" rx="3" />
-              <path d="M8 3v4m8-4v4M4 10h16" />
-              <path d="M8 15h3l2-3 3 5 2-3" />
-            </svg>
-          </div>
-          <div>
-            <h3>Alertas de proximos partos</h3>
-            <p>Monitorea las vacas proximas a parir y anticipate.</p>
-          </div>
-        </div>
-        <div class="birth-alerts__metrics">
-          <div class="birth-alerts__metric-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" role="img">
-              <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />
-              <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />
-            </svg>
-          </div>
-          <article class="birth-metric birth-metric--green">
-            <span>Proximos 30 dias</span>
-            <strong>{{ alertasParto().length }}</strong>
-          </article>
-          <article class="birth-metric birth-metric--orange">
-            <span>En riesgo</span>
-            <strong>{{ alertasEnRiesgo() }}</strong>
-          </article>
-        </div>
-      </div>
-
-      <div class="birth-alerts__table-wrap" *ngIf="paginatedAlertas().length; else noAlerts">
-        <table class="birth-alerts__table">
-          <thead>
-            <tr>
-              <th>Animal</th>
-              <th>Lote</th>
-              <th>Fecha estimada</th>
-              <th>Días restantes</th>
-              <th>Riesgo</th>
-              <th>Parto</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let alerta of paginatedAlertas()" [ngClass]="riesgoClass(alerta)">
-              <td>
-                <div class="birth-table-animal">
-                  <span class="birth-table-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" role="img">
-                      <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />
-                      <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />
-                    </svg>
-                  </span>
-                  <div>
-                    <strong>VACA {{ alerta.animalCaravana }}</strong>
-                    <small>RP {{ alerta.animalCaravana }} · HBA sin registrar</small>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <span class="birth-table-location">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5 9 4l6 2.5 5-2.5v13.5L15 20l-6-2.5L4 20V6.5Z" /><path d="M9 4v13.5M15 6.5V20" /></svg>
-                  {{ alertaLote(alerta) }}
-                </span>
-              </td>
-              <td><strong>{{ alerta.fecha }}</strong></td>
-              <td>{{ diasRestantes(alerta) }} días</td>
-              <td><span class="risk-badge" [ngClass]="riesgoClass(alerta)">{{ riesgoLabel(alerta) }}</span></td>
-              <td><strong>{{ alertaPartoNumber(alerta) }}°</strong></td>
-              <td>
-                <button class="birth-table-action" type="button" (click)="viewAlertaDetalle(alerta)">
-                  <span>Ver detalle</span>
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <ng-template #noAlerts><div class="empty-box premium-empty">Sin alertas reproductivas inmediatas.</div></ng-template>
-
-      <div class="birth-pagination" *ngIf="alertasParto().length > alertPageSize">
-        <button class="carousel-arrow" type="button" aria-label="Alertas anteriores" (click)="previousAlertPage()" [disabled]="alertPage() === 1">
-          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
-          <span>Anterior</span>
-        </button>
-        <span>Pagina {{ alertPage() }} de {{ alertTotalPages() }}</span>
-        <button type="button" *ngFor="let page of alertPageNumbers()" [class.active]="page === alertPage()" (click)="setAlertPage(page)">{{ page }}</button>
-        <button class="carousel-arrow" type="button" aria-label="Alertas siguientes" (click)="nextAlertPage()" [disabled]="alertPage() === alertTotalPages()">
-          <span>Siguiente</span>
-          <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
-        </button>
-      </div>
-
-      <div class="birth-alerts__footer">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 10v6m0-9h.01" /></svg>
-        <span>Las fechas son estimadas en base a los registros del sistema y pueden variar.</span>
-        <strong>Ultima actualizacion: {{ today }}</strong>
-      </div>
+    <section class="kpi-grid">
+      <app-kpi-card label="Montas" [value]="data.dashboard.montasRegistradas" sub="Eventos naturales" tone="blue" subTone="green">
+        <app-svg-icon icon [path]="icons.male" [size]="24"></app-svg-icon>
+      </app-kpi-card>
+      <app-kpi-card label="Inseminaciones" [value]="data.dashboard.inseminacionesRegistradas" sub="Protocolos IA" tone="cyan" subTone="green">
+        <app-svg-icon icon [path]="icons.vial" [size]="24"></app-svg-icon>
+      </app-kpi-card>
+      <app-kpi-card label="Preñez activa" [value]="data.dashboard.prenezActivas" sub="Vacas en seguimiento" tone="purple" subTone="green">
+        <app-svg-icon icon [path]="icons.female" [size]="24"></app-svg-icon>
+      </app-kpi-card>
+      <app-kpi-card label="Partos" [value]="data.dashboard.partosRegistrados" sub="Nacimientos registrados" tone="green">
+        <app-svg-icon icon [path]="icons.calendar" [size]="24"></app-svg-icon>
+      </app-kpi-card>
+      <app-kpi-card label="Tasa preñez" [value]="data.dashboard.tasaPrenez + '%'" sub="Eficiencia reproductiva" tone="green">
+        <app-svg-icon icon [path]="icons.trending" [size]="24"></app-svg-icon>
+      </app-kpi-card>
+      <app-kpi-card label="Servicios/preñez" [value]="formatNumber(data.dashboard.serviciosPorPrenez)" sub="Promedio operativo" tone="yellow" subTone="green">
+        <app-svg-icon icon [path]="icons.target" [size]="24"></app-svg-icon>
+      </app-kpi-card>
     </section>
 
-    <div class="layout">
-      <section class="card panel">
-        <div class="tabs">
-          <button type="button" [class.active]="mode() === 'MONTA'" (click)="setMode('MONTA')">Monta</button>
-          <button type="button" [class.active]="mode() === 'IA'" (click)="setMode('IA')">IA</button>
-          <button type="button" [class.active]="mode() === 'PRENEZ'" (click)="setMode('PRENEZ')">Preñez</button>
-          <button type="button" [class.active]="mode() === 'PARTO'" (click)="setMode('PARTO')">Parto</button>
-          <button type="button" [class.active]="mode() === 'INDICE'" (click)="setMode('INDICE')">Indice</button>
-        </div>
-
-        <div class="form-grid" *ngIf="mode() === 'MONTA'">
-          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [options]="hembras()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="montaForm().vacaId" (valueChange)="montaForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
-          <app-remote-search-select label="Toro" placeholder="Buscar toro por caravana" [options]="machos()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="montaForm().toroId" (valueChange)="montaForm.update(f => ({ ...f, toroId: $event }))"></app-remote-search-select>
-          <label><span>Fecha</span><input type="date" [ngModel]="montaForm().fecha" (ngModelChange)="montaForm.update(f => ({ ...f, fecha: $event }))" /></label>
-          <label><span>Resultado</span><select [ngModel]="montaForm().resultado" (ngModelChange)="montaForm.update(f => ({ ...f, resultado: $event }))"><option value="PENDIENTE">Pendiente</option><option value="PRENADA">Preñada</option><option value="FALLIDA">Fallida</option></select></label>
-        </div>
-
-        <div class="form-grid" *ngIf="mode() === 'IA'">
-          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [options]="hembras()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="inseminacionForm().vacaId" (valueChange)="inseminacionForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
-          <label><span>Fecha</span><input type="date" [ngModel]="inseminacionForm().fecha" (ngModelChange)="inseminacionForm.update(f => ({ ...f, fecha: $event }))" /></label>
-          <label><span>Genetica usada</span><input [ngModel]="inseminacionForm().geneticaUsada" (ngModelChange)="inseminacionForm.update(f => ({ ...f, geneticaUsada: $event }))" /></label>
-          <app-remote-search-select label="Tecnico" placeholder="Buscar usuario tecnico" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="inseminacionForm().tecnico" (valueChange)="inseminacionForm.update(f => ({ ...f, tecnico: $event }))"></app-remote-search-select>
-          <label><span>Costo</span><input type="number" [ngModel]="inseminacionForm().costo" (ngModelChange)="inseminacionForm.update(f => ({ ...f, costo: $event }))" /></label>
-        </div>
-
-        <div class="form-grid" *ngIf="mode() === 'PRENEZ'">
-          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [options]="hembras()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="prenezForm().vacaId" (valueChange)="prenezForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
-          <label><span>Diagnostico</span><input type="date" [ngModel]="prenezForm().fechaDiagnostico" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
-          <label><span>Estado</span><select [ngModel]="prenezForm().estado" (ngModelChange)="prenezForm.update(f => ({ ...f, estado: $event }))"><option value="PRENADA">Preñada</option><option value="VACIA">Vacía</option><option value="CONTROL">Control</option></select></label>
-          <label><span>Parto estimado</span><input type="date" [ngModel]="prenezForm().fechaEstimadaParto" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaEstimadaParto: $event }))" /></label>
-          <label><span>Nivel de riesgo del parto</span><select [ngModel]="prenezForm().nivelRiesgoParto" (ngModelChange)="prenezForm.update(f => ({ ...f, nivelRiesgoParto: $event }))"><option value="BAJO">Bajo</option><option value="MEDIO">Medio</option><option value="ALTO">Alto</option></select></label>
-          <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [options]="veterinarios()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="prenezForm().veterinario" (valueChange)="prenezForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>
-        </div>
-
-        <div class="form-grid" *ngIf="mode() === 'PARTO'">
-          <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [options]="hembras()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="partoForm().madreId" (valueChange)="partoForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>
-          <app-remote-search-select label="Ternero" placeholder="Buscar ternero por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="partoForm().terneroId" (valueChange)="partoForm.update(f => ({ ...f, terneroId: $event }))"></app-remote-search-select>
-          <label><span>Fecha</span><input type="date" [ngModel]="partoForm().fecha" (ngModelChange)="partoForm.update(f => ({ ...f, fecha: $event }))" /></label>
-          <label><span>Viabilidad</span><select [ngModel]="partoForm().viabilidadTernero" (ngModelChange)="partoForm.update(f => ({ ...f, viabilidadTernero: $event }))"><option value="VIABLE">Viable</option><option value="NO_VIABLE">No viable</option><option value="OBSERVACION">Observacion</option></select></label>
-        </div>
-
-        <div class="form-grid" *ngIf="mode() === 'INDICE'">
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="indiceForm().animalId" (valueChange)="indiceForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
-          <label><span>Fecha</span><input type="date" [ngModel]="indiceForm().fechaEvaluacion" (ngModelChange)="indiceForm.update(f => ({ ...f, fechaEvaluacion: $event }))" /></label>
-          <label><span>EPD</span><input type="number" [ngModel]="indiceForm().epd" (ngModelChange)="indiceForm.update(f => ({ ...f, epd: $event }))" /></label>
-          <label><span>DEP</span><input type="number" [ngModel]="indiceForm().dep" (ngModelChange)="indiceForm.update(f => ({ ...f, dep: $event }))" /></label>
-          <label><span>Indice productivo</span><input type="number" [ngModel]="indiceForm().indiceProductivo" (ngModelChange)="indiceForm.update(f => ({ ...f, indiceProductivo: $event }))" /></label>
-        </div>
-
-        <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="mode() === 'MONTA' ? montaForm().observaciones : mode() === 'IA' ? inseminacionForm().observaciones : mode() === 'PRENEZ' ? prenezForm().observaciones : mode() === 'PARTO' ? partoForm().observaciones : indiceForm().observaciones" (ngModelChange)="mode() === 'MONTA' ? montaForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'IA' ? inseminacionForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'PRENEZ' ? prenezForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'PARTO' ? partoForm.update(f => ({ ...f, observaciones: $event })) : indiceForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
-        <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitCurrent()">Guardar evento</button>
-      </section>
-
-      <section class="card panel">
-        <div class="genealogy-card">
-          <div class="genealogy-head">
-            <div class="genealogy-title">
-              <div class="band-icon band-icon--tree" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img">
-                  <path d="M12 3v4m0 0H7.5A2.5 2.5 0 0 0 5 9.5V12m7-5h4.5A2.5 2.5 0 0 1 19 9.5V12M5 12v2.2m14-2.2v2.2M12 7v7.2" />
-                  <circle cx="5" cy="17" r="2.4" />
-                  <circle cx="12" cy="17" r="2.4" />
-                  <circle cx="19" cy="17" r="2.4" />
-                </svg>
-              </div>
-              <div>
-                <h3>Genealogia</h3>
-                <p>Arbol genealogico ascendente · 3 generaciones</p>
-              </div>
-            </div>
-            <div class="genealogy-selected" *ngIf="genealogia() as tree">
-              <div class="animal-icon" [class.icon-male]="selectedAnimalIsMale()" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img" *ngIf="selectedAnimalIsMale(); else selectedFemaleIcon">
-                  <circle cx="10" cy="14" r="5" />
-                  <path d="M14 10l6-6m0 0h-5m5 0v5" />
-                </svg>
-                <ng-template #selectedFemaleIcon>
-                  <svg viewBox="0 0 24 24" role="img">
-                    <circle cx="12" cy="9" r="5" />
-                    <path d="M12 14v7m-4-3.5h8" />
-                  </svg>
-                </ng-template>
-              </div>
-              <div><span>Animal</span><strong>{{ tree.animal.caravana }}</strong></div>
-              <div><span>Raza</span><strong>{{ tree.animal.raza }}</strong></div>
-            </div>
-          </div>
-          <div class="form-grid one genealogy-selector">
-            <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="selectedGenealogiaId()" (valueChange)="selectedGenealogiaId.set($event); loadGenealogia()"></app-remote-search-select>
-          </div>
-          <div class="genealogy-tree" *ngIf="genealogia() as tree">
-            <div class="genealogy-row genealogy-row--root">
-              <article class="pedigree-node pedigree-node--main"><div class="pedigree-icon" [class.icon-male]="selectedAnimalIsMale()" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" role="img" *ngIf="selectedAnimalIsMale(); else rootFemaleIcon">
-                    <circle cx="10" cy="14" r="5" />
-                    <path d="M14 10l6-6m0 0h-5m5 0v5" />
-                  </svg>
-                  <ng-template #rootFemaleIcon>
-                    <svg viewBox="0 0 24 24" role="img">
-                      <circle cx="12" cy="9" r="5" />
-                      <path d="M12 14v7m-4-3.5h8" />
-                    </svg>
-                  </ng-template>
-                </div><div><strong>{{ tree.animal.caravana }}</strong><span>{{ tree.animal.raza }}</span></div></article>
-            </div>
-            <div class="genealogy-connector"></div>
-            <div class="genealogy-row">
-              <p class="generation-label">1 Generacion <span>Padres</span></p>
-              <div class="generation-grid">
-                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(1)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon1">
-                      <circle cx="10" cy="14" r="5" />
-                      <path d="M14 10l6-6m0 0h-5m5 0v5" />
-                    </svg>
-                    <ng-template #femaleNodeIcon1>
-                      <svg viewBox="0 0 24 24" role="img">
-                        <circle cx="12" cy="9" r="5" />
-                        <path d="M12 14v7m-4-3.5h8" />
-                      </svg>
-                    </ng-template>
-                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>
-              </div>
-            </div>
-            <div class="genealogy-row">
-              <p class="generation-label">2 Generacion <span>Abuelos</span></p>
-              <div class="generation-grid">
-                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(2)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon2">
-                      <circle cx="10" cy="14" r="5" />
-                      <path d="M14 10l6-6m0 0h-5m5 0v5" />
-                    </svg>
-                    <ng-template #femaleNodeIcon2>
-                      <svg viewBox="0 0 24 24" role="img">
-                        <circle cx="12" cy="9" r="5" />
-                        <path d="M12 14v7m-4-3.5h8" />
-                      </svg>
-                    </ng-template>
-                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>
-              </div>
-            </div>
-            <div class="genealogy-row">
-              <p class="generation-label">3 Generacion <span>Bisabuelos</span></p>
-              <div class="generation-grid">
-                <article class="pedigree-node" *ngFor="let node of genealogiaGeneration(3)"><div class="pedigree-icon" [class.icon-male]="isMaleNode(node)" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" role="img" *ngIf="isMaleNode(node); else femaleNodeIcon3">
-                      <circle cx="10" cy="14" r="5" />
-                      <path d="M14 10l6-6m0 0h-5m5 0v5" />
-                    </svg>
-                    <ng-template #femaleNodeIcon3>
-                      <svg viewBox="0 0 24 24" role="img">
-                        <circle cx="12" cy="9" r="5" />
-                        <path d="M12 14v7m-4-3.5h8" />
-                      </svg>
-                    </ng-template>
-                  </div><div><strong>{{ node.caravana }}</strong><span>{{ node.raza }}</span></div></article>
-              </div>
-            </div>
-            <div class="genealogy-foot"><span>Info basada en animales registrados en el sistema.</span><span>Ultima actualizacion: {{ today }}</span></div>
-          </div>
-          <div class="empty-box premium-empty" *ngIf="!genealogia()">Selecciona un animal para visualizar genealogia.</div>
-        </div>
-      </section>
-    </div>
-
-    <section class="cross-panel">
-      <div class="birth-alerts__header">
-        <div class="birth-alerts__title">
-          <div class="birth-alerts__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" role="img">
-              <path d="M6 7c0-2 1.5-3.5 3.5-3.5S13 5 13 7s-1.5 3.5-3.5 3.5S6 9 6 7Z" />
-              <path d="M11 11.5c1.5-1 3.5-1 5 0 2 1.3 2.7 4 1.4 6L16 20l-2.2-1.2" />
-              <path d="M4 20c.4-3.8 2.5-6.2 5.5-6.2s5.1 2.4 5.5 6.2" />
-            </svg>
-          </div>
-          <div>
-            <h3>Recomendaciones de cruzamiento</h3>
-            <p>Compatibilidad heuristica por genealogia directa e indices disponibles.</p>
-          </div>
-        </div>
-        <div class="birth-alerts__metrics cross-panel__metrics">
-          <div class="birth-alerts__metric-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" role="img">
-              <path d="M5 19c1.6-5.2 4.8-8 9.5-8H20" />
-              <path d="M16 7h4v4" />
-              <path d="M4 12h4m-2-2v4" />
-            </svg>
-          </div>
-          <article class="birth-metric birth-metric--green">
-            <span>Recomendadas</span>
-            <strong>{{ recomendaciones().length }}</strong>
-          </article>
-          <article class="birth-metric birth-metric--orange">
-            <span>Score maximo</span>
-            <strong>{{ recomendaciones()[0]?.score || 0 }}</strong>
-          </article>
+    <!-- Banda de alerta de proximos partos -->
+    <section class="alert-band">
+      <div class="alert-band__lead">
+        <span class="alert-band__icon"><app-svg-icon [path]="icons.bell" [size]="22"></app-svg-icon></span>
+        <div class="alert-band__copy">
+          <strong>Próximos partos</strong>
+          <span class="alert-band__pills">
+            <span class="pill" data-tone="green">{{ alertasParto().length }} en 30 días</span>
+            <span class="pill" data-tone="red" *ngIf="alertasEnRiesgo()">{{ alertasEnRiesgo() }} en riesgo alto</span>
+            <span class="alert-band__hint">Fechas estimadas según registros de preñez</span>
+          </span>
         </div>
       </div>
+      <button class="link-btn" type="button" (click)="setTab('PROXIMOS')">
+        Ver partos <app-svg-icon [path]="icons.arrowRight" [size]="15"></app-svg-icon>
+      </button>
+    </section>
 
-      <div class="cross-grid" *ngIf="paginatedRecomendaciones().length; else noRecommendations">
-        <article class="cross-card" *ngFor="let item of paginatedRecomendaciones()" [ngClass]="recommendationClass(item)">
-          <span class="risk-badge" [ngClass]="recommendationClass(item)">{{ recommendationQuality(item) }} compatibilidad</span>
-          <div class="cross-card__pair">
-            <div class="cross-animal">
-              <div class="cross-animal__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img"><circle cx="12" cy="9" r="5" /><path d="M12 14v7m-4-3.5h8" /></svg>
-              </div>
-              <div><span>Vaca</span><strong>{{ item.vacaCaravana }}</strong></div>
-            </div>
-            <div class="cross-link" aria-hidden="true">
-              <svg viewBox="0 0 24 24" role="img"><path d="M7 12h10m-4-4 4 4-4 4" /></svg>
-            </div>
-            <div class="cross-animal">
-              <div class="cross-animal__icon cross-animal__icon--male" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img"><circle cx="10" cy="14" r="5" /><path d="M14 10l6-6m0 0h-5m5 0v5" /></svg>
-              </div>
-              <div><span>Toro</span><strong>{{ item.toroCaravana }}</strong></div>
-            </div>
+    <section class="panel card">
+      <div class="panel-top">
+        <app-stat-tabs [tabs]="tabs()" [active]="tab()" (activeChange)="setTab($event)"></app-stat-tabs>
+        <span class="panel-count">{{ tabCountLabel() }}</span>
+      </div>
+
+      <!-- Filtros comunes de las pestañas con tabla -->
+      <div class="filters-row" *ngIf="showFilters()">
+        <label class="field field--search">
+          <span>Buscar</span>
+          <div class="input-icon">
+            <input placeholder="Caravana de vaca o toro" [ngModel]="search()" (ngModelChange)="updateSearch($event)" />
+            <app-svg-icon [path]="icons.search" [size]="16"></app-svg-icon>
           </div>
-          <div class="cross-card__metrics">
-            <div class="birth-data">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 9 9l4 4 7-9" /><path d="M14 4h6v6" /></svg>
-              <div><span>Score genetico</span></div>
-              <strong>{{ item.score }}</strong>
-            </div>
-            <div class="birth-data">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /><path d="m9 12 2 2 4-5" /></svg>
-              <div><span>Parentesco directo</span></div>
-              <strong>Validado</strong>
-            </div>
-            <div class="birth-data">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18c0-4 2.7-7 6-7s6 3 6 7" /><path d="M9 8a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z" /></svg>
-              <div><span>Modelo</span></div>
-              <strong>Heuristico</strong>
-            </div>
-          </div>
-          <p class="cross-card__note">{{ item.motivo }}</p>
-          <button class="birth-card__action" type="button" (click)="viewRecommendation(item)">
-            <span>Ver genealogia</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+        </label>
+        <label class="field">
+          <span>Potrero</span>
+          <select [ngModel]="potreroFilter()" (ngModelChange)="updatePotreroFilter($event)">
+            <option value="">Todos</option>
+            <option *ngFor="let potrero of potreroOptions()" [value]="potrero">{{ potrero }}</option>
+          </select>
+        </label>
+        <label class="field" *ngIf="showRiesgoFilter()">
+          <span>Riesgo</span>
+          <select [ngModel]="riesgoFilter()" (ngModelChange)="updateRiesgoFilter($event)">
+            <option value="">Todos</option>
+            <option value="Alto">Alto</option>
+            <option value="Medio">Medio</option>
+            <option value="Bajo">Bajo</option>
+          </select>
+        </label>
+        <div class="view-toggle">
+          <button type="button" [class.is-active]="viewMode() === 'TABLA'" (click)="setViewMode('TABLA')">
+            <app-svg-icon path='<path d="M4 6h16M4 12h16M4 18h16" />' [size]="15"></app-svg-icon>
+            Tabla
           </button>
-        </article>
+          <button type="button" [class.is-active]="viewMode() === 'TARJETAS'" (click)="setViewMode('TARJETAS')">
+            <app-svg-icon path='<rect x="4" y="4" width="7" height="7" rx="1.5" /><rect x="13" y="4" width="7" height="7" rx="1.5" /><rect x="4" y="13" width="7" height="7" rx="1.5" /><rect x="13" y="13" width="7" height="7" rx="1.5" />' [size]="15"></app-svg-icon>
+            Tarjetas
+          </button>
+        </div>
       </div>
 
-      <ng-template #noRecommendations><div class="empty-box premium-empty">Sin recomendaciones disponibles.</div></ng-template>
+      <!-- TAB: PRÓXIMOS PARTOS -->
+      <ng-container *ngIf="tab() === 'PROXIMOS'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && pagedProximos().length; else emptyProximos">
+          <table class="data-table data-table--clickable">
+            <thead>
+              <tr><th>Animal</th><th>Potrero</th><th>Fecha estimada</th><th>Días restantes</th><th>N° parto</th><th>Riesgo</th><th class="col-actions"></th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of pagedProximos()" (click)="viewAlertaDetalle(row.alerta)">
+                <td>
+                  <div class="cell-animal">
+                    <span class="cell-avatar"><app-svg-icon [path]="icons.cow" [size]="18"></app-svg-icon></span>
+                    <div><strong>VACA {{ row.animalCaravana }}</strong><small>RP {{ row.animalCaravana }} · {{ row.raza }}</small></div>
+                  </div>
+                </td>
+                <td>{{ row.potrero }}</td>
+                <td><strong>{{ row.fecha }}</strong></td>
+                <td>{{ row.dias }} días</td>
+                <td><strong>{{ row.partoNumero }}°</strong></td>
+                <td><span class="pill" [attr.data-tone]="riesgoTone(row.riesgo)">{{ row.riesgo }}</span></td>
+                <td class="col-actions">
+                  <button type="button" class="cell-link" (click)="$event.stopPropagation(); viewAlertaDetalle(row.alerta)">
+                    Ver detalle <app-svg-icon [path]="icons.arrowRight" [size]="14"></app-svg-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && pagedProximos().length">
+          <app-entity-card
+            *ngFor="let row of pagedProximos()"
+            [title]="'VACA ' + row.animalCaravana"
+            [subtitle]="row.raza"
+            [chips]="proximoChips(row)"
+            [metrics]="proximoMetrics(row)"
+            [badge]="row.riesgo"
+            [badgeTone]="riesgoTone(row.riesgo)"
+            (cardClick)="viewAlertaDetalle(row.alerta)"
+          >
+            <app-svg-icon avatar [path]="icons.cow" [size]="24"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <ng-template #emptyProximos><div class="premium-empty-box">Sin alertas de próximos partos con los filtros actuales.</div></ng-template>
+      </ng-container>
 
-      <div class="birth-pagination" *ngIf="recomendaciones().length > recommendationPageSize">
-        <button class="carousel-arrow" type="button" aria-label="Recomendaciones anteriores" (click)="previousRecommendationPage()" [disabled]="recommendationPage() === 1">
-          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></svg>
-          <span>Anterior</span>
-        </button>
-        <span>Pagina {{ recommendationPage() }} de {{ recommendationTotalPages() }}</span>
-        <button type="button" *ngFor="let page of recommendationPageNumbers()" [class.active]="page === recommendationPage()" (click)="setRecommendationPage(page)">{{ page }}</button>
-        <button class="carousel-arrow" type="button" aria-label="Recomendaciones siguientes" (click)="nextRecommendationPage()" [disabled]="recommendationPage() === recommendationTotalPages()">
-          <span>Siguiente</span>
-          <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg>
-        </button>
-      </div>
+      <!-- TAB: SERVICIOS -->
+      <ng-container *ngIf="tab() === 'SERVICIOS'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && pagedServicios().length; else emptyServicios">
+          <table class="data-table">
+            <thead>
+              <tr><th>Vaca</th><th>Tipo</th><th>Toro / Genética</th><th>Fecha</th><th>Técnico</th><th>Resultado</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of pagedServicios()">
+                <td>
+                  <div class="cell-animal">
+                    <span class="cell-avatar cell-avatar--purple"><app-svg-icon [path]="icons.female" [size]="18"></app-svg-icon></span>
+                    <div><strong>{{ row.vacaCaravana }}</strong><small>{{ row.raza }}</small></div>
+                  </div>
+                </td>
+                <td><span class="pill" [attr.data-tone]="servicioTipoTone(row.tipo)">{{ row.tipoLabel }}</span></td>
+                <td>{{ row.detalle }}</td>
+                <td>{{ row.fecha }}</td>
+                <td>{{ row.tecnico }}</td>
+                <td><span class="pill" [attr.data-tone]="resultadoTone(row.resultado)">{{ row.resultado | titlecase }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && pagedServicios().length">
+          <app-entity-card
+            *ngFor="let row of pagedServicios()"
+            [title]="row.vacaCaravana"
+            [subtitle]="row.raza"
+            [chips]="servicioChips(row)"
+            [metrics]="servicioMetrics(row)"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.female" [size]="24"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <ng-template #emptyServicios><div class="premium-empty-box">Sin servicios registrados con los filtros actuales.</div></ng-template>
+      </ng-container>
+
+      <!-- TAB: PREÑEZ -->
+      <ng-container *ngIf="tab() === 'PRENEZ'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && pagedPrenez().length; else emptyPrenez">
+          <table class="data-table">
+            <thead>
+              <tr><th>Vaca</th><th>Diagnóstico</th><th>Estado</th><th>Parto estimado</th><th>Riesgo</th><th>Veterinario</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of pagedPrenez()">
+                <td>
+                  <div class="cell-animal">
+                    <span class="cell-avatar cell-avatar--purple"><app-svg-icon [path]="icons.female" [size]="18"></app-svg-icon></span>
+                    <div><strong>{{ row.vacaCaravana }}</strong><small>{{ row.raza }}</small></div>
+                  </div>
+                </td>
+                <td>{{ row.fechaDiagnostico }}</td>
+                <td><span class="pill" [attr.data-tone]="estadoPrenezTone(row.estado)">{{ estadoPrenezLabel(row.estado) }}</span></td>
+                <td>{{ row.fechaEstimadaParto }}</td>
+                <td><span class="pill" [attr.data-tone]="riesgoTone(row.riesgo)">{{ row.riesgo }}</span></td>
+                <td>{{ row.veterinario }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && pagedPrenez().length">
+          <app-entity-card
+            *ngFor="let row of pagedPrenez()"
+            [title]="row.vacaCaravana"
+            [subtitle]="row.raza"
+            [chips]="prenezChips(row)"
+            [metrics]="prenezMetrics(row)"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.female" [size]="24"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <ng-template #emptyPrenez><div class="premium-empty-box">Sin diagnósticos de preñez con los filtros actuales.</div></ng-template>
+      </ng-container>
+
+      <!-- TAB: PARTOS -->
+      <ng-container *ngIf="tab() === 'PARTOS'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && pagedPartos().length; else emptyPartos">
+          <table class="data-table">
+            <thead>
+              <tr><th>Madre</th><th>Ternero</th><th>Fecha</th><th>Viabilidad</th><th>Sexo ternero</th><th>Peso</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of pagedPartos()">
+                <td>
+                  <div class="cell-animal">
+                    <span class="cell-avatar"><app-svg-icon [path]="icons.calendar" [size]="18"></app-svg-icon></span>
+                    <div><strong>{{ row.madreCaravana }}</strong><small>{{ row.raza }} · {{ row.partoNumero }}° parto</small></div>
+                  </div>
+                </td>
+                <td>{{ row.terneroCaravana }}</td>
+                <td>{{ row.fecha }}</td>
+                <td><span class="pill" [attr.data-tone]="viabilidadTone(row.viabilidad)">{{ viabilidadLabel(row.viabilidad) }}</span></td>
+                <td>{{ row.terneroSexo }}</td>
+                <td>{{ row.terneroPeso }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && pagedPartos().length">
+          <app-entity-card
+            *ngFor="let row of pagedPartos()"
+            [title]="row.madreCaravana"
+            [subtitle]="row.raza"
+            [chips]="partoChips(row)"
+            [metrics]="partoMetrics(row)"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.calendar" [size]="24"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <ng-template #emptyPartos><div class="premium-empty-box">Sin partos registrados con los filtros actuales.</div></ng-template>
+      </ng-container>
+
+      <!-- TAB: ÍNDICES GENÉTICOS -->
+      <ng-container *ngIf="tab() === 'INDICES'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && pagedIndices().length; else emptyIndices">
+          <table class="data-table">
+            <thead>
+              <tr><th>Animal</th><th>Sexo</th><th>Raza</th><th>Evaluación</th><th>EPD</th><th>DEP</th><th>Índice productivo</th><th>Ranking rodeo</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of pagedIndices()">
+                <td>
+                  <div class="cell-animal">
+                    <span class="cell-avatar cell-avatar--cyan"><app-svg-icon [path]="icons.dna" [size]="18"></app-svg-icon></span>
+                    <div><strong>{{ row.caravana }}</strong><small>RP {{ row.caravana }}</small></div>
+                  </div>
+                </td>
+                <td><span class="pill" [attr.data-tone]="row.esMacho ? 'blue' : row.esHembra ? 'purple' : 'neutral'">{{ row.sexoLabel }}</span></td>
+                <td>{{ row.raza }}</td>
+                <td>{{ row.fechaEvaluacion }}</td>
+                <td>{{ formatSigned(row.epd) }}</td>
+                <td>{{ formatSigned(row.dep) }}</td>
+                <td>{{ formatNumber(row.indiceProductivo) }}</td>
+                <td>{{ row.ranking }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && pagedIndices().length">
+          <app-entity-card
+            *ngFor="let row of pagedIndices()"
+            [title]="row.caravana"
+            [subtitle]="row.raza"
+            [chips]="indiceChips(row)"
+            [metrics]="indiceMetrics(row)"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.dna" [size]="24"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <ng-template #emptyIndices><div class="premium-empty-box">Sin evaluaciones genéticas con los filtros actuales.</div></ng-template>
+      </ng-container>
+
+      <!-- TAB: GENEALOGÍA -->
+      <ng-container *ngIf="tab() === 'GENEALOGIA'">
+        <div class="gen-controls">
+          <app-remote-search-select
+            class="gen-search"
+            label="Animal"
+            placeholder="Buscar animal por caravana"
+            [options]="animales()"
+            valueField="id"
+            labelField="caravana"
+            [subtitleFields]="['raza','potreroNombre']"
+            [searchFields]="['caravana','raza','potreroNombre']"
+            [value]="selectedGenealogiaId()"
+            (valueChange)="onGenealogiaChange($event)"
+          ></app-remote-search-select>
+          <div class="gen-legend">
+            <span><i class="dot dot--blue"></i> Macho</span>
+            <span><i class="dot dot--purple"></i> Hembra</span>
+            <span><i class="dot dot--neutral"></i> Sin registro</span>
+          </div>
+        </div>
+
+        <div class="premium-empty-box" *ngIf="genealogiaLoading()">Cargando genealogía...</div>
+        <div class="premium-empty-box" *ngIf="!genealogiaLoading() && !genealogia()">Seleccioná un animal para ver su árbol genealógico.</div>
+
+        <div class="gen-tree" *ngIf="!genealogiaLoading() && genealogia() as gen">
+          <div class="gen-col">
+            <p class="gen-col-title">Animal</p>
+            <div class="gen-node gen-node--focus" [attr.data-tone]="nodoTone(gen.animal)">
+              <app-svg-icon [path]="nodoTone(gen.animal) === 'purple' ? icons.female : icons.male" [size]="16"></app-svg-icon>
+              <div><strong>{{ gen.animal.caravana }}</strong><small>{{ gen.animal.raza }}<ng-container *ngIf="gen.animal.sexo"> · {{ gen.animal.sexo }}</ng-container></small></div>
+            </div>
+          </div>
+          <div class="gen-col" *ngFor="let generacion of [1, 2, 3]">
+            <p class="gen-col-title">{{ generacion }}ª generación <span>{{ generacion === 1 ? 'Padres' : generacion === 2 ? 'Abuelos' : 'Bisabuelos' }}</span></p>
+            <div class="gen-node" *ngFor="let nodo of ancestrosPorGeneracion(generacion)" [attr.data-tone]="nodoTone(nodo)">
+              <app-svg-icon [path]="nodoTone(nodo) === 'purple' ? icons.female : icons.male" [size]="16"></app-svg-icon>
+              <div><strong>{{ nodo.caravana }}</strong><small>{{ nodo.raza }}<ng-container *ngIf="nodo.relacion"> · {{ nodo.relacion }}</ng-container></small></div>
+            </div>
+            <div class="gen-node gen-node--empty" *ngIf="!ancestrosPorGeneracion(generacion).length">Sin registro</div>
+          </div>
+          <div class="gen-foot">
+            <span>Info basada en animales registrados en el sistema · {{ genealogiaAncestros().length }} ancestros registrados.</span>
+            <span>Última actualización: {{ today }}</span>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- TAB: CRUZAMIENTOS -->
+      <ng-container *ngIf="tab() === 'CRUZAMIENTOS'">
+        <div class="cross-grid" *ngIf="pagedRecomendaciones().length; else emptyCross">
+          <article class="cross-card" *ngFor="let item of pagedRecomendaciones()" [attr.data-tone]="recommendationTone(item)">
+            <span class="cross-badge" [attr.data-tone]="recommendationTone(item)">{{ recommendationQuality(item) }} compatibilidad</span>
+            <div class="cross-pair">
+              <div class="cross-animal">
+                <span class="cross-animal__icon cross-animal__icon--female"><app-svg-icon [path]="icons.female" [size]="18"></app-svg-icon></span>
+                <div><span>Vaca</span><strong>{{ item.vacaCaravana }}</strong></div>
+              </div>
+              <span class="cross-arrow"><app-svg-icon [path]="icons.arrowRight" [size]="18"></app-svg-icon></span>
+              <div class="cross-animal">
+                <span class="cross-animal__icon cross-animal__icon--male"><app-svg-icon [path]="icons.male" [size]="18"></app-svg-icon></span>
+                <div><span>Toro</span><strong>{{ item.toroCaravana }}</strong></div>
+              </div>
+            </div>
+            <dl class="cross-metrics">
+              <div><dt>Score genético</dt><dd class="cross-score">{{ item.score }}</dd></div>
+              <div><dt>Parentesco directo</dt><dd>Validado</dd></div>
+              <div><dt>Modelo</dt><dd>Heurístico</dd></div>
+            </dl>
+            <p class="cross-note">{{ item.motivo }}</p>
+            <button class="cross-action" type="button" (click)="viewRecommendation(item)">
+              <app-svg-icon [path]="icons.tree" [size]="15"></app-svg-icon> Ver genealogía
+            </button>
+          </article>
+        </div>
+        <ng-template #emptyCross><div class="premium-empty-box">Sin recomendaciones de cruzamiento disponibles.</div></ng-template>
+      </ng-container>
+
+      <!-- Paginación común -->
+      <footer class="pagination" *ngIf="showPagination() && activeCount()">
+        <span>{{ rangeLabel() }}</span>
+        <div class="pager">
+          <label class="page-size">
+            <select [ngModel]="pageSize()" (ngModelChange)="updatePageSize($event)">
+              <option value="25">25 por página</option>
+              <option value="50">50 por página</option>
+              <option value="100">100 por página</option>
+            </select>
+          </label>
+          <button type="button" (click)="previousPage()" [disabled]="page() === 1">Anterior</button>
+          <button type="button" *ngFor="let pageNumber of pageNumbers()" [class.active]="pageNumber === page()" (click)="setPage(pageNumber)">{{ pageNumber }}</button>
+          <button type="button" (click)="nextPage()" [disabled]="page() === totalPages()">Siguiente</button>
+        </div>
+      </footer>
     </section>
   </ng-container>
 
-  <div class="detail-overlay" *ngIf="selectedAlert() as alerta" (click)="closeAlertaDetalle()" (document:keydown.escape)="closeAlertaDetalle()">
-    <section class="cow-detail-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
-      <header class="cow-detail-modal__header">
-        <div class="cow-detail-modal__eyebrow">
-          <span class="birth-alerts__icon detail-title-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" role="img">
-              <path d="M5 5h14v14H5z" />
-              <path d="m8 12 2.5 2.5L16 9" />
-            </svg>
-          </span>
-          <strong>Detalle de la vaca</strong>
-        </div>
-        <button class="detail-close" type="button" aria-label="Cerrar detalle" (click)="closeAlertaDetalle()">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
-        </button>
-      </header>
+  <!-- MODAL: registrar evento reproductivo -->
+  <app-premium-modal
+    *ngIf="eventModalOpen()"
+    [icon]="icons.plus"
+    title="Registrar evento reproductivo"
+    subtitle="Cargá montas, inseminaciones, controles de preñez, partos o índices genéticos."
+    size="wide"
+    (close)="closeEventModal()"
+  >
+    <div class="mode-tabs">
+      <app-stat-tabs [tabs]="modeTabs" [active]="mode()" (activeChange)="setMode($event)"></app-stat-tabs>
+    </div>
 
-      <div class="cow-detail-modal__body" *ngIf="selectedAlertAnimal() as animal">
-        <aside class="cow-profile-card">
-          <div class="cow-profile-card__avatar" aria-hidden="true">
-            <svg viewBox="0 0 24 24" role="img">
-              <path d="M7 11c0-3 2-5 5-5s5 2 5 5v3c0 3-2 5-5 5s-5-2-5-5v-3Z" />
-              <path d="M7.5 8 4 5.5M16.5 8 20 5.5M9 12h.1M15 12h.1M10 16h4" />
-            </svg>
-          </div>
-          <h3>VACA {{ animal.caravana }}</h3>
-          <div class="cow-profile-card__badges">
-            <span>RP {{ animal.caravana }}</span>
-            <span>HBA pendiente</span>
-          </div>
-          <dl class="cow-profile-list">
-            <div><dt>Raza</dt><dd>{{ animal.raza || 'Sin dato' }}</dd></div>
-            <div><dt>Fecha de nacimiento</dt><dd>{{ animal.fechaNacimiento || 'Sin dato' }}</dd></div>
-            <div><dt>Categoria</dt><dd>{{ animal.sexo || 'Sin dato' }}</dd></div>
-            <div><dt>Estado reproductivo</dt><dd><span class="inline-risk risk-low">{{ selectedAlertControl()?.estado || 'Prenada' }}</span></dd></div>
-            <div><dt>Registro</dt><dd>{{ animal.estado || 'Sin dato' }}</dd></div>
-          </dl>
-        </aside>
+    <div class="form-grid" *ngIf="mode() === 'MONTA'">
+      <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [options]="hembras()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="montaForm().vacaId" (valueChange)="montaForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
+      <app-remote-search-select label="Toro" placeholder="Buscar toro por caravana" [options]="machos()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="montaForm().toroId" (valueChange)="montaForm.update(f => ({ ...f, toroId: $event }))"></app-remote-search-select>
+      <label><span>Fecha</span><input type="date" [ngModel]="montaForm().fecha" (ngModelChange)="montaForm.update(f => ({ ...f, fecha: $event }))" /></label>
+      <label><span>Resultado</span><select [ngModel]="montaForm().resultado" (ngModelChange)="montaForm.update(f => ({ ...f, resultado: $event }))"><option value="PENDIENTE">Pendiente</option><option value="PRENADA">Preñada</option><option value="FALLIDA">Fallida</option></select></label>
+    </div>
 
-        <section class="cow-detail-main">
-          <div class="cow-summary-grid">
-            <article class="cow-summary-card cow-summary-card--large">
-              <span class="summary-label">Proximo parto</span>
-              <strong>{{ alerta.fecha }}</strong>
-              <small>Fecha estimada</small>
-              <div class="summary-split">
-                <div><span>Dias restantes</span><b>{{ diasRestantes(alerta) }} dias</b></div>
-                <div><span>Nivel de riesgo</span><b class="inline-risk" [ngClass]="riesgoClass(alerta)">{{ selectedAlertRiskLabel() }}</b></div>
-                <div><span>Numero de parto</span><b>{{ selectedAlertPartoNumber() }}°</b></div>
-              </div>
-            </article>
-            <article class="cow-summary-card">
-              <div><span>Ultimo servicio</span><strong>{{ lastServiceLabel(alerta.animalId) }}</strong></div>
-              <div><span>Gestacion</span><strong>{{ selectedAlertControl()?.fechaDiagnostico ? 'En seguimiento' : 'Sin dato' }}</strong></div>
-              <div><span>Peso estimado</span><strong>{{ animal.pesoActualKg || 'Sin dato' }}<ng-container *ngIf="animal.pesoActualKg"> kg</ng-container></strong></div>
-              <div><span>Ubicacion</span><strong>{{ animal.potreroNombre || 'Sin potrero' }}</strong></div>
-            </article>
-          </div>
+    <div class="form-grid" *ngIf="mode() === 'IA'">
+      <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [options]="hembras()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="inseminacionForm().vacaId" (valueChange)="inseminacionForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
+      <label><span>Fecha</span><input type="date" [ngModel]="inseminacionForm().fecha" (ngModelChange)="inseminacionForm.update(f => ({ ...f, fecha: $event }))" /></label>
+      <label><span>Genética usada</span><input [ngModel]="inseminacionForm().geneticaUsada" (ngModelChange)="inseminacionForm.update(f => ({ ...f, geneticaUsada: $event }))" /></label>
+      <app-remote-search-select label="Técnico" placeholder="Buscar usuario técnico" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="inseminacionForm().tecnico" (valueChange)="inseminacionForm.update(f => ({ ...f, tecnico: $event }))"></app-remote-search-select>
+      <label><span>Costo</span><input type="number" [ngModel]="inseminacionForm().costo" (ngModelChange)="inseminacionForm.update(f => ({ ...f, costo: $event }))" /></label>
+    </div>
 
-          <div class="detail-tabs">
-            <span class="active">Informacion general</span>
-            <span>Ficha tecnica</span>
-            <span>Reproduccion</span>
-            <span>Eventos</span>
-          </div>
+    <div class="form-grid" *ngIf="mode() === 'PRENEZ'">
+      <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [options]="hembras()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="prenezForm().vacaId" (valueChange)="prenezForm.update(f => ({ ...f, vacaId: $event }))"></app-remote-search-select>
+      <label><span>Diagnóstico</span><input type="date" [ngModel]="prenezForm().fechaDiagnostico" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaDiagnostico: $event }))" /></label>
+      <label><span>Estado</span><select [ngModel]="prenezForm().estado" (ngModelChange)="prenezForm.update(f => ({ ...f, estado: $event }))"><option value="PRENADA">Preñada</option><option value="VACIA">Vacía</option><option value="CONTROL">Control</option></select></label>
+      <label><span>Parto estimado</span><input type="date" [ngModel]="prenezForm().fechaEstimadaParto" (ngModelChange)="prenezForm.update(f => ({ ...f, fechaEstimadaParto: $event }))" /></label>
+      <label><span>Nivel de riesgo del parto</span><select [ngModel]="prenezForm().nivelRiesgoParto" (ngModelChange)="prenezForm.update(f => ({ ...f, nivelRiesgoParto: $event }))"><option value="BAJO">Bajo</option><option value="MEDIO">Medio</option><option value="ALTO">Alto</option></select></label>
+      <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [options]="veterinarios()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="prenezForm().veterinario" (valueChange)="prenezForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>
+    </div>
 
-          <div class="detail-content-grid">
-            <article class="detail-info-card">
-              <h4>Informacion general</h4>
-              <dl>
-                <div><dt>Raza</dt><dd>{{ animal.raza || 'Sin dato' }}</dd></div>
-                <div><dt>Fecha de nacimiento</dt><dd>{{ animal.fechaNacimiento || 'Sin dato' }}</dd></div>
-                <div><dt>Edad</dt><dd>{{ technicalAge(animal) }}</dd></div>
-                <div><dt>Madre</dt><dd>{{ animal.madreCaravana || 'Sin dato' }}</dd></div>
-                <div><dt>Padre</dt><dd>{{ animal.padreCaravana || 'Sin dato' }}</dd></div>
-                <div><dt>Ubicacion actual</dt><dd>{{ animal.potreroNombre || 'Sin dato' }}</dd></div>
-                <div><dt>Observaciones</dt><dd>{{ animal.observaciones || 'Sin observaciones' }}</dd></div>
-              </dl>
-            </article>
+    <div class="form-grid" *ngIf="mode() === 'PARTO'">
+      <app-remote-search-select label="Vaca" placeholder="Buscar vaca por caravana" [options]="hembras()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="partoForm().madreId" (valueChange)="partoForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>
+      <app-remote-search-select label="Ternero" placeholder="Buscar ternero por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="partoForm().terneroId" (valueChange)="partoForm.update(f => ({ ...f, terneroId: $event }))"></app-remote-search-select>
+      <label><span>Fecha</span><input type="date" [ngModel]="partoForm().fecha" (ngModelChange)="partoForm.update(f => ({ ...f, fecha: $event }))" /></label>
+      <label><span>Viabilidad</span><select [ngModel]="partoForm().viabilidadTernero" (ngModelChange)="partoForm.update(f => ({ ...f, viabilidadTernero: $event }))"><option value="VIABLE">Viable</option><option value="NO_VIABLE">No viable</option><option value="OBSERVACION">Observación</option></select></label>
+    </div>
 
-            <article class="detail-info-card">
-              <h4>Resumen reproductivo</h4>
-              <dl>
-                <div><dt>Estado reproductivo</dt><dd>{{ selectedAlertControl()?.estado || 'Sin dato' }}</dd></div>
-                <div><dt>Ultimo servicio</dt><dd>{{ lastServiceLabel(alerta.animalId) }}</dd></div>
-                <div><dt>Diagnostico de prenez</dt><dd>{{ selectedAlertControl()?.fechaDiagnostico || 'Sin dato' }}</dd></div>
-                <div><dt>Metodo diagnostico</dt><dd>Pendiente de modelo</dd></div>
-                <div><dt>Fecha estimada de parto</dt><dd>{{ alerta.fecha }}</dd></div>
-                <div><dt>Numero de parto</dt><dd>{{ selectedAlertPartoNumber() }}°</dd></div>
-              </dl>
-            </article>
-          </div>
+    <div class="form-grid" *ngIf="mode() === 'INDICE'">
+      <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="indiceForm().animalId" (valueChange)="indiceForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+      <label><span>Fecha</span><input type="date" [ngModel]="indiceForm().fechaEvaluacion" (ngModelChange)="indiceForm.update(f => ({ ...f, fechaEvaluacion: $event }))" /></label>
+      <label><span>EPD</span><input type="number" [ngModel]="indiceForm().epd" (ngModelChange)="indiceForm.update(f => ({ ...f, epd: $event }))" /></label>
+      <label><span>DEP</span><input type="number" [ngModel]="indiceForm().dep" (ngModelChange)="indiceForm.update(f => ({ ...f, dep: $event }))" /></label>
+      <label><span>Índice productivo</span><input type="number" [ngModel]="indiceForm().indiceProductivo" (ngModelChange)="indiceForm.update(f => ({ ...f, indiceProductivo: $event }))" /></label>
+    </div>
 
-          <article class="events-card">
-            <div class="events-card__head">
-              <h4>Seguimiento de eventos</h4>
-              <span>{{ selectedAlertEvents().length }} eventos</span>
-            </div>
-            <div class="events-table">
-              <div class="events-table__row events-table__row--head">
-                <span>Fecha</span><span>Tipo</span><span>Estado</span><span>Responsable</span><span>Detalle</span>
-              </div>
-              <div class="events-table__row" *ngFor="let event of selectedAlertEvents()">
-                <span>{{ event.fecha }}</span><strong>{{ event.tipo }}</strong><span>{{ event.estado }}</span><span>{{ event.responsable }}</span><span>{{ event.detalle }}</span>
-              </div>
-              <div class="events-table__empty" *ngIf="!selectedAlertEvents().length">Sin eventos asociados a esta vaca.</div>
-            </div>
-          </article>
-        </section>
+    <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="mode() === 'MONTA' ? montaForm().observaciones : mode() === 'IA' ? inseminacionForm().observaciones : mode() === 'PRENEZ' ? prenezForm().observaciones : mode() === 'PARTO' ? partoForm().observaciones : indiceForm().observaciones" (ngModelChange)="mode() === 'MONTA' ? montaForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'IA' ? inseminacionForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'PRENEZ' ? prenezForm.update(f => ({ ...f, observaciones: $event })) : mode() === 'PARTO' ? partoForm.update(f => ({ ...f, observaciones: $event })) : indiceForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeEventModal()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitCurrent()">Guardar evento</button>
+    </div>
+  </app-premium-modal>
+
+  <!-- MODAL: detalle de vaca (alerta de parto) -->
+  <app-premium-modal
+    *ngIf="selectedAlert() as alerta"
+    [icon]="icons.cow"
+    [title]="selectedAlertAnimal() ? ('VACA ' + selectedAlertAnimal()!.caravana) : ('VACA ' + alerta.animalCaravana)"
+    [subtitle]="(selectedAlertAnimal()?.raza || 'Sin raza') + ' · Próximo parto ' + alerta.fecha"
+    [badge]="selectedAlertRiskLabel()"
+    [badgeTone]="riesgoTone(selectedAlertRiskLabel())"
+    size="wide"
+    (close)="closeAlertaDetalle()"
+  >
+    <ng-container *ngIf="selectedAlertAnimal() as animal">
+      <div class="tiles-grid">
+        <app-info-tile label="Próximo parto" [value]="alerta.fecha" [icon]="icons.calendarCheck" tone="green"></app-info-tile>
+        <app-info-tile label="Días restantes" [value]="diasRestantes(alerta) + ' días'" [icon]="icons.clock" tone="blue"></app-info-tile>
+        <app-info-tile label="Nivel de riesgo" [value]="selectedAlertRiskLabel()" [icon]="icons.shield" [tone]="riesgoTone(selectedAlertRiskLabel()) === 'red' ? 'red' : riesgoTone(selectedAlertRiskLabel()) === 'yellow' ? 'yellow' : 'green'"></app-info-tile>
+        <app-info-tile label="Número de parto" [value]="selectedAlertPartoNumber() + '°'" [icon]="icons.calendar"></app-info-tile>
+        <app-info-tile label="Último servicio" [value]="lastServiceLabel(alerta.animalId)" [icon]="icons.male" tone="cyan"></app-info-tile>
+        <app-info-tile label="Ubicación" [value]="animal.potreroNombre || 'Sin potrero'" [icon]="icons.pin"></app-info-tile>
+        <app-info-tile label="Peso estimado" [value]="animal.pesoActualKg ? (animal.pesoActualKg + ' kg') : 'Sin dato'" [icon]="icons.weight"></app-info-tile>
+        <app-info-tile label="Estado reproductivo" [value]="selectedAlertControl()?.estado ? estadoPrenezLabel(selectedAlertControl()!.estado) : 'Preñada'" [icon]="icons.female" tone="purple"></app-info-tile>
       </div>
 
-      <footer class="cow-detail-modal__footer">
-        <span>Ultima actualizacion: {{ today }}</span>
-        <button class="btn-secondary" type="button" (click)="closeAlertaDetalle()">Cerrar</button>
-      </footer>
-    </section>
-  </div>
+      <div class="detail-section">
+        <h4><app-svg-icon [path]="icons.info" [size]="18"></app-svg-icon> Información general</h4>
+        <div class="tiles-grid">
+          <app-info-tile label="Raza" [value]="animal.raza || 'Sin dato'" [icon]="icons.cow"></app-info-tile>
+          <app-info-tile label="Fecha de nacimiento" [value]="animal.fechaNacimiento || 'Sin dato'" [icon]="icons.calendar"></app-info-tile>
+          <app-info-tile label="Edad" [value]="technicalAge(animal)" [icon]="icons.clock"></app-info-tile>
+          <app-info-tile label="Madre" [value]="animal.madreCaravana || 'Sin dato'" [icon]="icons.female"></app-info-tile>
+          <app-info-tile label="Padre" [value]="animal.padreCaravana || 'Sin dato'" [icon]="icons.male"></app-info-tile>
+          <app-info-tile label="Registro" [value]="animal.estado || 'Sin dato'" [icon]="icons.note"></app-info-tile>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-head">
+          <h4><app-svg-icon [path]="icons.note" [size]="18"></app-svg-icon> Seguimiento de eventos</h4>
+          <span class="panel-count">{{ selectedAlertEvents().length }} eventos</span>
+        </div>
+        <div class="table-wrap" *ngIf="selectedAlertEvents().length; else noEvents">
+          <table class="data-table">
+            <thead>
+              <tr><th>Fecha</th><th>Tipo</th><th>Estado</th><th>Responsable</th><th>Detalle</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let event of selectedAlertEvents()">
+                <td>{{ event.fecha }}</td>
+                <td><strong>{{ event.tipo }}</strong></td>
+                <td>{{ event.estado }}</td>
+                <td>{{ event.responsable }}</td>
+                <td>{{ event.detalle }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #noEvents><div class="premium-empty-box">Sin eventos asociados a esta vaca.</div></ng-template>
+      </div>
+    </ng-container>
+
+    <div class="premium-empty-box" *ngIf="!selectedAlertAnimal()">Cargando detalle del animal...</div>
+
+    <div footer>
+      <span class="footer-note">Última actualización: {{ today }}</span>
+      <button class="btn-secondary" type="button" (click)="closeAlertaDetalle()">Cerrar</button>
+    </div>
+  </app-premium-modal>
 </div>
-
-
-
-

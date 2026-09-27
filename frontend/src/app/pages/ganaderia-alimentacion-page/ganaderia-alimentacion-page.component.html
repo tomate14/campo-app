@@ -1,202 +1,377 @@
 <div class="feed-page">
-  <header class="feed-head">
-    <div>
-      <p class="eyebrow">Campo App · Nutrición</p>
-      <h2>Alimentación y peso</h2>
-      <p>Programas nutricionales, suministros, pesajes, BCS y eficiencia alimenticia del rodeo.</p>
-    </div>
-    <div class="head-actions">
-      <button class="btn-secondary" type="button" (click)="openModal('PESAJE')">Nuevo pesaje</button>
-      <button class="btn-secondary" type="button" (click)="openModal('SUMINISTRO')">Registrar suministro</button>
-      <button class="btn-primary" type="button" (click)="openModal('DIETA')">Nueva dieta</button>
-    </div>
-  </header>
+  <app-page-header
+    eyebrow="Campo App · Ganadería"
+    title="Alimentación y peso"
+    subtitle="Programas nutricionales, suministros, pesajes, BCS y eficiencia alimenticia del rodeo."
+    [icon]="icons.diet"
+  >
+    <button class="btn-secondary" type="button" (click)="openModal('PESAJE')">
+      <app-svg-icon [path]="icons.scale" [size]="16"></app-svg-icon>
+      Nuevo pesaje
+    </button>
+    <button class="btn-secondary" type="button" (click)="openModal('SUMINISTRO')">
+      <app-svg-icon [path]="icons.flask" [size]="16"></app-svg-icon>
+      Registrar suministro
+    </button>
+    <button class="btn-primary" type="button" (click)="openModal('DIETA')">
+      <app-svg-icon [path]="icons.plus" [size]="16"></app-svg-icon>
+      Nueva dieta
+    </button>
+  </app-page-header>
 
   <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
-  <div class="card empty-box" *ngIf="loading()">Cargando nutrición...</div>
+  <div class="premium-empty-box" *ngIf="loading()">Cargando nutrición...</div>
 
   <ng-container *ngIf="!loading() && resumen() as data">
     <section class="kpi-grid">
-      <article class="kpi-card">
-        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>
-        <div class="kpi-copy"><span>Dietas activas</span><small>Planes nutricionales vigentes</small></div>
-        <strong>{{ data.dashboard.dietasActivas }}</strong>
-      </article>
-      <article class="kpi-card">
-        <div class="metric-icon blue"><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg></div>
-        <div class="kpi-copy"><span>Kg suministrados</span><small>Mes operativo actual</small></div>
-        <strong>{{ data.dashboard.kgSuministradosMes || 0 }}</strong>
-      </article>
-      <article class="kpi-card">
-        <div class="metric-icon warning"><svg viewBox="0 0 24 24"><path d="M12 2v20" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H15a3.5 3.5 0 0 1 0 7H6" /></svg></div>
-        <div class="kpi-copy"><span>Costo mensual</span><small>Alimentacion registrada</small></div>
-        <strong>${{ data.dashboard.costoMes || 0 }}</strong>
-      </article>
-      <article class="kpi-card">
-        <div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg></div>
-        <div class="kpi-copy"><span>Conversion</span><small>Kg alimento / kg ganado</small></div>
-        <strong>{{ data.dashboard.conversionAlimenticia || 0 }}</strong>
-      </article>
+      <app-kpi-card label="Dietas activas" [value]="data.dashboard.dietasActivas" sub="Planes nutricionales vigentes" tone="green">
+        <app-svg-icon icon [path]="icons.diet" [size]="24"></app-svg-icon>
+      </app-kpi-card>
+      <app-kpi-card label="Kg suministrados" [value]="data.dashboard.kgSuministradosMes || 0" sub="Mes operativo actual" tone="blue" subTone="blue">
+        <app-svg-icon icon [path]="icons.flask" [size]="24"></app-svg-icon>
+      </app-kpi-card>
+      <app-kpi-card label="Costo mensual" [value]="'$' + (data.dashboard.costoMes || 0)" sub="Alimentación registrada" tone="yellow" subTone="yellow">
+        <app-svg-icon icon [path]="icons.dollar" [size]="24"></app-svg-icon>
+      </app-kpi-card>
+      <app-kpi-card label="Conversión" [value]="data.dashboard.conversionAlimenticia || 0" sub="Kg alimento / kg ganado" tone="cyan" subTone="green">
+        <app-svg-icon icon [path]="icons.bars" [size]="24"></app-svg-icon>
+      </app-kpi-card>
+      <app-kpi-card label="Ganancia diaria" [value]="(data.dashboard.gananciaPromedioKg || 0) + ' kg'" sub="Promedio últimos pesajes" tone="green">
+        <app-svg-icon icon [path]="icons.trending" [size]="24"></app-svg-icon>
+      </app-kpi-card>
+      <app-kpi-card label="Animales activos" [value]="animales().length" sub="Con plan nutricional" tone="purple" subTone="purple">
+        <app-svg-icon icon [path]="icons.cow" [size]="24"></app-svg-icon>
+      </app-kpi-card>
     </section>
 
-    <section class="nutrition-layout">
-      <article class="card nutrition-panel">
-        <div class="tabs-bar">
-          <div class="tabs">
-            <button type="button" [class.active]="activeTab() === 'DIETAS'" (click)="setTab('DIETAS')">
-              <svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg>
-              Dietas
-            </button>
-            <button type="button" [class.active]="activeTab() === 'SUMINISTROS'" (click)="setTab('SUMINISTROS')">
-              <svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg>
-              Suministros
-            </button>
-            <button type="button" [class.active]="activeTab() === 'PESAJES'" (click)="setTab('PESAJES')">
-              <svg viewBox="0 0 24 24"><path d="M6 3h12" /><path d="M6 21h12" /><path d="M8 3v18" /><path d="M16 3v18" /><path d="M8 8h8" /><path d="M8 16h8" /></svg>
-              Pesajes
-            </button>
-            <button type="button" [class.active]="activeTab() === 'ALERTAS'" (click)="setTab('ALERTAS')">
-              <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg>
-              Alertas
-            </button>
+    <div class="alert-banner">
+      <span class="alert-banner__icon"><app-svg-icon [path]="icons.bell" [size]="22"></app-svg-icon></span>
+      <div class="alert-banner__body">
+        <div class="alert-banner__head">
+          <strong>Alertas nutricionales</strong>
+          <span class="banner-pill banner-pill--red" *ngIf="alertasAlta()">{{ alertasAlta() }} prioridad alta</span>
+          <span class="banner-pill banner-pill--yellow" *ngIf="alertasMedia()">{{ alertasMedia() }} prioridad media</span>
+          <span class="alert-banner__hint">Bajas de peso y BCS fuera de rango</span>
+        </div>
+        <button class="link-btn" type="button" (click)="setTab('ALERTAS')">
+          Ver alertas <app-svg-icon [path]="icons.arrowRight" [size]="14"></app-svg-icon>
+        </button>
+      </div>
+    </div>
+
+    <section class="panel card">
+      <div class="panel-top">
+        <app-stat-tabs [tabs]="tabs()" [active]="activeTab()" (activeChange)="setTab($event)"></app-stat-tabs>
+        <span class="panel-count">{{ totalItems() }} {{ activeTabLabel() }}</span>
+      </div>
+
+      <div class="filters-row">
+        <label class="field field--search">
+          <span>Buscar</span>
+          <div class="input-icon">
+            <input placeholder="Caravana, dieta, alimento o responsable" [ngModel]="filters().search" (ngModelChange)="updateFilter('search', $event)" />
+            <app-svg-icon [path]="icons.search" [size]="16"></app-svg-icon>
           </div>
-          <span>{{ totalItems() }} vigente(s)</span>
+        </label>
+        <label class="field">
+          <span>Potrero</span>
+          <select [ngModel]="filters().potreroId" (ngModelChange)="updateFilter('potreroId', $event)">
+            <option value="">Todos</option>
+            <option *ngFor="let potrero of potreros()" [value]="potrero.id">{{ potrero.nombre }}</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Período</span>
+          <select [ngModel]="filters().periodo" (ngModelChange)="updateFilter('periodo', $event)">
+            <option *ngFor="let option of periodoOptions" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </label>
+        <div class="view-toggle">
+          <button type="button" [class.is-active]="viewMode() === 'TABLA'" (click)="setViewMode('TABLA')">
+            <app-svg-icon [path]="icons.list" [size]="15"></app-svg-icon>
+            Tabla
+          </button>
+          <button type="button" [class.is-active]="viewMode() === 'TARJETAS'" (click)="setViewMode('TARJETAS')">
+            <app-svg-icon [path]="icons.grid" [size]="15"></app-svg-icon>
+            Tarjetas
+          </button>
         </div>
+      </div>
 
-        <div class="card-grid" *ngIf="activeTab() === 'DIETAS'">
-          <article class="premium-card" [class.card-success]="dieta.activa" [class.card-muted]="!dieta.activa" *ngFor="let dieta of dietasPage()">
-            <div class="premium-card__head">
-              <div class="premium-card__identity">
-                <div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>
-                <div><h3>{{ dieta.nombre }}</h3><p>{{ dieta.tipoAnimal }} - {{ dieta.objetivo || 'Sin objetivo' }}</p></div>
-              </div>
-              <span class="badge" [class.badge-muted]="!dieta.activa">{{ dieta.activa ? 'Activa' : 'Inactiva' }}</span>
-            </div>
-            <div class="metric-list">
-              <div><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg><span>Materia seca</span><strong>{{ dieta.materiaSecaKg || 0 }} kg</strong></div>
-              <div><svg viewBox="0 0 24 24"><path d="M12 2v20" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H15a3.5 3.5 0 0 1 0 7H6" /></svg><span>Costo diario</span><strong>${{ dieta.costoDiario || 0 }}</strong></div>
-              <div><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg><span>Ingredientes</span><strong>{{ dieta.ingredientes.length }}</strong></div>
-            </div>
-            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
-          </article>
-          <div class="empty-box premium-empty-box" *ngIf="!data.dietas.length">Sin dietas cargadas.</div>
+      <!-- TAB: DIETAS -->
+      <ng-container *ngIf="activeTab() === 'DIETAS'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && dietasPage().length">
+          <table class="data-table">
+            <thead>
+              <tr><th>Dieta</th><th>Tipo animal</th><th>Materia seca</th><th>Costo diario</th><th>Composición</th><th>Estado</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let dieta of dietasPage()">
+                <td>
+                  <div class="cell-animal">
+                    <span class="cell-avatar"><app-svg-icon [path]="icons.diet" [size]="18"></app-svg-icon></span>
+                    <div>
+                      <strong>{{ dieta.nombre }}</strong>
+                      <small>{{ dieta.objetivo || 'Sin objetivo' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ dieta.tipoAnimal }}</td>
+                <td>{{ dieta.materiaSecaKg || 0 }} kg</td>
+                <td>${{ dieta.costoDiario || 0 }}</td>
+                <td class="cell-wide">{{ composicion(dieta) }}</td>
+                <td><span class="pill" [attr.data-tone]="dieta.activa ? 'green' : 'neutral'">{{ dieta.activa ? 'Activa' : 'Inactiva' }}</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && dietasPage().length">
+          <app-entity-card
+            *ngFor="let dieta of dietasPage()"
+            [title]="dieta.nombre"
+            [subtitle]="dieta.objetivo || 'Sin objetivo'"
+            [chips]="dietaChips(dieta)"
+            [metrics]="dietaMetrics(dieta)"
+            [badge]="dieta.activa ? 'Activa' : 'Inactiva'"
+            [badgeTone]="dieta.activa ? 'green' : 'neutral'"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.diet" [size]="24"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <div class="premium-empty-box" *ngIf="!dietasPage().length">Sin dietas con los filtros actuales.</div>
+      </ng-container>
 
-        <div class="card-grid" *ngIf="activeTab() === 'SUMINISTROS'">
-          <article class="premium-card card-success" *ngFor="let item of suministrosPage()">
-            <div class="premium-card__head">
-              <div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M8 3h8" /><path d="M9 3v6l-4 7a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-4-7V3" /></svg></div><div><h3>{{ item.animalCaravana || 'Rodeo' }}</h3><p>{{ item.dietaNombre || item.alimento }}</p></div></div>
-              <span class="badge">Registrado</span>
-            </div>
-            <div class="metric-list">
-              <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha</span><strong>{{ item.fecha | date:'dd/MM/yyyy' }}</strong></div>
-              <div><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg><span>Cantidad</span><strong>{{ item.cantidadKg }} kg</strong></div>
-              <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.responsableNombre || item.responsable || 'Sin responsable' }}</strong></div>
-            </div>
-            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
-          </article>
-          <div class="empty-box premium-empty-box" *ngIf="!data.registros.length">Sin suministros registrados.</div>
+      <!-- TAB: SUMINISTROS -->
+      <ng-container *ngIf="activeTab() === 'SUMINISTROS'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && suministrosPage().length">
+          <table class="data-table">
+            <thead>
+              <tr><th>Animal / Rodeo</th><th>Dieta / Alimento</th><th>Fecha</th><th>Cantidad</th><th>Potrero</th><th>Responsable</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of suministrosPage()">
+                <td>
+                  <div class="cell-animal">
+                    <span class="cell-avatar"><app-svg-icon [path]="icons.flask" [size]="18"></app-svg-icon></span>
+                    <div>
+                      <strong>{{ item.animalCaravana || 'Rodeo' }}</strong>
+                      <small>{{ item.dietaNombre || item.alimento }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ item.dietaNombre || item.alimento || 'Sin dieta' }}</td>
+                <td>{{ item.fecha | date:'dd/MM/yyyy' }}</td>
+                <td>{{ item.cantidadKg }} kg</td>
+                <td>{{ item.potreroNombre || item.potrero || 'Sin potrero' }}</td>
+                <td>{{ item.responsableNombre || item.responsable || 'Sin responsable' }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && suministrosPage().length">
+          <app-entity-card
+            *ngFor="let item of suministrosPage()"
+            [title]="item.animalCaravana || 'Rodeo'"
+            [subtitle]="item.dietaNombre || item.alimento"
+            [metrics]="suministroMetrics(item)"
+            badge="Registrado"
+            badgeTone="green"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.flask" [size]="24"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <div class="premium-empty-box" *ngIf="!suministrosPage().length">Sin suministros con los filtros actuales.</div>
+      </ng-container>
 
-        <div class="card-grid" *ngIf="activeTab() === 'PESAJES'">
-          <article class="premium-card card-success" *ngFor="let item of pesajesPage()">
-            <div class="premium-card__head">
-              <div class="premium-card__identity"><div class="premium-card__icon"><svg viewBox="0 0 24 24"><path d="M6 3h12" /><path d="M6 21h12" /><path d="M8 3v18" /><path d="M16 3v18" /><path d="M8 8h8" /><path d="M8 16h8" /></svg></div><div><h3>{{ item.animalCaravana }}</h3><p>{{ item.metodo || 'Sin metodo' }}</p></div></div>
-              <span class="badge">Pesaje</span>
-            </div>
-            <div class="metric-list">
-              <div><svg viewBox="0 0 24 24"><path d="M7 3v4" /><path d="M17 3v4" /><path d="M4 8h16" /><path d="M5 5h14v16H5z" /></svg><span>Fecha</span><strong>{{ item.fecha | date:'dd/MM/yyyy' }}</strong></div>
-              <div><svg viewBox="0 0 24 24"><path d="M4 18V6" /><path d="M8 18V10" /><path d="M12 18V4" /><path d="M16 18v-6" /><path d="M20 18V8" /></svg><span>Peso</span><strong>{{ item.pesoKg }} kg</strong></div>
-              <div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Responsable</span><strong>{{ item.responsableNombre || item.responsable || 'Sin responsable' }}</strong></div>
-            </div>
-            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('PESAJE')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
-          </article>
-          <div class="empty-box premium-empty-box" *ngIf="!data.pesajes.length">Sin pesajes registrados.</div>
+      <!-- TAB: PESAJES -->
+      <ng-container *ngIf="activeTab() === 'PESAJES'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && pesajesPage().length">
+          <table class="data-table">
+            <thead>
+              <tr><th>Animal</th><th>Fecha</th><th>Peso</th><th>BCS</th><th>Método</th><th>Responsable</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of pesajesPage()">
+                <td>
+                  <div class="cell-animal">
+                    <span class="cell-avatar cell-avatar--blue"><app-svg-icon [path]="icons.scale" [size]="18"></app-svg-icon></span>
+                    <div>
+                      <strong>{{ item.animalCaravana }}</strong>
+                      <small>{{ animalRaza(item.animalId) || 'Sin raza' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ item.fecha | date:'dd/MM/yyyy' }}</td>
+                <td>{{ item.pesoKg }} kg</td>
+                <td>{{ item.condicionCorporal ?? 'Sin dato' }}</td>
+                <td>{{ item.metodo || 'Sin método' }}</td>
+                <td>{{ item.responsableNombre || item.responsable || 'Sin responsable' }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && pesajesPage().length">
+          <app-entity-card
+            *ngFor="let item of pesajesPage()"
+            [title]="item.animalCaravana"
+            [subtitle]="item.metodo || 'Sin método'"
+            [metrics]="pesajeMetrics(item)"
+            badge="Pesaje"
+            badgeTone="blue"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.scale" [size]="24"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <div class="premium-empty-box" *ngIf="!pesajesPage().length">Sin pesajes con los filtros actuales.</div>
+      </ng-container>
 
-        <div class="card-grid" *ngIf="activeTab() === 'ALERTAS'">
-          <article class="premium-card card-warning" *ngFor="let alerta of alertasPage()">
-            <div class="premium-card__head">
-              <div class="premium-card__identity"><div class="premium-card__icon warning"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg></div><div><h3>{{ alerta.animalCaravana || 'Alerta nutricional' }}</h3><p>{{ alerta.mensaje }}</p></div></div>
-              <span class="badge badge-warning">{{ alerta.prioridad }}</span>
-            </div>
-            <div class="metric-list"><div><svg viewBox="0 0 24 24"><path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" /></svg><span>Tipo</span><strong>{{ alerta.tipo }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0" /><path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /></svg><span>Animal</span><strong>{{ alerta.animalCaravana || 'Rodeo' }}</strong></div><div><svg viewBox="0 0 24 24"><path d="M12 9v4" /><path d="M12 17h.01" /><path d="m10 3-8 18h20L14 3z" /></svg><span>Prioridad</span><strong>{{ alerta.prioridad }}</strong></div></div>
-            <div class="card-actions-inline"><button class="card-action" type="button" (click)="openModal('SUMINISTRO')"><svg viewBox="0 0 24 24"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>Registrar</button><button class="card-action card-action--ghost" type="button">Ver completo <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></svg></button></div>
-          </article>
-          <div class="empty-box premium-empty-box" *ngIf="!data.dashboard.alertas.length">Sin alertas nutricionales.</div>
+      <!-- TAB: ALERTAS -->
+      <ng-container *ngIf="activeTab() === 'ALERTAS'">
+        <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && alertasPage().length">
+          <table class="data-table">
+            <thead>
+              <tr><th>Animal</th><th>Mensaje</th><th>Tipo</th><th>Prioridad</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let alerta of alertasPage()">
+                <td>
+                  <div class="cell-animal">
+                    <span class="cell-avatar cell-avatar--warning"><app-svg-icon [path]="icons.bell" [size]="18"></app-svg-icon></span>
+                    <div>
+                      <strong>{{ alerta.animalCaravana || 'Rodeo' }}</strong>
+                      <small>{{ animalRaza(alerta.animalId) || 'Nutrición' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td class="cell-wide">{{ alerta.mensaje }}</td>
+                <td>{{ alerta.tipo }}</td>
+                <td><span class="pill" [attr.data-tone]="prioridadTone(alerta.prioridad)">{{ alerta.prioridad }}</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+        <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && alertasPage().length">
+          <app-entity-card
+            *ngFor="let alerta of alertasPage()"
+            [title]="alerta.animalCaravana || 'Alerta nutricional'"
+            [subtitle]="alerta.mensaje"
+            [metrics]="alertaMetrics(alerta)"
+            [badge]="alerta.prioridad"
+            [badgeTone]="asTone(prioridadTone(alerta.prioridad))"
+            [clickable]="false"
+          >
+            <app-svg-icon avatar [path]="icons.alert" [size]="24"></app-svg-icon>
+          </app-entity-card>
+        </div>
+        <div class="premium-empty-box" *ngIf="!alertasPage().length">Sin alertas nutricionales.</div>
+      </ng-container>
 
-        <footer class="pagination">
-          <span>Mostrando {{ pageStart() }} a {{ pageEnd() }} de {{ totalItems() }} {{ activeTabLabel() }}</span>
-          <div>
-            <button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
-            <button type="button" *ngFor="let page of [].constructor(totalPages()); let i = index" [class.active]="currentPage() === i + 1" (click)="setPage(i + 1)">{{ i + 1 }}</button>
-            <button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
-          </div>
-        </footer>
-      </article>
-      <aside class="card context-panel">
-        <div class="context-icon"><svg viewBox="0 0 24 24"><path d="M4 19c4-8 12-8 16 0" /><path d="M8 10c2-5 6-5 8 0" /><path d="M12 3v18" /></svg></div>
-        <h3>Resumen nutricional</h3>
-        <p>La eficiencia combina consumo mensual registrado y ganancia diaria promedio de los últimos pesajes.</p>
-        <div class="context-metrics">
-          <div><span>Ganancia diaria</span><strong>{{ data.dashboard.gananciaPromedioKg || 0 }} kg/día</strong></div>
-          <div><span>Alertas</span><strong>{{ data.dashboard.alertas.length }}</strong></div>
-          <div><span>Animales activos</span><strong>{{ animales().length }}</strong></div>
+      <footer class="pagination" *ngIf="totalItems()">
+        <span>Mostrando {{ pageStart() }} a {{ pageEnd() }} de {{ totalItems() }} {{ activeTabLabel() }}</span>
+        <div class="pager">
+          <label class="page-size">
+            <select [ngModel]="pageSize()" (ngModelChange)="updatePageSize($event)">
+              <option [value]="25">25 por página</option>
+              <option [value]="50">50 por página</option>
+              <option [value]="100">100 por página</option>
+            </select>
+          </label>
+          <button type="button" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">Anterior</button>
+          <button type="button" *ngFor="let page of pageNumbers()" [class.active]="currentPage() === page" (click)="setPage(page)">{{ page }}</button>
+          <button type="button" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Siguiente</button>
         </div>
-      </aside>
+      </footer>
     </section>
   </ng-container>
 
-  <div class="app-modal-backdrop" *ngIf="modal()" (click)="closeModal()" (document:keydown.escape)="closeModal()">
-    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">
-      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
-      <ng-container *ngIf="modal() === 'DIETA'">
-        <div class="modal-head"><h3>Nueva dieta</h3></div>
-        <div class="form-grid">
-          <label><span>Nombre</span><input [ngModel]="dietaForm().nombre" (ngModelChange)="dietaForm.update(f => ({ ...f, nombre: $event }))" /></label>
-          <label><span>Tipo animal</span><input [ngModel]="dietaForm().tipoAnimal" (ngModelChange)="dietaForm.update(f => ({ ...f, tipoAnimal: $event }))" /></label>
-          <label><span>Materia seca kg</span><input type="number" [ngModel]="dietaForm().materiaSecaKg" (ngModelChange)="dietaForm.update(f => ({ ...f, materiaSecaKg: $event }))" /></label>
-          <label><span>Costo diario</span><input type="number" [ngModel]="dietaForm().costoDiario" (ngModelChange)="dietaForm.update(f => ({ ...f, costoDiario: $event }))" /></label>
-        </div>
-        <label class="textarea-field"><span>Objetivo</span><textarea [ngModel]="dietaForm().objetivo" (ngModelChange)="dietaForm.update(f => ({ ...f, objetivo: $event }))"></textarea></label>
-        <div class="ingredient-row" *ngFor="let item of dietaForm().ingredientes; let i = index; trackBy: trackByIndex">
-          <app-remote-search-select placeholder="Buscar alimento" [options]="alimentoOptions" valueField="value" labelField="label" [subtitleFields]="['tipo']" [searchFields]="['label','tipo']" [value]="item.ingrediente" (valueChange)="updateIngrediente(i, 'ingrediente', $event)"></app-remote-search-select>
-          <input placeholder="%" type="number" [ngModel]="item.proporcionPct" (ngModelChange)="updateIngrediente(i, 'proporcionPct', $event)" />
-          <input placeholder="Costo/kg" type="number" [ngModel]="item.costoKg" (ngModelChange)="updateIngrediente(i, 'costoKg', $event)" />
-        </div>
-        <button class="btn-secondary" type="button" (click)="addIngrediente()">Agregar ingrediente</button>
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDieta()">Guardar</button></div>
-      </ng-container>
-
-      <ng-container *ngIf="modal() === 'SUMINISTRO'">
-        <div class="modal-head"><h3>Registrar suministro</h3></div>
-        <div class="form-grid">
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="suministroForm().animalId" (valueChange)="suministroForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
-          <label><span>Dieta</span><select [ngModel]="suministroForm().dietaId" (ngModelChange)="suministroForm.update(f => ({ ...f, dietaId: $event }))"><option value="">Sin dieta</option><option *ngFor="let dieta of resumen()?.dietas ?? []" [value]="dieta.id">{{ dieta.nombre }}</option></select></label>
-          <label><span>Fecha</span><input type="date" [ngModel]="suministroForm().fecha" (ngModelChange)="suministroForm.update(f => ({ ...f, fecha: $event }))" /></label>
-          <app-remote-search-select label="Alimento" placeholder="Buscar alimento" [options]="alimentoOptions" valueField="value" labelField="label" [subtitleFields]="['tipo']" [searchFields]="['label','tipo']" [value]="suministroForm().alimento" (valueChange)="suministroForm.update(f => ({ ...f, alimento: $event }))"></app-remote-search-select>
-          <label><span>Cantidad kg</span><input type="number" [ngModel]="suministroForm().cantidadKg" (ngModelChange)="suministroForm.update(f => ({ ...f, cantidadKg: $event }))" /></label>
-          <label><span>Costo total</span><input type="number" [ngModel]="suministroForm().costoTotal" (ngModelChange)="suministroForm.update(f => ({ ...f, costoTotal: $event }))" /></label>
-          <app-remote-search-select label="Potrero" placeholder="Buscar potrero" [options]="potreros()" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="suministroForm().potreroId" (valueChange)="suministroForm.update(f => ({ ...f, potreroId: $event }))"></app-remote-search-select>
-          <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="suministroForm().responsable" (valueChange)="suministroForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
-        </div>
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitSuministro()">Guardar</button></div>
-      </ng-container>
-
-      <ng-container *ngIf="modal() === 'PESAJE'">
-        <div class="modal-head"><h3>Registrar pesaje</h3></div>
-        <div class="form-grid">
-          <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="pesajeForm().animalId" (valueChange)="pesajeForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
-          <label><span>Fecha</span><input type="date" [ngModel]="pesajeForm().fecha" (ngModelChange)="pesajeForm.update(f => ({ ...f, fecha: $event }))" /></label>
-          <label><span>Peso kg</span><input type="number" [ngModel]="pesajeForm().pesoKg" (ngModelChange)="pesajeForm.update(f => ({ ...f, pesoKg: $event }))" /></label>
-          <label><span>BCS</span><input type="number" step="0.1" min="1" max="5" [ngModel]="pesajeForm().condicionCorporal" (ngModelChange)="pesajeForm.update(f => ({ ...f, condicionCorporal: $event }))" /></label>
-          <app-remote-search-select label="Metodo" placeholder="Seleccionar metodo" [options]="metodoPesajeOptions" valueField="value" labelField="label" [searchFields]="['label']" [value]="pesajeForm().metodo" (valueChange)="pesajeForm.update(f => ({ ...f, metodo: $event }))"></app-remote-search-select>
-          <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="pesajeForm().responsable" (valueChange)="pesajeForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
-        </div>
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitPesaje()">Guardar</button></div>
-      </ng-container>
+  <!-- MODAL: nueva dieta -->
+  <app-premium-modal
+    *ngIf="modal() === 'DIETA'"
+    [icon]="icons.diet"
+    title="Nueva dieta"
+    subtitle="Definí un plan nutricional y su composición."
+    badge="Dieta"
+    badgeTone="green"
+    size="wide"
+    (close)="closeModal()"
+  >
+    <div class="form-grid">
+      <label><span>Nombre</span><input [ngModel]="dietaForm().nombre" (ngModelChange)="dietaForm.update(f => ({ ...f, nombre: $event }))" /></label>
+      <label><span>Tipo animal</span><input [ngModel]="dietaForm().tipoAnimal" (ngModelChange)="dietaForm.update(f => ({ ...f, tipoAnimal: $event }))" /></label>
+      <label><span>Materia seca kg</span><input type="number" [ngModel]="dietaForm().materiaSecaKg" (ngModelChange)="dietaForm.update(f => ({ ...f, materiaSecaKg: $event }))" /></label>
+      <label><span>Costo diario</span><input type="number" [ngModel]="dietaForm().costoDiario" (ngModelChange)="dietaForm.update(f => ({ ...f, costoDiario: $event }))" /></label>
     </div>
-  </div>
-</div>
+    <label class="textarea-field"><span>Objetivo</span><textarea [ngModel]="dietaForm().objetivo" (ngModelChange)="dietaForm.update(f => ({ ...f, objetivo: $event }))"></textarea></label>
+    <div class="ingredients-block">
+      <p class="ingredients-title">Ingredientes</p>
+      <div class="ingredient-row" *ngFor="let item of dietaForm().ingredientes; let i = index; trackBy: trackByIndex">
+        <app-remote-search-select placeholder="Buscar alimento" [options]="alimentoOptions" valueField="value" labelField="label" [subtitleFields]="['tipo']" [searchFields]="['label','tipo']" [value]="item.ingrediente" (valueChange)="updateIngrediente(i, 'ingrediente', $event)"></app-remote-search-select>
+        <input placeholder="%" type="number" [ngModel]="item.proporcionPct" (ngModelChange)="updateIngrediente(i, 'proporcionPct', $event)" />
+        <input placeholder="Costo/kg" type="number" [ngModel]="item.costoKg" (ngModelChange)="updateIngrediente(i, 'costoKg', $event)" />
+      </div>
+      <button class="btn-secondary btn-add" type="button" (click)="addIngrediente()">
+        <app-svg-icon [path]="icons.plus" [size]="15"></app-svg-icon>
+        Agregar ingrediente
+      </button>
+    </div>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitDieta()">Guardar</button>
+    </div>
+  </app-premium-modal>
 
+  <!-- MODAL: registrar suministro -->
+  <app-premium-modal
+    *ngIf="modal() === 'SUMINISTRO'"
+    [icon]="icons.flask"
+    title="Registrar suministro"
+    subtitle="Cargá el alimento entregado a un animal o rodeo."
+    badge="Suministro"
+    badgeTone="blue"
+    size="wide"
+    (close)="closeModal()"
+  >
+    <div class="form-grid">
+      <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="suministroForm().animalId" (valueChange)="suministroForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+      <label><span>Dieta</span><select [ngModel]="suministroForm().dietaId" (ngModelChange)="suministroForm.update(f => ({ ...f, dietaId: $event }))"><option value="">Sin dieta</option><option *ngFor="let dieta of resumen()?.dietas ?? []" [value]="dieta.id">{{ dieta.nombre }}</option></select></label>
+      <label><span>Fecha</span><input type="date" [ngModel]="suministroForm().fecha" (ngModelChange)="suministroForm.update(f => ({ ...f, fecha: $event }))" /></label>
+      <app-remote-search-select label="Alimento" placeholder="Buscar alimento" [options]="alimentoOptions" valueField="value" labelField="label" [subtitleFields]="['tipo']" [searchFields]="['label','tipo']" [value]="suministroForm().alimento" (valueChange)="suministroForm.update(f => ({ ...f, alimento: $event }))"></app-remote-search-select>
+      <label><span>Cantidad kg</span><input type="number" [ngModel]="suministroForm().cantidadKg" (ngModelChange)="suministroForm.update(f => ({ ...f, cantidadKg: $event }))" /></label>
+      <label><span>Costo total</span><input type="number" [ngModel]="suministroForm().costoTotal" (ngModelChange)="suministroForm.update(f => ({ ...f, costoTotal: $event }))" /></label>
+      <app-remote-search-select label="Potrero" placeholder="Buscar potrero" [options]="potreros()" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="suministroForm().potreroId" (valueChange)="suministroForm.update(f => ({ ...f, potreroId: $event }))"></app-remote-search-select>
+      <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="suministroForm().responsable" (valueChange)="suministroForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
+    </div>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitSuministro()">Guardar</button>
+    </div>
+  </app-premium-modal>
+
+  <!-- MODAL: registrar pesaje -->
+  <app-premium-modal
+    *ngIf="modal() === 'PESAJE'"
+    [icon]="icons.scale"
+    title="Registrar pesaje"
+    subtitle="Registrá el peso y la condición corporal del animal."
+    badge="Pesaje"
+    badgeTone="blue"
+    size="wide"
+    (close)="closeModal()"
+  >
+    <div class="form-grid">
+      <app-remote-search-select label="Animal" placeholder="Buscar animal por caravana" [options]="animales()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="pesajeForm().animalId" (valueChange)="pesajeForm.update(f => ({ ...f, animalId: $event }))"></app-remote-search-select>
+      <label><span>Fecha</span><input type="date" [ngModel]="pesajeForm().fecha" (ngModelChange)="pesajeForm.update(f => ({ ...f, fecha: $event }))" /></label>
+      <label><span>Peso kg</span><input type="number" [ngModel]="pesajeForm().pesoKg" (ngModelChange)="pesajeForm.update(f => ({ ...f, pesoKg: $event }))" /></label>
+      <label><span>BCS</span><input type="number" step="0.1" min="1" max="5" [ngModel]="pesajeForm().condicionCorporal" (ngModelChange)="pesajeForm.update(f => ({ ...f, condicionCorporal: $event }))" /></label>
+      <app-remote-search-select label="Metodo" placeholder="Seleccionar metodo" [options]="metodoPesajeOptions" valueField="value" labelField="label" [searchFields]="['label']" [value]="pesajeForm().metodo" (valueChange)="pesajeForm.update(f => ({ ...f, metodo: $event }))"></app-remote-search-select>
+      <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="pesajeForm().responsable" (valueChange)="pesajeForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
+    </div>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeModal()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitPesaje()">Guardar</button>
+    </div>
+  </app-premium-modal>
+</div>

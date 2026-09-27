@@ -1,203 +1,383 @@
 <div class="trace-page">
-  <header class="trace-header">
-    <div>
-      <p class="eyebrow">Campo App · Ganadería</p>
-      <h2>Trazabilidad Animal</h2>
-      <p>Seguimiento ganadero por caravana, movimientos, genealogía e historial médico.</p>
-    </div>
-    <div class="head-actions">
-      <button class="btn-secondary trace-action" type="button" (click)="exportSenasa()">
-        <svg viewBox="0 0 24 24"><path d="M12 3v12" /><path d="m8 11 4 4 4-4" /><path d="M5 21h14" /></svg>
-        Exportar SENASA
-      </button>
-      <button class="btn-primary trace-action" type="button" (click)="openCreateAnimal()">
-        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
-        Nuevo animal
-      </button>
-    </div>
-  </header>
+  <app-page-header
+    eyebrow="Campo App · Ganadería"
+    title="Trazabilidad animal"
+    subtitle="Seguimiento ganadero por caravana, movimientos, genealogía e historial médico."
+  >
+    <button class="btn-secondary" type="button" (click)="exportSenasa()">
+      <app-svg-icon [path]="icons.download" [size]="16"></app-svg-icon>
+      Exportar SENASA
+    </button>
+    <button class="btn-secondary" type="button" [disabled]="!selected()" (click)="openMovimientoModal()">
+      <app-svg-icon [path]="icons.move" [size]="16"></app-svg-icon>
+      Registrar movimiento
+    </button>
+    <button class="btn-primary" type="button" (click)="openCreateAnimal()">
+      <app-svg-icon [path]="icons.plus" [size]="16"></app-svg-icon>
+      Nuevo animal
+    </button>
+  </app-page-header>
 
-  <section class="trace-kpis">
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M6 8c0-3 2-5 6-5s6 2 6 5v5c0 4-2.5 7-6 7s-6-3-6-7V8Z" /><path d="M9 9h.01M15 9h.01M9 14c1.8 1.2 4.2 1.2 6 0" /></svg></div><div class="kpi-copy"><span>Animales activos</span><small>↑ 8.4% vs. mes anterior</small></div><strong>{{ resumen().activos }}</strong></article>
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /><path d="M5 6v12" /></svg></div><div class="kpi-copy"><span>En movimiento</span><small>↑ 12.1% vs. mes anterior</small></div><strong>{{ resumen().enMovimiento }}</strong></article>
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 4 3.2 7 8 8 4.8-1 8-4 8-8V7l-8-4Z" /><path d="M12 8v5m0 3h.01" /></svg></div><div class="kpi-copy"><span>Riesgo sanitario</span><small>↓ 2.3% vs. mes anterior</small></div><strong>{{ resumen().riesgoSanitario }}</strong></article>
-    <article class="kpi-card"><div class="metric-icon"><svg viewBox="0 0 24 24"><path d="M6 8a8 8 0 0 0 0 8" /><path d="M18 8a8 8 0 0 1 0 8" /><path d="M9 10a4 4 0 0 0 0 4" /><path d="M15 10a4 4 0 0 1 0 4" /><circle cx="12" cy="12" r="1" /></svg></div><div class="kpi-copy"><span>RFID activos</span><small>↑ 5.7% vs. mes anterior</small></div><strong>{{ resumen().conRfid }}</strong></article>
-  </section>
-
-  <section class="trace-filters card">
-    <label class="trace-search">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m16 16 4 4" /></svg>
-      <input placeholder="Buscar por ID, caravana, raza o potrero..." [ngModel]="filters().search" (ngModelChange)="updateFilter('search', $event)" />
-    </label>
-    <label><span>Caravana</span><input placeholder="Todas" [ngModel]="filters().caravana" (ngModelChange)="updateFilter('caravana', $event)" /></label>
-    <label><span>Raza</span><select [ngModel]="filters().raza" (ngModelChange)="updateFilter('raza', $event)"><option value="">Todas</option><option *ngFor="let raza of razas()" [value]="raza">{{ raza }}</option></select></label>
-    <label><span>Estado</span><select [ngModel]="filters().estado" (ngModelChange)="updateFilter('estado', $event)"><option value="">Todos</option><option value="ACTIVO">Activo</option><option value="VENDIDO">Vendido</option><option value="BAJA">Baja</option></select></label>
-    <label><span>Ubicación</span><select [ngModel]="filters().ubicacion" (ngModelChange)="updateFilter('ubicacion', $event)"><option value="">Todas</option><option *ngFor="let ubicacion of ubicaciones()" [value]="ubicacion">{{ ubicacion }}</option></select></label>
-    <button class="filter-button" type="button" (click)="loadAnimales()"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4" /></svg>Filtros</button>
+  <section class="kpi-grid">
+    <app-kpi-card label="Animales activos" [value]="resumen().activos" sub="↑ 8.4% vs. mes anterior" tone="green">
+      <app-svg-icon icon [path]="icons.cow" [size]="24"></app-svg-icon>
+    </app-kpi-card>
+    <app-kpi-card label="En movimiento" [value]="resumen().enMovimiento" sub="↑ 12.1% vs. mes anterior" tone="blue">
+      <app-svg-icon icon [path]="icons.move" [size]="24"></app-svg-icon>
+    </app-kpi-card>
+    <app-kpi-card label="Riesgo sanitario" [value]="resumen().riesgoSanitario" sub="↓ 2.3% vs. mes anterior" tone="yellow" subTone="green">
+      <app-svg-icon icon [path]="icons.shield" [size]="24"></app-svg-icon>
+    </app-kpi-card>
+    <app-kpi-card label="RFID activos" [value]="resumen().conRfid" sub="↑ 5.7% vs. mes anterior" tone="green">
+      <app-svg-icon icon [path]="icons.rfid" [size]="24"></app-svg-icon>
+    </app-kpi-card>
   </section>
 
   <div class="error-box" *ngIf="errorMessage()">{{ errorMessage() }}</div>
-  <div class="card empty-box" *ngIf="loading()">Cargando animales...</div>
 
-  <main class="trace-layout" *ngIf="!loading()">
-    <section class="trace-table-card card">
-      <div class="table-head">
-        <div><h3>Animales registrados</h3><span>{{ filteredAnimales().length }} animales</span></div>
+  <section class="panel card">
+    <div class="panel-top">
+      <app-stat-tabs [tabs]="tabs()" [active]="tab()" (activeChange)="setTab($event)"></app-stat-tabs>
+      <span class="panel-count">{{ tabCount() }}</span>
+    </div>
+
+    <div class="card empty-box" *ngIf="loading()">Cargando animales...</div>
+
+    <!-- TAB: ANIMALES -->
+    <ng-container *ngIf="!loading() && tab() === 'ANIMALES'">
+      <div class="filters-row">
+        <label class="field field--search">
+          <span>Buscar</span>
+          <div class="input-icon">
+            <app-svg-icon [path]="icons.search" [size]="16"></app-svg-icon>
+            <input placeholder="Caravana, RFID, raza o potrero" [ngModel]="filters().search" (ngModelChange)="updateFilter('search', $event)" />
+          </div>
+        </label>
+        <label class="field">
+          <span>Raza</span>
+          <select [ngModel]="filters().raza" (ngModelChange)="changeApiFilter('raza', $event)">
+            <option value="">Todas</option>
+            <option *ngFor="let raza of razas()" [value]="raza">{{ raza }}</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Estado</span>
+          <select [ngModel]="filters().estado" (ngModelChange)="changeApiFilter('estado', $event)">
+            <option value="">Todos</option>
+            <option value="ACTIVO">Activo</option>
+            <option value="VENDIDO">Vendido</option>
+            <option value="BAJA">Baja</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Potrero</span>
+          <select [ngModel]="filters().ubicacion" (ngModelChange)="changeApiFilter('ubicacion', $event)">
+            <option value="">Todos</option>
+            <option *ngFor="let ubicacion of ubicaciones()" [value]="ubicacion">{{ ubicacion }}</option>
+          </select>
+        </label>
+        <div class="view-toggle">
+          <button type="button" [class.is-active]="viewMode() === 'TABLA'" (click)="setViewMode('TABLA')">
+            <app-svg-icon path='<path d="M4 6h16M4 12h16M4 18h16" />' [size]="15"></app-svg-icon>
+            Tabla
+          </button>
+          <button type="button" [class.is-active]="viewMode() === 'TARJETAS'" (click)="setViewMode('TARJETAS')">
+            <app-svg-icon path='<rect x="4" y="4" width="7" height="7" rx="1.5" /><rect x="13" y="4" width="7" height="7" rx="1.5" /><rect x="4" y="13" width="7" height="7" rx="1.5" /><rect x="13" y="13" width="7" height="7" rx="1.5" />' [size]="15"></app-svg-icon>
+            Tarjetas
+          </button>
+        </div>
       </div>
 
-      <div class="trace-table-wrap" *ngIf="paginatedAnimales().length; else noAnimals">
-        <table class="trace-table">
+      <!-- Vista tabla -->
+      <div class="table-wrap" *ngIf="viewMode() === 'TABLA' && paginatedAnimales().length; else noAnimals">
+        <table class="data-table">
           <thead>
             <tr>
-              <th></th><th>ID animal</th><th>Raza</th><th>Sexo</th><th>Estado</th><th>Potrero</th><th>Peso</th><th>Último movimiento</th><th>Riesgo</th><th>Acciones</th>
+              <th>Animal</th><th>Raza</th><th>Sexo</th><th>Potrero</th><th>Último movimiento</th><th>Peso</th><th>Riesgo</th><th class="col-actions"></th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let animal of paginatedAnimales()" [class.selected]="selected()?.animal?.id === animal.id" (click)="loadAnimalDetail(animal.id)">
-              <td><span class="row-selector"></span></td>
-              <td><strong>{{ animal.caravana }}</strong></td>
-              <td>{{ animal.raza }}</td>
-              <td><span class="sex-chip" [class.sex-chip--female]="isFemale(animal)">{{ sexoLabel(animal) }}</span></td>
-              <td><span class="status-badge" [class.status-badge--muted]="animal.estado !== 'ACTIVO'">{{ animal.estado }}</span></td>
-              <td>{{ animal.potreroNombre || 'Sin dato' }}</td>
-              <td>{{ animal.pesoActualKg ? (animal.pesoActualKg + ' kg') : 'Sin dato' }}</td>
+            <tr *ngFor="let animal of paginatedAnimales()" (click)="openFicha(animal)">
+              <td>
+                <div class="cell-animal">
+                  <span class="cell-avatar"><app-svg-icon [path]="icons.cow" [size]="18"></app-svg-icon></span>
+                  <div>
+                    <strong>{{ animal.caravana }}</strong>
+                    <small>{{ animal.rfidCodigo ? ('RFID ' + animal.rfidCodigo) : 'Sin RFID' }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>{{ animal.raza || 'Sin dato' }}</td>
+              <td><span class="pill" [attr.data-tone]="isFemale(animal) ? 'purple' : 'blue'">{{ sexoLabel(animal) }}</span></td>
+              <td>{{ animal.potreroNombre || 'Sin ubicación' }}</td>
               <td>{{ lastMovement(animal) }}</td>
-              <td><span class="risk-badge" [class.risk-badge--medium]="riesgoAnimal(animal) === 'Medio'" [class.risk-badge--high]="riesgoAnimal(animal) === 'Alto'">{{ riesgoAnimal(animal) }}</span></td>
-              <td class="inline-actions">
-                <button type="button" aria-label="Ver"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg></button>
-                <button type="button" aria-label="Movimiento" (click)="$event.stopPropagation(); openMovimientoModalFor(animal)"><svg viewBox="0 0 24 24"><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></svg></button>
-                <button type="button" aria-label="Historial médico" (click)="$event.stopPropagation(); openMedicoModalFor(animal)"><svg viewBox="0 0 24 24"><path d="M9 3h6v4H9z" /><path d="M8 7h8v13H8z" /><path d="M10 12h4M12 10v4" /></svg></button>
-                <button type="button" aria-label="Más opciones"><svg viewBox="0 0 24 24"><path d="M12 6h.01M12 12h.01M12 18h.01" /></svg></button>
+              <td>{{ animal.pesoActualKg ? (animal.pesoActualKg + ' kg') : 'Sin dato' }}</td>
+              <td><span class="pill" [attr.data-tone]="riesgoTone(animal)">{{ riesgoAnimal(animal) }}</span></td>
+              <td class="col-actions">
+                <div class="inline-actions">
+                  <button type="button" aria-label="Ver ficha" (click)="$event.stopPropagation(); openFicha(animal)"><app-svg-icon [path]="icons.eye" [size]="15"></app-svg-icon></button>
+                  <button type="button" aria-label="Registrar movimiento" (click)="$event.stopPropagation(); openMovimientoModalFor(animal)"><app-svg-icon [path]="icons.move" [size]="15"></app-svg-icon></button>
+                  <button type="button" aria-label="Historial médico" (click)="$event.stopPropagation(); openMedicoModalFor(animal)"><app-svg-icon [path]="icons.stethoscope" [size]="15"></app-svg-icon></button>
+                </div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <ng-template #noAnimals><div class="empty-box premium-empty-box">No hay animales con los filtros actuales.</div></ng-template>
+      <!-- Vista tarjetas -->
+      <div class="cards-grid" *ngIf="viewMode() === 'TARJETAS' && paginatedAnimales().length">
+        <app-entity-card
+          *ngFor="let animal of paginatedAnimales()"
+          [title]="animal.caravana"
+          [subtitle]="animal.rfidCodigo ? ('RFID ' + animal.rfidCodigo) : 'Sin RFID'"
+          [chips]="animalChips(animal)"
+          [metrics]="animalMetrics(animal)"
+          [badge]="riesgoAnimal(animal)"
+          [badgeTone]="riesgoTone(animal)!"
+          (cardClick)="openFicha(animal)"
+        >
+          <app-svg-icon avatar [path]="icons.cow" [size]="24"></app-svg-icon>
+        </app-entity-card>
+      </div>
 
-      <footer class="trace-pagination">
+      <ng-template #noAnimals>
+        <div class="empty-box premium-empty-box" *ngIf="viewMode() === 'TABLA'">No hay animales con los filtros actuales.</div>
+      </ng-template>
+      <div class="empty-box premium-empty-box" *ngIf="viewMode() === 'TARJETAS' && !paginatedAnimales().length">No hay animales con los filtros actuales.</div>
+
+      <footer class="pagination" *ngIf="paginatedAnimales().length">
         <span>{{ rangeLabel() }}</span>
-        <div class="pager"><button type="button" (click)="previousPage()" [disabled]="page() === 1">Anterior</button><button type="button" *ngFor="let pageNumber of pageNumbers()" [class.active]="pageNumber === page()" (click)="setPage(pageNumber)">{{ pageNumber }}</button><button type="button" (click)="nextPage()" [disabled]="page() === totalPages()">Siguiente</button></div>
-        <label><select [ngModel]="pageSize()" (ngModelChange)="updatePageSize($event)"><option value="25">25 por página</option><option value="50">50 por página</option><option value="100">100 por página</option></select></label>
-      </footer>
-    </section>
-
-    <aside class="trace-context card" *ngIf="selected() as detail">
-      <div class="context-head">
-        <div class="cow-icon"><svg viewBox="0 0 24 24"><path d="M7 8c-2-3-4-3-5-2 0 2 1 4 3 5" /><path d="M17 8c2-3 4-3 5-2 0 2-1 4-3 5" /><path d="M6 10c0-4 2-6 6-6s6 2 6 6v3c0 4-2.5 7-6 7s-6-3-6-7v-3Z" /><path d="M9 11h.01M15 11h.01M10 16h4" /></svg></div>
-        <div><p class="eyebrow">Animal seleccionado</p><h3>{{ detail.animal.caravana }}</h3><p>{{ detail.animal.raza }} · {{ detail.animal.estado }} · {{ detail.animal.potreroNombre || 'Sin ubicación' }}</p></div>
-      </div>
-      <div class="context-badges"><span>RP {{ detail.animal.caravana }}</span><span>HBA {{ detail.animal.rfidCodigo || 'Sin asignar' }}</span></div>
-
-      <div class="mini-metrics">
-        <div><span>RFID</span><strong>{{ detail.animal.rfidCodigo || 'Sin dato' }}</strong></div>
-        <div><span>Peso actual</span><strong>{{ detail.animal.pesoActualKg ? (detail.animal.pesoActualKg + ' kg') : 'Sin dato' }}</strong></div>
-        <div><span>Edad</span><strong>{{ animalAge(detail.animal) }}</strong></div>
-        <div><span>Sexo</span><strong>{{ sexoLabel(detail.animal) }}</strong></div>
-      </div>
-
-      <nav class="context-tabs"><button type="button" [class.active]="panelTab() === 'RESUMEN'" (click)="selectPanelTab('RESUMEN')">Resumen</button><button type="button" [class.active]="panelTab() === 'MOVIMIENTOS'" (click)="selectPanelTab('MOVIMIENTOS')">Movimientos</button><button type="button" [class.active]="panelTab() === 'MEDICO'" (click)="selectPanelTab('MEDICO')">Historial médico</button><button type="button" [class.active]="panelTab() === 'VACUNAS'" (click)="selectPanelTab('VACUNAS')">Vacunas</button><button type="button" [class.active]="panelTab() === 'MAS'" (click)="selectPanelTab('MAS')">Más</button></nav>
-
-      <section class="context-content" *ngIf="panelTab() === 'RESUMEN'">
-        <article class="info-card"><h4>Información general</h4><p><span>Caravana</span><strong>{{ detail.animal.caravana }}</strong></p><p><span>Raza</span><strong>{{ detail.animal.raza }}</strong></p><p><span>Fecha nacimiento</span><strong>{{ detail.animal.fechaNacimiento || 'Sin dato' }}</strong></p><p><span>Madre</span><strong>{{ detail.animal.madreCaravana || 'Sin dato' }}</strong></p><p><span>Padre</span><strong>{{ detail.animal.padreCaravana || 'Sin dato' }}</strong></p><p><span>Estado reproductivo</span><strong>Apto</strong></p></article>
-        <article class="info-card"><h4>Ubicación actual</h4><p><span>Potrero</span><strong>{{ detail.animal.potreroNombre || 'Sin dato' }}</strong></p><p><span>Coordenadas</span><strong>-31.4200, -64.1900</strong></p><p><span>Sector</span><strong>Ganadería</strong></p></article>
-        <article class="info-card genealogy-card"><h4>Genealogía</h4><svg viewBox="0 0 24 24"><path d="M12 4v6" /><path d="M8 10h8" /><path d="M6 14v6M18 14v6M12 14v6" /><circle cx="12" cy="4" r="2" /><circle cx="6" cy="20" r="2" /><circle cx="12" cy="20" r="2" /><circle cx="18" cy="20" r="2" /></svg><button type="button">Ver árbol genealógico</button></article>
-      </section>
-
-      <section class="context-content" *ngIf="panelTab() === 'MOVIMIENTOS'">
-        <article class="info-card timeline-card">
-          <h4>Movimientos del animal</h4>
-          <div class="event-item" *ngFor="let movimiento of detail.movimientos">
-            <span class="event-dot"></span>
-            <div>
-              <strong>{{ movimiento.tipoMovimiento }}</strong>
-              <p>{{ movimiento.fecha }} · {{ movimiento.ubicacionOrigen || movimiento.potreroOrigenNombre || 'Origen' }} → {{ movimiento.ubicacionDestino || movimiento.potreroDestinoNombre || 'Destino' }}</p>
-              <p *ngIf="movimiento.motivo">{{ movimiento.motivo }}</p>
-            </div>
-            <em>Movimiento</em>
-          </div>
-          <div class="empty-box" *ngIf="!detail.movimientos.length">Sin movimientos registrados.</div>
-        </article>
-      </section>
-
-      <section class="context-content" *ngIf="panelTab() === 'MEDICO'">
-        <article class="info-card timeline-card">
-          <h4>Historial médico completo</h4>
-          <div class="event-item" *ngFor="let item of historialClinico()">
-            <span class="event-dot" [ngClass]="item.dotClass"></span>
-            <div>
-              <strong>{{ item.titulo }}</strong>
-              <p>{{ item.fecha }} · {{ item.detalle }}</p>
-              <p *ngIf="item.extra">{{ item.extra }}</p>
-            </div>
-            <em>{{ item.badge }}</em>
-          </div>
-          <div class="empty-box" *ngIf="!historialClinico().length">Sin historial médico registrado.</div>
-        </article>
-      </section>
-
-      <section class="context-content" *ngIf="panelTab() === 'VACUNAS'">
-        <article class="info-card timeline-card">
-          <h4>Vacunas del animal</h4>
-          <div class="event-item" *ngFor="let vacuna of selectedAplicaciones()">
-            <span class="event-dot event-dot--green"></span>
-            <div>
-              <strong>{{ vacuna.vacunaNombre }}</strong>
-              <p>{{ vacuna.fechaAplicacion }} · Próxima dosis: {{ vacuna.proximaDosisFecha || 'Sin fecha' }}</p>
-              <p>{{ vacuna.vacunaObligatoria ? 'Obligatoria' : 'Complementaria' }} · {{ vacuna.loteMarca || 'Sin lote/serie' }}</p>
-            </div>
-            <em>Vacunación</em>
-          </div>
-          <div class="empty-box" *ngIf="!selectedAplicaciones().length">Sin vacunaciones registradas para este animal.</div>
-        </article>
-      </section>
-
-      <section class="context-content" *ngIf="panelTab() === 'MAS'">
-        <article class="info-card timeline-card">
-          <h4>Más información</h4>
-          <div class="empty-box">Sin información adicional registrada.</div>
-        </article>
-      </section>
-
-      <button class="full-trace-btn" type="button">Ver trazabilidad completa <svg viewBox="0 0 24 24"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></button>
-    </aside>
-  </main>
-
-  <div class="app-modal-backdrop" *ngIf="animalModalOpen() || movimientoModalOpen() || medicoModalOpen()" (click)="closeModals()" (document:keydown.escape)="closeModals()">
-    <div class="app-modal-panel panel-narrow" (click)="$event.stopPropagation()">
-      <button class="modal-close-button" type="button" aria-label="Cerrar popup" (click)="closeModals()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" /></svg></button>
-      <ng-container *ngIf="animalModalOpen()">
-        <div class="modal-head"><h3>Registrar animal</h3></div>
-        <div class="form-grid">
-          <label><span>Caravana</span><input [(ngModel)]="animalForm().caravana" (ngModelChange)="animalForm.update(f => ({ ...f, caravana: $event }))" /></label>
-          <app-remote-search-select label="Raza" placeholder="Buscar raza bovina" [options]="razasBovinas()"valueField="id" labelField="nombre" [subtitleFields]="['aptitud','tipoGenetico']" [searchFields]="['nombre','codigo','aptitud','tipoGenetico']" [value]="animalForm().razaId" (valueChange)="updateRazaValue($event)" (itemSelected)="selectRaza($event)"></app-remote-search-select>
-          <label><span>Sexo</span><select [(ngModel)]="animalForm().sexo" (ngModelChange)="animalForm.update(f => ({ ...f, sexo: $event }))"><option value="">Seleccionar</option><option *ngFor="let option of sexoOptions" [value]="option.value">{{ option.label }}</option></select></label>
-          <label><span>Fecha nacimiento</span><input type="date" [(ngModel)]="animalForm().fechaNacimiento" (ngModelChange)="animalForm.update(f => ({ ...f, fechaNacimiento: $event }))" /></label>
-          <label><span>Fecha compra</span><input type="date" [(ngModel)]="animalForm().fechaCompra" (ngModelChange)="animalForm.update(f => ({ ...f, fechaCompra: $event }))" /></label>
-          <label><span>Peso actual kg</span><input type="number" [(ngModel)]="animalForm().pesoActualKg" (ngModelChange)="animalForm.update(f => ({ ...f, pesoActualKg: $event }))" /></label>
-          <label><span>RFID</span><input [(ngModel)]="animalForm().rfidCodigo" (ngModelChange)="animalForm.update(f => ({ ...f, rfidCodigo: $event }))" /></label>
-          <app-remote-search-select label="Potrero actual" placeholder="Buscar potrero" [options]="potreros()"valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="animalForm().potreroId" (valueChange)="animalForm.update(f => ({ ...f, potreroId: $event }))"></app-remote-search-select>
-          <app-remote-search-select label="Madre" placeholder="Buscar madre por caravana, raza o potrero" [options]="madreOptions()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="animalForm().madreId" (valueChange)="animalForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>
-          <app-remote-search-select label="Padre" placeholder="Buscar padre por caravana, raza o potrero" [options]="padreOptions()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="animalForm().padreId" (valueChange)="animalForm.update(f => ({ ...f, padreId: $event }))"></app-remote-search-select>
+        <div class="pager">
+          <label class="page-size">
+            <select [ngModel]="pageSize()" (ngModelChange)="updatePageSize($event)">
+              <option value="25">25 por página</option>
+              <option value="50">50 por página</option>
+              <option value="100">100 por página</option>
+            </select>
+          </label>
+          <button type="button" (click)="previousPage()" [disabled]="page() === 1">Anterior</button>
+          <button type="button" *ngFor="let pageNumber of pageNumbers()" [class.active]="pageNumber === page()" (click)="setPage(pageNumber)">{{ pageNumber }}</button>
+          <button type="button" (click)="nextPage()" [disabled]="page() === totalPages()">Siguiente</button>
         </div>
-        <label class="textarea-field"><span>Observaciones</span><textarea [(ngModel)]="animalForm().observaciones" (ngModelChange)="animalForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAnimal()">Guardar</button></div>
-      </ng-container>
+      </footer>
+    </ng-container>
 
-      <ng-container *ngIf="movimientoModalOpen()">
-        <div class="modal-head"><h3>Registrar movimiento</h3></div>
-        <div class="form-grid"><label><span>Fecha</span><input type="datetime-local" [(ngModel)]="movimientoForm().fecha" (ngModelChange)="movimientoForm.update(f => ({ ...f, fecha: $event }))" /></label><label><span>Tipo</span><select [(ngModel)]="movimientoForm().tipoMovimiento" (ngModelChange)="movimientoForm.update(f => ({ ...f, tipoMovimiento: $event }))"><option value="INGRESO">Ingreso</option><option value="EGRESO">Egreso</option><option value="TRANSFERENCIA">Transferencia</option><option value="SANIDAD">Sanidad</option><option value="CONTROL">Control</option></select></label><app-remote-search-select label="Origen" placeholder="Buscar potrero origen" [options]="potreros()"valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="movimientoForm().potreroOrigenId" (valueChange)="movimientoForm.update(f => ({ ...f, potreroOrigenId: $event }))"></app-remote-search-select><app-remote-search-select label="Destino" placeholder="Buscar potrero destino" [options]="potreros()"valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="movimientoForm().potreroDestinoId" (valueChange)="movimientoForm.update(f => ({ ...f, potreroDestinoId: $event }))"></app-remote-search-select><label><span>Motivo</span><input [(ngModel)]="movimientoForm().motivo" (ngModelChange)="movimientoForm.update(f => ({ ...f, motivo: $event }))" /></label><app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()"valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="movimientoForm().responsable" (valueChange)="movimientoForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select></div>
-        <label class="textarea-field"><span>Observaciones</span><textarea [(ngModel)]="movimientoForm().observaciones" (ngModelChange)="movimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitMovimiento()">Guardar</button></div>
-      </ng-container>
+    <!-- TAB: MOVIMIENTOS -->
+    <ng-container *ngIf="!loading() && tab() === 'MOVIMIENTOS'">
+      <div class="tab-hint" *ngIf="selected() as detail">
+        Movimientos de <strong>{{ detail.animal.caravana }}</strong> · {{ detail.animal.raza || 'Sin raza' }}. Seleccioná otro animal desde la pestaña Animales para ver su historial.
+      </div>
+      <div class="table-wrap" *ngIf="selected()?.movimientos?.length; else noMov">
+        <table class="data-table">
+          <thead>
+            <tr><th>Animal</th><th>Tipo</th><th>Fecha</th><th>Origen</th><th>Destino</th><th>Responsable</th><th>Motivo</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let mov of selected()!.movimientos">
+              <td>
+                <div class="cell-animal">
+                  <span class="cell-avatar cell-avatar--blue"><app-svg-icon [path]="icons.move" [size]="16"></app-svg-icon></span>
+                  <div>
+                    <strong>{{ selected()!.animal.caravana }}</strong>
+                    <small>{{ selected()!.animal.raza || 'Sin raza' }}</small>
+                  </div>
+                </div>
+              </td>
+              <td><span class="pill" [attr.data-tone]="movTipoTone(mov.tipoMovimiento)">{{ mov.tipoMovimiento | titlecase }}</span></td>
+              <td>{{ mov.fecha }}</td>
+              <td>{{ mov.ubicacionOrigen || mov.potreroOrigenNombre || 'Sin origen' }}</td>
+              <td>{{ mov.ubicacionDestino || mov.potreroDestinoNombre || 'Sin destino' }}</td>
+              <td>{{ mov.responsableNombre || mov.responsable || 'Sin responsable' }}</td>
+              <td>{{ mov.motivo || 'Sin motivo' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noMov>
+        <div class="empty-box premium-empty-box">
+          {{ selected() ? 'Este animal no tiene movimientos registrados.' : 'Seleccioná un animal en la pestaña Animales para ver sus movimientos.' }}
+        </div>
+      </ng-template>
+    </ng-container>
 
-      <ng-container *ngIf="medicoModalOpen()">
-        <div class="modal-head"><h3>Registrar historial médico</h3></div>
-        <div class="form-grid"><label><span>Fecha</span><input type="date" [(ngModel)]="medicoForm().fecha" (ngModelChange)="medicoForm.update(f => ({ ...f, fecha: $event }))" /></label><label><span>Diagnóstico</span><input [(ngModel)]="medicoForm().diagnostico" (ngModelChange)="medicoForm.update(f => ({ ...f, diagnostico: $event }))" /></label><label><span>Tratamiento</span><input [(ngModel)]="medicoForm().tratamiento" (ngModelChange)="medicoForm.update(f => ({ ...f, tratamiento: $event }))" /></label><app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [options]="veterinarios()"valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero']" [value]="medicoForm().veterinario" (valueChange)="medicoForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select></div>
-        <label class="textarea-field"><span>Observaciones</span><textarea [(ngModel)]="medicoForm().observaciones" (ngModelChange)="medicoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
-        <div class="modal-actions"><button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button><button class="btn-primary" type="button" [disabled]="saving()" (click)="submitMedico()">Guardar</button></div>
-      </ng-container>
+    <!-- TAB: GENEALOGIA -->
+    <ng-container *ngIf="!loading() && tab() === 'GENEALOGIA'">
+      <div class="gen-controls">
+        <app-remote-search-select
+          class="gen-search"
+          label="Animal"
+          placeholder="Buscar animal por caravana"
+          [options]="animales()"
+          valueField="id"
+          labelField="caravana"
+          [subtitleFields]="['raza','potreroNombre']"
+          [searchFields]="['caravana','raza','potreroNombre']"
+          [value]="genealogiaAnimalId()"
+          (valueChange)="onGenealogiaAnimalChange($event)"
+        ></app-remote-search-select>
+        <div class="gen-legend">
+          <span><i class="dot dot--blue"></i> Macho</span>
+          <span><i class="dot dot--purple"></i> Hembra</span>
+          <span><i class="dot dot--neutral"></i> Sin registro</span>
+        </div>
+      </div>
+
+      <div class="empty-box premium-empty-box" *ngIf="genealogiaLoading()">Cargando genealogía...</div>
+      <div class="empty-box premium-empty-box" *ngIf="!genealogiaLoading() && !genealogia()">Seleccioná un animal para ver su árbol genealógico.</div>
+
+      <div class="gen-tree" *ngIf="!genealogiaLoading() && genealogia() as gen">
+        <div class="gen-col">
+          <p class="gen-col-title">Animal</p>
+          <div class="gen-node gen-node--focus" [attr.data-tone]="nodoTone(gen.animal)">
+            <app-svg-icon [path]="nodoTone(gen.animal) === 'purple' ? icons.female : icons.male" [size]="16"></app-svg-icon>
+            <div>
+              <strong>{{ gen.animal.caravana }}</strong>
+              <small>{{ gen.animal.raza }}<ng-container *ngIf="gen.animal.sexo"> · {{ gen.animal.sexo }}</ng-container></small>
+            </div>
+          </div>
+        </div>
+        <div class="gen-col" *ngFor="let generacion of [1, 2, 3]">
+          <p class="gen-col-title">{{ generacion }}ª generación</p>
+          <div class="gen-node" *ngFor="let nodo of ancestrosPorGeneracion(generacion)" [attr.data-tone]="nodoTone(nodo)">
+            <app-svg-icon [path]="nodoTone(nodo) === 'purple' ? icons.female : icons.male" [size]="16"></app-svg-icon>
+            <div>
+              <strong>{{ nodo.caravana }}</strong>
+              <small>{{ nodo.raza }}<ng-container *ngIf="nodo.relacion"> · {{ nodo.relacion }}</ng-container></small>
+            </div>
+          </div>
+          <div class="gen-node gen-node--empty" *ngIf="!ancestrosPorGeneracion(generacion).length">Sin registro</div>
+        </div>
+      </div>
+    </ng-container>
+  </section>
+
+  <!-- MODAL: ficha del animal (mockup 22) -->
+  <app-premium-modal
+    *ngIf="fichaModalOpen() && selected() as detail"
+    [icon]="icons.cow"
+    [title]="detail.animal.caravana"
+    [subtitle]="(detail.animal.raza || 'Sin raza') + ' · ' + sexoLabel(detail.animal) + ' · ' + (detail.animal.potreroNombre || 'Sin ubicación')"
+    [badge]="detail.animal.estado === 'ACTIVO' ? 'Activo' : detail.animal.estado"
+    [badgeTone]="detail.animal.estado === 'ACTIVO' ? 'green' : 'yellow'"
+    size="wide"
+    (close)="closeFicha()"
+  >
+    <div class="tiles-grid">
+      <app-info-tile label="RFID" [value]="detail.animal.rfidCodigo || 'Sin dato'" [icon]="icons.rfid"></app-info-tile>
+      <app-info-tile label="Peso actual" [value]="detail.animal.pesoActualKg ? (detail.animal.pesoActualKg + ' kg') : 'Sin dato'" [icon]="icons.weight"></app-info-tile>
+      <app-info-tile label="Edad" [value]="animalAge(detail.animal)" [icon]="icons.clock"></app-info-tile>
+      <app-info-tile label="Nacimiento" [value]="detail.animal.fechaNacimiento || 'Sin dato'" [icon]="icons.calendar"></app-info-tile>
+      <app-info-tile label="Potrero" [value]="detail.animal.potreroNombre || 'Sin dato'" [icon]="icons.pin"></app-info-tile>
+      <app-info-tile label="Sexo" [value]="sexoLabel(detail.animal)" [icon]="isFemale(detail.animal) ? icons.female : icons.male"></app-info-tile>
+      <app-info-tile label="Madre" [value]="detail.animal.madreCaravana || 'Sin dato'" [icon]="icons.female"></app-info-tile>
+      <app-info-tile label="Padre" [value]="detail.animal.padreCaravana || 'Sin dato'" [icon]="icons.male"></app-info-tile>
+      <app-info-tile label="Estado" [value]="detail.animal.estado" [icon]="icons.tag"></app-info-tile>
+      <app-info-tile label="Riesgo sanitario" [value]="riesgoAnimal(detail.animal)" [icon]="icons.shield" [tone]="riesgoTone(detail.animal) === 'green' ? 'green' : riesgoTone(detail.animal) === 'yellow' ? 'yellow' : 'red'"></app-info-tile>
+      <app-info-tile label="Movimientos" [value]="detail.movimientos.length" [icon]="icons.move" tone="blue"></app-info-tile>
+      <app-info-tile label="Controles médicos" [value]="detail.historialMedico.length" [icon]="icons.stethoscope" tone="cyan"></app-info-tile>
     </div>
-  </div>
+
+    <div class="ficha-section">
+      <div class="ficha-section-head">
+        <h4><app-svg-icon [path]="icons.tree" [size]="18"></app-svg-icon> Genealogía</h4>
+        <button class="link-btn" type="button" (click)="verArbolGenealogico()">Ver árbol genealógico <app-svg-icon [path]="icons.arrowUpRight" [size]="14"></app-svg-icon></button>
+      </div>
+      <div class="rel-grid" *ngIf="genealogia() as gen; else relBasic">
+        <div class="rel-tile" [attr.data-tone]="nodoTone(gen.animal)">
+          <span class="rel-role">Animal</span>
+          <strong>{{ gen.animal.caravana }}</strong>
+        </div>
+        <div class="rel-tile" *ngFor="let nodo of genealogiaAncestros()" [attr.data-tone]="nodoTone(nodo)">
+          <span class="rel-role">{{ nodo.relacion || ('Generación ' + nodo.generacion) }}</span>
+          <strong>{{ nodo.caravana }}</strong>
+        </div>
+      </div>
+      <ng-template #relBasic>
+        <div class="rel-grid">
+          <div class="rel-tile" data-tone="female"><span class="rel-role">Madre</span><strong>{{ detail.animal.madreCaravana || 'Sin dato' }}</strong></div>
+          <div class="rel-tile" data-tone="male"><span class="rel-role">Padre</span><strong>{{ detail.animal.padreCaravana || 'Sin dato' }}</strong></div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeFicha(); openMovimientoModalFor(detail.animal)">Registrar movimiento</button>
+      <button class="btn-primary" type="button" (click)="closeFicha(); openMedicoModalFor(detail.animal)">Registrar evento clínico</button>
+    </div>
+  </app-premium-modal>
+
+  <!-- MODAL: nuevo animal (mockup 23) -->
+  <app-premium-modal
+    *ngIf="animalModalOpen()"
+    [icon]="icons.cow"
+    title="Registrar animal"
+    subtitle="Alta de un animal en el rodeo."
+    size="wide"
+    (close)="closeModals()"
+  >
+    <div class="form-grid">
+      <label><span>Caravana</span><input [ngModel]="animalForm().caravana" (ngModelChange)="animalForm.update(f => ({ ...f, caravana: $event }))" /></label>
+      <app-remote-search-select label="Raza" placeholder="Buscar raza bovina" [options]="razasBovinas()" valueField="id" labelField="nombre" [subtitleFields]="['aptitud','tipoGenetico']" [searchFields]="['nombre','codigo','aptitud','tipoGenetico']" [value]="animalForm().razaId" (valueChange)="updateRazaValue($event)" (itemSelected)="selectRaza($event)"></app-remote-search-select>
+      <label><span>Sexo</span><select [ngModel]="animalForm().sexo" (ngModelChange)="animalForm.update(f => ({ ...f, sexo: $event }))"><option value="">Seleccionar</option><option *ngFor="let option of sexoOptions" [value]="option.value">{{ option.label }}</option></select></label>
+      <label><span>Fecha nacimiento</span><input type="date" [ngModel]="animalForm().fechaNacimiento" (ngModelChange)="animalForm.update(f => ({ ...f, fechaNacimiento: $event }))" /></label>
+      <label><span>Fecha compra</span><input type="date" [ngModel]="animalForm().fechaCompra" (ngModelChange)="animalForm.update(f => ({ ...f, fechaCompra: $event }))" /></label>
+      <label><span>Peso actual kg</span><input type="number" [ngModel]="animalForm().pesoActualKg" (ngModelChange)="animalForm.update(f => ({ ...f, pesoActualKg: $event }))" /></label>
+      <label><span>RFID</span><input [ngModel]="animalForm().rfidCodigo" (ngModelChange)="animalForm.update(f => ({ ...f, rfidCodigo: $event }))" /></label>
+      <app-remote-search-select label="Potrero actual" placeholder="Buscar potrero" [options]="potreros()" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="animalForm().potreroId" (valueChange)="animalForm.update(f => ({ ...f, potreroId: $event }))"></app-remote-search-select>
+      <app-remote-search-select label="Madre" placeholder="Buscar madre por caravana" [options]="madreOptions()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="animalForm().madreId" (valueChange)="animalForm.update(f => ({ ...f, madreId: $event }))"></app-remote-search-select>
+      <app-remote-search-select label="Padre" placeholder="Buscar padre por caravana" [options]="padreOptions()" valueField="id" labelField="caravana" [subtitleFields]="['raza','potreroNombre']" [searchFields]="['caravana','raza','potreroNombre']" [value]="animalForm().padreId" (valueChange)="animalForm.update(f => ({ ...f, padreId: $event }))"></app-remote-search-select>
+    </div>
+    <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="animalForm().observaciones" (ngModelChange)="animalForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitAnimal()">Guardar</button>
+    </div>
+  </app-premium-modal>
+
+  <!-- MODAL: registrar movimiento (mockup 25) -->
+  <app-premium-modal
+    *ngIf="movimientoModalOpen()"
+    [icon]="icons.move"
+    title="Registrar movimiento"
+    subtitle="Registrá el traslado o control del animal."
+    size="wide"
+    (close)="closeModals()"
+  >
+    <div class="form-grid">
+      <label><span>Fecha</span><input type="datetime-local" [ngModel]="movimientoForm().fecha" (ngModelChange)="movimientoForm.update(f => ({ ...f, fecha: $event }))" /></label>
+      <label><span>Tipo</span><select [ngModel]="movimientoForm().tipoMovimiento" (ngModelChange)="movimientoForm.update(f => ({ ...f, tipoMovimiento: $event }))"><option value="INGRESO">Ingreso</option><option value="EGRESO">Egreso</option><option value="TRANSFERENCIA">Transferencia</option><option value="SANIDAD">Sanidad</option><option value="CONTROL">Control</option></select></label>
+      <app-remote-search-select label="Origen" placeholder="Buscar potrero origen" [options]="potreros()" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="movimientoForm().potreroOrigenId" (valueChange)="movimientoForm.update(f => ({ ...f, potreroOrigenId: $event }))"></app-remote-search-select>
+      <app-remote-search-select label="Destino" placeholder="Buscar potrero destino" [options]="potreros()" valueField="id" labelField="nombre" [subtitleFields]="['tipoUso','estado']" [searchFields]="['nombre','tipoUso','estado']" [value]="movimientoForm().potreroDestinoId" (valueChange)="movimientoForm.update(f => ({ ...f, potreroDestinoId: $event }))"></app-remote-search-select>
+      <label><span>Motivo</span><input [ngModel]="movimientoForm().motivo" (ngModelChange)="movimientoForm.update(f => ({ ...f, motivo: $event }))" /></label>
+      <app-remote-search-select label="Responsable" placeholder="Buscar operario responsable" [options]="operariosActivos()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero','rolOperativo']" [value]="movimientoForm().responsable" (valueChange)="movimientoForm.update(f => ({ ...f, responsable: $event }))"></app-remote-search-select>
+    </div>
+    <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="movimientoForm().observaciones" (ngModelChange)="movimientoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitMovimiento()">Guardar</button>
+    </div>
+  </app-premium-modal>
+
+  <!-- MODAL: registrar historial médico -->
+  <app-premium-modal
+    *ngIf="medicoModalOpen()"
+    [icon]="icons.stethoscope"
+    title="Registrar historial médico"
+    subtitle="Cargá un diagnóstico o tratamiento clínico."
+    size="wide"
+    (close)="closeModals()"
+  >
+    <div class="form-grid">
+      <label><span>Fecha</span><input type="date" [ngModel]="medicoForm().fecha" (ngModelChange)="medicoForm.update(f => ({ ...f, fecha: $event }))" /></label>
+      <label><span>Diagnóstico</span><input [ngModel]="medicoForm().diagnostico" (ngModelChange)="medicoForm.update(f => ({ ...f, diagnostico: $event }))" /></label>
+      <label><span>Tratamiento</span><input [ngModel]="medicoForm().tratamiento" (ngModelChange)="medicoForm.update(f => ({ ...f, tratamiento: $event }))" /></label>
+      <app-remote-search-select label="Veterinario" placeholder="Buscar veterinario habilitado" [options]="veterinarios()" valueField="id" labelField="nombreCompleto" [subtitleFields]="['rolOperativo','documentoNumero']" [searchFields]="['nombreCompleto','username','documentoNumero']" [value]="medicoForm().veterinario" (valueChange)="medicoForm.update(f => ({ ...f, veterinario: $event }))"></app-remote-search-select>
+    </div>
+    <label class="textarea-field"><span>Observaciones</span><textarea [ngModel]="medicoForm().observaciones" (ngModelChange)="medicoForm.update(f => ({ ...f, observaciones: $event }))"></textarea></label>
+    <div footer>
+      <button class="btn-secondary" type="button" (click)="closeModals()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="saving()" (click)="submitMedico()">Guardar</button>
+    </div>
+  </app-premium-modal>
 </div>

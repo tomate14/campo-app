@@ -1,0 +1,22 @@
+<div class="pm-backdrop" (click)="emitClose()" (document:keydown.escape)="emitClose()">
+  <div class="pm-panel" [attr.data-size]="size" (click)="$event.stopPropagation()">
+    <div class="pm-topbar"></div>
+    <header class="pm-header">
+      <span class="pm-icon" *ngIf="icon"><app-svg-icon [path]="icon" [size]="26"></app-svg-icon></span>
+      <div class="pm-titles">
+        <h3 class="pm-title">{{ title }}</h3>
+        <p class="pm-subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+      </div>
+      <span class="pm-badge" *ngIf="badge" [attr.data-tone]="badgeTone">{{ badge }}</span>
+      <button class="pm-close" type="button" aria-label="Cerrar" (click)="emitClose()">
+        <app-svg-icon path='<path d="M6 6l12 12M18 6 6 18" />' [size]="18"></app-svg-icon>
+      </button>
+    </header>
+    <div class="pm-body">
+      <ng-content></ng-content>
+    </div>
+    <footer class="pm-footer">
+      <ng-content select="[footer]"></ng-content>
+    </footer>
+  </div>
+</div>
