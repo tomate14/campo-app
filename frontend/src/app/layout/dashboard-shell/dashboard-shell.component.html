@@ -59,11 +59,6 @@
         <span *ngIf="!collapsed()">Ciclo agrícola</span>
       </a>
 
-      <a *ngIf="isMenuVisible('agricola-analytics')" routerLink="/agricola/analytics" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Analytics' : ''">
-        <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M7 16V9" /><path d="M12 16V5" /><path d="M17 16v-4" /></svg>
-        <span *ngIf="!collapsed()">Analytics</span>
-      </a>
-
       <a *ngIf="isMenuVisible('agricola-plagas')" routerLink="/agricola/plagas" routerLinkActive="active" class="nav-link" [title]="collapsed() ? 'Plagas' : ''">
         <svg viewBox="0 0 24 24"><path d="M12 3c4 3 6 6 6 10a6 6 0 0 1-12 0c0-4 2-7 6-10Z" /><path d="M12 9v8" /><path d="M8 13h8" /></svg>
         <span *ngIf="!collapsed()">Plagas</span>

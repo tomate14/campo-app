@@ -6,7 +6,6 @@ import { LotesPageComponent } from './pages/lotes-page/lotes-page.component';
 import { LoteDetailPageComponent } from './pages/lote-detail-page/lote-detail-page.component';
 import { SiembraPageComponent } from './pages/siembra-page/siembra-page.component';
 import { ClimaPageComponent } from './pages/clima-page/clima-page.component';
-import { AnalyticsPageComponent } from './pages/analytics-page/analytics-page.component';
 import { AgricolaInsumosPageComponent } from './pages/agricola-insumos-page/agricola-insumos-page.component';
 import { GanaderiaTrazabilidadPageComponent } from './pages/ganaderia-trazabilidad-page/ganaderia-trazabilidad-page.component';
 import { GanaderiaSanidadPageComponent } from './pages/ganaderia-sanidad-page/ganaderia-sanidad-page.component';
@@ -40,7 +39,6 @@ export const routes: Routes = [
       { path: 'agricola/lotes/:id', component: LoteDetailPageComponent },
       { path: 'agricola/siembra', component: SiembraPageComponent },
       { path: 'agricola/cosecha', redirectTo: 'agricola/siembra' },
-      { path: 'agricola/analytics', component: AnalyticsPageComponent },
       { path: 'agricola/plagas', component: PlagasPageComponent },
       { path: 'agricola/ordenes-aplicacion', loadComponent: () => import('./pages/ordenes-aplicacion-page/ordenes-aplicacion-page.component').then((m) => m.OrdenesAplicacionPageComponent) },
       { path: 'agricola/insumos', component: AgricolaInsumosPageComponent },

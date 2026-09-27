@@ -17,8 +17,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 86
-- Realizadas: 63
+- Total de historias registradas: 87
+- Realizadas: 64
 - Parciales: 0
 - Pendientes: 23
 - Saltadas: 2
@@ -28,6 +28,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 | Feature | Archivo | Dominio | Estado | Registro |
 |---|---|---|---|---|
+| 87 | `87_COMPLETA_agricola_eliminar_analytics.md` | Agricultura | Realizada | Eliminacion total de Analytics de Agricultura: sidebar (`agricola-analytics`), ruta `/agricola/analytics` + `AnalyticsPageComponent`, metodos/tipos de analytics en agricola service/models, opcion de menu via migracion V58 (menu_options + role_menu_options), y cluster backend autocontenido (AnalyticsController, AnalyticsService, PredictorService, ReporteService del PDF, AgriculturaAnalyticsResponse) + su test. Solo UI/menu/back de analytics; el resto de reportes agricolas no se toca. |
 | 86 | `86_COMPLETA_ganaderia_refactor_ui_premium_dark_saas.md` | Ganaderia | Realizada | Refactor de toda la UI web de ganaderia (trazabilidad, sanidad, alimentacion, reproduccion, dashboard ganadero + modales ficha/nuevo animal, detalle vacunacion, registrar evento) siguiendo los mockups premium dark SaaS (Disenos-ganaderia.zip / export-v3). Solo UI preservando logica/datos/endpoints; extrae set de componentes compartidos (page-header, kpi-card/grid, tabs, tabla con toggle Tarjetas, modal premium, tarjeta de entidad). Solo web; Potreros excluido (sin mockup). |
 | 00 | `00_COMPLETA_agricultura_monitoreo_siembra_cosecha.md` | Agricultura | Realizada | Core de siembra/cosecha implementado y marcado como finalizado. Pendientes avanzados/offline quedan derivados a feature 27. |
 | 00_01 | `00_01_COMPLETA_faltantes.md` | Agricultura | Realizada | Feature historica de faltantes 00/01 marcada como finalizada. |
