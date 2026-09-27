@@ -18,9 +18,9 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 ## Resumen
 - Total de historias registradas: 86
-- Realizadas: 62
+- Realizadas: 63
 - Parciales: 0
-- Pendientes: 24
+- Pendientes: 23
 - Saltadas: 2
 - Ultima actualizacion: 2026-09-27
 
@@ -28,7 +28,7 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 | Feature | Archivo | Dominio | Estado | Registro |
 |---|---|---|---|---|
-| 86 | `86_ganaderia_refactor_ui_premium_dark_saas.md` | Ganaderia | Pendiente | Refactor de toda la UI web de ganaderia (trazabilidad, sanidad, alimentacion, reproduccion, dashboard ganadero + modales ficha/nuevo animal, detalle vacunacion, registrar evento) siguiendo los mockups premium dark SaaS (Disenos-ganaderia.zip / export-v3). Solo UI preservando logica/datos/endpoints; extrae set de componentes compartidos (page-header, kpi-card/grid, tabs, tabla con toggle Tarjetas, modal premium, tarjeta de entidad). Solo web; Potreros excluido (sin mockup). |
+| 86 | `86_COMPLETA_ganaderia_refactor_ui_premium_dark_saas.md` | Ganaderia | Realizada | Refactor de toda la UI web de ganaderia (trazabilidad, sanidad, alimentacion, reproduccion, dashboard ganadero + modales ficha/nuevo animal, detalle vacunacion, registrar evento) siguiendo los mockups premium dark SaaS (Disenos-ganaderia.zip / export-v3). Solo UI preservando logica/datos/endpoints; extrae set de componentes compartidos (page-header, kpi-card/grid, tabs, tabla con toggle Tarjetas, modal premium, tarjeta de entidad). Solo web; Potreros excluido (sin mockup). |
 | 00 | `00_COMPLETA_agricultura_monitoreo_siembra_cosecha.md` | Agricultura | Realizada | Core de siembra/cosecha implementado y marcado como finalizado. Pendientes avanzados/offline quedan derivados a feature 27. |
 | 00_01 | `00_01_COMPLETA_faltantes.md` | Agricultura | Realizada | Feature historica de faltantes 00/01 marcada como finalizada. |
 | 01 | `01_COMPLETA_agricultura_gestion_lotes.md` | Agricultura | Realizada | Gestion de lotes implementada y marcada como finalizada. Pendientes avanzados/offline quedan derivados a feature 27. |

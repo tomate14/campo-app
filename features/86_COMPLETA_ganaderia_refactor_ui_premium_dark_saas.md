@@ -52,4 +52,8 @@ donut/line charts) donde apliquen.
   07 (alimentación), 42/49 (dashboard ganadero), 51 (nombres operarios).
 
 ## Estado
-Pendiente.
+Realizada. Refactor UI web del módulo ganadería (trazabilidad, sanidad, alimentación,
+reproducción, dashboard ganadero + modales) según los mockups, con set de componentes
+compartidos (page-header, kpi-card, stat-tabs, premium-modal, entity-card, info-tile,
+svg-icon), preservando lógica/datos/endpoints. Validado: type-check consolidado limpio;
+el build sólo falla por budgets preexistentes (feature 80). Solo web; Potreros excluido.
