@@ -34,4 +34,7 @@ Remoción **total**: UI + opción de menú (RBAC) + backend. No queda código mu
 - Backend compila; frontend type-check limpio; sin referencias residuales a analytics.
 
 ## Estado
-Pendiente.
+Realizada. Eliminado por completo Analytics de Agricultura (front + menú + backend):
+sidebar, ruta y página, métodos/tipos del service/models, migración V58 (menu_options +
+role_menu_options) y el cluster backend autocontenido + su test. Validado: backend
+compila (mvn compile exit 0), type-check web limpio, sin referencias residuales.
