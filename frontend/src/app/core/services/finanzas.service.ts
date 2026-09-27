@@ -45,12 +45,15 @@ export interface CobroRequest { facturaId: string; operarioId?: string; fecha: s
 export interface CobroVenta { id: string; facturaId: string; comprobante: string; clienteRazonSocial: string; operarioId?: string; operarioNombre?: string; fecha: string; metodoPago: MetodoPago; importe: number; referencia?: string }
 export interface NotaCreditoRequest { facturaId: string; operarioId?: string; fecha: string; importe: number; motivo: string }
 export interface NotaCreditoVenta { id: string; facturaId: string; comprobante: string; clienteRazonSocial: string; operarioId?: string; operarioNombre?: string; fecha: string; importe: number; motivo: string; cae?: string }
+// Cotización del dólar (BNA vendedor) usada para el toggle ARS/USD de los dashboards.
+export interface CotizacionDolar { compra: number | null; venta: number | null; fecha: string | null; fuente: string }
 
 @Injectable({ providedIn: 'root' })
 export class FinanzasService {
   private readonly http = inject(HttpClient)
   private readonly base = `${API_BASE_URL}/finanzas/facturacion`
   private readonly reportesBase = `${API_BASE_URL}/finanzas/reportes`
+  private readonly cotizacionesBase = `${API_BASE_URL}/finanzas/cotizaciones`
   dashboard(params?: { fechaDesde?: string; fechaHasta?: string }) { return this.http.get<ApiResponse<FacturacionDashboard> | FacturacionDashboard>(`${this.base}/dashboard`, { params: clean(params) }).pipe(map(unwrap)) }
   clientes(params?: { search?: string; page?: number; size?: number }) { return this.http.get<ApiResponse<PageResponse<ClienteFinanciero>> | PageResponse<ClienteFinanciero>>(`${this.base}/clientes`, { params: clean(params) }).pipe(map(unwrap)) }
   createCliente(data: ClienteRequest) { return this.http.post<ApiResponse<ClienteFinanciero> | ClienteFinanciero>(`${this.base}/clientes`, data).pipe(map(unwrap)) }
@@ -65,4 +68,6 @@ export class FinanzasService {
   reportesDashboard(params?: { fechaDesde?: string; fechaHasta?: string; topClientesLimit?: number; topProveedoresLimit?: number }) {
     return this.http.get<ApiResponse<ReportesFinancierosDashboard> | ReportesFinancierosDashboard>(`${this.reportesBase}/dashboard`, { params: clean(params) }).pipe(map(unwrap))
   }
+  // Cotización del Dólar BNA vendedor (fallback cacheado en el backend). `venta` null = sin cotización.
+  cotizacionDolar() { return this.http.get<ApiResponse<CotizacionDolar> | CotizacionDolar>(`${this.cotizacionesBase}/dolar`).pipe(map(unwrap)) }
 }

@@ -69,6 +69,10 @@ services:
       NDVI_VENTANA_DIAS: ${NDVI_VENTANA_DIAS:-15}
       NDVI_MAX_NUBOSIDAD: ${NDVI_MAX_NUBOSIDAD:-40}
       NDVI_IMG_SIZE: ${NDVI_IMG_SIZE:-512}
+      # Feature 85: cotizacion del Dolar BNA (fuente publica sin credenciales).
+      COTIZACION_DOLAR_ENABLED: ${COTIZACION_DOLAR_ENABLED:-true}
+      COTIZACION_DOLAR_URL: ${COTIZACION_DOLAR_URL:-https://dolarapi.com/v1/dolares/oficial}
+      COTIZACION_DOLAR_SYNC_CRON: ${COTIZACION_DOLAR_SYNC_CRON:-0 0 8,14 * * *}
     volumes:
       - backend_uploads:/app/uploads
       - backend_ndvi:/app/ndvi
