@@ -35,4 +35,9 @@ moneda ARS/USD con la leyenda "Dólar BNA vendedor: $ … · fecha". Por su tama
 - Feature 19 (finanzas / reportes financieros) como posible consumidor futuro.
 
 ## Estado
-Pendiente.
+Realizada. Backend (paquete `finanzas.cotizacion`: Properties/Client/Service/Scheduler,
+entidad + migración V57, endpoint `GET /finanzas/cotizaciones/dolar`) con fuente
+`dolarapi.com/v1/dolares/oficial` (Banco Nación) y config por `.env`
+(`COTIZACION_DOLAR_ENABLED/URL/SYNC_CRON`); web (toggle ARS/USD del dashboard
+agrícola cableado con la cotización real, conversión client-side centralizada y
+fallback si no hay cotización). Validado (test JUnit 5/5, type-check web limpio).
