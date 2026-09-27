@@ -4,10 +4,8 @@ import { map } from 'rxjs/operators';
 import { API_BASE_URL } from './api.config';
 import type {
   ApiResponse,
-  AgriculturaAnalytics,
   AplicacionFitosanitaria,
   AplicacionFitosanitariaRequest,
-  AnalyticsFiltros,
   CatalogoPlaga,
   CatalogoPlagaImagen,
   CatalogoPlagaRequest,
@@ -117,17 +115,6 @@ export class AgricolaService {
 
   getNdviImage(loteId: string) {
     return this.http.get(`${API_BASE_URL}/agricola/ndvi/${loteId}/imagen`, { responseType: 'blob' });
-  }
-
-  getAnalytics(params: AnalyticsFiltros) {
-    return this.http.get<ApiResponse<AgriculturaAnalytics> | AgriculturaAnalytics>(`${API_BASE_URL}/agricola/analytics`, { params: cleanParams(params as unknown as Record<string, unknown>) }).pipe(map((response) => unwrapApiResponse(response)));
-  }
-
-  exportAnalyticsPdf(params: AnalyticsFiltros) {
-    return this.http.get(`${API_BASE_URL}/agricola/analytics/reporte.pdf`, {
-      params: cleanParams(params as unknown as Record<string, unknown>),
-      responseType: 'blob',
-    });
   }
 
   deleteLote(id: string) {
