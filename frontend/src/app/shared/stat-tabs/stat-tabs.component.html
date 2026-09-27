@@ -1,0 +1,15 @@
+<nav class="stat-tabs" role="tablist">
+  <button
+    *ngFor="let tab of tabs"
+    type="button"
+    role="tab"
+    class="stat-tab"
+    [class.is-active]="tab.id === active"
+    [attr.aria-selected]="tab.id === active"
+    (click)="select(tab.id)"
+  >
+    <span class="stat-tab__icon" *ngIf="tab.icon"><app-svg-icon [path]="tab.icon" [size]="18"></app-svg-icon></span>
+    <span class="stat-tab__label">{{ tab.label }}</span>
+    <span class="stat-tab__badge" *ngIf="tab.badge !== undefined && tab.badge !== null && tab.badge !== ''">{{ tab.badge }}</span>
+  </button>
+</nav>

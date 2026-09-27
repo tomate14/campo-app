@@ -7,6 +7,14 @@ import { GanaderiaService } from '../../core/services/ganaderia.service';
 import { OperariosService } from '../../core/services/operarios.service';
 import type { Operario } from '../../core/models/operarios.models';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
+import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
+import { KpiCardComponent } from '../../shared/kpi-card/kpi-card.component';
+import { StatTabsComponent, type StatTab } from '../../shared/stat-tabs/stat-tabs.component';
+import { PremiumModalComponent } from '../../shared/premium-modal/premium-modal.component';
+import { EntityCardComponent, type EntityChip, type EntityMetric, type EntityTone } from '../../shared/entity-card/entity-card.component';
+import { InfoTileComponent } from '../../shared/info-tile/info-tile.component';
+import { SvgIconComponent } from '../../shared/svg-icon/svg-icon.component';
+import { SANIDAD_ICONS } from './sanidad-icons';
 import type {
   Animal,
   AplicacionVacuna,
@@ -21,18 +29,32 @@ import type {
   VacunaCatalogoRequest,
 } from '../../core/models/ganaderia.models';
 
-type SanidadTab = 'APLICACIONES' | 'TRATAMIENTOS' | 'DIAGNOSTICOS';
+type SanidadTab = 'ALERTAS' | 'APLICACIONES' | 'TRATAMIENTOS' | 'DIAGNOSTICOS' | 'CATALOGO';
+type ViewMode = 'TABLA' | 'TARJETAS';
 
 @Component({
   selector: 'app-ganaderia-sanidad-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RemoteSearchSelectComponent,
+    PageHeaderComponent,
+    KpiCardComponent,
+    StatTabsComponent,
+    PremiumModalComponent,
+    EntityCardComponent,
+    InfoTileComponent,
+    SvgIconComponent,
+  ],
   templateUrl: './ganaderia-sanidad-page.component.html',
   styleUrl: './ganaderia-sanidad-page.component.css',
 })
 export class GanaderiaSanidadPageComponent implements OnInit {
   private readonly ganaderiaService = inject(GanaderiaService);
   private readonly operariosService = inject(OperariosService);
+
+  protected readonly icons = SANIDAD_ICONS;
 
   protected readonly loading = signal(false);
   protected readonly saving = signal(false);
@@ -54,14 +76,13 @@ export class GanaderiaSanidadPageComponent implements OnInit {
   protected readonly aplicacionModalOpen = signal(false);
   protected readonly tratamientoModalOpen = signal(false);
   protected readonly diagnosticoModalOpen = signal(false);
-  protected readonly activeTab = signal<SanidadTab>('APLICACIONES');
+  protected readonly detalleAplicacion = signal<AplicacionVacuna | null>(null);
+  protected readonly activeTab = signal<SanidadTab>('ALERTAS');
+  protected readonly viewMode = signal<ViewMode>('TABLA');
   protected readonly tabPage = signal(1);
   protected readonly tabPageSize = 5;
   protected readonly catalogPage = signal(1);
   protected readonly catalogPageSize = 5;
-  protected readonly alertasCollapsed = signal(false);
-  protected readonly catalogCollapsed = signal(false);
-  protected readonly registrosCollapsed = signal(false);
   protected readonly endpoints = {
     animales: `${API_BASE_URL}/ganaderia/trazabilidad/animales`,
     operarios: `${API_BASE_URL}/operarios/gestion/operarios`,
@@ -184,6 +205,31 @@ export class GanaderiaSanidadPageComponent implements OnInit {
     return `${start}-${end} de ${this.vacunas().length}`;
   });
 
+  // Pestanas premium con badge de conteo (icono + label + badge).
+  protected readonly sanidadTabs = computed<StatTab[]>(() => [
+    { id: 'ALERTAS', label: 'Alertas de vacunación', icon: this.icons.bell, badge: this.alertasVacunacionPorVacuna().length },
+    { id: 'APLICACIONES', label: 'Vacunaciones', icon: this.icons.shield, badge: this.formatCount(this.aplicacionesPage()?.totalElements ?? this.aplicaciones().length) },
+    { id: 'TRATAMIENTOS', label: 'Tratamientos', icon: this.icons.vial, badge: this.formatCount(this.tratamientosPage()?.totalElements ?? this.tratamientos().length) },
+    { id: 'DIAGNOSTICOS', label: 'Diagnósticos', icon: this.icons.stethoscope, badge: this.formatCount(this.diagnosticosPage()?.totalElements ?? this.diagnosticos().length) },
+    { id: 'CATALOGO', label: 'Catálogo', icon: this.icons.syringe, badge: this.vacunas().length },
+  ]);
+
+  // Texto de conteo a la derecha de la barra de pestanas.
+  protected readonly panelCountLabel = computed(() => {
+    switch (this.activeTab()) {
+      case 'ALERTAS':
+        return `${this.alertasVacunacionPorVacuna().length} vacunas`;
+      case 'TRATAMIENTOS':
+        return `${this.formatCount(this.tratamientosPage()?.totalElements ?? 0)} tratamientos`;
+      case 'DIAGNOSTICOS':
+        return `${this.formatCount(this.diagnosticosPage()?.totalElements ?? 0)} diagnósticos`;
+      case 'CATALOGO':
+        return `${this.vacunas().length} vacunas`;
+      default:
+        return `${this.formatCount(this.aplicacionesPage()?.totalElements ?? 0)} aplicaciones`;
+    }
+  });
+
   ngOnInit(): void {
     this.loadAll();
   }
@@ -255,15 +301,25 @@ export class GanaderiaSanidadPageComponent implements OnInit {
     this.filters.update((current) => ({ ...current, [key]: value }));
   }
 
+  // Filtros aplicados al vuelo (los selects disparan la recarga server-side).
+  protected changeFilter(key: 'animalId' | 'estadoDiagnostico' | 'obligatoria', value: string) {
+    this.updateFilter(key, value);
+    this.applyFilters();
+  }
+
   protected applyFilters() {
     this.tabPage.set(1);
     this.refreshTables();
   }
 
-  protected setActiveTab(tab: SanidadTab) {
-    this.activeTab.set(tab);
+  protected setActiveTab(tab: string) {
+    this.activeTab.set(tab as SanidadTab);
     this.tabPage.set(1);
     this.refreshTables();
+  }
+
+  protected setViewMode(mode: ViewMode) {
+    this.viewMode.set(mode);
   }
 
   protected setTabPage(page: number) {
@@ -289,18 +345,6 @@ export class GanaderiaSanidadPageComponent implements OnInit {
 
   protected nextCatalogPage() {
     this.setCatalogPage(this.catalogPage() + 1);
-  }
-
-  protected toggleAlertas() {
-    this.alertasCollapsed.update((collapsed) => !collapsed);
-  }
-
-  protected toggleCatalogo() {
-    this.catalogCollapsed.update((collapsed) => !collapsed);
-  }
-
-  protected toggleRegistros() {
-    this.registrosCollapsed.update((collapsed) => !collapsed);
   }
 
   private activePage(): PageResponse<AplicacionVacuna | TratamientoMedicamento | DiagnosticoSanitario> | null {
@@ -377,6 +421,14 @@ export class GanaderiaSanidadPageComponent implements OnInit {
     this.diagnosticoModalOpen.set(true);
   }
 
+  protected openDetalleAplicacion(aplicacion: AplicacionVacuna) {
+    this.detalleAplicacion.set(aplicacion);
+  }
+
+  protected closeDetalleAplicacion() {
+    this.detalleAplicacion.set(null);
+  }
+
   protected submitVacuna() {
     this.saving.set(true);
     this.ganaderiaService.createVacuna(this.normalizeVacunaRequest(this.vacunaForm())).subscribe({
@@ -444,6 +496,96 @@ export class GanaderiaSanidadPageComponent implements OnInit {
     this.diagnosticoModalOpen.set(false);
   }
 
+  // --- Helpers de presentacion (solo UI) ---
+
+  protected formatCount(value: number): string {
+    return (value ?? 0).toLocaleString('es-AR');
+  }
+
+  protected formatMoney(value?: number): string {
+    return `$${(value ?? 0).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  }
+
+  protected severidadTone(severidad?: string): EntityTone {
+    switch (this.normalizeToken(severidad)) {
+      case 'CRITICA':
+        return 'red';
+      case 'ALTA':
+        return 'yellow';
+      case 'MEDIA':
+        return 'blue';
+      default:
+        return 'neutral';
+    }
+  }
+
+  protected estadoDiagnosticoTone(estado?: string): EntityTone {
+    switch (this.normalizeToken(estado)) {
+      case 'ABIERTO':
+        return 'yellow';
+      case 'CONTROLADO':
+        return 'blue';
+      case 'CERRADO':
+        return 'green';
+      default:
+        return 'neutral';
+    }
+  }
+
+  protected aplicacionChips(aplicacion: AplicacionVacuna): EntityChip[] {
+    return [{ label: aplicacion.vacunaObligatoria ? 'Obligatoria' : 'Complementaria', tone: aplicacion.vacunaObligatoria ? 'green' : 'blue' }];
+  }
+
+  protected aplicacionMetrics(aplicacion: AplicacionVacuna): EntityMetric[] {
+    return [
+      { label: 'Fecha', value: aplicacion.fechaAplicacion },
+      { label: 'Próxima dosis', value: aplicacion.proximaDosisFecha || 'Sin fecha' },
+      { label: 'Responsable', value: aplicacion.operarioNombre || aplicacion.operario || 'Sin dato' },
+      { label: 'Costo', value: this.formatMoney(aplicacion.costoAplicado) },
+    ];
+  }
+
+  protected tratamientoChips(tratamiento: TratamientoMedicamento): EntityChip[] {
+    return [{ label: tratamiento.fechaFin ? 'Finalizado' : 'Activo', tone: tratamiento.fechaFin ? 'neutral' : 'green' }];
+  }
+
+  protected tratamientoMetrics(tratamiento: TratamientoMedicamento): EntityMetric[] {
+    return [
+      { label: 'Inicio', value: tratamiento.fechaInicio },
+      { label: 'Dosis', value: tratamiento.dosis || 'Sin dato' },
+      { label: 'Vía', value: tratamiento.viaAplicacion || 'Sin dato' },
+      { label: 'Costo', value: this.formatMoney(tratamiento.costo) },
+    ];
+  }
+
+  protected diagnosticoChips(diagnostico: DiagnosticoSanitario): EntityChip[] {
+    return [
+      { label: diagnostico.severidad, tone: this.severidadTone(diagnostico.severidad) },
+      { label: diagnostico.estado, tone: this.estadoDiagnosticoTone(diagnostico.estado) },
+    ];
+  }
+
+  protected diagnosticoMetrics(diagnostico: DiagnosticoSanitario): EntityMetric[] {
+    return [
+      { label: 'Fecha', value: diagnostico.fechaDiagnostico },
+      { label: 'Veterinario', value: diagnostico.veterinarioNombre || diagnostico.veterinario || 'Sin dato' },
+      { label: 'Indicado', value: diagnostico.tratamientoIndicado || 'Sin indicar' },
+    ];
+  }
+
+  protected vacunaChips(vacuna: VacunaCatalogo): EntityChip[] {
+    return [{ label: vacuna.obligatoria ? 'Obligatoria' : 'Complementaria', tone: vacuna.obligatoria ? 'green' : 'blue' }];
+  }
+
+  protected vacunaMetrics(vacuna: VacunaCatalogo): EntityMetric[] {
+    return [
+      { label: 'Dosis', value: vacuna.dosisRecomendada || 'Sin dato' },
+      { label: 'Frecuencia', value: vacuna.frecuenciaDias ? `${vacuna.frecuenciaDias} días` : 'Sin dato' },
+      { label: 'Stock', value: vacuna.stockDisponible ?? 'Sin dato' },
+      { label: 'Costo ref.', value: this.formatMoney(vacuna.costoReferencia) },
+    ];
+  }
+
   private normalizeVacunaRequest(form: VacunaCatalogoRequest): VacunaCatalogoRequest {
     return {
       ...form,
@@ -493,7 +635,7 @@ export class GanaderiaSanidadPageComponent implements OnInit {
     };
   }
 
-  // Normaliza texto (NFD + mayusculas, sin acentos) para comparar estado/rol de operarios.
+  // Normaliza texto (NFD + mayusculas, sin acentos) para comparar estado/rol/severidad.
   private normalizeToken(value?: string) {
     return (value ?? '')
       .trim()

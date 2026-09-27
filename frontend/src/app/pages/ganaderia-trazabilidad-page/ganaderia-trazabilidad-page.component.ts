@@ -5,14 +5,24 @@ import { forkJoin } from 'rxjs';
 import { GanaderiaService } from '../../core/services/ganaderia.service';
 import { OperariosService } from '../../core/services/operarios.service';
 import { RemoteSearchSelectComponent } from '../../shared/remote-search-select/remote-search-select.component';
+import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
+import { KpiCardComponent } from '../../shared/kpi-card/kpi-card.component';
+import { StatTabsComponent, type StatTab } from '../../shared/stat-tabs/stat-tabs.component';
+import { PremiumModalComponent } from '../../shared/premium-modal/premium-modal.component';
+import { EntityCardComponent, type EntityChip, type EntityMetric } from '../../shared/entity-card/entity-card.component';
+import { InfoTileComponent } from '../../shared/info-tile/info-tile.component';
+import { SvgIconComponent } from '../../shared/svg-icon/svg-icon.component';
+import { TRACE_ICONS } from './trace-icons';
 import type {
   AplicacionVacuna,
   Animal,
   AnimalDetalle,
   AnimalRequest,
   CatalogoRazaBovina,
+  GenealogiaAnimal,
   HistorialMedicoAnimalRequest,
   MovimientoAnimalRequest,
+  NodoGenealogia,
   Pesaje,
   Potrero,
 } from '../../core/models/ganaderia.models';
@@ -31,13 +41,27 @@ type HistorialClinicoEvento = {
 @Component({
   selector: 'app-ganaderia-trazabilidad-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RemoteSearchSelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RemoteSearchSelectComponent,
+    PageHeaderComponent,
+    KpiCardComponent,
+    StatTabsComponent,
+    PremiumModalComponent,
+    EntityCardComponent,
+    InfoTileComponent,
+    SvgIconComponent,
+  ],
   templateUrl: './ganaderia-trazabilidad-page.component.html',
   styleUrl: './ganaderia-trazabilidad-page.component.css',
 })
 export class GanaderiaTrazabilidadPageComponent implements OnInit {
   private readonly ganaderiaService = inject(GanaderiaService);
   private readonly operariosService = inject(OperariosService);
+
+  // Paths de iconos SVG del lenguaje premium (nunca letras/siglas como icono).
+  protected readonly icons = TRACE_ICONS;
 
   protected readonly animales = signal<Animal[]>([]);
   protected readonly selected = signal<AnimalDetalle | null>(null);
@@ -53,6 +77,14 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
   protected readonly page = signal(1);
   protected readonly pageSize = signal(25);
   protected readonly panelTab = signal<'RESUMEN' | 'MOVIMIENTOS' | 'MEDICO' | 'VACUNAS' | 'MAS'>('RESUMEN');
+  // Estado de la vista refactorizada (mockups 01-04).
+  protected readonly tab = signal<'ANIMALES' | 'MOVIMIENTOS' | 'GENEALOGIA'>('ANIMALES');
+  protected readonly viewMode = signal<'TABLA' | 'TARJETAS'>('TABLA');
+  protected readonly fichaModalOpen = signal(false);
+  // Genealogia: se alimenta del endpoint existente getGenealogia(animalId) (feature 06).
+  protected readonly genealogia = signal<GenealogiaAnimal | null>(null);
+  protected readonly genealogiaLoading = signal(false);
+  protected readonly genealogiaAnimalId = signal('');
   protected readonly madreSearch = signal('');
   protected readonly padreSearch = signal('');
   protected readonly sexoOptions = [
@@ -190,9 +222,151 @@ export class GanaderiaTrazabilidadPageComponent implements OnInit {
       .sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
   });
 
+  // Pestanas premium (icono + label + badge). Los badges reflejan el conteo real.
+  protected readonly tabs = computed<StatTab[]>(() => [
+    { id: 'ANIMALES', label: 'Animales', icon: this.icons.cow, badge: this.filteredAnimales().length },
+    { id: 'MOVIMIENTOS', label: 'Movimientos', icon: this.icons.move, badge: this.selected()?.movimientos.length ?? 0 },
+    { id: 'GENEALOGIA', label: 'Genealogía', icon: this.icons.tree, badge: this.genealogiaGeneraciones() ? `${this.genealogiaGeneraciones()} gen.` : undefined },
+  ]);
+
+  protected readonly genealogiaGeneraciones = computed(() => {
+    const ancestros = this.genealogia()?.ancestros ?? [];
+    return ancestros.length ? Math.max(...ancestros.map((nodo) => nodo.generacion)) : 0;
+  });
+
+  protected readonly genealogiaAncestros = computed(() => this.genealogia()?.ancestros ?? []);
+
+  protected readonly tabCount = computed(() => {
+    switch (this.tab()) {
+      case 'MOVIMIENTOS':
+        return `${this.selected()?.movimientos.length ?? 0} movimientos`;
+      case 'GENEALOGIA':
+        return `${this.genealogiaAncestros().length} ancestros registrados`;
+      default:
+        return `${this.filteredAnimales().length} animales`;
+    }
+  });
+
   ngOnInit(): void {
     this.loadAnimales();
     this.loadCatalogos();
+  }
+
+  protected setTab(id: string) {
+    const next = id as 'ANIMALES' | 'MOVIMIENTOS' | 'GENEALOGIA';
+    this.tab.set(next);
+    if (next === 'GENEALOGIA' && !this.genealogia() && !this.genealogiaLoading()) {
+      const target = this.genealogiaAnimalId() || this.selected()?.animal.id;
+      if (target) this.loadGenealogia(target);
+    }
+  }
+
+  protected setViewMode(mode: 'TABLA' | 'TARJETAS') {
+    this.viewMode.set(mode);
+  }
+
+  // Carga el arbol genealogico usando el endpoint ya existente (no cambia contratos).
+  protected loadGenealogia(animalId: string) {
+    if (!animalId) return;
+    this.genealogiaAnimalId.set(animalId);
+    this.genealogiaLoading.set(true);
+    this.ganaderiaService.getGenealogia(animalId).subscribe({
+      next: (data) => {
+        this.genealogia.set(data);
+        this.genealogiaLoading.set(false);
+      },
+      error: () => {
+        this.genealogia.set(null);
+        this.genealogiaLoading.set(false);
+      },
+    });
+  }
+
+  protected onGenealogiaAnimalChange(animalId: string) {
+    if (animalId) {
+      this.loadGenealogia(animalId);
+    } else {
+      this.genealogia.set(null);
+      this.genealogiaAnimalId.set('');
+    }
+  }
+
+  // Abre la ficha del animal (modal) reutilizando la carga de detalle existente.
+  protected openFicha(animal: Animal) {
+    this.loadAnimalDetail(animal.id);
+    this.loadGenealogia(animal.id);
+    this.fichaModalOpen.set(true);
+  }
+
+  protected closeFicha() {
+    this.fichaModalOpen.set(false);
+  }
+
+  protected verArbolGenealogico() {
+    const target = this.selected()?.animal.id;
+    this.fichaModalOpen.set(false);
+    this.setTab('GENEALOGIA');
+    if (target && this.genealogiaAnimalId() !== target) {
+      this.loadGenealogia(target);
+    }
+  }
+
+  // Filtros que pegan al backend (raza/estado/ubicacion): aplican al cambiar (mockup sin boton).
+  protected changeApiFilter(key: 'raza' | 'estado' | 'ubicacion', value: string) {
+    this.filters.update((current) => ({ ...current, [key]: value }));
+    this.page.set(1);
+    this.loadAnimales();
+  }
+
+  // Helpers de presentacion para la vista Tarjetas (app-entity-card).
+  protected animalChips(animal: Animal): EntityChip[] {
+    const chips: EntityChip[] = [
+      { label: this.sexoLabel(animal), tone: this.isFemale(animal) ? 'purple' : 'blue' },
+    ];
+    if (animal.raza) chips.push({ label: animal.raza, tone: 'neutral' });
+    if (animal.potreroNombre) chips.push({ label: animal.potreroNombre, tone: 'cyan' });
+    return chips;
+  }
+
+  protected animalMetrics(animal: Animal): EntityMetric[] {
+    return [
+      { label: 'Peso', value: animal.pesoActualKg ? `${animal.pesoActualKg} kg` : 'Sin dato' },
+      { label: 'Edad', value: this.animalAge(animal) },
+      { label: 'RFID', value: animal.rfidCodigo || 'Sin RFID' },
+    ];
+  }
+
+  protected riesgoTone(animal: Animal): EntityChip['tone'] {
+    const riesgo = this.riesgoAnimal(animal);
+    return riesgo === 'Alto' ? 'red' : riesgo === 'Medio' ? 'yellow' : 'green';
+  }
+
+  protected nodoTone(nodo: NodoGenealogia): 'blue' | 'purple' | 'neutral' {
+    const sexo = (nodo.sexo ?? '').toUpperCase();
+    if (['FEMENINO', 'HEMBRA', 'F', 'FEMALE'].includes(sexo)) return 'purple';
+    if (['MASCULINO', 'MACHO', 'TORO', 'M', 'MALE'].includes(sexo)) return 'blue';
+    return 'neutral';
+  }
+
+  protected ancestrosPorGeneracion(generacion: number): NodoGenealogia[] {
+    return this.genealogiaAncestros().filter((nodo) => nodo.generacion === generacion);
+  }
+
+  protected movTipoTone(tipo: string): 'green' | 'blue' | 'yellow' | 'red' | 'cyan' | 'neutral' {
+    switch (tipo) {
+      case 'INGRESO':
+        return 'green';
+      case 'EGRESO':
+        return 'red';
+      case 'TRANSFERENCIA':
+        return 'blue';
+      case 'SANIDAD':
+        return 'yellow';
+      case 'CONTROL':
+        return 'cyan';
+      default:
+        return 'neutral';
+    }
   }
 
   private loadCatalogos() {

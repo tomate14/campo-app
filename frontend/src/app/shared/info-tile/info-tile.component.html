@@ -1,0 +1,7 @@
+<div class="info-tile" [attr.data-tone]="tone">
+  <div class="it-head">
+    <span class="it-icon" *ngIf="icon"><app-svg-icon [path]="icon" [size]="15"></app-svg-icon></span>
+    <span class="it-label">{{ label }}</span>
+  </div>
+  <strong class="it-value">{{ value }}</strong>
+</div>

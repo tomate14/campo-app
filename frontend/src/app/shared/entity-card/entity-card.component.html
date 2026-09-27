@@ -1,0 +1,23 @@
+<article class="entity-card" [class.is-clickable]="clickable" (click)="onClick()">
+  <header class="ec-head">
+    <span class="ec-avatar"><ng-content select="[avatar]"></ng-content></span>
+    <div class="ec-titles">
+      <strong class="ec-title">{{ title }}</strong>
+      <span class="ec-subtitle" *ngIf="subtitle">{{ subtitle }}</span>
+    </div>
+    <span class="ec-badge" *ngIf="badge" [attr.data-tone]="badgeTone">{{ badge }}</span>
+  </header>
+
+  <div class="ec-chips" *ngIf="chips.length">
+    <span class="ec-chip" *ngFor="let chip of chips" [attr.data-tone]="chip.tone || 'neutral'">{{ chip.label }}</span>
+  </div>
+
+  <div class="ec-metrics" *ngIf="metrics.length">
+    <div class="ec-metric" *ngFor="let metric of metrics">
+      <span class="ec-metric-label">{{ metric.label }}</span>
+      <strong class="ec-metric-value">{{ metric.value }}</strong>
+    </div>
+  </div>
+
+  <ng-content></ng-content>
+</article>
