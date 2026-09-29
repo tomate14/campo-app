@@ -17,17 +17,20 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 87
+- Total de historias registradas: 90
 - Realizadas: 64
 - Parciales: 0
-- Pendientes: 23
+- Pendientes: 26
 - Saltadas: 2
-- Ultima actualizacion: 2026-09-27
+- Ultima actualizacion: 2026-09-29
 
 ## Registro por Feature
 
 | Feature | Archivo | Dominio | Estado | Registro |
 |---|---|---|---|---|
+| 90 | `90_finanzas_cierre_ejercicio_y_estados_contables.md` | Finanzas | Pendiente | Cierre de ejercicio y estados contables: estado de resultados por actividad (agricola/ganadera) y por lote/centro de costos (reusa costos feature 84), situacion patrimonial resumida, resultado por tenencia (si hay valuacion de existencias), cierre/apertura con arrastre de saldos, export PDF/CSV. Version gerencial por defecto; el balance estatutario formal requiere plan de cuentas/asientos + ajuste por inflacion (features a crear si se elige esa via). Prioridad 3. |
+| 89 | `89_finanzas_retenciones_y_percepciones.md` | Finanzas | Pendiente | Retenciones y percepciones sufridas y practicadas (IVA agropecuario con devolucion, Ganancias/SICORE RG 830, IIBB): catalogo de regimenes, calculo (base/minimo/alicuota), impacto en neto de cobros/pagos y en la posicion de IVA (feature 88), certificados y export SICORE/TXT. Prioridad 2. |
+| 88 | `88_finanzas_registro_iva_y_posicion_mensual.md` | Finanzas | Pendiente | Registro (libro) de IVA ventas+compras y posicion mensual (debito/credito fiscal, saldo, arrastre a favor), multi-alicuota, alineado a Portal IVA / IVA Simple (RG ARCA 5707/2025), con export TXT/PDF. Quick win sobre datos ya cargados. Prioridad 1; base de 89 y 90. |
 | 87 | `87_COMPLETA_agricola_eliminar_analytics.md` | Agricultura | Realizada | Eliminacion total de Analytics de Agricultura: sidebar (`agricola-analytics`), ruta `/agricola/analytics` + `AnalyticsPageComponent`, metodos/tipos de analytics en agricola service/models, opcion de menu via migracion V58 (menu_options + role_menu_options), y cluster backend autocontenido (AnalyticsController, AnalyticsService, PredictorService, ReporteService del PDF, AgriculturaAnalyticsResponse) + su test. Solo UI/menu/back de analytics; el resto de reportes agricolas no se toca. |
 | 86 | `86_COMPLETA_ganaderia_refactor_ui_premium_dark_saas.md` | Ganaderia | Realizada | Refactor de toda la UI web de ganaderia (trazabilidad, sanidad, alimentacion, reproduccion, dashboard ganadero + modales ficha/nuevo animal, detalle vacunacion, registrar evento) siguiendo los mockups premium dark SaaS (Disenos-ganaderia.zip / export-v3). Solo UI preservando logica/datos/endpoints; extrae set de componentes compartidos (page-header, kpi-card/grid, tabs, tabla con toggle Tarjetas, modal premium, tarjeta de entidad). Solo web; Potreros excluido (sin mockup). |
 | 00 | `00_COMPLETA_agricultura_monitoreo_siembra_cosecha.md` | Agricultura | Realizada | Core de siembra/cosecha implementado y marcado como finalizado. Pendientes avanzados/offline quedan derivados a feature 27. |
