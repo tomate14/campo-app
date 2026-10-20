@@ -272,6 +272,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 16px;
+  /* Cada panel toma su propia altura; evita que el chart se estire al alto del vecino. */
+  align-items: start;
 }
 
 .span-8 { grid-column: span 8; }
@@ -354,6 +356,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* Maximo ~5 filas visibles; el resto hace scroll vertical. */
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(159,232,112,.45) transparent;
+}
+.timeline::-webkit-scrollbar {
+  width: 6px;
+}
+.timeline::-webkit-scrollbar-thumb {
+  background: rgba(159,232,112,.35);
+  border-radius: 999px;
 }
 
 .timeline-row {
