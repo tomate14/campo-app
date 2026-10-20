@@ -17,17 +17,18 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 90
+- Total de historias registradas: 91
 - Realizadas: 64
 - Parciales: 0
-- Pendientes: 26
+- Pendientes: 27
 - Saltadas: 2
-- Ultima actualizacion: 2026-09-29
+- Ultima actualizacion: 2026-10-20
 
 ## Registro por Feature
 
 | Feature | Archivo | Dominio | Estado | Registro |
 |---|---|---|---|---|
+| 91 | `91_finanzas_rediseno_dashboard_financiero.md` | Finanzas | Pendiente | Rediseño ejecutivo del dashboard financiero (`/finanzas/reportes`) segun mockup + estilos.md (Panel web ejecutivo rediseñado.zip): header con eyebrow/filtro global, 8 KPI cards con icono/tono/glow, ingresos vs egresos (barras), proximos vencimientos, flujo de caja (lineas), top clientes/proveedores (ranking), y tablas Cuentas por cobrar/pagar. Solo UI, preserva datos/endpoint. |
 | 90 | `90_finanzas_cierre_ejercicio_y_estados_contables.md` | Finanzas | Pendiente | Cierre de ejercicio y estados contables: estado de resultados por actividad (agricola/ganadera) y por lote/centro de costos (reusa costos feature 84), situacion patrimonial resumida, resultado por tenencia (si hay valuacion de existencias), cierre/apertura con arrastre de saldos, export PDF/CSV. Version gerencial por defecto; el balance estatutario formal requiere plan de cuentas/asientos + ajuste por inflacion (features a crear si se elige esa via). Prioridad 3. |
 | 89 | `89_finanzas_retenciones_y_percepciones.md` | Finanzas | Pendiente | Retenciones y percepciones sufridas y practicadas (IVA agropecuario con devolucion, Ganancias/SICORE RG 830, IIBB): catalogo de regimenes, calculo (base/minimo/alicuota), impacto en neto de cobros/pagos y en la posicion de IVA (feature 88), certificados y export SICORE/TXT. Prioridad 2. |
 | 88 | `88_finanzas_registro_iva_y_posicion_mensual.md` | Finanzas | Pendiente | Registro (libro) de IVA ventas+compras y posicion mensual (debito/credito fiscal, saldo, arrastre a favor), multi-alicuota, alineado a Portal IVA / IVA Simple (RG ARCA 5707/2025), con export TXT/PDF. Quick win sobre datos ya cargados. Prioridad 1; base de 89 y 90. |
