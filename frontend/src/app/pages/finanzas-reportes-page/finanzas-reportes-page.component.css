@@ -322,7 +322,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   letter-spacing: -.02em;
 }
 
-.panel-title span {
+.panel-title span:not(.panel-icon) {
   display: block;
   margin-top: 3px;
   color: #a9bad5;
