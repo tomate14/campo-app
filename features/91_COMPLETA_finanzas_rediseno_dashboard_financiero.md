@@ -47,4 +47,10 @@ endpoint (`GET /api/v1/finanzas/reportes/dashboard`).
 - Feature 19 (reportes financieros), 85 (cotización dólar), 84 (patrón de charts).
 
 ## Estado
-Pendiente.
+Realizada. Rediseño ejecutivo aplicado a `finanzas-reportes-page` (ts/html/css) según
+el mockup + `estilos.md`: header con eyebrow/título glow/filtro global, 8 KPI cards
+toneadas con ícono/glow, barras ingresos vs egresos, próximos vencimientos, flujo de
+caja (líneas), top clientes/proveedores y tablas Cuentas por cobrar/pagar. Solo UI;
+datos/endpoint intactos. Validado: type-check limpio y verificación visual en la app
+real (render correcto de las 7 secciones; corregido un bug de alineación de tablas
+<720px). Charts con animations:false y tooltips premium compartidos.
