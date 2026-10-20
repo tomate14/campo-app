@@ -1,94 +1,162 @@
 <div class="finanzas-reportes-page">
   <header class="page-header">
-    <div>
+    <div class="page-heading">
       <p class="eyebrow">Finanzas</p>
-      <h1>Dashboard Financiero</h1>
-      <span>Reportes financieros y control economico del establecimiento.</span>
+      <h1>Dashboard <span>Financiero</span></h1>
+      <p class="page-subtitle">Reportes financieros y control economico del establecimiento.</p>
     </div>
-    <div class="header-actions">
+    <div class="filter-bar">
       <label>
-        Desde
+        <span>Desde</span>
         <input type="date" [(ngModel)]="fechaDesde" />
       </label>
       <label>
-        Hasta
+        <span>Hasta</span>
         <input type="date" [(ngModel)]="fechaHasta" />
       </label>
-      <button class="primary-action" type="button" (click)="load()" [disabled]="loading()">Aplicar filtros</button>
+      <button class="ghost-action" type="button" (click)="load()" [disabled]="loading()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4-2v-4L3 5Z" /></svg>
+        Aplicar filtros
+      </button>
     </div>
   </header>
 
-  <div class="state-card" *ngIf="loading()">Cargando dashboard financiero...</div>
-  <div class="state-card error" *ngIf="error()">{{ error() }}</div>
+  @if (loading()) {
+    <div class="state-card">Cargando dashboard financiero...</div>
+  }
+  @if (error()) {
+    <div class="state-card error">{{ error() }}</div>
+  }
 
-  <ng-container *ngIf="dashboard() as data">
+  @if (dashboard(); as data) {
     <section class="kpi-grid">
-      <article class="kpi-card" *ngFor="let kpi of kpis(); trackBy: trackByCode" [class]="toneClass(kpi.tono)">
-        <span class="kpi-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M7 16v-5" /><path d="M12 16V7" /><path d="M17 16v-8" /><path d="M5 10l4-4 4 3 5-6" /></svg>
-        </span>
-        <small>{{ kpi.titulo }}</small>
-        <strong>{{ formatValue(kpi.valor, kpi.formato) }}</strong>
-        <span>{{ kpi.subtitulo }}</span>
-      </article>
+      @for (kpi of kpis(); track kpi.codigo) {
+        <article class="kpi-card" [class]="kpiTone(kpi)">
+          <div class="kpi-top">
+            <span class="kpi-icon" aria-hidden="true">
+              @switch (kpi.codigo) {
+                @case ('ventas') {
+                  <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M7 16V9" /><path d="M12 16V5" /><path d="M17 16v-4" /><path d="M5 10l4-4 4 3 5-6" /></svg>
+                }
+                @case ('compras') {
+                  <svg viewBox="0 0 24 24"><path d="M3 4h2l2 12h11l2-8H6" /><path d="M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" /><path d="M18 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" /></svg>
+                }
+                @case ('margen') {
+                  <svg viewBox="0 0 24 24"><path d="M19 5 5 19" /><path d="M8.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" /><path d="M15.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" /></svg>
+                }
+                @case ('cobrar') {
+                  <svg viewBox="0 0 24 24"><path d="M12 3v10" /><path d="M8 9l4 4 4-4" /><path d="M4 17h16v4H4z" /></svg>
+                }
+                @case ('pagar') {
+                  <svg viewBox="0 0 24 24"><path d="M12 21V11" /><path d="M8 15l4-4 4 4" /><path d="M4 3h16v4H4z" /></svg>
+                }
+                @case ('flujo') {
+                  <svg viewBox="0 0 24 24"><path d="M3 12h4l3 7 4-14 3 7h4" /></svg>
+                }
+                @case ('stock') {
+                  <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4Z" /><path d="M4 7v10l8 4 8-4V7" /><path d="M12 11v10" /></svg>
+                }
+                @case ('vencimientos') {
+                  <svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" /><path d="M12 7v5l3 2" /></svg>
+                }
+                @default {
+                  <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M7 16V9" /><path d="M12 16V5" /><path d="M17 16v-4" /></svg>
+                }
+              }
+            </span>
+            <button class="kpi-menu" type="button" aria-label="Opciones del indicador">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="12" cy="19" r="1.6" /></svg>
+            </button>
+          </div>
+          <small class="kpi-label">{{ kpi.titulo }}</small>
+          <strong class="kpi-value">{{ formatValue(kpi.valor, kpi.formato) }}</strong>
+          <span class="kpi-context">{{ kpi.subtitulo }}</span>
+        </article>
+      }
     </section>
 
     <section class="analytics-grid">
-      <article class="dashboard-card span-8">
-        <div class="card-head">
-          <div>
-            <h2>Ingresos vs egresos por mes</h2>
-            <span>Ultimos 12 periodos devengados por comprobantes.</span>
+      <article class="panel span-8">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-green" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M8 16v-6" /><path d="M13 16V6" /><path d="M18 16v-4" /></svg>
+            </span>
+            <div>
+              <h2>Ingresos vs egresos por mes</h2>
+              <span>Ultimos 12 periodos devengados por comprobantes.</span>
+            </div>
+          </div>
+          <div class="panel-legend">
+            <span><i style="background:#9FE870"></i>Ingresos</span>
+            <span><i style="background:#FF6B6B"></i>Egresos</span>
           </div>
         </div>
         <apx-chart
           [series]="ingresosEgresosSeries(data.ingresosEgresos)"
           [chart]="barChart"
-          [xaxis]="{ categories: categories(data.ingresosEgresos), labels: { style: { colors: '#A6B0CF' } } }"
-          [yaxis]="{ labels: { style: { colors: '#A6B0CF' }, formatter: shortCurrency } }"
-          [colors]="['#9FE870', '#FF6B6B']"
-          [fill]="{ opacity: 1, colors: ['#9FE870', '#FF6B6B'] }"
+          [xaxis]="{ categories: categories(data.ingresosEgresos), labels: { style: { colors: '#8EA0BB', fontSize: '11px' } }, axisBorder: { show: false }, axisTicks: { show: false } }"
+          [yaxis]="{ tickAmount: 4, labels: { style: { colors: '#8EA0BB', fontSize: '11px' }, formatter: shortCurrency } }"
+          [colors]="['#B8F78E', '#FF7A7A']"
+          [fill]="barFill"
           [plotOptions]="barPlotOptions"
           [dataLabels]="barDataLabels"
           [grid]="grid"
-          [legend]="legend"
+          [legend]="{ show: false }"
           [tooltip]="sharedFinancialTooltip('Ingresos vs egresos', 'Dashboard financiero')"
         />
       </article>
 
-      <article class="dashboard-card span-4">
-        <div class="card-head">
-          <div>
-            <h2>Proximos vencimientos</h2>
-            <span>Cobros y pagos priorizados.</span>
+      <article class="panel span-4">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-blue" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" /><path d="M12 7v5l3 2" /></svg>
+            </span>
+            <div>
+              <h2>Proximos vencimientos</h2>
+              <span>Cobros y pagos priorizados.</span>
+            </div>
           </div>
+          <button class="ghost-action compact" type="button">Ver todos</button>
         </div>
         <div class="timeline">
-          <div class="timeline-row" *ngFor="let item of data.proximosVencimientos">
-            <i [class]="item.tipo.toLowerCase()"></i>
-            <div>
-              <strong>{{ item.titulo }}</strong>
-              <span>{{ item.entidad }} - {{ formatDate(item.vencimiento) }}</span>
+          @for (item of data.proximosVencimientos; track $index) {
+            <div class="timeline-row">
+              <i class="dot" [class.cobrar]="item.tipo === 'COBRAR'" [class.pagar]="item.tipo === 'PAGAR'"></i>
+              <div class="timeline-info">
+                <strong>{{ item.titulo }}</strong>
+                <span>{{ item.entidad }} - {{ formatDate(item.vencimiento) }}</span>
+              </div>
+              <em>{{ currency(item.saldo) }}</em>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
             </div>
-            <em>{{ currency(item.saldo) }}</em>
-          </div>
+          } @empty {
+            <p class="empty-hint">Sin vencimientos en el periodo.</p>
+          }
         </div>
       </article>
 
-      <article class="dashboard-card span-6">
-        <div class="card-head">
-          <div>
-            <h2>Flujo de caja real</h2>
-            <span>Cobros, pagos y flujo neto de los ultimos 12 periodos.</span>
+      <article class="panel span-6">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-green" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3 12h4l3 7 4-14 3 7h4" /></svg>
+            </span>
+            <div>
+              <h2>Flujo de caja real</h2>
+              <span>Cobros, pagos y flujo neto de los ultimos 12 periodos.</span>
+            </div>
           </div>
         </div>
         <apx-chart
           [series]="flujoSeries(data.flujoCaja)"
           [chart]="lineChart"
-          [xaxis]="{ categories: categories(data.flujoCaja), labels: { style: { colors: '#A6B0CF' } } }"
-          [yaxis]="{ labels: { style: { colors: '#A6B0CF' }, formatter: shortCurrency } }"
-          [colors]="['#9FE870', '#FF6B6B', '#9A7DFF']"
+          [xaxis]="{ categories: categories(data.flujoCaja), labels: { style: { colors: '#8EA0BB', fontSize: '11px' } }, axisBorder: { show: false }, axisTicks: { show: false } }"
+          [yaxis]="{ tickAmount: 4, labels: { style: { colors: '#8EA0BB', fontSize: '11px' }, formatter: shortCurrency } }"
+          [colors]="['#9FE870', '#FF6B6B', '#8FA8FF']"
           [stroke]="cashFlowStroke"
+          [fill]="lineFill"
           [markers]="lineMarkers"
           [dataLabels]="dataLabelsOff"
           [grid]="grid"
@@ -97,85 +165,139 @@
         />
       </article>
 
-      <article class="dashboard-card span-3">
-        <div class="card-head compact">
-          <div>
-            <h2>Top clientes</h2>
-            <span>Ranking por ventas.</span>
+      <article class="panel span-3">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-green" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M16 11a4 4 0 1 0-8 0" /><path d="M12 7a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" /><path d="M3 20a6 6 0 0 1 12 0" /><path d="M17 14a6 6 0 0 1 4 6" /></svg>
+            </span>
+            <div>
+              <h2>Top clientes</h2>
+              <span>Clientes que mas facturan en el periodo.</span>
+            </div>
           </div>
         </div>
-        <div class="rank-controls">
-          <input type="number" min="1" max="20" [(ngModel)]="topClientesLimit" />
-          <button type="button" (click)="load()">Actualizar</button>
-        </div>
-        <div class="ranking-list green-ranking">
-          <div class="ranking-row" *ngFor="let item of data.topClientes; let i = index">
-            <div class="ranking-info">
-              <span>#{{ i + 1 }} {{ item.nombre }}</span>
-              <strong>{{ currency(item.total) }}</strong>
+        <div class="ranking-list">
+          @for (item of data.topClientes; track item.nombre; let i = $index) {
+            <div class="ranking-row">
+              <span class="ranking-pos" [style.--c]="rankColor(i, 'clientes')">{{ i + 1 }}</span>
+              <div class="ranking-body">
+                <div class="ranking-info">
+                  <span class="ranking-name">{{ item.nombre }}</span>
+                  <strong>{{ currency(item.total) }}</strong>
+                </div>
+                <div class="ranking-track">
+                  <i [style.width.%]="rankingWidth(data.topClientes, item.total)" [style.--c]="rankColor(i, 'clientes')"></i>
+                </div>
+                <small>{{ number(item.porcentaje, 1) }}% del total</small>
+              </div>
             </div>
-            <div class="ranking-track">
-              <i [style.width.%]="rankingWidth(data.topClientes, item.total)"></i>
-            </div>
-            <small>{{ number(item.porcentaje, 1) }}% del top</small>
-          </div>
+          } @empty {
+            <p class="empty-hint">Sin datos de clientes.</p>
+          }
         </div>
       </article>
 
-      <article class="dashboard-card span-3">
-        <div class="card-head compact">
-          <div>
-            <h2>Top proveedores</h2>
-            <span>Ranking por compras.</span>
+      <article class="panel span-3">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-orange" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4Z" /><path d="M4 7v10l8 4 8-4V7" /><path d="M12 11v10" /></svg>
+            </span>
+            <div>
+              <h2>Top proveedores</h2>
+              <span>Proveedores con mayor gasto en el periodo.</span>
+            </div>
           </div>
         </div>
-        <div class="rank-controls">
-          <input type="number" min="1" max="20" [(ngModel)]="topProveedoresLimit" />
-          <button type="button" (click)="load()">Actualizar</button>
-        </div>
-        <div class="ranking-list orange-ranking">
-          <div class="ranking-row" *ngFor="let item of data.topProveedores; let i = index">
-            <div class="ranking-info">
-              <span>#{{ i + 1 }} {{ item.nombre }}</span>
-              <strong>{{ currency(item.total) }}</strong>
+        <div class="ranking-list">
+          @for (item of data.topProveedores; track item.nombre; let i = $index) {
+            <div class="ranking-row">
+              <span class="ranking-pos" [style.--c]="rankColor(i, 'proveedores')">{{ i + 1 }}</span>
+              <div class="ranking-body">
+                <div class="ranking-info">
+                  <span class="ranking-name">{{ item.nombre }}</span>
+                  <strong>{{ currency(item.total) }}</strong>
+                </div>
+                <div class="ranking-track">
+                  <i [style.width.%]="rankingWidth(data.topProveedores, item.total)" [style.--c]="rankColor(i, 'proveedores')"></i>
+                </div>
+                <small>{{ number(item.porcentaje, 1) }}% del total</small>
+              </div>
             </div>
-            <div class="ranking-track">
-              <i [style.width.%]="rankingWidth(data.topProveedores, item.total)"></i>
-            </div>
-            <small>{{ number(item.porcentaje, 1) }}% del top</small>
-          </div>
+          } @empty {
+            <p class="empty-hint">Sin datos de proveedores.</p>
+          }
         </div>
       </article>
 
-      <article class="dashboard-card span-6">
-        <div class="card-head">
-          <div>
-            <h2>Cuentas por cobrar</h2>
-            <span>Saldos abiertos ordenados por vencimiento.</span>
+      <article class="panel span-6">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-warning" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" /><path d="M14 3v4h4" /><path d="M9 13h6" /><path d="M9 17h4" /></svg>
+            </span>
+            <div>
+              <h2>Cuentas por cobrar</h2>
+              <span>Saldos de clientes ordenados por vencimiento.</span>
+            </div>
           </div>
+          <button class="ghost-action compact" type="button">Ver todas</button>
         </div>
         <div class="premium-table">
-          <div class="table-row table-head"><span>Cliente</span><span>Comprobante</span><span>Vence</span><span>Saldo</span><span>Estado</span></div>
-          <div class="table-row" *ngFor="let item of data.cuentasPorCobrar">
-            <span>{{ item.entidad }}</span><span>{{ item.comprobante }}</span><span>{{ formatDate(item.vencimiento) }}</span><strong>{{ currency(item.saldo) }}</strong><em>{{ item.estado }}</em>
+          <div class="table-row table-head">
+            <span>Cliente</span><span>Comprobante</span><span>Vence</span><span>Saldo</span><span>Estado</span>
           </div>
+          @for (item of data.cuentasPorCobrar; track $index) {
+            <div class="table-row">
+              <span class="cell-entity">
+                <i class="avatar" [style.--c]="rankColor($index, 'clientes')">{{ initial(item.entidad) }}</i>
+                <span class="entity-name">{{ item.entidad }}</span>
+              </span>
+              <span class="cell-muted">{{ item.comprobante }}</span>
+              <span [class]="venceTone(item.vencimiento)">{{ formatDate(item.vencimiento) }}</span>
+              <strong>{{ currency(item.saldo) }}</strong>
+              <span class="cell-chip"><em [class]="estadoChipClass(item.estado)">{{ item.estado }}</em></span>
+            </div>
+          } @empty {
+            <p class="empty-hint">Sin cuentas por cobrar.</p>
+          }
         </div>
       </article>
 
-      <article class="dashboard-card span-6">
-        <div class="card-head">
-          <div>
-            <h2>Cuentas por pagar</h2>
-            <span>Obligaciones abiertas ordenadas por vencimiento.</span>
+      <article class="panel span-6">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-orange" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z" /><path d="M14 3v4h4" /><path d="M9 13h6" /><path d="M9 17h4" /></svg>
+            </span>
+            <div>
+              <h2>Cuentas por pagar</h2>
+              <span>Obligaciones de la empresa ordenadas por vencimiento.</span>
+            </div>
           </div>
+          <button class="ghost-action compact" type="button">Ver todas</button>
         </div>
         <div class="premium-table">
-          <div class="table-row table-head"><span>Proveedor</span><span>Comprobante</span><span>Vence</span><span>Saldo</span><span>Estado</span></div>
-          <div class="table-row" *ngFor="let item of data.cuentasPorPagar">
-            <span>{{ item.entidad }}</span><span>{{ item.comprobante }}</span><span>{{ formatDate(item.vencimiento) }}</span><strong>{{ currency(item.saldo) }}</strong><em>{{ item.estado }}</em>
+          <div class="table-row table-head">
+            <span>Proveedor</span><span>Comprobante</span><span>Vence</span><span>Saldo</span><span>Estado</span>
           </div>
+          @for (item of data.cuentasPorPagar; track $index) {
+            <div class="table-row">
+              <span class="cell-entity">
+                <i class="avatar" [style.--c]="rankColor($index, 'proveedores')">{{ initial(item.entidad) }}</i>
+                <span class="entity-name">{{ item.entidad }}</span>
+              </span>
+              <span class="cell-muted">{{ item.comprobante }}</span>
+              <span [class]="venceTone(item.vencimiento)">{{ formatDate(item.vencimiento) }}</span>
+              <strong>{{ currency(item.saldo) }}</strong>
+              <span class="cell-chip"><em [class]="estadoChipClass(item.estado)">{{ item.estado }}</em></span>
+            </div>
+          } @empty {
+            <p class="empty-hint">Sin cuentas por pagar.</p>
+          }
         </div>
       </article>
     </section>
-  </ng-container>
+  }
 </div>

@@ -3,6 +3,7 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { FinanzasService, type ReporteFinancieroPeriodo, type ReportesFinancierosDashboard } from '../../core/services/finanzas.service';
+import { buildApexTooltipHtml } from '../../shared/apex-tooltip/apex-tooltip.util';
 
 @Component({
   selector: 'app-finanzas-reportes-page',
@@ -24,27 +25,29 @@ export class FinanzasReportesPageComponent implements OnInit {
 
   protected readonly kpis = computed(() => this.dashboard()?.kpis ?? []);
 
+  // Area suavizada con glow verde. Animaciones OFF: ApexCharts crashea al navegar en SPA.
   protected readonly lineChart = {
-    type: 'line',
+    type: 'area',
     height: 320,
     toolbar: { show: false },
     zoom: { enabled: false },
-    animations: { enabled: true, speed: 650 },
-    foreColor: '#A6B0CF',
+    animations: { enabled: false },
+    dropShadow: { enabled: true, top: 6, left: 0, blur: 10, opacity: 0.28, color: '#9FE870' },
+    foreColor: '#8EA0BB',
     background: 'transparent',
-  } as const;
+  } as any;
 
   protected readonly rankingBarChart = {
     type: 'bar',
     height: 260,
     toolbar: { show: false },
-    animations: { enabled: true, speed: 650 },
+    animations: { enabled: false },
     states: {
       normal: { filter: { type: 'none' } },
       hover: { filter: { type: 'none' } },
       active: { filter: { type: 'none' } },
     },
-    foreColor: '#A6B0CF',
+    foreColor: '#8EA0BB',
     background: 'transparent',
   } as any;
 
@@ -52,17 +55,42 @@ export class FinanzasReportesPageComponent implements OnInit {
     type: 'bar',
     height: 320,
     toolbar: { show: false },
-    animations: { enabled: true, speed: 650 },
+    animations: { enabled: false },
     states: {
       normal: { filter: { type: 'none' } },
       hover: { filter: { type: 'none' } },
       active: { filter: { type: 'none' } },
     },
-    foreColor: '#A6B0CF',
+    foreColor: '#8EA0BB',
     background: 'transparent',
   } as any;
 
-  protected readonly grid = { borderColor: 'rgba(255,255,255,.06)', strokeDashArray: 4, padding: { left: 8, right: 8 } } as const;
+  protected readonly grid = { borderColor: 'rgba(110,168,255,.10)', strokeDashArray: 4, padding: { left: 8, right: 8 } } as const;
+
+  // Fill de barras: ingresos #b8f78e->#6fcf3f, egresos #ff7a7a->#e5484d (estilos.md).
+  protected readonly barFill = {
+    type: 'gradient',
+    gradient: {
+      type: 'vertical',
+      shadeIntensity: 0,
+      gradientToColors: ['#6FCF3F', '#E5484D'],
+      inverseColors: false,
+      opacityFrom: 1,
+      opacityTo: 1,
+      stops: [0, 100],
+    },
+  } as any;
+
+  // Area del flujo de caja: opacidad .28 -> 0 con glow.
+  protected readonly lineFill = {
+    type: 'gradient',
+    gradient: {
+      shadeIntensity: 1,
+      opacityFrom: 0.28,
+      opacityTo: 0,
+      stops: [0, 95],
+    },
+  } as any;
   protected readonly rankingGrid = { show: false } as const;
   protected readonly legend = { position: 'top', horizontalAlign: 'left', labels: { colors: '#A6B0CF' }, markers: { size: 6 }, itemMargin: { horizontal: 12 } } as any;
   protected readonly dataLabelsOff = { enabled: false } as const;
@@ -283,23 +311,63 @@ export class FinanzasReportesPageComponent implements OnInit {
     return `tone-${tone ?? 'green'}`;
   }
 
+  // Tooltip premium compartido (shared/apex-tooltip): card dark, banda de serie, metricas y leyenda.
   private tooltipHtml(config: { title: string; subtitle: string; status: string; accent: string; rows: string[][]; legends: string[][] }): string {
-    const rows = config.rows.map(([label, value]) => `<div class="apex-tooltip-row"><span>${label}</span><strong>${value}</strong></div>`).join('');
-    const legends = config.legends.map(([label, color]) => `<span><i style="background:${color}"></i>${label}</span>`).join('');
-    return `
-      <div class="apex-tooltip-card" style="--accent:${config.accent}">
-        <div class="apex-tooltip-band"></div>
-        <div class="apex-tooltip-head">
-          <span class="apex-tooltip-icon">
-            <svg viewBox="0 0 24 24"><path d="M4 19h16" /><path d="M7 16V9" /><path d="M12 16V5" /><path d="M17 16v-4" /></svg>
-          </span>
-          <div><strong>${config.title}</strong><small>${config.subtitle}</small></div>
-          <em>${config.status}</em>
-        </div>
-        <div class="apex-tooltip-rows">${rows}</div>
-        <div class="apex-tooltip-footer">${legends}</div>
-      </div>
-    `;
+    return buildApexTooltipHtml({
+      title: config.title,
+      subtitle: config.subtitle,
+      status: config.status,
+      accent: config.accent,
+      rows: config.rows.map(([label, value]) => ({ label, value })),
+      legends: config.legends.map(([label, color]) => ({ label, color })),
+    });
+  }
+
+  // --- Helpers de presentacion (solo UI) ---
+
+  // Color de acento por codigo de KPI (fallback al tono que ya trae el backend).
+  protected kpiTone(kpi: { codigo?: string; tono?: string }): string {
+    const byCode: Record<string, string> = {
+      ventas: 'green', compras: 'blue', margen: 'green', cobrar: 'warning',
+      pagar: 'orange', flujo: 'green', stock: 'violet', vencimientos: 'warning',
+    };
+    const tono = kpi.tono ?? byCode[kpi.codigo ?? ''] ?? 'green';
+    return `tone-${tono}`;
+  }
+
+  // Clase de chip de estado para las tablas de cuentas.
+  protected estadoChipClass(estado: string | undefined): string {
+    const value = (estado ?? '').toUpperCase();
+    if (value.includes('VENC')) return 'chip-danger';
+    if (value.includes('PARCIAL')) return 'chip-warning';
+    if (value.includes('EMIT')) return 'chip-blue';
+    if (value.includes('COBR') || value.includes('PAG') || value.includes('REGIST')) return 'chip-green';
+    return 'chip-neutral';
+  }
+
+  // Tono de la columna "Vence" segun proximidad (vencido=rojo, <=7 dias=ambar).
+  protected venceTone(vencimiento: string | undefined): string {
+    if (!vencimiento) return 'vence-muted';
+    const due = new Date(`${vencimiento}T00:00:00`);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((due.getTime() - today.getTime()) / 86400000);
+    if (diffDays < 0) return 'vence-danger';
+    if (diffDays <= 7) return 'vence-warning';
+    return 'vence-ok';
+  }
+
+  // Inicial para el avatar de una fila de tabla.
+  protected initial(name: string | undefined): string {
+    return (name ?? '?').trim().charAt(0).toUpperCase() || '?';
+  }
+
+  // Color del puesto en los rankings (circulo + barra).
+  protected rankColor(index: number, kind: 'clientes' | 'proveedores'): string {
+    const clientes = ['#9FE870', '#6EA8FF', '#39D0D8', '#B48CFF', '#FFB84D'];
+    const proveedores = ['#FFB84D', '#FF8A5C', '#6EA8FF', '#B48CFF', '#39D0D8'];
+    const palette = kind === 'clientes' ? clientes : proveedores;
+    return palette[index % palette.length];
   }
 
   private today(): string {
