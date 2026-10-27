@@ -163,6 +163,23 @@ export interface GanaderoDashboard {
   conversionAlimenticia: GanaderoConversionAlimenticia
   dietasActivas: GanaderoDietaActiva[]
   alertasOperativas: GanaderoAlertaOperativa[]
+  // Feature 92: secciones nuevas del rediseño v3 (datos reales desde pesajes / controles de preñez)
+  evolucionPeso: GanaderoEvolucionPesoPunto[]
+  proximosPartos: GanaderoProximoParto[]
+}
+
+export interface GanaderoEvolucionPesoPunto {
+  etiqueta: string
+  pesoPromedio: number
+  gananciaDiaria: number
+}
+
+export interface GanaderoProximoParto {
+  animalCaravana: string
+  raza?: string
+  fechaEstimada: string
+  diasRestantes: number
+  nivelRiesgo: string
 }
 
 export interface GanaderoKpi {

@@ -30,6 +30,8 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
             "Novillos", "#4CD8C4",
             "Otros", "#A6B0CF"
     );
+    // Abreviaturas de meses en espanol, indexadas por Month.getValue() - 1.
+    private static final String[] MESES_ABREV = {"Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
     private static final Map<String, String> SEVERIDAD_COLORS = Map.of(
             "BAJA", "#9FE870",
             "MEDIA", "#FFB84D",
@@ -65,6 +67,8 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
         List<AnimalPotrero> activeAssignments = activeAnimalPotreroAssignments(activeAnimals);
         Map<String, Long> animalCountByPotrero = animalCountByPotrero(activeAssignments);
         List<PesajeAnimal> recentWeights = pesajeRepository.findFiltered(null, today.minusDays(90), today);
+        // Pesajes de los ultimos 12 meses para la serie de evolucion de peso del rodeo.
+        List<PesajeAnimal> yearWeights = pesajeRepository.findFiltered(null, today.minusMonths(11).withDayOfMonth(1), today);
         List<RegistroAlimentacion> feedRecords = registroAlimentacionRepository.findFiltered(null, today.minusMonths(5).withDayOfMonth(1), today);
         List<DietaNutricional> diets = dietaRepository.findByDeletedAtIsNullOrderByUpdatedAtDesc();
         List<AplicacionVacuna> vaccineAlerts = aplicacionVacunaRepository.findUpcomingAlerts(today.plusDays(30));
@@ -134,7 +138,9 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
                 new ReporteGanaderoDashboardResponse.ConversionAlimenticia(conversionAlimenticia(feedRecords, recentWeights), "kg alimento / kg ganado"),
                 dietasActivas(diets),
                 alertasOperativas(vaccineAlerts, activePotreros, animalCountByPotrero, pregnancyControls, recentWeights, activeAnimals, diagnostics,
-                        alertaPotreroRepository.search(null, AlertaPotrero.ESTADO_ABIERTA), today)
+                        alertaPotreroRepository.search(null, AlertaPotrero.ESTADO_ABIERTA), today),
+                evolucionPeso(yearWeights, today),
+                proximosPartos(pregnancyControls, today)
         );
     }
 
@@ -269,8 +275,63 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
         return java.util.stream.IntStream.range(0, 6)
                 .mapToObj(start::plusMonths)
                 .map(month -> new ReporteGanaderoDashboardResponse.SeriePunto(
-                        capitalize(month.getMonth().name().substring(0, 3).toLowerCase(Locale.ROOT)),
+                        // Etiqueta de mes en espanol, consistente con la evolucion de peso.
+                        MESES_ABREV[month.getMonthValue() - 1],
                         BigDecimal.valueOf(estimated.getOrDefault(month, 0L) + realBirths.getOrDefault(month, 0L))
+                ))
+                .toList();
+    }
+
+    // Serie de evolucion del peso promedio del rodeo en los ultimos 12 meses.
+    private List<ReporteGanaderoDashboardResponse.EvolucionPesoPunto> evolucionPeso(List<PesajeAnimal> weights, LocalDate today) {
+        YearMonth start = YearMonth.from(today).minusMonths(11);
+        // Peso promedio del rodeo por mes (clave = YearMonth).
+        Map<YearMonth, BigDecimal> avgByMonth = weights.stream()
+                .filter(w -> w.getFecha() != null && w.getPesoKg() != null)
+                .collect(Collectors.groupingBy(w -> YearMonth.from(w.getFecha()),
+                        Collectors.mapping(PesajeAnimal::getPesoKg, Collectors.toList())))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> averageScaled(e.getValue(), 1)));
+
+        List<ReporteGanaderoDashboardResponse.EvolucionPesoPunto> result = new ArrayList<>();
+        BigDecimal previousAvg = null;
+        YearMonth previousMonth = null;
+        for (int i = 0; i < 12; i++) {
+            YearMonth month = start.plusMonths(i);
+            BigDecimal avg = avgByMonth.getOrDefault(month, BigDecimal.ZERO);
+            BigDecimal dailyGain = BigDecimal.ZERO;
+            // Ganancia diaria = delta de peso promedio mensual sobre los dias del mes anterior.
+            if (previousAvg != null && previousAvg.compareTo(BigDecimal.ZERO) > 0 && avg.compareTo(BigDecimal.ZERO) > 0) {
+                long days = Math.max(1, previousMonth.lengthOfMonth());
+                BigDecimal gain = avg.subtract(previousAvg).divide(BigDecimal.valueOf(days), 2, RoundingMode.HALF_UP);
+                dailyGain = gain.max(BigDecimal.ZERO);
+            }
+            result.add(new ReporteGanaderoDashboardResponse.EvolucionPesoPunto(
+                    MESES_ABREV[month.getMonthValue() - 1],
+                    avg,
+                    dailyGain
+            ));
+            previousAvg = avg;
+            previousMonth = month;
+        }
+        return result;
+    }
+
+    // Preneces activas (PRENADA, mismo criterio que estadoReproductivo) con parto estimado en los proximos 60 dias.
+    private List<ReporteGanaderoDashboardResponse.ProximoParto> proximosPartos(List<ControlPrenez> controls, LocalDate today) {
+        LocalDate limit = today.plusDays(60);
+        return controls.stream()
+                .filter(c -> equalsIgnoreCase(c.getEstado(), "PRENADA"))
+                .filter(c -> c.getFechaEstimadaParto() != null)
+                .filter(c -> !c.getFechaEstimadaParto().isBefore(today) && !c.getFechaEstimadaParto().isAfter(limit))
+                .sorted(Comparator.comparing(ControlPrenez::getFechaEstimadaParto))
+                .limit(8)
+                .map(c -> new ReporteGanaderoDashboardResponse.ProximoParto(
+                        c.getVaca() != null ? c.getVaca().getCaravana() : null,
+                        c.getVaca() != null ? c.getVaca().getRaza() : null,
+                        c.getFechaEstimadaParto(),
+                        (int) Math.max(0, ChronoUnit.DAYS.between(today, c.getFechaEstimadaParto())),
+                        isBlank(c.getNivelRiesgoParto()) ? "BAJO" : c.getNivelRiesgoParto()
                 ))
                 .toList();
     }
@@ -451,6 +512,16 @@ public class ReporteGanaderoDashboardServiceImpl implements ReporteGanaderoDashb
             return BigDecimal.ZERO;
         }
         return values.stream().reduce(BigDecimal.ZERO, BigDecimal::add).divide(BigDecimal.valueOf(values.size()), 2, RoundingMode.HALF_UP);
+    }
+
+    // Promedio con escala configurable (HALF_UP); 0 si no hay valores.
+    private BigDecimal averageScaled(List<BigDecimal> values, int scale) {
+        List<BigDecimal> present = values == null ? List.of() : values.stream().filter(Objects::nonNull).toList();
+        if (present.isEmpty()) {
+            return BigDecimal.ZERO.setScale(scale, RoundingMode.HALF_UP);
+        }
+        return present.stream().reduce(BigDecimal.ZERO, BigDecimal::add)
+                .divide(BigDecimal.valueOf(present.size()), scale, RoundingMode.HALF_UP);
     }
 
     private BigDecimal sum(List<BigDecimal> values) {
