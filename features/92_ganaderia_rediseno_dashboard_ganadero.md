@@ -52,8 +52,30 @@ ApexCharts con tooltips premium.
   Un único filtro global de período.
 - Mantener lenguaje premium dark SaaS y regla de tooltips premium.
 
+## Ampliación v4 — resto de pantallas de ganadería
+Además del dashboard ganadero, se aplica el rediseño ejecutivo v4 (guía `export-v4/estilos.md`)
+a **todas las pantallas de ganadería** salvo **Potreros** y el **Dashboard ganadero** (ya hecho):
+- **Trazabilidad animal** (`/ganaderia/trazabilidad`): tabs Animales/Movimientos/Genealogía.
+- **Sanidad y vacunación** (`/ganaderia/sanidad`): Alertas/Vacunaciones/Tratamientos/Diagnósticos/Vacunas.
+- **Reproducción y genealogía** (`/ganaderia/reproduccion`): Próximos partos/Servicios/Preñez/
+  Partos/Índices/Genealogía/Recomendaciones.
+- **Alimentación y peso** (`/ganaderia/alimentacion`): Dietas/Suministros/Pesajes/Alertas.
+
+Reglas v4 aplicadas (solo UI, se preserva la lógica):
+- Registros **siempre en tabla** (se eliminó el toggle Tabla/Tarjetas y la vista de tarjetas
+  `app-entity-card`).
+- **Header** con última palabra en verde + glow (44px/900, eyebrow 12px .2em) vía `app-page-header`.
+- **KPI cards** verticales con ícono/tono/glow vía `app-kpi-card` (actualizado a v4).
+- **Fichas/detalle**: lista clave–valor en 2 columnas (filas con borde inferior), sin cajitas.
+- Banners de alertas con glow ámbar; chips radio 8px; acción principal verde outline,
+  secundarias fondo `rgba(8,18,37,.82)` + borde azul; tablas premium (header `rgba(8,18,37,.7)`,
+  filas border-top `rgba(110,168,255,.1)`, hover verde, avatar 26px).
+- Componentes compartidos `app-page-header` y `app-kpi-card` (usados solo por ganadería)
+  actualizados a v4; cruzamientos en tabla (Vaca·Toro·Score·Compatibilidad·Parentesco·Modelo·Motivo).
+
 ## Fuera de alcance
-- Otros dashboards. Potreros (pantalla aparte). Mobile.
+- **Potreros** (sin mockup) y **Dashboard ganadero** (ya hecho en esta misma feature).
+- Otros dashboards/módulos. Mobile. Lógica/contratos de negocio (salvo el agregado del dashboard).
 
 ## Dependencias
 - Feature 86 (refactor UI ganadería), 91 (patrón ApexCharts + rediseño financiero).

@@ -1,8 +1,8 @@
 <article class="kpi-card" [attr.data-tone]="tone">
-  <span class="kpi-icon"><ng-content select="[icon]"></ng-content></span>
-  <div class="kpi-copy">
-    <span class="kpi-label">{{ label }}</span>
-    <strong class="kpi-value">{{ value }}</strong>
-    <small class="kpi-sub" *ngIf="sub" [attr.data-tone]="effectiveSubTone">{{ sub }}</small>
+  <div class="kpi-top">
+    <span class="kpi-icon"><ng-content select="[icon]"></ng-content></span>
   </div>
+  <span class="kpi-label">{{ label }}</span>
+  <strong class="kpi-value">{{ value }}</strong>
+  <small class="kpi-sub" *ngIf="sub" [attr.data-tone]="effectiveSubTone">{{ sub }}</small>
 </article>

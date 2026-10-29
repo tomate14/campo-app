@@ -3,12 +3,13 @@
 .ph-lead { display: flex; align-items: flex-start; gap: 16px; min-width: 0; }
 .ph-title-icon { flex: 0 0 auto; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 16px; color: #9fe870; background: rgba(159, 232, 112, .08); border: 1px solid rgba(159, 232, 112, .18); box-shadow: 0 0 28px rgba(159, 232, 112, .12); }
 .ph-copy { min-width: 0; }
-.ph-eyebrow { margin: 0 0 8px; color: #9fe870; font-size: 11px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
-.ph-title { margin: 0; color: #fff; font-size: 34px; line-height: 1; letter-spacing: -.045em; font-weight: 800; }
-.ph-subtitle { margin: 10px 0 0; color: #9bb0cc; font-size: 14px; }
+.ph-eyebrow { margin: 0 0 10px; color: #9fe870; font-size: 12px; font-weight: 900; letter-spacing: .2em; text-transform: uppercase; }
+.ph-title { margin: 0; color: #fff; font-size: 44px; line-height: 1; letter-spacing: -.04em; font-weight: 900; }
+.ph-title .ph-accent { color: #9fe870; text-shadow: 0 0 32px rgba(159, 232, 112, .35); }
+.ph-subtitle { margin: 12px 0 0; color: #a9bad5; font-size: 16px; }
 .ph-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
 @media (max-width: 720px) {
   .page-header { flex-direction: column; align-items: stretch; }
   .ph-actions { justify-content: flex-start; }
-  .ph-title { font-size: 28px; }
+  .ph-title { font-size: 34px; }
 }
