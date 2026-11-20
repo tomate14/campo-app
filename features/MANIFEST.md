@@ -17,8 +17,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - `Saltada`: se decidio no desarrollarla por ahora o fue reemplazada por otra feature.
 
 ## Resumen
-- Total de historias registradas: 92
-- Realizadas: 65
+- Total de historias registradas: 93
+- Realizadas: 66
 - Parciales: 0
 - Pendientes: 27
 - Saltadas: 2
@@ -28,7 +28,8 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 
 | Feature | Archivo | Dominio | Estado | Registro |
 |---|---|---|---|---|
-| 92 | `92_ganaderia_rediseno_dashboard_ganadero.md` | Ganaderia | Pendiente | Rediseño ejecutivo v3 del dashboard ganadero (`/reportes/ganaderia`) segun mockup + estilos.md (Rediseño de pantallas ganaderia.zip), unificado con el financiero (feature 91): header con eyebrow/titulo glow, 10 KPI cards toneadas, evolucion de peso del rodeo (lineas ApexCharts, 12 meses), alertas operativas, partos estimados (barras), genealogia (radialBar), rankings (distribucion/ocupacion/estado reproductivo/diagnosticos), tablas (calendario sanitario, proximos partos, consumo de alimento), tratamientos activos, conversion y dietas. Backend ampliado con evolucionPeso (pesajes) y proximosPartos (controles de preñez). |
+| 93 | `93_ganaderia_rediseno_ui_pantallas_v4.md` | Ganaderia | Pendiente | Rediseño v4 del cuerpo de las pantallas de ganaderia (trazabilidad/sanidad/reproduccion/alimentacion; excluye Potreros y dashboard): tablas premium sin toggle Tabla/Tarjetas, fichas en 2 columnas, banners con glow, chips radio 8px, cruzamientos en tabla. Compartidos ya en v4 (feature 92). Solo UI. |
+| 92 | `92_COMPLETA_ganaderia_rediseno_dashboard_ganadero.md` | Ganaderia | Realizada | Rediseño ejecutivo v4 del dashboard ganadero (`/reportes/ganaderia`), unificado con el financiero (feature 91): header con eyebrow/titulo glow, 10 KPI cards toneadas, evolucion de peso (lineas ApexCharts, 12 meses), alertas operativas, partos estimados (barras), genealogia (radialBar), rankings, tablas (calendario sanitario, proximos partos, consumo) y conversion/dietas. Backend ampliado con evolucionPeso (pesajes) y proximosPartos (controles de preñez). Compartidos `app-page-header`/`app-kpi-card` actualizados a v4. El v4 del cuerpo de las otras 4 pantallas -> feature 93. |
 | 91 | `91_COMPLETA_finanzas_rediseno_dashboard_financiero.md` | Finanzas | Realizada | Rediseño ejecutivo del dashboard financiero (`/finanzas/reportes`) segun mockup + estilos.md (Panel web ejecutivo rediseñado.zip): header con eyebrow/filtro global, 8 KPI cards con icono/tono/glow, ingresos vs egresos (barras), proximos vencimientos, flujo de caja (lineas), top clientes/proveedores (ranking), y tablas Cuentas por cobrar/pagar. Solo UI, preserva datos/endpoint. |
 | 90 | `90_finanzas_cierre_ejercicio_y_estados_contables.md` | Finanzas | Pendiente | Cierre de ejercicio y estados contables: estado de resultados por actividad (agricola/ganadera) y por lote/centro de costos (reusa costos feature 84), situacion patrimonial resumida, resultado por tenencia (si hay valuacion de existencias), cierre/apertura con arrastre de saldos, export PDF/CSV. Version gerencial por defecto; el balance estatutario formal requiere plan de cuentas/asientos + ajuste por inflacion (features a crear si se elige esa via). Prioridad 3. |
 | 89 | `89_finanzas_retenciones_y_percepciones.md` | Finanzas | Pendiente | Retenciones y percepciones sufridas y practicadas (IVA agropecuario con devolucion, Ganancias/SICORE RG 830, IIBB): catalogo de regimenes, calculo (base/minimo/alicuota), impacto en neto de cobros/pagos y en la posicion de IVA (feature 88), certificados y export SICORE/TXT. Prioridad 2. |
@@ -137,9 +138,9 @@ Este archivo es el registro operativo de features de Campo App. Debe indicar que
 - Pendientes: 28.
 
 ### Ganaderia
-- Realizadas: 04, 05, 06, 07, 31, 38, 42, 45, 46, 47, 49, 50, 51.
+- Realizadas: 04, 05, 06, 07, 31, 38, 42, 45, 46, 47, 49, 50, 51, 92.
 - Parciales: ninguna.
-- Pendientes: 30, 32, 33, 34, 35, 92.
+- Pendientes: 30, 32, 33, 34, 35, 93.
 
 ### Maquinaria
 - Realizadas: 08, 09.
