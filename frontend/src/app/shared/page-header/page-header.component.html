@@ -1,9 +1,8 @@
 <header class="page-header">
   <div class="ph-lead">
-    <span class="ph-title-icon" *ngIf="icon"><app-svg-icon [path]="icon" [size]="22"></app-svg-icon></span>
     <div class="ph-copy">
       <p class="ph-eyebrow" *ngIf="eyebrow">{{ eyebrow }}</p>
-      <h1 class="ph-title">{{ title }}</h1>
+      <h1 class="ph-title">{{ titleLead }}<span *ngIf="titleLead"> </span><span class="ph-accent">{{ titleAccent }}</span></h1>
       <p class="ph-subtitle" *ngIf="subtitle">{{ subtitle }}</p>
     </div>
   </div>

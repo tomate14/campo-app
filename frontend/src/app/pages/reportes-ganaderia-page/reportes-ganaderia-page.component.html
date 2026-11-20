@@ -1,361 +1,478 @@
-<div class="dash">
-  <app-page-header
-    eyebrow="AGROCENTIA · GANADERÍA"
-    title="Dashboard ganadero"
-    subtitle="Resumen ejecutivo del rodeo y principales indicadores."
-    [icon]="icons.header"
-  >
-    <button type="button" class="ghost-btn">
-      <app-svg-icon [path]="icons.filtros" [size]="16"></app-svg-icon>
-      Filtros
-    </button>
-    <button type="button" class="ghost-btn">
-      <app-svg-icon [path]="icons.fecha" [size]="16"></app-svg-icon>
-      Selector de fechas
-    </button>
-    <button type="button" class="primary-btn">
-      <app-svg-icon [path]="icons.comparar" [size]="16"></app-svg-icon>
-      Comparar período
-    </button>
-  </app-page-header>
+<div class="ganadero-page">
+  <header class="page-header">
+    <div class="page-heading">
+      <p class="eyebrow">Ganadería</p>
+      <h1>Dashboard <span>Ganadero</span></h1>
+      <p class="page-subtitle">Resumen ejecutivo del rodeo y principales indicadores.</p>
+    </div>
+    <div class="filter-bar">
+      <button class="ghost-action" type="button" (click)="load()" [disabled]="loading()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7" /><path d="M20 4v6h-6" /></svg>
+        Actualizar
+      </button>
+    </div>
+  </header>
 
-  <div class="state-panel" *ngIf="loading()">Cargando indicadores ganaderos...</div>
-  <div class="state-panel error" *ngIf="!loading() && error()">{{ error() }}</div>
+  @if (loading()) {
+    <div class="state-card">Cargando indicadores ganaderos...</div>
+  }
+  @if (error()) {
+    <div class="state-card error">{{ error() }}</div>
+  }
 
-  <ng-container *ngIf="!loading() && !error() && dashboard() as data">
+  @if (dashboard(); as data) {
     <!-- KPIs -->
     <section class="kpi-grid">
-      <app-kpi-card
-        *ngFor="let kpi of kpis(); trackBy: trackByCode"
-        [label]="kpi.titulo"
-        [value]="kpi.valor"
-        [sub]="kpi.subtitulo"
-        [tone]="kpiTone(kpi.tono)"
-      >
-        <app-svg-icon icon [path]="kpiIcon(kpi.codigo)" [size]="24"></app-svg-icon>
-      </app-kpi-card>
+      @for (kpi of kpis(); track kpi.codigo) {
+        <article class="kpi-card" [class]="kpiTone(kpi)">
+          <div class="kpi-top">
+            <span class="kpi-icon" aria-hidden="true">
+              <app-svg-icon [path]="kpiIcon(kpi.codigo)" [size]="22"></app-svg-icon>
+            </span>
+            <button class="kpi-menu" type="button" aria-label="Opciones del indicador">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="12" cy="19" r="1.6" /></svg>
+            </button>
+          </div>
+          <small class="kpi-label">{{ kpi.titulo }}</small>
+          <strong class="kpi-value">{{ kpi.valor }}</strong>
+          <span class="kpi-context">{{ kpi.subtitulo }}</span>
+        </article>
+      }
     </section>
 
-    <!-- Rodeo / Potreros -->
-    <section class="grid grid-2">
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-green"><app-svg-icon [path]="icons.rodeo" [size]="16"></app-svg-icon></span>
-            <h2>Distribución del rodeo</h2>
-          </div>
-          <span class="ch-link">Ver animales <app-svg-icon [path]="icons.arrow" [size]="14"></app-svg-icon></span>
-        </div>
-        <div class="hbars" *ngIf="distribucionBars(data).length; else emptyRodeo">
-          <div class="hbar-row" *ngFor="let bar of distribucionBars(data)">
-            <span class="hbar-name">{{ bar.label }}</span>
-            <div class="hbar-track"><i [style.width]="bar.width" [style.background]="bar.color"></i></div>
-            <strong class="hbar-value">{{ formatNumber(bar.value) }}</strong>
-            <small class="hbar-pct">{{ bar.percent }}%</small>
-          </div>
-        </div>
-        <ng-template #emptyRodeo><div class="empty-state">Sin distribución de rodeo.</div></ng-template>
-      </article>
-
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-blue"><app-svg-icon [path]="icons.potreros" [size]="16"></app-svg-icon></span>
-            <h2>Animales por potrero</h2>
-          </div>
-        </div>
-        <div class="hbars" *ngIf="animalesPorPotreroBars(data).length; else emptyPotrero">
-          <div class="hbar-row" *ngFor="let bar of animalesPorPotreroBars(data)">
-            <span class="hbar-name">{{ bar.label }}</span>
-            <div class="hbar-track"><i [style.width]="bar.width" [style.background]="bar.color"></i></div>
-            <strong class="hbar-value">{{ formatNumber(bar.value) }}</strong>
-            <small class="hbar-pct">{{ bar.percent }}%</small>
-          </div>
-        </div>
-        <ng-template #emptyPotrero><div class="empty-state">Sin animales asignados a potreros.</div></ng-template>
-      </article>
-    </section>
-
-    <!-- Ocupacion de potreros -->
-    <section class="grid grid-1">
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-green"><app-svg-icon [path]="icons.potreros" [size]="16"></app-svg-icon></span>
-            <h2>Ocupación de potreros</h2>
-          </div>
-        </div>
-        <div class="table occupancy" *ngIf="data.ocupacionPotreros.length; else emptyOcc">
-          <div class="table-head occ-cols">
-            <span>Potrero</span>
-            <span>Carga actual</span>
-            <span>Capacidad</span>
-            <span>Ocupación</span>
-          </div>
-          <div class="table-row occ-cols" *ngFor="let item of data.ocupacionPotreros">
-            <div class="cell-name">
-              <span class="dot" [class]="progressTone(item.porcentaje)"></span>
-              <div>
-                <strong>{{ item.nombre }}</strong>
-                <small>{{ item.recursoForrajero || 'Potrero' }}</small>
-              </div>
-            </div>
-            <span class="cell-num">{{ formatNumber(item.cargaActual) }}</span>
-            <span class="cell-num">{{ formatNumber(item.capacidad) }}</span>
-            <div class="cell-occ">
-              <div class="bar-track occupancy" [class]="progressTone(item.porcentaje)">
-                <i [style.width]="progressWidth(item.porcentaje)"></i>
-              </div>
-              <b>{{ item.porcentaje }}%</b>
+    <section class="analytics-grid">
+      <!-- Evolucion de peso del rodeo -->
+      <article class="panel span-12">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-green" aria-hidden="true"><app-svg-icon [path]="icons.conversion" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Evolución de peso del rodeo</h2>
+              <span>Últimos 12 meses · peso promedio y ganancia diaria.</span>
             </div>
           </div>
+          <div class="panel-legend">
+            <span><i style="background:#9FE870"></i>Peso promedio (kg)</span>
+            <span><i style="background:#6EA8FF"></i>Ganancia diaria (kg/día)</span>
+          </div>
         </div>
-        <ng-template #emptyOcc><div class="empty-state">Sin potreros activos.</div></ng-template>
+        @if (data.evolucionPeso.length) {
+          <apx-chart
+            [series]="pesoSeries(data)"
+            [chart]="pesoChart"
+            [xaxis]="{ categories: pesoCategories(data), labels: { style: { colors: '#8EA0BB', fontSize: '11px' } }, axisBorder: { show: false }, axisTicks: { show: false } }"
+            [yaxis]="pesoYaxis()"
+            [colors]="['#9FE870', '#6EA8FF']"
+            [stroke]="pesoStroke"
+            [fill]="pesoFill"
+            [markers]="pesoMarkers"
+            [dataLabels]="dataLabelsOff"
+            [grid]="grid"
+            [legend]="{ show: false }"
+            [tooltip]="pesoTooltip()"
+          />
+        } @else {
+          <p class="empty-hint">Sin pesajes registrados en el período.</p>
+        }
       </article>
-    </section>
 
-    <!-- Calendario sanitario -->
-    <section class="grid grid-1">
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-blue"><app-svg-icon [path]="icons.sanidad" [size]="16"></app-svg-icon></span>
-            <h2>Calendario sanitario</h2>
-          </div>
-          <span class="ch-link">Ver sanidad <app-svg-icon [path]="icons.arrow" [size]="14"></app-svg-icon></span>
-        </div>
-        <div class="table sanitary" *ngIf="data.calendarioSanitario.length; else emptySan">
-          <div class="table-head san-cols">
-            <span>Vacuna</span>
-            <span>Vencidas</span>
-            <span>Próximas (30 días)</span>
-            <span>Programadas</span>
-          </div>
-          <div class="table-row san-cols" *ngFor="let item of data.calendarioSanitario">
-            <div class="cell-name">
-              <span class="san-icon"><app-svg-icon [path]="icons.VACUNAS_PROXIMAS" [size]="15"></app-svg-icon></span>
-              <div>
-                <strong>{{ item.vacuna }}</strong>
-                <small>{{ item.obligatoria ? 'Obligatoria' : 'Complementaria' }}</small>
-              </div>
+      <!-- Alertas operativas -->
+      <article class="panel span-12">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-danger" aria-hidden="true"><app-svg-icon [path]="icons.alertas" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Alertas operativas</h2>
+              <span>Prioridades del rodeo por módulo.</span>
             </div>
-            <span class="badge-num" [class]="sanitaryTone(item.vencidas, 'vencidas')">{{ item.vencidas }}</span>
-            <span class="badge-num" [class]="sanitaryTone(item.proximas, 'proximas')">{{ item.proximas }}</span>
-            <span class="badge-num" [class]="sanitaryTone(item.programadas, 'programadas')">{{ item.programadas }}</span>
           </div>
+          <span class="panel-meta">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" /><path d="M12 7v5l3 2" /></svg>
+            {{ formatDateTime(data.ultimaActualizacion) }}
+          </span>
         </div>
-        <ng-template #emptySan><div class="empty-state">Sin calendario sanitario disponible.</div></ng-template>
-      </article>
-    </section>
-
-    <!-- Diagnosticos / Tratamientos -->
-    <section class="grid grid-2">
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-red"><app-svg-icon [path]="icons.diagnostico" [size]="16"></app-svg-icon></span>
-            <h2>Diagnósticos por severidad</h2>
-          </div>
-        </div>
-        <div class="hbars" *ngIf="diagnosticoBars(data).length; else emptyDiag">
-          <div class="hbar-row" *ngFor="let bar of diagnosticoBars(data)">
-            <span class="hbar-name">{{ bar.label }}</span>
-            <div class="hbar-track"><i [style.width]="bar.width" [style.background]="bar.color"></i></div>
-            <strong class="hbar-value">{{ formatNumber(bar.value) }}</strong>
-            <small class="hbar-pct">{{ bar.percent }}%</small>
-          </div>
-        </div>
-        <ng-template #emptyDiag><div class="empty-state">Sin diagnósticos registrados.</div></ng-template>
-      </article>
-
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-green"><app-svg-icon [path]="icons.tratamiento" [size]="16"></app-svg-icon></span>
-            <h2>Tratamientos activos</h2>
-          </div>
-        </div>
-        <div class="stat-rows">
-          <div class="stat-row tone-green">
-            <span class="sr-icon"><app-svg-icon [path]="icons.enTratamiento" [size]="18"></app-svg-icon></span>
-            <span class="sr-label">Animales en tratamiento</span>
-            <strong>{{ formatNumber(data.tratamientosActivos.animalesEnTratamiento) }}</strong>
-          </div>
-          <div class="stat-row tone-blue">
-            <span class="sr-icon"><app-svg-icon [path]="icons.diagnosticosAbiertos" [size]="18"></app-svg-icon></span>
-            <span class="sr-label">Diagnósticos abiertos</span>
-            <strong>{{ formatNumber(data.tratamientosActivos.diagnosticosAbiertos) }}</strong>
-          </div>
-          <div class="stat-row tone-red">
-            <span class="sr-icon"><app-svg-icon [path]="icons.criticos" [size]="18"></app-svg-icon></span>
-            <span class="sr-label">Casos críticos</span>
-            <strong>{{ formatNumber(data.tratamientosActivos.casosCriticos) }}</strong>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <!-- Estado reproductivo / Partos estimados -->
-    <section class="grid grid-2">
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-purple"><app-svg-icon [path]="icons.reproduccion" [size]="16"></app-svg-icon></span>
-            <h2>Estado reproductivo</h2>
-          </div>
-          <span class="ch-link">Ver reproducción <app-svg-icon [path]="icons.arrow" [size]="14"></app-svg-icon></span>
-        </div>
-        <div class="hbars">
-          <div class="hbar-row" *ngFor="let bar of reproductiveItems(data)">
-            <span class="hbar-name">{{ bar.label }}</span>
-            <div class="hbar-track"><i [style.width]="bar.width" [style.background]="bar.color"></i></div>
-            <strong class="hbar-value">{{ formatNumber(bar.value) }}</strong>
-            <small class="hbar-pct">{{ bar.percent }}%</small>
-          </div>
+        <div class="alert-list">
+          @for (alert of data.alertasOperativas; track $index) {
+            <div class="alert-row">
+              <i class="alert-dot" [class]="alertPriorityClass(alert.prioridad)"></i>
+              <div class="alert-info">
+                <strong>{{ alert.titulo }}</strong>
+                <span>{{ alert.detalle }}</span>
+              </div>
+              <span class="alert-chip" [class]="'tone-' + alertModuleTone(alert.tipo)">
+                <app-svg-icon [path]="alertModuleIcon(alert.tipo)" [size]="13"></app-svg-icon>
+                {{ alert.tipo }}
+              </span>
+              <time>{{ formatDateTime(alert.fechaGeneracion) }}</time>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+            </div>
+          } @empty {
+            <p class="empty-hint">No hay alertas operativas vigentes.</p>
+          }
         </div>
       </article>
 
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-purple"><app-svg-icon [path]="icons.partos" [size]="16"></app-svg-icon></span>
-            <h2>Partos estimados por mes</h2>
+      <!-- Partos estimados / Genealogia -->
+      <article class="panel span-7">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-violet" aria-hidden="true"><app-svg-icon [path]="icons.partos" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Partos estimados por mes</h2>
+              <span>Según diagnósticos de preñez confirmados.</span>
+            </div>
           </div>
         </div>
-        <div class="vbars" *ngIf="partosBars(data).length; else emptyPartos">
-          <div class="vbar-col" *ngFor="let bar of partosBars(data)">
-            <span class="vbar-value">{{ formatNumber(bar.value) }}</span>
-            <div class="vbar-track"><i [style.height]="bar.height"></i></div>
-            <span class="vbar-label">{{ bar.label }}</span>
-          </div>
-        </div>
-        <ng-template #emptyPartos><div class="empty-state">Sin partos estimados.</div></ng-template>
+        @if (data.partosEstimadosPorMes.length) {
+          <apx-chart
+            [series]="partosSeries(data)"
+            [chart]="barChart"
+            [xaxis]="{ categories: partosCategories(data), labels: { style: { colors: '#8EA0BB', fontSize: '11px' } }, axisBorder: { show: false }, axisTicks: { show: false } }"
+            [yaxis]="{ tickAmount: 4, labels: { style: { colors: '#8EA0BB', fontSize: '11px' } } }"
+            [colors]="['#B8F78E']"
+            [fill]="barFill"
+            [plotOptions]="barPlotOptions"
+            [dataLabels]="dataLabelsOff"
+            [grid]="grid"
+            [legend]="{ show: false }"
+            [tooltip]="partosTooltip()"
+          />
+        } @else {
+          <p class="empty-hint">Sin partos estimados.</p>
+        }
       </article>
-    </section>
 
-    <!-- Genealogia -->
-    <section class="grid grid-1">
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-green"><app-svg-icon [path]="icons.genealogia" [size]="16"></app-svg-icon></span>
-            <h2>Genealogía y trazabilidad</h2>
+      <article class="panel span-5">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-green" aria-hidden="true"><app-svg-icon [path]="icons.genealogia" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Genealogía y trazabilidad</h2>
+              <span>Completitud de registros del rodeo.</span>
+            </div>
           </div>
         </div>
         <div class="genealogy">
-          <div class="ring" [style.background]="genealogyRing(data.genealogiaTrazabilidad.porcentajeCompleta)">
-            <div class="ring-center">
-              <strong>{{ data.genealogiaTrazabilidad.porcentajeCompleta }}%</strong>
-              <span>Con genealogía completa</span>
-            </div>
+          <div class="genealogy-chart">
+            <apx-chart
+              [series]="genealogiaSeries(data)"
+              [chart]="genealogiaChart"
+              [labels]="['Con genealogía']"
+              [colors]="genealogiaColors"
+              [plotOptions]="genealogiaPlotOptions"
+              [fill]="genealogiaFill"
+              [stroke]="{ lineCap: 'round' }"
+            />
           </div>
           <div class="gap-list">
-            <div class="gap-row" *ngFor="let item of genealogyGapItems(data)">
-              <i [style.background]="item.color"></i>
-              <span class="gap-label">{{ item.label }}</span>
-              <strong>{{ formatNumber(item.value) }}</strong>
+            @for (gap of genealogiaGapItems(data); track gap.label) {
+              <div class="gap-row">
+                <i [style.background]="gap.color"></i>
+                <span>{{ gap.label }}</span>
+                <strong>{{ number(gap.value) }}</strong>
+              </div>
+            }
+          </div>
+        </div>
+      </article>
+
+      <!-- Distribucion del rodeo / Estado reproductivo -->
+      <article class="panel span-6">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-green" aria-hidden="true"><app-svg-icon [path]="icons.rodeo" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Distribución del rodeo</h2>
+              <span>Animales por categoría.</span>
+            </div>
+          </div>
+        </div>
+        <div class="ranking-list">
+          @for (item of distribucionRanking(data); track item.label; let i = $index) {
+            <div class="ranking-row">
+              <span class="ranking-pos" [style.--c]="item.color">{{ i + 1 }}</span>
+              <div class="ranking-body">
+                <div class="ranking-info">
+                  <span class="ranking-name">{{ item.label }}</span>
+                  <strong>{{ item.value }}</strong>
+                </div>
+                <div class="ranking-track"><i [style.width.%]="item.pct" [style.--c]="item.color"></i></div>
+                <small>{{ item.caption }}</small>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty-hint">Sin distribución de rodeo.</p>
+          }
+        </div>
+      </article>
+
+      <article class="panel span-6">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-violet" aria-hidden="true"><app-svg-icon [path]="icons.reproduccion" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Estado reproductivo</h2>
+              <span>Hembras en servicio.</span>
+            </div>
+          </div>
+        </div>
+        <div class="ranking-list">
+          @for (item of estadoReproductivoRanking(data); track item.label; let i = $index) {
+            <div class="ranking-row">
+              <span class="ranking-pos" [style.--c]="item.color">{{ i + 1 }}</span>
+              <div class="ranking-body">
+                <div class="ranking-info">
+                  <span class="ranking-name">{{ item.label }}</span>
+                  <strong>{{ item.value }}</strong>
+                </div>
+                <div class="ranking-track"><i [style.width.%]="item.pct" [style.--c]="item.color"></i></div>
+                <small>{{ item.caption }}</small>
+              </div>
+            </div>
+          }
+        </div>
+      </article>
+
+      <!-- Ocupacion de potreros / Diagnosticos -->
+      <article class="panel span-7">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-blue" aria-hidden="true"><app-svg-icon [path]="icons.potreros" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Ocupación de potreros</h2>
+              <span>Carga actual sobre capacidad.</span>
+            </div>
+          </div>
+        </div>
+        <div class="ranking-list">
+          @for (item of data.ocupacionPotreros; track item.nombre) {
+            <div class="ranking-row occ-row">
+              <div class="ranking-body">
+                <div class="ranking-info">
+                  <span class="ranking-name">{{ item.nombre }}</span>
+                  <strong>{{ number(item.cargaActual) }} / {{ number(item.capacidad) }}</strong>
+                </div>
+                <div class="ranking-track"><i [style.width.%]="occWidth(item.porcentaje)" [style.--c]="occColor(item.porcentaje)"></i></div>
+                <small>{{ number(item.porcentaje, 0) }}% de ocupación · {{ item.recursoForrajero || 'Potrero' }}</small>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty-hint">Sin potreros activos.</p>
+          }
+        </div>
+      </article>
+
+      <article class="panel span-5">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-danger" aria-hidden="true"><app-svg-icon [path]="icons.diagnostico" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Diagnósticos por severidad</h2>
+              <span>Casos abiertos y en control.</span>
+            </div>
+          </div>
+        </div>
+        <div class="ranking-list">
+          @for (item of diagnosticoRanking(data); track item.label; let i = $index) {
+            <div class="ranking-row">
+              <span class="ranking-pos" [style.--c]="item.color">{{ i + 1 }}</span>
+              <div class="ranking-body">
+                <div class="ranking-info">
+                  <span class="ranking-name">{{ item.label }}</span>
+                  <strong>{{ item.value }}</strong>
+                </div>
+                <div class="ranking-track"><i [style.width.%]="item.pct" [style.--c]="item.color"></i></div>
+                <small>{{ item.caption }}</small>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty-hint">Sin diagnósticos registrados.</p>
+          }
+        </div>
+      </article>
+
+      <!-- Calendario sanitario -->
+      <article class="panel span-12">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-blue" aria-hidden="true"><app-svg-icon [path]="icons.sanidad" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Calendario sanitario</h2>
+              <span>Vacunas vencidas, próximas y programadas.</span>
+            </div>
+          </div>
+        </div>
+        <div class="premium-table san-table">
+          <div class="table-row table-head">
+            <span>Vacuna</span><span>Vencidas</span><span>Próximas (30 días)</span><span>Programadas</span>
+          </div>
+          @for (item of data.calendarioSanitario; track item.vacuna) {
+            <div class="table-row">
+              <span class="cell-entity">
+                <i class="avatar" style="--c:#6EA8FF"><app-svg-icon [path]="icons.VACUNAS_PROXIMAS" [size]="13"></app-svg-icon></i>
+                <span class="cell-stack">
+                  <span class="entity-name">{{ item.vacuna }}</span>
+                  <small>{{ item.obligatoria ? 'Obligatoria' : 'Complementaria' }}</small>
+                </span>
+              </span>
+              <span class="cell-chip"><em [class]="sanitaryChip(item.vencidas, 'vencidas')">{{ item.vencidas }}</em></span>
+              <span class="cell-chip"><em [class]="sanitaryChip(item.proximas, 'proximas')">{{ item.proximas }}</em></span>
+              <span class="cell-chip"><em [class]="sanitaryChip(item.programadas, 'programadas')">{{ item.programadas }}</em></span>
+            </div>
+          } @empty {
+            <p class="empty-hint">Sin calendario sanitario disponible.</p>
+          }
+        </div>
+      </article>
+
+      <!-- Proximos partos / Tratamientos activos -->
+      <article class="panel span-6">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-violet" aria-hidden="true"><app-svg-icon [path]="icons.partos" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Próximos partos</h2>
+              <span>Vacas con parto estimado en los próximos 60 días.</span>
+            </div>
+          </div>
+        </div>
+        <div class="premium-table partos-table">
+          <div class="table-row table-head">
+            <span>Animal</span><span>Fecha estimada</span><span>Días</span><span>Riesgo</span>
+          </div>
+          @for (item of data.proximosPartos; track $index) {
+            <div class="table-row">
+              <span class="cell-entity">
+                <i class="avatar" style="--c:#B48CFF">{{ initial(item.animalCaravana) }}</i>
+                <span class="cell-stack">
+                  <span class="entity-name">{{ item.animalCaravana }}</span>
+                  <small>{{ item.raza || 'Sin raza' }}</small>
+                </span>
+              </span>
+              <span class="cell-muted">{{ formatDate(item.fechaEstimada) }}</span>
+              <strong [class]="diasChip(item.diasRestantes)">{{ number(item.diasRestantes) }}</strong>
+              <span class="cell-chip"><em [class]="riesgoChip(item.nivelRiesgo)">{{ item.nivelRiesgo }}</em></span>
+            </div>
+          } @empty {
+            <p class="empty-hint">Sin partos próximos.</p>
+          }
+        </div>
+      </article>
+
+      <article class="panel span-6">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-green" aria-hidden="true"><app-svg-icon [path]="icons.tratamiento" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Tratamientos activos</h2>
+              <span>Seguimiento clínico en curso.</span>
+            </div>
+          </div>
+        </div>
+        <div class="stat-tiles">
+          <div class="stat-tile tone-green">
+            <span class="stat-icon"><app-svg-icon [path]="icons.enTratamiento" [size]="20"></app-svg-icon></span>
+            <div class="stat-copy">
+              <small>Animales en tratamiento</small>
+              <strong>{{ number(data.tratamientosActivos.animalesEnTratamiento) }}</strong>
+            </div>
+          </div>
+          <div class="stat-tile tone-blue">
+            <span class="stat-icon"><app-svg-icon [path]="icons.diagnosticosAbiertos" [size]="20"></app-svg-icon></span>
+            <div class="stat-copy">
+              <small>Diagnósticos abiertos</small>
+              <strong>{{ number(data.tratamientosActivos.diagnosticosAbiertos) }}</strong>
+            </div>
+          </div>
+          <div class="stat-tile tone-danger">
+            <span class="stat-icon"><app-svg-icon [path]="icons.criticos" [size]="20"></app-svg-icon></span>
+            <div class="stat-copy">
+              <small>Casos críticos</small>
+              <strong>{{ number(data.tratamientosActivos.casosCriticos) }}</strong>
             </div>
           </div>
         </div>
       </article>
-    </section>
 
-    <!-- Consumo de alimento -->
-    <section class="grid grid-1">
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-green"><app-svg-icon [path]="icons.consumo" [size]="16"></app-svg-icon></span>
+      <!-- Consumo de alimento por potrero -->
+      <article class="panel span-12">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-green" aria-hidden="true"><app-svg-icon [path]="icons.consumo" [size]="20"></app-svg-icon></span>
             <div>
               <h2>Consumo de alimento por potrero</h2>
-              <p class="card-sub">Kg suministrados por mes</p>
+              <span>Kg suministrados por mes.</span>
             </div>
           </div>
-          <span class="ch-link">Ver alimentación <app-svg-icon [path]="icons.arrow" [size]="14"></app-svg-icon></span>
         </div>
-        <div class="table consumo" *ngIf="data.consumoAlimentoPorPotrero.length; else emptyConsumo">
-          <div class="table-head consumo-cols">
+        <div class="premium-table consumo-table" [style.--cols]="consumoColumns(data.consumoAlimentoPorPotrero).length">
+          <div class="table-row table-head">
             <span>Potrero</span>
-            <span *ngFor="let col of consumoColumns(data.consumoAlimentoPorPotrero)">{{ col }}</span>
+            @for (col of consumoColumns(data.consumoAlimentoPorPotrero); track col) {
+              <span class="num">{{ col }}</span>
+            }
           </div>
-          <div class="table-row consumo-cols" *ngFor="let serie of data.consumoAlimentoPorPotrero">
-            <div class="cell-name">
-              <span class="san-icon"><app-svg-icon [path]="icons.consumo" [size]="15"></app-svg-icon></span>
-              <strong>{{ serie.categoria }}</strong>
+          @for (serie of data.consumoAlimentoPorPotrero; track serie.categoria) {
+            <div class="table-row">
+              <span class="cell-entity">
+                <i class="avatar" style="--c:#9FE870"><app-svg-icon [path]="icons.consumo" [size]="13"></app-svg-icon></i>
+                <span class="entity-name">{{ serie.categoria }}</span>
+              </span>
+              @for (point of serie.puntos; track point.etiqueta) {
+                <span class="num cell-muted">{{ number(point.valor) }}</span>
+              }
             </div>
-            <span class="cell-num" *ngFor="let point of serie.puntos">{{ formatNumber(point.valor) }}</span>
-          </div>
+          } @empty {
+            <p class="empty-hint">Sin consumo de alimento registrado.</p>
+          }
         </div>
-        <ng-template #emptyConsumo><div class="empty-state">Sin consumo de alimento registrado.</div></ng-template>
       </article>
-    </section>
 
-    <!-- Conversion / Dietas -->
-    <section class="grid grid-conversion">
-      <article class="card conversion-card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-green"><app-svg-icon [path]="icons.conversion" [size]="16"></app-svg-icon></span>
-            <h2>Conversión alimenticia</h2>
+      <!-- Conversion alimenticia / Dietas activas -->
+      <article class="panel span-4">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-green" aria-hidden="true"><app-svg-icon [path]="icons.conversion" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Conversión alimenticia</h2>
+              <span>Kg de alimento por kg producido.</span>
+            </div>
           </div>
         </div>
         <div class="conversion-body">
-          <strong class="conversion-value">{{ formatNumber(data.conversionAlimenticia.valor, 1) }} : 1</strong>
+          <strong class="conversion-value">{{ number(data.conversionAlimenticia.valor, 1) }} : 1</strong>
           <span class="conversion-unit">{{ data.conversionAlimenticia.unidad }}</span>
         </div>
       </article>
 
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-green"><app-svg-icon [path]="icons.dieta" [size]="16"></app-svg-icon></span>
-            <h2>Dietas activas</h2>
+      <article class="panel span-8">
+        <div class="panel-head">
+          <div class="panel-title">
+            <span class="panel-icon tone-green" aria-hidden="true"><app-svg-icon [path]="icons.dieta" [size]="20"></app-svg-icon></span>
+            <div>
+              <h2>Dietas activas</h2>
+              <span>Planes vigentes y animales asignados.</span>
+            </div>
           </div>
           <span class="soft-badge">{{ data.dietasActivas.length }}</span>
         </div>
-        <div class="diet-list" *ngIf="data.dietasActivas.length; else emptyDiet">
-          <div class="diet-row" *ngFor="let dieta of data.dietasActivas">
-            <span class="diet-icon"><app-svg-icon [path]="icons.dieta" [size]="18"></app-svg-icon></span>
-            <div class="diet-copy">
-              <strong>{{ dieta.nombre }}</strong>
-              <small>{{ dietSub(dieta) }}</small>
+        <div class="diet-list">
+          @for (dieta of data.dietasActivas; track dieta.nombre) {
+            <div class="diet-row">
+              <span class="diet-icon"><app-svg-icon [path]="icons.dieta" [size]="18"></app-svg-icon></span>
+              <div class="diet-copy">
+                <strong>{{ dieta.nombre }}</strong>
+                <small>{{ dietSub(dieta) }}</small>
+              </div>
+              @if (dieta.objetivo) {
+                <span class="diet-tag">{{ dieta.objetivo }}</span>
+              }
             </div>
-            <span class="diet-tag" *ngIf="dieta.objetivo">{{ dieta.objetivo }}</span>
-          </div>
+          } @empty {
+            <p class="empty-hint">Sin dietas activas.</p>
+          }
         </div>
-        <ng-template #emptyDiet><div class="empty-state">Sin dietas activas.</div></ng-template>
       </article>
     </section>
-
-    <!-- Alertas operativas -->
-    <section class="grid grid-1">
-      <article class="card">
-        <div class="card-head">
-          <div class="ch-title">
-            <span class="ch-icon tone-red"><app-svg-icon [path]="icons.alertas" [size]="16"></app-svg-icon></span>
-            <h2>Alertas operativas</h2>
-          </div>
-          <span class="soft-badge muted">
-            <app-svg-icon [path]="icons.clock" [size]="13"></app-svg-icon>
-            Última actualización: {{ formatDateTime(data.ultimaActualizacion) }}
-          </span>
-        </div>
-        <div class="alert-list" *ngIf="data.alertasOperativas.length; else emptyAlerts">
-          <div class="alert-row" *ngFor="let alert of data.alertasOperativas">
-            <span class="alert-dot" [class]="alertPriorityTone(alert.prioridad)"></span>
-            <div class="alert-copy">
-              <strong>{{ alert.titulo }}</strong>
-              <span>{{ alert.detalle }}</span>
-            </div>
-            <span class="alert-badge" [attr.data-tone]="alertModuleTone(alert.tipo)">
-              <app-svg-icon [path]="alertModuleIcon(alert.tipo)" [size]="13"></app-svg-icon>
-              {{ alert.tipo }}
-            </span>
-            <time>{{ formatDateTime(alert.fechaGeneracion) }}</time>
-          </div>
-        </div>
-        <ng-template #emptyAlerts><div class="empty-state">No hay alertas operativas vigentes.</div></ng-template>
-      </article>
-    </section>
-  </ng-container>
+  }
 </div>

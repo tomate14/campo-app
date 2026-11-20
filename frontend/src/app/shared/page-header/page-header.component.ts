@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { SvgIconComponent } from '../svg-icon/svg-icon.component';
 
 /**
  * Cabecera de pagina premium dark SaaS.
@@ -15,7 +14,7 @@ import { SvgIconComponent } from '../svg-icon/svg-icon.component';
 @Component({
   selector: 'app-page-header',
   standalone: true,
-  imports: [CommonModule, SvgIconComponent],
+  imports: [CommonModule],
   templateUrl: './page-header.component.html',
   styleUrl: './page-header.component.css',
 })
@@ -24,4 +23,18 @@ export class PageHeaderComponent {
   @Input() title = '';
   @Input() subtitle = '';
   @Input() icon = '';
+
+  /** Parte del titulo que va en blanco (todo menos la ultima palabra). */
+  protected get titleLead(): string {
+    const trimmed = (this.title ?? '').trim();
+    const idx = trimmed.lastIndexOf(' ');
+    return idx === -1 ? '' : trimmed.slice(0, idx);
+  }
+
+  /** Ultima palabra del titulo, resaltada en verde con glow (estilo v4). */
+  protected get titleAccent(): string {
+    const trimmed = (this.title ?? '').trim();
+    const idx = trimmed.lastIndexOf(' ');
+    return idx === -1 ? trimmed : trimmed.slice(idx + 1);
+  }
 }

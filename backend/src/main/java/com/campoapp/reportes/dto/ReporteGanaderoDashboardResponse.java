@@ -20,7 +20,9 @@ public record ReporteGanaderoDashboardResponse(
         CostoAlimentacion costoAlimentacion,
         ConversionAlimenticia conversionAlimenticia,
         List<DietaActiva> dietasActivas,
-        List<AlertaOperativa> alertasOperativas
+        List<AlertaOperativa> alertasOperativas,
+        List<EvolucionPesoPunto> evolucionPeso,
+        List<ProximoParto> proximosPartos
 ) {
     public record Kpi(
             String codigo,
@@ -130,5 +132,19 @@ public record ReporteGanaderoDashboardResponse(
             String detalle,
             String prioridad,
             LocalDateTime fechaGeneracion
+    ) {}
+
+    public record EvolucionPesoPunto(
+            String etiqueta,          // "Oct", "Nov", ... (mes)
+            BigDecimal pesoPromedio,  // kg promedio del rodeo ese mes
+            BigDecimal gananciaDiaria // kg/dia promedio ese mes
+    ) {}
+
+    public record ProximoParto(
+            String animalCaravana,
+            String raza,
+            java.time.LocalDate fechaEstimada,
+            int diasRestantes,
+            String nivelRiesgo        // BAJO | MEDIO | ALTO (o lo que traiga ControlPrenez.nivelRiesgoParto)
     ) {}
 }
